@@ -41,6 +41,11 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
 
     @Volatile private var detectedModel: VeteranModel? = null
 
+    /** Model policy is selected lazily so telemetry-driven mVer detection and
+     * name-driven detection use the same path without duplicated state. */
+    private val controlProfile: VeteranControlProfile
+        get() = VeteranControlProfiles.forModel(detectedModel)
+
     override val nominalPackVoltage: Int? get() = detectedModel?.nominalVoltage
 
     private val parser = VeteranParser()
@@ -60,7 +65,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override fun pollRealtime(): ByteArray = ByteArray(0)
     override fun pollSettings(): ByteArray = ByteArray(0)
 
-    override fun horn(): ByteArray = VeteranCommands.horn()
+    override fun horn(): ByteArray = controlProfile.horn()
 
     /**
      * Current Lynx-class firmware only sounds the horn when the `LkAp` frame
@@ -70,7 +75,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
      * (mVer 9). [com.eried.eucplanet.data.repository.WheelRepository.sendHorn]
      * writes both, in order.
      */
-    override fun hornFollowup(): ByteArray = VeteranCommands.hornCompanion()
+    override fun hornFollowup(): ByteArray? = controlProfile.hornFollowup()
 
     /**
      * Light state is never echoed in Veteran realtime frames (per
@@ -100,12 +105,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
 
     override fun setLight(on: Boolean): ByteArray {
         lastLightOn = on
-        // HIGH beam by default (LkAp frame; LdAp companion via [setLightFollowup]).
-        return VeteranCommands.setHighBeam(on)
-        // LOW beam (legacy ASCII, single frame). To switch the in-app light
-        // toggle back to the low beam: comment the high-beam return above,
-        // uncomment the line below, and make [setLightFollowup] return null.
-        // return VeteranCommands.setLight(on)
+        return controlProfile.setLight(on)
     }
 
     /**
@@ -114,8 +114,8 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
      * btsnoop as the horn. If you switch [setLight] back to the low beam,
      * change this to `null` (low beam is a single ASCII frame).
      */
-    override fun setLightFollowup(on: Boolean): ByteArray =
-        VeteranCommands.setHighBeamCompanion(on)
+    override fun setLightFollowup(on: Boolean): ByteArray? =
+        controlProfile.setLightFollowup(on)
 
     // Veteran writes tilt-back and alarm thresholds as two separate frames
     // (different magic + sub-op per setting), so we leave the combined
@@ -245,6 +245,11 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
         if (frames.isEmpty()) return emptyList()
         val out = mutableListOf<DecodeResult>()
         for (f in frames) {
+            // Persist the telemetry-derived model before parsing/adapting this
+            // frame. Generic BLE names cannot select model-specific controls;
+            // mVer is authoritative once the first complete frame arrives.
+            val frameModel = VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes))
+            if (frameModel != null) detectedModel = frameModel
             // The Veteran wheel cycles through four frame layouts identified by
             // the byte right after the magic: 0x49 / 0x53 / 0x47 carry standard
             // telemetry at the offsets parseTelemetry knows about; 0x5f is the
@@ -288,7 +293,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
             // Surface the resolved model once, so the UI and the experimental
             // banner can distinguish models within the Veteran family.
             if (!emittedModel) {
-                val model = VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes)) ?: detectedModel
+                val model = frameModel ?: detectedModel
                 if (model != null) {
                     out += DecodeResult.ModelName(model.displayName, model)
                     emittedModel = true

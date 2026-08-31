@@ -2,15 +2,15 @@ package com.eried.eucplanet.ble
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
  * Pins the Veteran headlight commands.
  *
- * The in-app light toggle drives the HIGH beam by default: a two-frame
- * `LkAp` + `LdAp` pair decoded from a LeaperKim-app btsnoop on a Lynx S
- * (high beam on @cap25.3s, off @cap28.3s). The legacy ASCII `SetLightON/OFF`
- * (low beam) stays available as a commented fallback in [VeteranAdapter].
+ * The default profile drives HIGH beam with a two-frame `LkAp` + `LdAp` pair
+ * decoded from a LeaperKim-app btsnoop on a Lynx S (high beam on @cap25.3s,
+ * off @cap28.3s). Aeon selects its verified silent ASCII command profile.
  * Pure-JVM test; no Android runtime needed.
  */
 class VeteranLightTest {
@@ -41,5 +41,16 @@ class VeteranLightTest {
         val followup = adapter.setLightFollowup(true)
         assertNotNull("high beam needs the LdAp companion", followup)
         assertEquals(HIGHBEAM_ON_LDAP, followup!!.hex())
+    }
+
+    @Test
+    fun `nosfet aeon light toggle uses silent ASCII path without companion`() {
+        val adapter = VeteranAdapter()
+        aeonFrameChunks().forEach { chunk -> adapter.onRawNotification(chunk) }
+
+        assertEquals("SetLightON", adapter.setLight(true).toString(Charsets.US_ASCII))
+        assertNull(adapter.setLightFollowup(true))
+        assertEquals("SetLightOFF", adapter.setLight(false).toString(Charsets.US_ASCII))
+        assertNull(adapter.setLightFollowup(false))
     }
 }

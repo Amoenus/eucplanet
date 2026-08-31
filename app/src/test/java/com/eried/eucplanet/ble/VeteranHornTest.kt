@@ -2,6 +2,7 @@ package com.eried.eucplanet.ble
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.util.zip.CRC32
 
@@ -31,6 +32,21 @@ class VeteranHornTest {
         val followup = adapter.hornFollowup()
         assertNotNull("Veteran must send the LdAp horn companion", followup)
         assertEquals(LDAP_HORN, followup!!.hex())
+    }
+
+    @Test
+    fun `nosfet aeon horn emits only the LkAp frame`() {
+        val adapter = VeteranAdapter()
+        feedAeonTelemetry(adapter)
+
+        assertEquals(LKAP_HORN, adapter.horn().hex())
+        assertNull("Aeon must not send the Lynx S LdAp horn companion", adapter.hornFollowup())
+    }
+
+    private fun feedAeonTelemetry(adapter: VeteranAdapter) {
+        aeonFrameChunks().forEach { chunk ->
+            adapter.onRawNotification(chunk)
+        }
     }
 
     @Test

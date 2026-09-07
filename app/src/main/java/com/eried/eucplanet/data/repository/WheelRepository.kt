@@ -1400,9 +1400,16 @@ class WheelRepository @Inject constructor(
     }
 
     fun connect(address: String, name: String? = null, isAuto: Boolean = false) {
+        // A connection is a ride boundary, whichever wheel it is. The envelope
+        // never rises while riding, so a line carried across connections stays
+        // pinned at the last ride's level: a rider who charged between two
+        // rides came back to a Battery (est) still reading where they parked,
+        // and an alarm that would not stop. Not every family reports charging,
+        // so the charger cannot be relied on to lift it. Half a minute of
+        // "not yet" after connecting is the honest price.
+        batteryEnvelope.reset()
         if (lastConnectedAddress != null && lastConnectedAddress != address) {
             // Different wheel, clear history
-            batteryEnvelope.reset()
             battHist.clear(); tempHist.clear(); voltHist.clear()
             ampsHist.clear(); loadHist.clear(); speedHist.clear()
             extrasHist.values.forEach { it.clear() }
@@ -2049,9 +2056,12 @@ class WheelRepository @Inject constructor(
                 // believe it, and an alarm set on the envelope has to be about
                 // the charge they are being shown. The raw frame put the alarm
                 // on the number the override exists to replace.
+                // Charging is the one state where the line is allowed to
+                // rise, so the wheel's own flag goes in beside the reading.
                 val envelope = batteryEnvelope.sample(
                     System.currentTimeMillis(),
                     shownBatteryPercent.toFloat(),
+                    result.data.charging,
                 )
                 // A paired tyre cap outranks the wheel's own relay, and the
                 // policy that decides between them needs to be told the wheel

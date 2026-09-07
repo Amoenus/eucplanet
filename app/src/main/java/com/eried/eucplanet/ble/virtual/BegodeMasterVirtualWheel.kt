@@ -61,34 +61,44 @@ class BegodeMasterVirtualWheel : VirtualWheel {
         val rawCurrent = 1200       // 12.0 A phase current
         val rawTempReg = 0x0EFF     // ≈ 47 °C through the MPU6050 formula
 
-        val frame = ByteArray(24)
-        frame[0] = 0x55
-        frame[1] = 0xAA.toByte()
-        putUint16BE(frame, 2, rawCv)
-        putInt16BE(frame, 4, rawSpeed)
-        // 6..7: unused on most firmwares
-        putUint16BE(frame, 8, ((elapsedMs / 1000L) % 1000L).toInt())
-        putInt16BE(frame, 10, rawCurrent)
-        putInt16BE(frame, 12, rawTempReg)
-        // 14..15: hardware PWM stays zero so derivedPwmPct() drives the load gauge.
-        // 16..17: padding
-        frame[18] = 0x00 // Live A tag
-        frame[19] = 0x00
-        frame[20] = 0x5A
-        frame[21] = 0x5A
-        frame[22] = 0x5A
-        frame[23] = 0x5A
-        return listOf(frame)
+        return listOf(begodeLiveFrame(elapsedMs, rawCv, rawSpeed, rawCurrent, rawTempReg))
     }
 
-    private fun putUint16BE(target: ByteArray, offset: Int, value: Int) {
-        target[offset] = ((value shr 8) and 0xFF).toByte()
-        target[offset + 1] = (value and 0xFF).toByte()
-    }
+}
 
-    private fun putInt16BE(target: ByteArray, offset: Int, value: Int) {
-        val v = value and 0xFFFF
-        target[offset] = ((v shr 8) and 0xFF).toByte()
-        target[offset + 1] = (v and 0xFF).toByte()
-    }
+/**
+ * One Begode "live A" telemetry frame, the 24-byte 0x55AA record every
+ * Gotway-protocol wheel emits. Shared by the Master simulators so they differ
+ * only in the pack they pretend to have, not in how they frame it.
+ */
+internal fun begodeLiveFrame(elapsedMs: Long, rawCv: Int, rawSpeed: Int, rawCurrent: Int, rawTempReg: Int): ByteArray {
+    val frame = ByteArray(24)
+    frame[0] = 0x55
+    frame[1] = 0xAA.toByte()
+    putUint16BE(frame, 2, rawCv)
+    putInt16BE(frame, 4, rawSpeed)
+    // 6..7: unused on most firmwares
+    putUint16BE(frame, 8, ((elapsedMs / 1000L) % 1000L).toInt())
+    putInt16BE(frame, 10, rawCurrent)
+    putInt16BE(frame, 12, rawTempReg)
+    // 14..15: hardware PWM stays zero so derivedPwmPct() drives the load gauge.
+    // 16..17: padding
+    frame[18] = 0x00 // Live A tag
+    frame[19] = 0x00
+    frame[20] = 0x5A
+    frame[21] = 0x5A
+    frame[22] = 0x5A
+    frame[23] = 0x5A
+    return frame
+}
+
+private fun putUint16BE(target: ByteArray, offset: Int, value: Int) {
+    target[offset] = ((value shr 8) and 0xFF).toByte()
+    target[offset + 1] = (value and 0xFF).toByte()
+}
+
+private fun putInt16BE(target: ByteArray, offset: Int, value: Int) {
+    val v = value and 0xFFFF
+    target[offset] = ((v shr 8) and 0xFF).toByte()
+    target[offset + 1] = (v and 0xFF).toByte()
 }

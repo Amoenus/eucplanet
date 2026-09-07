@@ -21,10 +21,19 @@ works and steps aside when a cap is talking.
 **Battery (est).** New dashboard tile, and an alarm metric filed under
 Battery. It is the battery percentage with the load taken out, so on an 84 V
 pack it should sit still while the plain Battery number dives under
-acceleration and comes back when you coast. Turn on Settings, Wheel
-parameters, Override the wheel's percentage: both numbers should follow the
-override together. Also available on overlay elements and, with an updated HUD
-build, on the glasses.
+acceleration and comes back when you coast. Two rules to hold it to: it never
+goes up while you ride (only on the charger), and it only steps down once two
+half minutes in a row agree the pack really dropped. If you see it climb
+mid-ride, or dive on a launch, that is the bug to report. Turn on Settings,
+Wheel parameters, Override the wheel's percentage: both numbers should follow
+the override together. Also available on overlay elements and, with an updated
+HUD build, on the glasses.
+
+No wheel handy? Service Mode (hold the logo on the About screen) adds a
+"Virtual Begode Master (sagging pack)" to the wheel picker: a pack that sags
+ten points on the throttle, jitters, and loses a point a minute. A plain
+Battery alarm at 30 % fires on the first burst; Battery (est) at 30 % should
+fire only once the resting level is actually there, about seven minutes in.
 
 **Pressure units.** Pick psi, bar, kPa, kgf/cm2 or MPa and check every screen
 agrees: the tile, its graph, the alarm threshold, the settings row and the

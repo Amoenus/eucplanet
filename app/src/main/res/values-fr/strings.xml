@@ -2242,4 +2242,22 @@
     <string name="recording_delete_trip_body_archive">Supprimer cette sortie du téléphone ? La copie de sauvegarde part dans un dossier d\'archive.</string>
     <string name="backup_status_pending">Sauvegarde en cours…</string>
     <string name="backup_status_failed">Echec de la sauvegarde, touchez pour reessayer</string>
+    <string name="aeon_intro">Commandes expérimentales. Roue à l’arrêt uniquement.</string>
+    <string name="aeon_sound">Volume du menu. Effets sur les alarmes non vérifiés.</string>
+    <string name="aeon_brightness">Luminosité de l’écran</string>
+    <string name="aeon_key_tone">Sons du menu</string>
+    <string name="aeon_readback">Retour de la roue (lecture seule)</string>
+    <string name="aeon_pending">Attente du retour</string>
+    <string name="aeon_match">Valeur concordante. Vérifiez la roue.</string>
+    <string name="aeon_unconfirmed">Non confirmé. Vérifiez la roue.</string>
+    <string name="aeon_not_sent">Non envoyé. Reconnectez la roue à l’arrêt, hors charge.</string>
+    <string name="aeon_confirm">Appliquer %1$s : %2$d (avant %3$d) ?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon : prise en charge alpha. Touchez pour signaler un problème.</string>
+    <string name="aeon_alpha_body">La prise en charge de NOSFET Aeon est en cours de développement. Certaines commandes et données de télémétrie ne sont pas encore vérifiées. Utilisez avec prudence et signalez les problèmes.</string>
+    <string name="headlight_state_off">Phare : éteint</string>
+    <string name="headlight_state_low">Phare : faible</string>
+    <string name="headlight_state_medium">Phare : moyen</string>
+    <string name="headlight_state_high">Phare : fort</string>
+    <string name="headlight_state_unknown">Phare : ?</string>
 </resources>

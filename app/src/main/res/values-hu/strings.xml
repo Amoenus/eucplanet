@@ -2041,4 +2041,22 @@
     <string name="recording_delete_trip_body_archive">Törlöd ezt a túrát a telefonról? A mentett másolat egy archív mappába kerül.</string>
     <string name="backup_status_pending">Mentés…</string>
     <string name="backup_status_failed">A mentés nem sikerült, koppintson az újrapróbáláshoz</string>
+    <string name="aeon_intro">Kísérleti vezérlés. Csak álló keréknél.</string>
+    <string name="aeon_sound">Menühangerő. A riasztásokra gyakorolt hatás nem ellenőrzött.</string>
+    <string name="aeon_brightness">Kijelző fényereje</string>
+    <string name="aeon_key_tone">Menühangok</string>
+    <string name="aeon_readback">Visszaolvasás (csak olvasható)</string>
+    <string name="aeon_pending">Várakozás visszaolvasásra</string>
+    <string name="aeon_match">Az érték egyezik. Ellenőrizd a kereket.</string>
+    <string name="aeon_unconfirmed">Nincs megerősítve. Ellenőrizd a kereket.</string>
+    <string name="aeon_not_sent">Nem küldve. Csatlakozz újra álló kerékkel, töltés nélkül.</string>
+    <string name="aeon_confirm">%1$s alkalmazása: %2$d (előző: %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfa támogatás. Koppints a hibajelentéshez.</string>
+    <string name="aeon_alpha_body">A NOSFET Aeon támogatása aktív fejlesztés alatt áll. Egyes vezérlők és telemetriai adatok még nem ellenőrzöttek. Használd óvatosan, és jelentsd a hibákat.</string>
+    <string name="headlight_state_off">Fény: ki</string>
+    <string name="headlight_state_low">Fény: alacsony</string>
+    <string name="headlight_state_medium">Fény: közepes</string>
+    <string name="headlight_state_high">Fény: magas</string>
+    <string name="headlight_state_unknown">Fény: ?</string>
 </resources>

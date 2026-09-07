@@ -97,6 +97,13 @@ android {
                 buildConfigField("String", "EUCSTATS_API_BASE_URL", "\"http://10.0.2.2:8000/api/v1\"")
             }
         }
+        create("alpha") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".alpha"
+            versionNameSuffix = "-alpha"
+            matchingFallbacks += listOf("debug")
+            buildConfigField("boolean", "IS_DEV", "true")
+        }
         release {
             // A release build is NEVER a dev build, whatever branch it was cut
             // from. The defaultConfig heuristic (branch != main) is only meant

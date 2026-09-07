@@ -2041,4 +2041,22 @@
     <string name="recording_delete_trip_body_archive">Poistetaanko tämä ajo puhelimesta? Varmuuskopio siirtyy arkistokansioon.</string>
     <string name="backup_status_pending">Varmuuskopioidaan…</string>
     <string name="backup_status_failed">Varmuuskopiointi epäonnistui, yritä napauttamalla</string>
+    <string name="aeon_intro">Kokeelliset säädöt. Vain pyörän ollessa paikallaan.</string>
+    <string name="aeon_sound">Valikkoäänten taso. Vaikutusta hälytyksiin ei ole varmistettu.</string>
+    <string name="aeon_brightness">Näytön kirkkaus</string>
+    <string name="aeon_key_tone">Valikkoäänet</string>
+    <string name="aeon_readback">Luettu arvo (vain luku)</string>
+    <string name="aeon_pending">Odotetaan luettua arvoa</string>
+    <string name="aeon_match">Arvo täsmää. Tarkista pyörä.</string>
+    <string name="aeon_unconfirmed">Ei vahvistettu. Tarkista pyörä.</string>
+    <string name="aeon_not_sent">Ei lähetetty. Yhdistä uudelleen paikallaan ilman latausta.</string>
+    <string name="aeon_confirm">Asetetaanko %1$s: %2$d (oli %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfatuki. Ilmoita ongelmista napauttamalla.</string>
+    <string name="aeon_alpha_body">NOSFET Aeon -tukea kehitetään aktiivisesti. Joitakin toimintoja ja telemetriatietoja ei ole vielä varmennettu. Käytä varoen ja ilmoita ongelmista.</string>
+    <string name="headlight_state_off">Valo: pois</string>
+    <string name="headlight_state_low">Valo: himmeä</string>
+    <string name="headlight_state_medium">Valo: keskitaso</string>
+    <string name="headlight_state_high">Valo: kirkas</string>
+    <string name="headlight_state_unknown">Valo: ?</string>
 </resources>

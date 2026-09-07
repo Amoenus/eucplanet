@@ -895,6 +895,9 @@ class WheelRepository @Inject constructor(
                         _wheelHasLock.value = wheelAdapter.capabilities.hasLock
                     }
                     ConnectionState.DISCONNECTED -> {
+                        _wheelData.value = _wheelData.value.copy(
+                            headlightReadback = _wheelData.value.headlightReadback?.copy(level = null),
+                        )
                         pollingActive = false
                         // Cut any constant alarm tone immediately (telemetry stops now,
                         // so the engine won't get another tick to clear it itself).
@@ -1503,7 +1506,9 @@ class WheelRepository @Inject constructor(
         // frame; queued as a second write so it lands in order. Null for the
         // ASCII low beam and every other family (single-frame headlight).
         wheelAdapter.setLightFollowup(next)?.let { bleManager.writeCommand(it) }
-        _wheelData.value = _wheelData.value.copy(lightOn = next)
+        if (_wheelData.value.headlightReadback == null) {
+            _wheelData.value = _wheelData.value.copy(lightOn = next)
+        }
         startCooldown(_lightBusy, LIGHT_COOLDOWN_MS) { lightCooldownUntilMs = it }
     }
 
@@ -1634,6 +1639,36 @@ class WheelRepository @Inject constructor(
 
     fun setDRL(on: Boolean) {
         wheelAdapter.setDRL(on)?.let { bleManager.writeCommand(it) }
+    }
+
+    /** Explicit opt-in settings only. A readback match is not a protocol ACK. */
+    suspend fun setAeonSetting(setting: com.eried.eucplanet.data.model.AeonSetting, value: Int): com.eried.eucplanet.data.model.AeonSettingResult = authMutex.withLock {
+        val telemetry = _wheelData.value
+        val before = telemetry.aeonSettings
+        if (!wheelConnected() || before == null || !before.isFresh() ||
+            !telemetry.speed.isFinite() || kotlin.math.abs(telemetry.speed) > 0.01f ||
+            System.currentTimeMillis() - telemetry.timestamp !in 0..3_000L || telemetry.charging) {
+            return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
+        }
+        if (!setting.editable || value !in setting.range || before.value(setting) == null) {
+            return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
+        }
+        if (before.value(setting) == value) return@withLock com.eried.eucplanet.data.model.AeonSettingResult.UNCHANGED
+        val frames = wheelAdapter.buildSettingChange(com.eried.eucplanet.data.model.AeonSettingChange(setting, value))
+            ?: return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
+        if (!bleManager.writeCommandBatch(frames)) return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
+        val sentAt = System.nanoTime()
+        repeat(48) {
+            delay(250)
+            val current = _wheelData.value.aeonSettings
+            if (!wheelConnected() || current?.sessionId != before.sessionId) {
+                return@withLock com.eried.eucplanet.data.model.AeonSettingResult.UNKNOWN
+            }
+            if (current.receivedAtNanos > sentAt && current.isFresh() && current.value(setting) == value) {
+                return@withLock com.eried.eucplanet.data.model.AeonSettingResult.READBACK_MATCH
+            }
+        }
+        com.eried.eucplanet.data.model.AeonSettingResult.UNKNOWN
     }
 
     fun setSpeed(tiltbackKmh: Float, beepKmh: Float) {
@@ -1871,6 +1906,9 @@ class WheelRepository @Inject constructor(
         when (result) {
             is DecodeResult.ModelName -> {
                 _modelName.value = result.name
+                // Generic BLE names identify only after telemetry arrives. Refresh
+                // model capabilities then, not just at the initial connection.
+                _wheelHasLock.value = wheelAdapter.capabilities.hasLock
                 // Resize the slider ceiling to whatever the detected model
                 // actually supports. Published per-model speeds for the
                 // V14 family; P6 gets 130 km/h since it isn't in the
@@ -1931,10 +1969,12 @@ class WheelRepository @Inject constructor(
                 // value triggers a stray TTS "lights on/off" transition in
                 // WheelService.checkLightTransition (race seen ~3-4 times
                 // per 20 taps in tester reports). Preserve the optimistic
-                // value during the cooldown for every family, same defensive
+                // value during the cooldown for legacy binary-state families, same defensive
                 // pattern P6 already uses unconditionally because its parser
                 // can't recover lightOn from telemetry at all.
-                val lightOn = if (realtimeLacksLight || _lightBusy.value) previous.lightOn
+                // Models with explicit level readback remain telemetry-driven, even during cooldown.
+                val lightOn = if (result.data.headlightReadback != null) result.data.lightOn
+                              else if (realtimeLacksLight || _lightBusy.value) previous.lightOn
                               else result.data.lightOn
                 // Motor temperature never legitimately drops to 0 mid-ride, but
                 // the P6 emits the odd frame whose temp byte reads

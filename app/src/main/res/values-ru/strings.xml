@@ -2238,4 +2238,22 @@
     <string name="recording_delete_trip_body_archive">Удалить эту поездку с телефона? Резервная копия переедет в папку архива.</string>
     <string name="backup_status_pending">Создание копии…</string>
     <string name="backup_status_failed">Не удалось, нажмите для повтора</string>
+    <string name="aeon_intro">Экспериментальные настройки. Только на стоящем колесе.</string>
+    <string name="aeon_sound">Громкость меню. Влияние на сигналы тревоги не проверено.</string>
+    <string name="aeon_brightness">Яркость дисплея</string>
+    <string name="aeon_key_tone">Звуки меню</string>
+    <string name="aeon_readback">Данные колеса (только чтение)</string>
+    <string name="aeon_pending">Ожидание данных колеса</string>
+    <string name="aeon_match">Значение совпало. Проверьте колесо.</string>
+    <string name="aeon_unconfirmed">Не подтверждено. Проверьте колесо.</string>
+    <string name="aeon_not_sent">Не отправлено. Подключите стоящее колесо без зарядки.</string>
+    <string name="aeon_confirm">Применить %1$s: %2$d (было %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: альфа-поддержка. Нажмите, чтобы сообщить о проблеме.</string>
+    <string name="aeon_alpha_body">Поддержка NOSFET Aeon активно разрабатывается. Некоторые команды и данные телеметрии ещё не проверены. Используйте с осторожностью и сообщайте о проблемах.</string>
+    <string name="headlight_state_off">Свет: выкл.</string>
+    <string name="headlight_state_low">Свет: слабый</string>
+    <string name="headlight_state_medium">Свет: средний</string>
+    <string name="headlight_state_high">Свет: яркий</string>
+    <string name="headlight_state_unknown">Свет: ?</string>
 </resources>

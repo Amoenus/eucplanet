@@ -695,6 +695,7 @@ fun SettingsScreen(
 
     val sections: List<SectionDef> = listOf(
         SectionDef("general", titleGeneral, Icons.Default.Tune, corpusGeneral) {
+            AeonSettingsCard(viewModel, isConnected)
             GeneralTab(settings, viewModel, scrollToBattery) { y ->
                 if (targetSectionTop == null) targetSectionTop = y
             }

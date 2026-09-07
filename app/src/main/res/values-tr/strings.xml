@@ -2235,4 +2235,22 @@
     <string name="recording_delete_trip_body_archive">Bu sürüş telefondan silinsin mi? Yedekteki kopya bir arşiv klasörüne taşınır.</string>
     <string name="backup_status_pending">Yedekleniyor…</string>
     <string name="backup_status_failed">Yedekleme başarısız, yeniden denemek için dokunun</string>
+    <string name="aeon_intro">Deneysel kontroller. Yalnızca tekerlek dururken.</string>
+    <string name="aeon_sound">Menü ses düzeyi. Alarmlara etkisi doğrulanmadı.</string>
+    <string name="aeon_brightness">Ekran parlaklığı</string>
+    <string name="aeon_key_tone">Menü sesleri</string>
+    <string name="aeon_readback">Geri okuma (salt okunur)</string>
+    <string name="aeon_pending">Geri okuma bekleniyor</string>
+    <string name="aeon_match">Değer eşleşiyor. Tekerleği kontrol edin.</string>
+    <string name="aeon_unconfirmed">Onaylanmadı. Tekerleği kontrol edin.</string>
+    <string name="aeon_not_sent">Gönderilmedi. Dururken ve şarj etmiyorken yeniden bağlanın.</string>
+    <string name="aeon_confirm">%1$s: %2$d uygulansın mı (önceki %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfa desteği. Sorun bildirmek için dokunun.</string>
+    <string name="aeon_alpha_body">NOSFET Aeon desteği aktif olarak geliştiriliyor. Bazı kontroller ve telemetri verileri henüz doğrulanmadı. Dikkatli kullanın ve sorunları bildirin.</string>
+    <string name="headlight_state_off">Far: kapalı</string>
+    <string name="headlight_state_low">Far: düşük</string>
+    <string name="headlight_state_medium">Far: orta</string>
+    <string name="headlight_state_high">Far: yüksek</string>
+    <string name="headlight_state_unknown">Far: ?</string>
 </resources>

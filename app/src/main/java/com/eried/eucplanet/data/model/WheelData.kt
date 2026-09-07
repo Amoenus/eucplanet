@@ -92,6 +92,12 @@ data class WheelData(
     val dynamicSpeedLimit: Float = 0f,
     val dynamicCurrentLimit: Float = 0f,
     val lightOn: Boolean = false,
+    /** Null when the model does not supply level readback; never an optimistic command state. */
+    val headlightReadback: HeadlightReadback? = null,
+    /** Wheel-reported Aeon light level; null until observed or on other models. */
+    val aeonLightState: AeonLightState? = null,
+    /** Latest complete Aeon settings page, retaining its original reception age. */
+    val aeonSettings: AeonSettings? = null,
     /** True when the wheel reports it is charging via an explicit firmware flag
      *  (InMotion V14/V12 state-byte bit 7, KingSong 0xB9). Inference-only
      *  families (Begode/Veteran/Ninebot/InMotion V1) leave this false; charging

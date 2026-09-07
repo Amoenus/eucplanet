@@ -2105,4 +2105,22 @@
     <string name="recording_delete_trip_body_archive">从这台手机删除这次行程？备份里的副本会移到归档文件夹。</string>
     <string name="backup_status_pending">正在备份…</string>
     <string name="backup_status_failed">备份失败，点击重试</string>
+    <string name="aeon_intro">实验性控制，仅在轮子静止时使用。</string>
+    <string name="aeon_sound">菜单音量。对警报的影响尚未验证。</string>
+    <string name="aeon_brightness">屏幕亮度</string>
+    <string name="aeon_key_tone">菜单音</string>
+    <string name="aeon_readback">轮子读数（只读）</string>
+    <string name="aeon_pending">等待读数</string>
+    <string name="aeon_match">读数匹配，请检查轮子。</string>
+    <string name="aeon_unconfirmed">未确认，请检查轮子。</string>
+    <string name="aeon_not_sent">未发送。请在轮子静止且未充电时重新连接。</string>
+    <string name="aeon_confirm">将 %1$s 设为 %2$d（原为 %3$d）？</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon：Alpha 支持。点按以报告问题。</string>
+    <string name="aeon_alpha_body">NOSFET Aeon 支持正在积极开发中。部分控制功能和遥测数据尚未验证。请谨慎使用并报告问题。</string>
+    <string name="headlight_state_off">头灯：关</string>
+    <string name="headlight_state_low">头灯：低</string>
+    <string name="headlight_state_medium">头灯：中</string>
+    <string name="headlight_state_high">头灯：高</string>
+    <string name="headlight_state_unknown">头灯：?</string>
 </resources>

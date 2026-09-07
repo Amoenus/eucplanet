@@ -2041,4 +2041,22 @@
     <string name="recording_delete_trip_body_archive">Ștergi tura de pe telefon? Copia din backup trece într-un folder de arhivă.</string>
     <string name="backup_status_pending">Se face backup…</string>
     <string name="backup_status_failed">Backupul a eșuat, atinge pentru a reîncerca</string>
+    <string name="aeon_intro">Comenzi experimentale. Doar cu roata staționară.</string>
+    <string name="aeon_sound">Volumul meniului. Efectele asupra alarmelor nu sunt verificate.</string>
+    <string name="aeon_brightness">Luminozitate ecran</string>
+    <string name="aeon_key_tone">Sunete de meniu</string>
+    <string name="aeon_readback">Valoare citită (doar citire)</string>
+    <string name="aeon_pending">Se așteaptă citirea</string>
+    <string name="aeon_match">Valoarea corespunde. Verifică roata.</string>
+    <string name="aeon_unconfirmed">Neconfirmat. Verifică roata.</string>
+    <string name="aeon_not_sent">Netrimis. Reconectează roata staționară, fără încărcare.</string>
+    <string name="aeon_confirm">Aplici %1$s: %2$d (anterior %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: suport alfa. Atinge pentru a raporta probleme.</string>
+    <string name="aeon_alpha_body">Suportul pentru NOSFET Aeon este în dezvoltare activă. Unele comenzi și date de telemetrie nu sunt încă verificate. Folosește cu precauție și raportează problemele.</string>
+    <string name="headlight_state_off">Far: oprit</string>
+    <string name="headlight_state_low">Far: slab</string>
+    <string name="headlight_state_medium">Far: mediu</string>
+    <string name="headlight_state_high">Far: puternic</string>
+    <string name="headlight_state_unknown">Far: ?</string>
 </resources>

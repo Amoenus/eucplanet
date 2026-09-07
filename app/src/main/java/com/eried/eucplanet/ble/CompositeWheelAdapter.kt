@@ -101,6 +101,9 @@ class CompositeWheelAdapter @Inject constructor(
         inmotion, kingsong, veteran, begode, ninebot, inmotionV1
     )
 
+    override fun diagnosticCatalogs(text: (Int) -> String): List<com.eried.eucplanet.diagnostics.DiagnosticCatalog> =
+        allFamilies.flatMap { it.diagnosticCatalogs(text) }
+
     /**
      * Set the InMotion V1 (V5 / V8 / V10 / L6) BLE access PIN from Advanced
      * settings. The V1 adapter sends it in its connect init sequence; a wheel
@@ -180,6 +183,8 @@ class CompositeWheelAdapter @Inject constructor(
     override fun pollStats(): ByteArray? = active.pollStats()
 
     override fun horn(): ByteArray? = active.horn()
+    override fun buildSettingChange(change: com.eried.eucplanet.data.model.WheelSettingChange): List<ByteArray>? =
+        active.buildSettingChange(change)
     override fun hornFollowup(): ByteArray? = active.hornFollowup()
     override fun setLight(on: Boolean): ByteArray? = active.setLight(on)
     override fun setLightFollowup(on: Boolean): ByteArray? = active.setLightFollowup(on)

@@ -2238,4 +2238,22 @@
     <string name="recording_delete_trip_body_archive">Radera den här turen från telefonen? Backupkopian flyttas till en arkivmapp.</string>
     <string name="backup_status_pending">Säkerhetskopierar…</string>
     <string name="backup_status_failed">Säkerhetskopieringen misslyckades, tryck för att försöka igen</string>
+    <string name="aeon_intro">Experimentella reglage. Endast när hjulet står stilla.</string>
+    <string name="aeon_sound">Menyvolym. Effekter på larm är inte verifierade.</string>
+    <string name="aeon_brightness">Skärmljusstyrka</string>
+    <string name="aeon_key_tone">Menyljud</string>
+    <string name="aeon_readback">Återläsning (skrivskyddad)</string>
+    <string name="aeon_pending">Väntar på återläsning</string>
+    <string name="aeon_match">Värdet stämmer. Kontrollera hjulet.</string>
+    <string name="aeon_unconfirmed">Obekräftat. Kontrollera hjulet.</string>
+    <string name="aeon_not_sent">Inte skickat. Anslut igen vid stillastående, utan laddning.</string>
+    <string name="aeon_confirm">Tillämpa %1$s: %2$d (var %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfastöd. Tryck för att rapportera problem.</string>
+    <string name="aeon_alpha_body">Stöd för NOSFET Aeon är under aktiv utveckling. Vissa reglage och telemetridata är ännu inte verifierade. Använd försiktigt och rapportera problem.</string>
+    <string name="headlight_state_off">Ljus: av</string>
+    <string name="headlight_state_low">Ljus: lågt</string>
+    <string name="headlight_state_medium">Ljus: medel</string>
+    <string name="headlight_state_high">Ljus: högt</string>
+    <string name="headlight_state_unknown">Ljus: ?</string>
 </resources>

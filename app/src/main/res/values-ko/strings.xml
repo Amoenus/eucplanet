@@ -2237,4 +2237,22 @@
     <string name="recording_delete_trip_body_archive">이 주행을 휴대폰에서 삭제할까요? 백업 사본은 보관 폴더로 옮겨집니다.</string>
     <string name="backup_status_pending">백업 중…</string>
     <string name="backup_status_failed">백업 실패, 다시 시도하려면 탭하세요</string>
+    <string name="aeon_intro">실험적 제어입니다. 휠이 정지한 상태에서만 사용하세요.</string>
+    <string name="aeon_sound">메뉴 음량입니다. 경고음에 미치는 영향은 확인되지 않았습니다.</string>
+    <string name="aeon_brightness">화면 밝기</string>
+    <string name="aeon_key_tone">메뉴 소리</string>
+    <string name="aeon_readback">휠 값 (읽기 전용)</string>
+    <string name="aeon_pending">휠 값 대기 중</string>
+    <string name="aeon_match">값이 일치합니다. 휠을 확인하세요.</string>
+    <string name="aeon_unconfirmed">확인되지 않았습니다. 휠을 확인하세요.</string>
+    <string name="aeon_not_sent">전송하지 않았습니다. 충전하지 않는 정지한 휠에 다시 연결하세요.</string>
+    <string name="aeon_confirm">%1$s: %2$d 적용할까요 (이전 %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: 알파 지원. 탭하여 문제를 보고하세요.</string>
+    <string name="aeon_alpha_body">NOSFET Aeon 지원은 개발 중입니다. 일부 제어 기능과 텔레메트리는 아직 검증되지 않았습니다. 주의해서 사용하고 문제를 보고하세요.</string>
+    <string name="headlight_state_off">라이트: 꺼짐</string>
+    <string name="headlight_state_low">라이트: 약</string>
+    <string name="headlight_state_medium">라이트: 중</string>
+    <string name="headlight_state_high">라이트: 강</string>
+    <string name="headlight_state_unknown">라이트: ?</string>
 </resources>

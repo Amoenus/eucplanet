@@ -2258,4 +2258,24 @@
     <string name="alarm_fx_crush">Bitcrush</string>
     <string name="backup_status_pending">Backing up…</string>
     <string name="backup_status_failed">Backup failed, tap to retry</string>
+    <string name="aeon_intro">Experimental controls. Stationary wheel only.</string>
+    <string name="aeon_sound">Menu sound level. Alarm effects are unverified.</string>
+    <string name="aeon_brightness">Display brightness</string>
+    <string name="aeon_key_tone">Menu sounds</string>
+    <string name="aeon_readback">Readback (read-only)</string>
+    <string name="aeon_pending">Waiting for readback</string>
+    <string name="aeon_match">Readback matches. Check the wheel.</string>
+    <string name="aeon_unconfirmed">Unconfirmed. Check the wheel.</string>
+    <string name="aeon_not_sent">Not sent. Reconnect while stationary and not charging.</string>
+    <string name="aeon_confirm">Apply %1$s: %2$d (was %3$d)?</string>
+    <string name="aeon_title" translatable="false">NOSFET Aeon</string>
+    <string name="aeon_headlight_raw" translatable="false">💡 (0/1/2/3)</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alpha support. Tap to report issues.</string>
+    <string name="aeon_alpha_body">NOSFET Aeon support is in active development. Some controls and telemetry are still unverified. Use with caution and report issues.</string>
+    <string name="headlight_state_off">Light: Off</string>
+    <string name="headlight_state_low">Light: Low</string>
+    <string name="headlight_state_medium">Light: Medium</string>
+    <string name="headlight_state_high">Light: High</string>
+    <string name="headlight_state_unknown">Light: ?</string>
 </resources>

@@ -99,7 +99,7 @@ class VeteranLockTest {
     @Test
     fun `adapter splits lock frame into 20 plus 5 byte writes`() {
         val adapter = VeteranAdapter()
-        val first = adapter.setLock(true)
+        val first = adapter.setLock(true)!!
         val tail = adapter.setLockFollowup(true)
         assertEquals("first ATT write is 20 bytes", 20, first.size)
         assertEquals("followup ATT write is 5 bytes", 5, tail!!.size)
@@ -129,7 +129,7 @@ class VeteranLockTest {
     @Test
     fun `followup tail matches the preceding setLock build`() {
         val adapter = VeteranAdapter()
-        val first = adapter.setLock(false)
+        val first = adapter.setLock(false)!!
         // Simulate the WheelRepository call order: setLock immediately, then
         // followup. The cache in the adapter holds the full frame.
         val tail = adapter.setLockFollowup(false)!!

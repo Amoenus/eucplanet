@@ -165,7 +165,12 @@ class BleConnectionManager @Inject constructor(
     @Volatile private var manualRetryCount = 0
 
     // Write serialization - only one BLE write at a time
-    private val writeChannel = Channel<ByteArray>(Channel.BUFFERED)
+    private data class WriteBatch(
+        val frames: List<ByteArray>,
+        val boundGatt: BluetoothGatt? = null,
+        val connectionBound: Boolean = false,
+    )
+    private val writeChannel = Channel<WriteBatch>(Channel.BUFFERED)
     private var writeReady = false
 
     /** What the GATT layer did with one write attempt. */
@@ -583,7 +588,7 @@ class BleConnectionManager @Inject constructor(
         // hundreds of milliseconds of polling. Say so: the log already showed
         // the bytes as sent, and a command that never went anywhere must not
         // read as one the wheel ignored.
-        if (writeChannel.trySend(data).isFailure) {
+        if (writeChannel.trySend(WriteBatch(listOf(data))).isFailure) {
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                 "Write DROPPED (${data.size}B) - the write queue is full"
             )
@@ -592,7 +597,12 @@ class BleConnectionManager @Inject constructor(
 
     @SuppressLint("MissingPermission")
     private suspend fun processWriteQueue() {
-        for (data in writeChannel) {
+        for (batch in writeChannel) processWriteBatch(batch)
+    }
+
+    private suspend fun processWriteBatch(batch: WriteBatch) {
+        for (data in batch.frames) {
+            if (batch.connectionBound && (gatt == null || gatt !== batch.boundGatt)) break
             // Virtual mode: hand the write to the simulator and feed any responses
             // back through the adapter pipeline. No GATT, no writeReady gating.
             val virtual = virtualWheel
@@ -602,14 +612,15 @@ class BleConnectionManager @Inject constructor(
             }
             if (!writeReady || rxCharacteristic == null || gatt == null) {
                 Log.w(TAG, "Write skipped: ready=$writeReady rx=${rxCharacteristic != null} gatt=${gatt != null}")
-                continue
+                break
             }
 
             var connectionLost = false
+            var accepted = false
             for (attempt in 1..WRITE_MAX_ATTEMPTS) {
                 writeReady = false
-                when (attemptWrite(data)) {
-                    WriteOutcome.ACCEPTED -> break
+                when (attemptWrite(data, if (batch.connectionBound) batch.boundGatt else null)) {
+                    WriteOutcome.ACCEPTED -> { accepted = true; break }
                     WriteOutcome.CONNECTION_LOST -> { connectionLost = true; break }
                     WriteOutcome.REJECTED -> {
                         // The stack refused it, so nothing is in flight from us.
@@ -625,7 +636,7 @@ class BleConnectionManager @Inject constructor(
                     }
                 }
             }
-            if (connectionLost) continue
+            if (connectionLost || !accepted) break
 
             // Wait for write callback or timeout
             delay(20)
@@ -636,14 +647,25 @@ class BleConnectionManager @Inject constructor(
         }
     }
 
+    /** One queue entry: ATT fragments cannot interleave with polling or horn writes.
+     * Bound to the current GATT object so a reconnect cannot redirect its tail. */
+    fun writeCommandBatch(frames: List<ByteArray>): Boolean {
+        val target = gatt ?: return false
+        if (frames.isEmpty() || frames.any { it.isEmpty() || it.size > 20 }) return false
+        val owned = frames.map { it.copyOf() }
+        return writeChannel.trySend(WriteBatch(owned, target, true)).isSuccess
+    }
+
     /**
      * One pass at handing [data] to the GATT layer. Separate from the queue so
      * a rejection can simply be retried; see [WRITE_MAX_ATTEMPTS].
      */
     @SuppressLint("MissingPermission")
-    private fun attemptWrite(data: ByteArray): WriteOutcome {
+    private fun attemptWrite(data: ByteArray, expectedGatt: BluetoothGatt? = null): WriteOutcome {
         val characteristic = rxCharacteristic ?: return WriteOutcome.CONNECTION_LOST
         val g = gatt ?: return WriteOutcome.CONNECTION_LOST
+        // Recheck on every stack-level retry as well, not only at batch entry.
+        if (expectedGatt != null && g !== expectedGatt) return WriteOutcome.CONNECTION_LOST
 
         // Pick the write type from the active adapter's profile. HM-10
         // (KingSong / Begode / Veteran) uses WRITE_TYPE_NO_RESPONSE

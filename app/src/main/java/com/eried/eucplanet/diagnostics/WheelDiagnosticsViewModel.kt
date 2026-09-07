@@ -167,27 +167,7 @@ class WheelDiagnosticsViewModel @Inject constructor(
      * display name so the picker UI can show them all, regardless of what's
      * actually connected.
      */
-    data class WheelFamily(
-        val displayName: String,
-        val commands: List<DiagnosticCommand>,
-        val inspectPrefixes: List<String>
-    )
-
-    fun allWheelFamilies(): List<WheelFamily> {
-        val composite = wheelAdapter as? com.eried.eucplanet.ble.CompositeWheelAdapter
-            ?: return listOf(WheelFamily(
-                displayName = wheelAdapter.familyDisplayName,
-                commands = wheelAdapter.getDiagnosticCommands(),
-                inspectPrefixes = wheelAdapter.inspectMessageTypes()
-            ))
-        return composite.allFamilies.map {
-            WheelFamily(
-                displayName = it.familyDisplayName,
-                commands = it.getDiagnosticCommands(),
-                inspectPrefixes = it.inspectMessageTypes()
-            )
-        }
-    }
+    fun allWheelFamilies(): List<DiagnosticCatalog> = wheelAdapter.diagnosticCatalogs { context.getString(it) }
 
     fun fireCommand(cmd: DiagnosticCommand) {
         DiagnosticsLogger.cmd(cmd.label, cmd.bytes)

@@ -2253,4 +2253,22 @@
     <string name="recording_delete_trip_body_archive">Slet denne tur fra telefonen? Kopien i backuppen flyttes til en arkivmappe.</string>
     <string name="backup_status_pending">Sikkerhedskopierer…</string>
     <string name="backup_status_failed">Sikkerhedskopiering mislykkedes, tryk for at prøve igen</string>
+    <string name="aeon_intro">Eksperimentelle kontroller. Kun når hjulet står stille.</string>
+    <string name="aeon_sound">Menulydstyrke. Virkning på alarmer er ikke verificeret.</string>
+    <string name="aeon_brightness">Skærmens lysstyrke</string>
+    <string name="aeon_key_tone">Menulyde</string>
+    <string name="aeon_readback">Tilbagelæsning (kun læsning)</string>
+    <string name="aeon_pending">Venter på tilbagelæsning</string>
+    <string name="aeon_match">Værdien stemmer. Kontrollér hjulet.</string>
+    <string name="aeon_unconfirmed">Ikke bekræftet. Kontrollér hjulet.</string>
+    <string name="aeon_not_sent">Ikke sendt. Tilslut igen ved stilstand, uden opladning.</string>
+    <string name="aeon_confirm">Anvend %1$s: %2$d (var %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfasupport. Tryk for at rapportere fejl.</string>
+    <string name="aeon_alpha_body">Understøttelse af NOSFET Aeon er under aktiv udvikling. Nogle funktioner og telemetridata er endnu ikke verificeret. Brug med forsigtighed, og rapportér fejl.</string>
+    <string name="headlight_state_off">Lys: slukket</string>
+    <string name="headlight_state_low">Lys: lavt</string>
+    <string name="headlight_state_medium">Lys: mellem</string>
+    <string name="headlight_state_high">Lys: højt</string>
+    <string name="headlight_state_unknown">Lys: ?</string>
 </resources>

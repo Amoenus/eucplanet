@@ -2258,4 +2258,22 @@
     <string name="recording_delete_trip_body_archive">Diese Fahrt vom Handy löschen? Die Backup-Kopie wandert in einen Archivordner.</string>
     <string name="backup_status_pending">Sicherung läuft…</string>
     <string name="backup_status_failed">Sicherung fehlgeschlagen, zum Wiederholen tippen</string>
+    <string name="aeon_intro">Experimentelle Steuerung. Nur im Stillstand.</string>
+    <string name="aeon_sound">Menülautstärke. Auswirkungen auf Alarme sind ungeprüft.</string>
+    <string name="aeon_brightness">Displayhelligkeit</string>
+    <string name="aeon_key_tone">Menütöne</string>
+    <string name="aeon_readback">Rückmeldung (nur lesen)</string>
+    <string name="aeon_pending">Warte auf Rückmeldung</string>
+    <string name="aeon_match">Rückmeldung stimmt. Rad prüfen.</string>
+    <string name="aeon_unconfirmed">Unbestätigt. Rad prüfen.</string>
+    <string name="aeon_not_sent">Nicht gesendet. Im Stillstand und ohne Laden neu verbinden.</string>
+    <string name="aeon_confirm">%1$s auf %2$d setzen (vorher %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: Alpha-Unterstützung. Tippen, um Fehler zu melden.</string>
+    <string name="aeon_alpha_body">Die Unterstützung für NOSFET Aeon wird aktiv entwickelt. Einige Steuerfunktionen und Telemetriedaten sind noch nicht überprüft. Vorsichtig verwenden und Fehler melden.</string>
+    <string name="headlight_state_off">Licht: aus</string>
+    <string name="headlight_state_low">Licht: niedrig</string>
+    <string name="headlight_state_medium">Licht: mittel</string>
+    <string name="headlight_state_high">Licht: hoch</string>
+    <string name="headlight_state_unknown">Licht: ?</string>
 </resources>

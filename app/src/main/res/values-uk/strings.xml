@@ -2235,4 +2235,22 @@
     <string name="recording_delete_trip_body_archive">Видалити цю поїздку з телефона? Резервна копія перейде до теки архіву.</string>
     <string name="backup_status_pending">Створення копії…</string>
     <string name="backup_status_failed">Не вдалося, торкніться для повтору</string>
+    <string name="aeon_intro">Експериментальні налаштування. Лише на нерухомому колесі.</string>
+    <string name="aeon_sound">Гучність меню. Вплив на сигнали тривоги не перевірено.</string>
+    <string name="aeon_brightness">Яскравість дисплея</string>
+    <string name="aeon_key_tone">Звуки меню</string>
+    <string name="aeon_readback">Дані колеса (лише читання)</string>
+    <string name="aeon_pending">Очікування даних колеса</string>
+    <string name="aeon_match">Значення збігається. Перевірте колесо.</string>
+    <string name="aeon_unconfirmed">Не підтверджено. Перевірте колесо.</string>
+    <string name="aeon_not_sent">Не надіслано. Підключіть нерухоме колесо без заряджання.</string>
+    <string name="aeon_confirm">Застосувати %1$s: %2$d (було %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: альфа-підтримка. Торкніться, щоб повідомити про проблему.</string>
+    <string name="aeon_alpha_body">Підтримка NOSFET Aeon активно розробляється. Деякі команди й дані телеметрії ще не перевірені. Використовуйте обережно та повідомляйте про проблеми.</string>
+    <string name="headlight_state_off">Світло: вимк.</string>
+    <string name="headlight_state_low">Світло: слабке</string>
+    <string name="headlight_state_medium">Світло: середнє</string>
+    <string name="headlight_state_high">Світло: яскраве</string>
+    <string name="headlight_state_unknown">Світло: ?</string>
 </resources>

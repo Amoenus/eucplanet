@@ -2240,4 +2240,22 @@
     <string name="recording_delete_trip_body_archive">Excluir este trajeto do telefone? A cópia de backup vai para uma pasta de arquivo.</string>
     <string name="backup_status_pending">Fazendo backup…</string>
     <string name="backup_status_failed">O backup falhou, toque para tentar de novo</string>
+    <string name="aeon_intro">Controles experimentais. Apenas com a roda parada.</string>
+    <string name="aeon_sound">Volume do menu. Efeitos nos alarmes não verificados.</string>
+    <string name="aeon_brightness">Brilho da tela</string>
+    <string name="aeon_key_tone">Sons do menu</string>
+    <string name="aeon_readback">Leitura da roda (somente leitura)</string>
+    <string name="aeon_pending">Aguardando leitura</string>
+    <string name="aeon_match">O valor coincide. Confira a roda.</string>
+    <string name="aeon_unconfirmed">Não confirmado. Confira a roda.</string>
+    <string name="aeon_not_sent">Não enviado. Reconecte a roda parada e fora da carga.</string>
+    <string name="aeon_confirm">Aplicar %1$s: %2$d (antes %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: suporte alfa. Toque para relatar problemas.</string>
+    <string name="aeon_alpha_body">O suporte ao NOSFET Aeon está em desenvolvimento ativo. Alguns controles e dados de telemetria ainda não foram verificados. Use com cuidado e relate problemas.</string>
+    <string name="headlight_state_off">Luz: desligada</string>
+    <string name="headlight_state_low">Luz: baixa</string>
+    <string name="headlight_state_medium">Luz: média</string>
+    <string name="headlight_state_high">Luz: alta</string>
+    <string name="headlight_state_unknown">Luz: ?</string>
 </resources>

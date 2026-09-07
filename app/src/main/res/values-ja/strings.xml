@@ -2239,4 +2239,22 @@
     <string name="recording_delete_trip_body_archive">この走行を端末から削除しますか？バックアップの控えはアーカイブフォルダーへ移ります。</string>
     <string name="backup_status_pending">バックアップ中…</string>
     <string name="backup_status_failed">バックアップ失敗、タップして再試行</string>
+    <string name="aeon_intro">試験的な操作です。ホイール停止中のみ使用してください。</string>
+    <string name="aeon_sound">メニュー音量です。警報への影響は未確認です。</string>
+    <string name="aeon_brightness">画面の明るさ</string>
+    <string name="aeon_key_tone">メニュー音</string>
+    <string name="aeon_readback">ホイールの値（読み取り専用）</string>
+    <string name="aeon_pending">ホイールの値を待機中</string>
+    <string name="aeon_match">値が一致しました。ホイールを確認してください。</string>
+    <string name="aeon_unconfirmed">未確認です。ホイールを確認してください。</string>
+    <string name="aeon_not_sent">未送信です。停止中で充電していないホイールに再接続してください。</string>
+    <string name="aeon_confirm">%1$s を %2$d に変更しますか（変更前 %3$d）？</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon：アルファ版対応。タップして問題を報告。</string>
+    <string name="aeon_alpha_body">NOSFET Aeonへの対応は開発中です。一部の操作とテレメトリは未検証です。慎重に使用し、問題を報告してください。</string>
+    <string name="headlight_state_off">ライト: オフ</string>
+    <string name="headlight_state_low">ライト: 弱</string>
+    <string name="headlight_state_medium">ライト: 中</string>
+    <string name="headlight_state_high">ライト: 強</string>
+    <string name="headlight_state_unknown">ライト: ?</string>
 </resources>

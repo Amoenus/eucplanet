@@ -2240,4 +2240,22 @@
     <string name="recording_delete_trip_body_archive">Deze rit van de telefoon verwijderen? De back-upkopie gaat naar een archiefmap.</string>
     <string name="backup_status_pending">Back-up bezig…</string>
     <string name="backup_status_failed">Back-up mislukt, tik om opnieuw te proberen</string>
+    <string name="aeon_intro">Experimentele bediening. Alleen bij stilstand.</string>
+    <string name="aeon_sound">Menuvolume. Effect op alarmen is niet getest.</string>
+    <string name="aeon_brightness">Schermhelderheid</string>
+    <string name="aeon_key_tone">Menugeluiden</string>
+    <string name="aeon_readback">Teruglezing (alleen lezen)</string>
+    <string name="aeon_pending">Wachten op teruglezing</string>
+    <string name="aeon_match">Waarde komt overeen. Controleer het wiel.</string>
+    <string name="aeon_unconfirmed">Niet bevestigd. Controleer het wiel.</string>
+    <string name="aeon_not_sent">Niet verzonden. Verbind opnieuw bij stilstand, zonder opladen.</string>
+    <string name="aeon_confirm">%1$s instellen op %2$d (was %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: alfaondersteuning. Tik om problemen te melden.</string>
+    <string name="aeon_alpha_body">Ondersteuning voor NOSFET Aeon is actief in ontwikkeling. Sommige bedieningsfuncties en telemetrie zijn nog niet geverifieerd. Gebruik voorzichtig en meld problemen.</string>
+    <string name="headlight_state_off">Licht: uit</string>
+    <string name="headlight_state_low">Licht: laag</string>
+    <string name="headlight_state_medium">Licht: midden</string>
+    <string name="headlight_state_high">Licht: hoog</string>
+    <string name="headlight_state_unknown">Licht: ?</string>
 </resources>

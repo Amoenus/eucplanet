@@ -37,14 +37,24 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     // default is used. BleConnectionManager re-reads `brand` on each
     // ModelName decode, so the change propagates without a reconnect.
     override val brand: String get() = detectedModel?.brandOverride ?: familyDisplayName
-    override val capabilities = WheelCapabilities.VETERAN
+    override val capabilities: WheelCapabilities get() = modelProtocol.capabilities
 
     @Volatile private var detectedModel: VeteranModel? = null
 
-    /** Model policy is selected lazily so telemetry-driven mVer detection and
-     * name-driven detection use the same path without duplicated state. */
+    @Volatile private var modelProtocol: VeteranModelProtocol = VeteranModelProtocols.create(null)
+
+    /** Name and telemetry identification share one model lifecycle boundary. */
+    private fun selectModel(model: VeteranModel?) {
+        if (model == detectedModel) return
+        modelProtocol.reset()
+        pendingLockFrame = null
+        modelProtocol = VeteranModelProtocols.create(model)
+        detectedModel = model
+        emittedModel = false
+    }
+
     private val controlProfile: VeteranControlProfile
-        get() = VeteranControlProfiles.forModel(detectedModel)
+        get() = modelProtocol.controls
 
     override val nominalPackVoltage: Int? get() = detectedModel?.nominalVoltage
 
@@ -53,7 +63,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override fun bleProfile(): BleProfile = BleProfile.HM10
 
     override fun notifyConnectingTo(deviceName: String?): DecodeResult.ModelName? {
-        detectedModel = deviceName?.let { VeteranModel.fromReportedName(it) }
+        selectModel(deviceName?.let { VeteranModel.fromReportedName(it) })
         return null
     }
 
@@ -78,7 +88,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override fun hornFollowup(): ByteArray? = controlProfile.hornFollowup()
 
     /**
-     * Light state is never echoed in Veteran realtime frames (per
+     * Most supported models have no decoded light readback (per
      * docs/protocols/veteran.md §6: "Light state has no readback.
      * Track it locally after each write."). We cache the last
      * commanded state here and stamp it onto every outgoing telemetry
@@ -88,8 +98,12 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
      * — which is exactly the bug the LK19486 rider hit: first toggle
      * sent SetLightON, parser-default false overwrote it ~200 ms
      * later, next toggle re-sent SetLightON instead of SetLightOFF.
+     * Aeon is an exception: verified page-1 readback updates this cache and
+     * separately preserves the wheel's multi-level state.
      */
     @Volatile private var lastLightOn: Boolean = false
+    override fun buildSettingChange(change: com.eried.eucplanet.data.model.WheelSettingChange): List<ByteArray>? =
+        modelProtocol.buildSettingChange(change)
 
     // Last Oryx BMS state-of-charge read from a page-2 sub-frame (byte 50).
     // The wheel only sends page 2 ~1 frame in 9, so we cache it and stamp it
@@ -123,15 +137,15 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     // — the same flow P6 already uses for its two-packet flash-commit.
     override fun setMaxSpeed(tiltbackKmh: Float, alarmKmh: Float): ByteArray? = null
 
-    override fun setMaxSpeedCommit(tiltbackKmh: Float): ByteArray =
-        VeteranCommands.setTiltbackSpeed(tiltbackKmh.toInt())
+    override fun setMaxSpeedCommit(tiltbackKmh: Float): ByteArray? =
+        controlProfile.setTiltbackSpeed(tiltbackKmh.toInt())
 
-    override fun setAlarmSpeedCommit(alarmKmh: Float): ByteArray =
-        VeteranCommands.setAlarmSpeed(alarmKmh.toInt())
+    override fun setAlarmSpeedCommit(alarmKmh: Float): ByteArray? =
+        controlProfile.setAlarmSpeed(alarmKmh.toInt())
 
     // No volume, no DRL on this family.
-    override fun setVolume(percent: Int): ByteArray? = null
-    override fun setDRL(on: Boolean): ByteArray? = null
+    override fun setVolume(percent: Int): ByteArray? = controlProfile.setVolume(percent)
+    override fun setDRL(on: Boolean): ByteArray? = controlProfile.setDRL(on)
     // Software lock decoded from a Lynx S btsnoop, June 2026 (see
     // VeteranCommands.setLock). 25-byte LdAp vendor frame split across TWO
     // ATT writes because Lynx-class firmware doesn't negotiate an MTU big
@@ -151,8 +165,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     // setLock+setLockFollowup pairs so the cache is safe.
     @Volatile private var pendingLockFrame: ByteArray? = null
 
-    override fun setLock(locked: Boolean): ByteArray {
-        val full = VeteranCommands.setLock(locked)
+    override fun setLock(locked: Boolean): ByteArray? {
+        pendingLockFrame = null
+        val full = controlProfile.setLock(locked) ?: return null
         pendingLockFrame = full
         return full.copyOfRange(0, VeteranCommands.LOCK_FIRST_WRITE_SIZE)
     }
@@ -168,7 +183,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
 
     // CLEARMETER zeroes offset 8..11 (trip) on the next frame; see
     // VeteranCommands.resetTrip and spec section 6.
-    override fun resetTripMeter(): ByteArray = VeteranCommands.resetTrip()
+    override fun resetTripMeter(): ByteArray? = controlProfile.resetTrip()
 
     override fun requestAuthKey(): ByteArray? = null
     override fun verifyAuth(encryptedKey: ByteArray): ByteArray? = null
@@ -181,6 +196,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
      */
     override fun inspectMessageTypes(): List<String> =
         listOf("Veteran realtime")
+
+    override fun diagnosticCatalogs(text: (Int) -> String): List<com.eried.eucplanet.diagnostics.DiagnosticCatalog> =
+        super.diagnosticCatalogs(text) + VeteranModelProtocols.additionalCatalogs(text)
 
     /**
      * Per-wheel diagnostic commands surfaced in the Wheel Diagnostics dialog.
@@ -249,7 +267,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
             // frame. Generic BLE names cannot select model-specific controls;
             // mVer is authoritative once the first complete frame arrives.
             val frameModel = VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes))
-            if (frameModel != null) detectedModel = frameModel
+            if (frameModel != null) selectModel(frameModel)
+            val protocol = modelProtocol
+            protocol.acceptFrame(f.bytes)?.let { lastLightOn = it }
             // The Veteran wheel cycles through four frame layouts identified by
             // the byte right after the magic: 0x49 / 0x53 / 0x47 carry standard
             // telemetry at the offsets parseTelemetry knows about; 0x5f is the
@@ -279,13 +299,16 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
                 }
                 val battery = if (lastOryxBatterySoc in 0..100) lastOryxBatterySoc
                               else telem.batteryPercent
-                telem.copy(lightOn = lastLightOn, batteryPercent = battery)
+                protocol.decorateTelemetry(telem.copy(
+                    lightOn = lastLightOn,
+                    batteryPercent = battery,
+                ))
             } else null
             // Log the DECODED values (not just raw bytes) per frame so a
             // service-mode capture shows the speed/battery timeline directly -
             // i.e. whether telemetry updates smoothly or in random bursts.
             DiagnosticsLogger.note(
-                "Veteran realtime spd=${emitted?.let { "%.1f".format(it.speed) } ?: "-"} " +
+                "${protocol.telemetryTracePrefix} spd=${emitted?.let { "%.1f".format(it.speed) } ?: "-"} " +
                     "bat=${emitted?.batteryPercent ?: "-"} pg=${VeteranParser.pageId(f.bytes)} " +
                     "len=${f.bytes.size} body=${f.bytes.joinToString(" ") { "%02x".format(it) }}"
             )
@@ -333,6 +356,8 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
 
     override fun onDisconnect() {
         parser.reset()
+        modelProtocol.reset()
+        modelProtocol = VeteranModelProtocols.create(null)
         detectedModel = null
         lastOryxBatterySoc = -1
         emittedModel = false
@@ -340,5 +365,6 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
         // most reliable mental model after a reconnect is "light is off until
         // I press the button again". Reset the cache to match.
         lastLightOn = false
+        pendingLockFrame = null
     }
 }

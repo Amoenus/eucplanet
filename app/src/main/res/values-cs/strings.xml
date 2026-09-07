@@ -2041,4 +2041,22 @@
     <string name="recording_delete_trip_body_archive">Smazat tuto jízdu z telefonu? Kopie v záloze se přesune do složky archive.</string>
     <string name="backup_status_pending">Zálohování…</string>
     <string name="backup_status_failed">Záloha selhala, klepnutím to zkuste znovu</string>
+    <string name="aeon_intro">Experimentální ovládání. Pouze při stojícím kole.</string>
+    <string name="aeon_sound">Hlasitost nabídky. Vliv na alarmy není ověřen.</string>
+    <string name="aeon_brightness">Jas displeje</string>
+    <string name="aeon_key_tone">Zvuky nabídky</string>
+    <string name="aeon_readback">Zpětné čtení (jen čtení)</string>
+    <string name="aeon_pending">Čekání na zpětné čtení</string>
+    <string name="aeon_match">Hodnota souhlasí. Zkontrolujte kolo.</string>
+    <string name="aeon_unconfirmed">Nepotvrzeno. Zkontrolujte kolo.</string>
+    <string name="aeon_not_sent">Neodesláno. Připojte znovu stojící kolo mimo nabíjení.</string>
+    <string name="aeon_confirm">Použít %1$s: %2$d (původně %3$d)?</string>
+    <string-array name="aeon_field_names" translatable="false"><item>MD (%)</item><item>TLT (km/h)</item><item>PWT (%)</item><item>BRT (%)</item><item>CAL (raw)</item><item>TRM (raw)</item><item>UNT (0=km/h, 1=mph)</item><item>VtA (0.1%)</item><item>LowVolMode (raw)</item><item>HighSpeedMode (raw)</item><item>SND (%)</item><item>MxV (raw, V=145+raw/10)</item><item>BrakePressureAlarm (raw)</item></string-array>
+    <string name="aeon_alpha_banner">NOSFET Aeon: podpora alfa. Klepnutím nahlásíte problém.</string>
+    <string name="aeon_alpha_body">Podpora NOSFET Aeon se aktivně vyvíjí. Některé ovládací prvky a telemetrie ještě nejsou ověřené. Používejte opatrně a hlaste problémy.</string>
+    <string name="headlight_state_off">Světlo: vyp.</string>
+    <string name="headlight_state_low">Světlo: nízké</string>
+    <string name="headlight_state_medium">Světlo: střední</string>
+    <string name="headlight_state_high">Světlo: vysoké</string>
+    <string name="headlight_state_unknown">Světlo: ?</string>
 </resources>

@@ -291,6 +291,7 @@ fun DashboardScreen(
     val lockBusy by viewModel.lockBusy.collectAsState()
     val autoLockEnabled by viewModel.autoLockEnabled.collectAsState()
     val lightBusy by viewModel.lightBusy.collectAsState()
+    val headlightButton = rememberHeadlightButtonState(wheelData, connectionState == ConnectionState.CONNECTED)
     val recording by viewModel.recording.collectAsState()
     val gpsExtra by viewModel.gpsExtraSpeed.collectAsState()
     val externalGpsSpeed = gpsExtra?.first
@@ -2253,8 +2254,8 @@ fun DashboardScreen(
                             "LIGHT_TOGGLE" -> ActionTile(
                                 modifier = Modifier.weight(1f),
                                 icon = Icons.Default.FlashlightOn,
-                                label = stringResource(R.string.action_light),
-                                active = wheelData.lightOn,
+                                label = stringResource(headlightButton.labelRes),
+                                active = headlightButton.active,
                                 activeColor = if (useAccent) primary else MaterialTheme.appColors.gaugeWarn,
                                 enabled = connectionState == ConnectionState.CONNECTED && !lightBusy,
                                 onClick = { viewModel.onLightToggle() },

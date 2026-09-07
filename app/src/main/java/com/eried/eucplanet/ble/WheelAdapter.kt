@@ -115,6 +115,8 @@ data class BleProfile(
  * without auth return null for both, and the repository's lock path handles that.
  */
 interface WheelAdapter {
+    /** Optional model-specific settings. Default rejects without affecting other families. */
+    fun buildSettingChange(change: com.eried.eucplanet.data.model.WheelSettingChange): List<ByteArray>? = null
     val familyId: String
     val capabilities: WheelCapabilities
 
@@ -286,6 +288,12 @@ interface WheelAdapter {
      * the dialog; adapters override when they have hypotheses to test.
      */
     fun getDiagnosticCommands(): List<com.eried.eucplanet.diagnostics.DiagnosticCommand> = emptyList()
+
+    /** A shared wire family can expose separate model catalogues without another connection/parser. */
+    fun diagnosticCatalogs(text: (Int) -> String): List<com.eried.eucplanet.diagnostics.DiagnosticCatalog> =
+        listOf(com.eried.eucplanet.diagnostics.DiagnosticCatalog(
+            familyDisplayName, getDiagnosticCommands(), inspectMessageTypes()
+        ))
 
     /**
      * Friendly name for the wheel family. Used in Service Mode's wheel-family

@@ -54,6 +54,7 @@ fun ExperimentalBanner(
     // Only show for wheels other than the verified V14 family. A null name
     // (disconnected) hides the banner, there's nothing to report yet.
     if (!isPreliminaryWheel(detectedWheelName)) return
+    val alpha = isAlphaWheel(detectedWheelName)
 
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
@@ -82,7 +83,7 @@ fun ExperimentalBanner(
             modifier = Modifier.size(18.dp)
         )
         Text(
-            text = stringResource(R.string.experimental_banner),
+            text = stringResource(if (alpha) R.string.aeon_alpha_banner else R.string.experimental_banner),
             style = MaterialTheme.typography.bodySmall,
             color = bannerAccent
         )
@@ -92,7 +93,7 @@ fun ExperimentalBanner(
         AlertDialog(
             onDismissRequest = { showDialog = false },
             title = { Text(stringResource(R.string.experimental_dialog_title)) },
-            text = { Text(stringResource(R.string.experimental_dialog_body)) },
+            text = { Text(stringResource(if (alpha) R.string.aeon_alpha_body else R.string.experimental_dialog_body)) },
             confirmButton = {
                 TextButton(onClick = {
                     state.explainerSeen = true
@@ -194,6 +195,9 @@ private val VERIFIED_WHEEL_TOKENS = listOf(
  * trips the banner so the user knows to file a wheel report if values look off.
  * Disconnected (null name) → hidden too.
  */
+internal fun isAlphaWheel(name: String?): Boolean =
+    name?.trim().equals("NOSFET Aeon", ignoreCase = true)
+
 private fun isPreliminaryWheel(name: String?): Boolean {
     if (name.isNullOrBlank()) return false
     return VERIFIED_WHEEL_TOKENS.none { name.contains(it, ignoreCase = true) }

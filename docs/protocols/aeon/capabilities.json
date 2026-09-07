@@ -1,0 +1,2534 @@
+{
+  "schema_version": 1,
+  "implementation": {
+    "headlight_dashboard": "Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.",
+    "model_component": "ble/nosfet/NosfetAeonProtocol.kt owns Aeon readbacks, session identity, capabilities and typed settings dispatch; composed behind VeteranModelProtocol.",
+    "shared_core": "VeteranAdapter retains one parser, model identification, common telemetry/BMS and BLE-family API; no second BLE adapter or duplicated parser.",
+    "diagnostics": "OEM picker uses NOSFET; Inspector sub-entry is Aeon. Model-selected NOTE prefix NOSFET Aeon distinguishes current Aeon traces from Veteran realtime. Shared Inspector accepts metadata before len=. No extra logging or BLE traffic. OEM grouping does not prove other NOSFET models support these commands.",
+    "lock_policy": "Unavailable for identified Aeon: hasLock=false and setLock returns null. User-requested conservative app policy, not proof that firmware cannot lock.",
+    "alpha_build": "assembleAlpha produces com.eried.eucplanet.alpha, EUC Planet Alpha, version suffix -alpha. Stable/debug IDs and names unchanged; separate local data and grants. Stable Wear companion is not an Alpha companion."
+  },
+  "wheel": {
+    "model": "NOSFET Aeon",
+    "mVer": 44,
+    "observed_raw_version": 44250,
+    "series_cells": 36,
+    "voltage_class": 151.2
+  },
+  "authority": "Canonical combined ledger. Update evidence, implementation status and limitations here; previous timestamped reports remain historical.",
+  "evidence_policy": [
+    "Verified on Aeon",
+    "Verified from capture",
+    "Confirmed in NOSFET APK",
+    "Confirmed in EUC Planet source",
+    "Confirmed in NOSFET manual",
+    "Candidate / hypothesis"
+  ],
+  "apk": {
+    "version": "1.1.3",
+    "sha256": "f4881479f3c40e2f1d54a8909223af79f5cb18eaf96d9a94f4116ce10e4a5099"
+  },
+  "manual": {
+    "version": "1.5",
+    "sha256": "65C2DC1F1AA6A0AC67DDCCD7EB01BAEC6AB59FF389C801E759189398DE80573C",
+    "url": "https://drive.google.com/file/d/1G4YurMyDh_U9TtAMC8lVbkylg8IcsHr5/view"
+  },
+  "commands": [
+    {
+      "class": "BrakeSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/BrakeSettingActivity.java:42",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "30",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        30,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "brake-pressure alarm",
+      "id": "apk-01",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 30,
+      "prefix_hex_template": "4C 64 41 70 1E 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        25
+      ],
+      "app_transform": "Progress0..35 -> raw90..125 percent",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "APK name BrakePressureAlarm; do not relabel as rear brake-light mode or torque alarm without evidence. Safety-relevant semantics unresolved.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "BrakePressureAlarm",
+      "apk_raw_range": [
+        90,
+        125
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "GyroscopeSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/GyroscopeSettingActivity.java:47",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "21",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "1"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        21,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        1
+      ],
+      "family": "LdAp",
+      "constant": true,
+      "semantic": "gyroscope calibration",
+      "id": "apk-02",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 21,
+      "prefix_hex_template": "4C 64 41 70 15 01 02 80 80 80 80 80 80 80 80 80 01",
+      "variable_offsets": [],
+      "app_transform": "Same fixed action1 on start and end; UI waits1200ms before allowing end",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "Not a Boolean setCalibration flag. APK checks speed>0 and uses local timer/state, not a proven successful calibration acknowledgement. Inventory only.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 64 41 70 15 01 02 80 80 80 80 80 80 80 80 80 01 ab 8c 09 e5",
+      "illustrative_20_byte_chunks": [
+        "4c 64 41 70 15 01 02 80 80 80 80 80 80 80 80 80 01 ab 8c 09",
+        "e5"
+      ],
+      "euc_source": null,
+      "readback_field": "Gyro",
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "KeyToneSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/KeyToneSettingActivity.java:42",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "28",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        28,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "key-tone volume",
+      "id": "apk-03",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 28,
+      "prefix_hex_template": "4C 64 41 70 1C 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        23
+      ],
+      "app_transform": "Progress 0..100 -> raw unchanged",
+      "euc_mapping": "Generic setVolume remains unsupported; first pass adds typed AeonSettingChange(KEY_TONE) and an explicit menu-key sound editor.",
+      "qualification": "SND/menu-key beeper level, not all alarms. Page8 byte63 verified for0->2->0. Effect on remote acknowledgement beeps unverified; do not silently equate with global volume.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "KeyTone",
+      "apk_raw_range": [
+        0,
+        100
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+    },
+    {
+      "class": "MaxChargePowerSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/MaxChargePowerSettingActivity.java:43",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "29",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        29,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "maximum charge voltage",
+      "id": "apk-04",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 29,
+      "prefix_hex_template": "4C 64 41 70 1D 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        24
+      ],
+      "app_transform": "Progress/raw 0..70; display145.0 + raw/10 V (145.0..152.0)",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "Safety-critical: inventory only. Fixed APK voltage range is not authority to apply152V to a151.2V wheel. Page8 byte64.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "MaxChargeVol",
+      "apk_raw_range": [
+        0,
+        70
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "PedalSoftnessSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/PedalSoftnessSettingActivity.java:51",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "15",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        15,
+        1,
+        2,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "pedal hardness",
+      "id": "apk-05",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 15,
+      "prefix_hex_template": "4C 64 41 70 0F 01 02 80 80 80 {by}",
+      "variable_offsets": [
+        10
+      ],
+      "app_transform": "UI 0..100, raw u8 unchanged",
+      "euc_mapping": "Internal setRideMode(scalar) has matching LdAp layout/range; no generic API",
+      "qualification": "Rename or expose as continuous pedal hardness, not a generic rookie/intermediate/strict riding enum. APK getter PedalHardness; page8 byte50.",
+      "live_write_tested_this_turn": false,
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:204",
+      "readback_field": "PedalHardness",
+      "apk_raw_range": [
+        0,
+        100
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "ScreenBacklightSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/ScreenBacklightSettingActivity.java:42",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "20",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        20,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "display brightness",
+      "id": "apk-06",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 20,
+      "prefix_hex_template": "4C 64 41 70 14 01 02 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        15
+      ],
+      "app_transform": "Progress 0..100 -> raw unchanged; displayed text rounds DOWN to multiple of 5",
+      "euc_mapping": "First pass adds typed AeonSettingChange(DISPLAY_BRIGHTNESS) and an explicit display-brightness editor. Not headlight mode or DRL.",
+      "qualification": "Readback page8 byte55 verified on Aeon at 20/25/30; display dimmed at20 and restored30. APK writes unrounded progress despite rounded display text.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "ScreenBacklightRate",
+      "apk_raw_range": [
+        0,
+        100
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+    },
+    {
+      "class": "StopPowerSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/StopPowerSettingActivity.java:42",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "18",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        18,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "PWM threshold",
+      "id": "apk-07",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 18,
+      "prefix_hex_template": "4C 64 41 70 12 01 02 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        13
+      ],
+      "app_transform": "Progress 0..70 -> raw 30..100 percent",
+      "euc_mapping": "Internal setPwmPercent; matching bytes within 30..100; EUC allows 0..100",
+      "qualification": "Treat as PWM-triggered tiltback setting, not universal alarm volume or fixed audible PWM warning. Do not probe safety boundary values.",
+      "live_write_tested_this_turn": false,
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:214",
+      "readback_field": "StopPowerRate",
+      "apk_raw_range": [
+        30,
+        100
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "StopSpeedSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/StopSpeedSettingActivity.java:53",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "17",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        17,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "tilt-back speed",
+      "id": "apk-08",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 17,
+      "prefix_hex_template": "4C 64 41 70 11 01 02 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        12
+      ],
+      "app_transform": "Progress 0..110 -> raw km/h 10..120",
+      "euc_mapping": "setMaxSpeedCommit -> setTiltbackSpeed; matching frame for common range 10..99",
+      "qualification": "EUC clamps 1..99; APK permits 10..120. An unsigned byte can encode 100+, contrary to current EUC comment. This does not authorize expanding safe firmware limits.",
+      "live_write_tested_this_turn": false,
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:162",
+      "readback_field": "StopSpeed",
+      "apk_raw_range": [
+        10,
+        120
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "VolLightSettingActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/control/VolLightSettingActivity.java:43",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "24",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        24,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "voltage adjustment",
+      "id": "apk-09",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 24,
+      "prefix_hex_template": "4C 64 41 70 18 01 02 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        19
+      ],
+      "app_transform": "Progress0..30 -> signed raw -15..15; displayed -1.5..+1.5 percent",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "VolLight class name does NOT mean light or volume. Signed page8 byte59. Safety-critical voltage calibration: no testing.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "Vol",
+      "apk_raw_range": [
+        -15,
+        15
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "ControlActivity",
+      "method": "sendHighSpeedCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/ControlActivity.java:252",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "26",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        26,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "high-speed mode",
+      "id": "apk-10",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 26,
+      "prefix_hex_template": "4C 64 41 70 1A 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        21
+      ],
+      "app_transform": "Boolean raw 0/1",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "APK HighSpeedMode name only; exact riding effects unresolved. Do not equate to alarm disable.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "HighSpeedMode",
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "ControlActivity",
+      "method": "sendLowVolCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/ControlActivity.java:256",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "25",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        25,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "low-battery mode",
+      "id": "apk-11",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 25,
+      "prefix_hex_template": "4C 64 41 70 19 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        20
+      ],
+      "app_transform": "Boolean raw 0/1",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "APK calls LowVolMode; behavior beyond Boolean mode is not established. Do not infer cutoff or battery-protection consequences.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "LowVolMode",
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "ControlActivity",
+      "method": "sendTransportCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/ControlActivity.java:260",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "22",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        22,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "transport mode",
+      "id": "apk-12",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 22,
+      "prefix_hex_template": "4C 64 41 70 16 01 02 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        17
+      ],
+      "app_transform": "Boolean raw 0/1",
+      "euc_mapping": "No generic control or Veteran builder",
+      "qualification": "Live switch implementation is ControlActivity.sendTransportCmd; TransportModeSettingActivity itself is an empty shell. Readback page8 byte57, unsupported128. Recovery/safety procedure needed before writes.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "TransportMode",
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "ControlActivity",
+      "method": "sendUnitCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/ControlActivity.java:264",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "23",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        23,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "unit selection",
+      "id": "apk-13",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 23,
+      "prefix_hex_template": "4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        18
+      ],
+      "app_transform": "0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending",
+      "euc_mapping": "First pass adds AeonSettingChange(UNITS) through generic buildSettingChange; changes wheel display units, not stored app units.",
+      "qualification": "UNT untouched by user. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "Unit",
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+    },
+    {
+      "class": "SetAlarmSpeedActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/SetAlarmSpeedActivity.java:42",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "17",
+        "1",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        17,
+        1,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LkAp",
+      "constant": false,
+      "semantic": "alarm speed",
+      "id": "apk-14",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 17,
+      "prefix_hex_template": "4C 6B 41 70 11 01 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        12
+      ],
+      "app_transform": "Progress 0..110 -> raw km/h 10..120",
+      "euc_mapping": "setAlarmSpeedCommit -> setAlarmSpeed; matching frame for common range 10..99",
+      "qualification": "Reported Aeon failure unresolved. Matching source bytes do not prove the app invokes the commit or firmware accepts it. DangerSpeed readback is base bytes24..25 /10, not page8 tiltback byte52.",
+      "live_write_tested_this_turn": false,
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:171",
+      "readback_field": null,
+      "apk_raw_range": [
+        10,
+        120
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "SetAngelActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/SetAngelActivity.java:41",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "16",
+        "1",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        16,
+        1,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LkAp",
+      "constant": false,
+      "semantic": "vertical angle",
+      "id": "apk-15",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 16,
+      "prefix_hex_template": "4C 6B 41 70 10 01 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        11
+      ],
+      "app_transform": "Progress 0..160 -> signed raw -80..80; units tenths of degree (-8..8 degrees)",
+      "euc_mapping": "Internal setAngleAdjustmentDeci; matching bytes inside APK range; EUC allows -128..127",
+      "qualification": "Fore/aft pedal-angle setting; not CAL gyro calibration, acceleration-assist percentage, or recenter timing.",
+      "live_write_tested_this_turn": false,
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:194",
+      "readback_field": null,
+      "apk_raw_range": [
+        -80,
+        80
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "SetFallProtectionAngleActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/SetFallProtectionAngleActivity.java:36",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "22",
+        "1",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        22,
+        1,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LkAp",
+      "constant": false,
+      "semantic": "side-tilt/fall angle",
+      "id": "apk-16",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 22,
+      "prefix_hex_template": "4C 6B 41 70 16 01 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        17
+      ],
+      "app_transform": "Progress0..40 -> raw35..75 degrees",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "Safety-critical lateral cutoff. Readback fallProtectionAngle on page2, not generic pedal angle. No live test.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": null,
+      "apk_raw_range": [
+        35,
+        75
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "SetRideModeActivity",
+      "method": "sendCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/SetRideModeActivity.java:79",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "12",
+        "1",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        12,
+        1,
+        128,
+        "by"
+      ],
+      "family": "LkAp",
+      "constant": false,
+      "semantic": "continuous ride mode",
+      "id": "apk-17",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 12,
+      "prefix_hex_template": "4C 6B 41 70 0C 01 80 {by}",
+      "variable_offsets": [
+        7
+      ],
+      "app_transform": "UI progress 0..100; command = progress+10 (10..110). UI readback initialization = rideMode-100.",
+      "euc_mapping": "No equivalent generic API; do not confuse with VeteranCommands.setRideMode",
+      "qualification": "Legacy continuous mode in SetRideModeActivity, gated by downloaded continuousSoftHardSet. ControlActivity displays rideMode-100. New pedal-hardness path takes precedence when its readback is supported.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": null,
+      "apk_raw_range": [
+        10,
+        110
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "UnitSwitchActivity",
+      "method": "sendUnitCmd",
+      "source": "APK-CFR/com/laoniao/leaperkim/setting/UnitSwitchActivity.java:34",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "23",
+        "1",
+        "2",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "by"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        23,
+        1,
+        2,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        "by"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "unit selection",
+      "id": "apk-18",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 23,
+      "prefix_hex_template": "4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by}",
+      "variable_offsets": [
+        18
+      ],
+      "app_transform": "0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending",
+      "euc_mapping": "First pass adds AeonSettingChange(UNITS) through generic buildSettingChange; changes wheel display units, not stored app units.",
+      "qualification": "UNT untouched by user. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": "Unit",
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:106",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "14",
+        "0",
+        "-128",
+        "-128",
+        "-128",
+        "1"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        14,
+        0,
+        128,
+        128,
+        128,
+        1
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "horn",
+      "id": "apk-19",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 14,
+      "prefix_hex_template": "4C 6B 41 70 0E 00 80 80 80 01",
+      "variable_offsets": [],
+      "app_transform": "Fixed action value 1",
+      "euc_mapping": "horn(); AeonControlProfile sends LkAp only, no companion",
+      "qualification": "Official binary frame matches current Aeon builder. LkAp is a vendor frame family, not a Bluetooth-standard horn opcode.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0e 00 80 80 80 01 ca 87 e6 6f",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0e 00 80 80 80 01 ca 87 e6 6f"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:29",
+      "euc_profile_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/nosfet/AeonControlProfile.kt:10",
+      "readback_field": null,
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:107",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "13",
+        "1",
+        "-128",
+        "-128",
+        "1"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        13,
+        1,
+        128,
+        128,
+        1
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "headlight",
+      "id": "apk-20",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 13,
+      "prefix_hex_template": "4C 6B 41 70 0D 01 80 80 01",
+      "variable_offsets": [],
+      "app_transform": "0 off / 1 on only",
+      "euc_mapping": "setLight(Boolean); Aeon profile currently sends literal ASCII, no companion",
+      "qualification": "APK binary-mode light is single LkAp. Original generic pair beeped; later PC ASCII test was silent. Earlier ASCII-beta beep report remains a differing observation, not proof of universal behavior. No multilevel write found.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0d 01 80 80 01 57 ed 3b d5",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0d 01 80 80 01 57 ed 3b d5"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:62",
+      "euc_profile_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/nosfet/AeonControlProfile.kt:10",
+      "readback_field": null,
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:108",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "13",
+        "1",
+        "-128",
+        "-128",
+        "0"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        13,
+        1,
+        128,
+        128,
+        0
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "headlight",
+      "id": "apk-21",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 13,
+      "prefix_hex_template": "4C 6B 41 70 0D 01 80 80 00",
+      "variable_offsets": [],
+      "app_transform": "0 off / 1 on only",
+      "euc_mapping": "setLight(Boolean); Aeon profile currently sends literal ASCII, no companion",
+      "qualification": "APK binary-mode light is single LkAp. Original generic pair beeped; later PC ASCII test was silent. Earlier ASCII-beta beep report remains a differing observation, not proof of universal behavior. No multilevel write found.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0d 01 80 80 00 20 ea 0b 43",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0d 01 80 80 00 20 ea 0b 43"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:62",
+      "euc_profile_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/nosfet/AeonControlProfile.kt:10",
+      "readback_field": null,
+      "apk_raw_range": [
+        0,
+        1
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:109",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "11",
+        "0",
+        "1"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        11,
+        0,
+        1
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "trip reset",
+      "id": "apk-22",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 11,
+      "prefix_hex_template": "4C 6B 41 70 0B 00 01",
+      "variable_offsets": [],
+      "app_transform": "Fixed action 1",
+      "euc_mapping": "resetTripMeter() -> ASCII CLEARMETER",
+      "qualification": "Live APK symbolic call; binary mode translates to LkAp. Data-losing operation; not physically tested here.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0b 00 01 09 0a 31 f8",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0b 00 01 09 0a 31 f8"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:102",
+      "readback_field": null,
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:110",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "12",
+        "1",
+        "-128",
+        "1"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        12,
+        1,
+        128,
+        1
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "discrete ride mode",
+      "id": "apk-23",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 12,
+      "prefix_hex_template": "4C 6B 41 70 0C 01 80 01",
+      "variable_offsets": [],
+      "app_transform": "1 soft / 2 medium / 3 hard",
+      "euc_mapping": "ASCII SETs / SETm / SETh diagnostic builders",
+      "qualification": "Old mode path, not equivalent to continuous pedal hardness. Visibility depends on telemetry and downloaded continuousSoftHardSet metadata.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0c 01 80 01 a8 e7 54 80",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0c 01 80 01 a8 e7 54 80"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:96",
+      "readback_field": null,
+      "apk_raw_range": [
+        1,
+        3
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:111",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "12",
+        "1",
+        "-128",
+        "2"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        12,
+        1,
+        128,
+        2
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "discrete ride mode",
+      "id": "apk-24",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 12,
+      "prefix_hex_template": "4C 6B 41 70 0C 01 80 02",
+      "variable_offsets": [],
+      "app_transform": "1 soft / 2 medium / 3 hard",
+      "euc_mapping": "ASCII SETs / SETm / SETh diagnostic builders",
+      "qualification": "Old mode path, not equivalent to continuous pedal hardness. Visibility depends on telemetry and downloaded continuousSoftHardSet metadata.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0c 01 80 02 31 ee 05 3a",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0c 01 80 02 31 ee 05 3a"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:96",
+      "readback_field": null,
+      "apk_raw_range": [
+        1,
+        3
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:112",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "12",
+        "1",
+        "-128",
+        "3"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        12,
+        1,
+        128,
+        3
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "discrete ride mode",
+      "id": "apk-25",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 12,
+      "prefix_hex_template": "4C 6B 41 70 0C 01 80 03",
+      "variable_offsets": [],
+      "app_transform": "1 soft / 2 medium / 3 hard",
+      "euc_mapping": "ASCII SETs / SETm / SETh diagnostic builders",
+      "qualification": "Old mode path, not equivalent to continuous pedal hardness. Visibility depends on telemetry and downloaded continuousSoftHardSet metadata.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 0c 01 80 03 46 e9 35 ac",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 0c 01 80 03 46 e9 35 ac"
+      ],
+      "euc_source": "EUC/app/src/main/java/com/eried/eucplanet/ble/VeteranCommands.kt:96",
+      "readback_field": null,
+      "apk_raw_range": [
+        1,
+        3
+      ],
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:113",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "20",
+        "1",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "1"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        20,
+        1,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        1
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "read log",
+      "id": "apk-26",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 20,
+      "prefix_hex_template": "4C 6B 41 70 14 01 80 80 80 80 80 80 80 80 80 01",
+      "variable_offsets": [],
+      "app_transform": "Fixed request1",
+      "euc_mapping": "No equivalent normal control API",
+      "qualification": "Used by LogUploadActivity; diagnostic read request rather than a rider setting. Log extraction appears on pages0/4 and0x20/0x21. Do not auto-upload logs.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 14 01 80 80 80 80 80 80 80 80 80 01 e5 3c 29 70",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 14 01 80 80 80 80 80 80 80 80 80 01 e5 3c 29 70"
+      ],
+      "euc_source": null,
+      "readback_field": null,
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "BtManager",
+      "method": "<initializer>",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/BtManager.java:114",
+      "tokens": [
+        "76",
+        "107",
+        "65",
+        "112",
+        "22",
+        "1",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "-128",
+        "1",
+        "-128"
+      ],
+      "values": [
+        76,
+        107,
+        65,
+        112,
+        22,
+        1,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        128,
+        1,
+        128
+      ],
+      "family": "LkAp",
+      "constant": true,
+      "semantic": "shutdown after 10 seconds",
+      "id": "apk-27",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 22,
+      "prefix_hex_template": "4C 6B 41 70 16 01 80 80 80 80 80 80 80 80 80 80 01 80",
+      "variable_offsets": [],
+      "app_transform": "Fixed action embedded before final0x80; preserve full bytes",
+      "euc_mapping": "No matching generic API/builder",
+      "qualification": "Homepage guards against speed>0 and charging. Potentially hazardous; inventory only, no live test.",
+      "live_write_tested_this_turn": false,
+      "generated_wire_hex": "4c 6b 41 70 16 01 80 80 80 80 80 80 80 80 80 80 01 80 d9 6e 11 22",
+      "illustrative_20_byte_chunks": [
+        "4c 6b 41 70 16 01 80 80 80 80 80 80 80 80 80 80 01 80 d9 6e",
+        "11 22"
+      ],
+      "euc_source": null,
+      "readback_field": null,
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    },
+    {
+      "class": "Util",
+      "method": "getTimeBytes",
+      "source": "APK-CFR/com/laoniao/leaperkim/utils/Util.java:174",
+      "tokens": [
+        "76",
+        "100",
+        "65",
+        "112",
+        "18",
+        "0",
+        "5",
+        "(byte)(n2 - 2000)",
+        "(byte)(n3 + 1)",
+        "(byte)n4",
+        "(byte)n5",
+        "(byte)n6",
+        "(byte)n7",
+        "(byte)n8"
+      ],
+      "values": [
+        76,
+        100,
+        65,
+        112,
+        18,
+        0,
+        5,
+        "(byte)(n2 - 2000)",
+        "(byte)(n3 + 1)",
+        "(byte)n4",
+        "(byte)n5",
+        "(byte)n6",
+        "(byte)n7",
+        "(byte)n8"
+      ],
+      "family": "LdAp",
+      "constant": false,
+      "semantic": "time synchronization",
+      "id": "apk-28",
+      "confidence": "Confirmed in NOSFET APK",
+      "total_length_including_crc": 18,
+      "prefix_hex_template": "4C 64 41 70 12 00 05 {(byte)(n2 - 2000)} {(byte)(n3 + 1)} {(byte)n4} {(byte)n5} {(byte)n6} {(byte)n7} {(byte)n8}",
+      "variable_offsets": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "app_transform": "year-2000, month1..12, day,hour,minute,second; raw timezone offset in whole hours",
+      "euc_mapping": "No matching Veteran init command; initSequence empty",
+      "qualification": "syncTime sends once after receiving data. Raw timezone offset excludes daylight-saving adjustment and truncates fractional hours; preserve APK behavior as observed code, not a universal clock specification.",
+      "live_write_tested_this_turn": false,
+      "euc_source": null,
+      "readback_field": null,
+      "apk_raw_range": null,
+      "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
+      "first_pass_status": "Existing behavior or documented only; see first_pass"
+    }
+  ],
+  "readbacks": [
+    {
+      "field": "PedalHardness",
+      "absolute_byte_offset": 50,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1508",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:473",
+      "tested_values": [],
+      "captured_raw_values": [
+        80
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "StopSpeed",
+      "absolute_byte_offset": 52,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1549",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:481",
+      "tested_values": [],
+      "captured_raw_values": [
+        40
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "StopPowerRate",
+      "absolute_byte_offset": 53,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1590",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:489",
+      "tested_values": [],
+      "captured_raw_values": [
+        65
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "ScreenBacklightRate",
+      "absolute_byte_offset": 55,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1631",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:497",
+      "tested_values": [
+        20,
+        25,
+        30
+      ],
+      "captured_raw_values": [
+        20,
+        25,
+        30
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "Gyro",
+      "absolute_byte_offset": 56,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1672",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:505",
+      "tested_values": [],
+      "captured_raw_values": [
+        0
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "TransportMode",
+      "absolute_byte_offset": 57,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1717",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:513",
+      "tested_values": [],
+      "captured_raw_values": [
+        0
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "Unit",
+      "absolute_byte_offset": 58,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1762",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:521",
+      "tested_values": [],
+      "captured_raw_values": [
+        0
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "Vol",
+      "absolute_byte_offset": 59,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1834",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "signed i8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:533",
+      "tested_values": [],
+      "captured_raw_values": [
+        0
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "LowVolMode",
+      "absolute_byte_offset": 60,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1871",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:541",
+      "tested_values": [],
+      "captured_raw_values": [
+        128
+      ],
+      "source_based_availability": "Unsupported sentinel in both captures"
+    },
+    {
+      "field": "HighSpeedMode",
+      "absolute_byte_offset": 61,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1916",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:549",
+      "tested_values": [],
+      "captured_raw_values": [
+        128
+      ],
+      "source_based_availability": "Unsupported sentinel in both captures"
+    },
+    {
+      "field": "KeyTone",
+      "absolute_byte_offset": 63,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:1961",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:557",
+      "tested_values": [
+        0,
+        2
+      ],
+      "captured_raw_values": [
+        0,
+        2
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "MaxChargeVol",
+      "absolute_byte_offset": 64,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:2006",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:565",
+      "tested_values": [],
+      "captured_raw_values": [
+        62
+      ],
+      "source_based_availability": "Non-sentinel field present; remote write not tested"
+    },
+    {
+      "field": "BrakePressureAlarm",
+      "absolute_byte_offset": 65,
+      "unsupported_sentinel": "0x80 (-128 on wire, normalized to 128)",
+      "source": "APK-smali/smali/com/laoniao/leaperkim/utils/BtManager.smali:2051",
+      "page": 8,
+      "page_selector_absolute_offset": 46,
+      "encoding": "unsigned u8; sentinel 0x80",
+      "confidence": "Confirmed in NOSFET APK (fresh JADX and smali branch inspected)",
+      "jadx_source": "APK-JADX/BtManager.java:573",
+      "tested_values": [],
+      "captured_raw_values": [
+        145
+      ],
+      "source_based_availability": "Raw145 exceeds APK UI90..125: semantic/encoding discrepancy unresolved; do not expose as plain writable percentage"
+    }
+  ],
+  "gaps": [
+    {
+      "control": "Headlight levels",
+      "apk": "No multilevel write or parsed light-level field found in inspected app code",
+      "euc": "Current uncommitted AeonTelemetryDecoder uses87-byte page1 byte49",
+      "evidence": "Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown."
+    },
+    {
+      "control": "DRL",
+      "apk": "No separate DRL setter found",
+      "euc": "setDRL returns null",
+      "evidence": "Physical off/on/off observed; no confident readback or remote command."
+    },
+    {
+      "control": "Rear-light active mode / LTB startup mode",
+      "apk": "No corresponding setter found",
+      "euc": "No equivalent API",
+      "evidence": "Physical rear cycle observed; startup setting is a separate manual capability. Counter-like byte48 on pages0/4 rejected as mapping."
+    },
+    {
+      "control": "Auto headlight BRT on/off",
+      "apk": "No identified setter",
+      "euc": "No equivalent API",
+      "evidence": "Manual-documented; separate from BRT percentage display brightness."
+    },
+    {
+      "control": "Acceleration assistance ANG percent / recenter ANG TLT",
+      "apk": "No identified matching setter",
+      "euc": "No corresponding API",
+      "evidence": "Manual/panel evidence only; do not substitute ordinary angle or hardness command."
+    },
+    {
+      "control": "Torque ALM on/off and ?br / ?bL / ?Adv",
+      "apk": "No established matches",
+      "euc": "No equivalent typed API",
+      "evidence": "Preserve labels. Do not assume BrakePressureAlarm or HighSpeedMode is the same control."
+    },
+    {
+      "control": "Security lock/unlock",
+      "apk": "Homepage lock callback displays a toast; no equivalent25-byte builder found",
+      "euc": "Unavailable on Aeon: capability false, lock builder returns null, dashboard disabled after model detection. Other Veteran models retain the shared25-byte LdAp command split20+5.",
+      "evidence": "Confirmed EUC code: conservative app policy requested by owner. Firmware lock support remains unresolved, not proven absent. Physical parking/lift/transport are not proven security-lock equivalents."
+    },
+    {
+      "control": "Authentication",
+      "apk": "No matching wheel-control authentication command identified by this inventory",
+      "euc": "requestAuthKey/verifyAuth return null",
+      "evidence": "No evidence that Aeon requires this generic authentication flow."
+    },
+    {
+      "control": "Firmware update / bootloader",
+      "apk": "AT+RINTOPRO, sendBinData and upgrade/recovery paths inventoried in raw transport calls",
+      "euc": "Outside control-profile scope",
+      "evidence": "Dangerous maintenance, not a candidate for live command enumeration. Byte-array inventory does not reconstruct arbitrary firmware payloads."
+    }
+  ],
+  "observations": [
+    {
+      "id": "AEON-LIGHT-LEVELS",
+      "evidence": [
+        "Verified on Aeon",
+        "Verified from capture"
+      ],
+      "fact": "Two panel off/low/medium/high/off cycles map to0/1/2/3/0. Page1 byte49 (87-byte frame); corroborating page8 byte47 (75-byte frame).",
+      "limitation": "Remote multilevel command unknown. Independent pages are not interchangeable authoritative timestamps.",
+      "source": "aeon-pc-capture-20260907-113324.txt and aeon-pc-capture-20260907-123125.txt"
+    },
+    {
+      "id": "AEON-LIGHT-WRITES",
+      "evidence": [
+        "Verified on Aeon",
+        "Verified from capture"
+      ],
+      "fact": "Original LkAp+LdAp light pair toggled with beep. Later PC literal ASCII SetLightON/OFF toggled silently.",
+      "limitation": "Earlier ASCII-beta beep report differs; keep that history. No proof all BLE light commands beep or respect SND.",
+      "source": "Issue12 evidence and user-reported31August PC test, retained in prior control-profile work"
+    },
+    {
+      "id": "AEON-SND",
+      "evidence": [
+        "Verified on Aeon",
+        "Verified from capture",
+        "Confirmed in NOSFET APK"
+      ],
+      "fact": "SND0->2->0 maps to page8 byte63; restored0. APK KeyToneSettingActivity gives exact setter.",
+      "limitation": "Remote setter and effects on BLE acknowledgement beeps untested."
+    },
+    {
+      "id": "AEON-BRT",
+      "evidence": [
+        "Verified on Aeon",
+        "Verified from capture",
+        "Confirmed in NOSFET APK"
+      ],
+      "fact": "BRT30->20 dimmed display. Restored through25 to30 after restart; page8 byte55.",
+      "limitation": "Display brightness, not headlight level or automatic BRT on/off. Remote write untested."
+    },
+    {
+      "id": "AEON-UNT",
+      "evidence": [
+        "Confirmed in NOSFET APK",
+        "Verified from capture"
+      ],
+      "fact": "User explicitly did not change UNT. Page8 byte58 stays0; APK maps0metric/1imperial.",
+      "limitation": "No physically verified units transition or remote write."
+    },
+    {
+      "id": "AEON-REAR-DRL",
+      "evidence": [
+        "Verified on Aeon"
+      ],
+      "fact": "Separate DRL cycle observed. Rear sequence: solidred, blueflash returningred, blinkingred, smoothRGB, off, solidred.",
+      "limitation": "No confirmed readback/write. Pages0/4 byte48 counter rejected as rear-mode mapping. LTB startup default is distinct."
+    },
+    {
+      "id": "AEON-PANEL",
+      "evidence": [
+        "Verified on Aeon",
+        "Confirmed in NOSFET manual"
+      ],
+      "fact": "Panel inventory preserves distinct MD, ANG, ANG%, ANG TLT, TLT, PWT, ALM speed, ALM on/off, BRT%, BRT on/off, CAL,TRM,UNT,VtA,STA,SND,MxV,LTB and unresolved ?br/?bL/?Adv.",
+      "source": "NOSFET Aeon Manual1.5, printed pp10-11; manual and panel observations have separate provenance.",
+      "limitation": "No automatic equation between ambiguous labels and shared APK setters."
+    }
+  ],
+  "capture_evidence": [
+    {
+      "file": "aeon-pc-capture-20260907-131129.txt",
+      "sha256": "87a964a6fa1d6b84351cd04b9c4281ec6ecf3090baf9e5a92e04cc3c7532f33e",
+      "crc_valid_frames": 14023,
+      "crc_failures": 1,
+      "page8_samples": 701,
+      "fields": {
+        "PedalHardness": {
+          "offset": 50,
+          "counts": {
+            "80": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 80,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "StopSpeed": {
+          "offset": 52,
+          "counts": {
+            "40": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 40,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "StopPowerRate": {
+          "offset": 53,
+          "counts": {
+            "65": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 65,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "ScreenBacklightRate": {
+          "offset": 55,
+          "counts": {
+            "30": 655,
+            "20": 46
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 30,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            },
+            {
+              "received": "2026-09-07T13:55:43.277+03:00",
+              "raw": 20,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0e 08 00 be 00 00 01 5e 01 90 ac da 07 b4 1f 31 00 00 80 c8 00 00 80 80 80 80 80 80 08 01 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 3b 85 d1 ad"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Gyro": {
+          "offset": 56,
+          "counts": {
+            "0": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "TransportMode": {
+          "offset": 57,
+          "counts": {
+            "0": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Unit": {
+          "offset": 58,
+          "counts": {
+            "0": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Vol": {
+          "offset": 59,
+          "counts": {
+            "0": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "LowVolMode": {
+          "offset": 60,
+          "counts": {
+            "128": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 128,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "HighSpeedMode": {
+          "offset": 61,
+          "counts": {
+            "128": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 128,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "KeyTone": {
+          "offset": 63,
+          "counts": {
+            "0": 667,
+            "2": 34
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            },
+            {
+              "received": "2026-09-07T13:50:07.975+03:00",
+              "raw": 2,
+              "frame_hex": "dc 5a 5c 47 33 e4 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d fd 02 18 00 00 01 5e 01 90 ac da 07 b4 1f 28 00 00 80 c8 00 00 80 80 80 80 80 80 08 01 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 02 3e 91 32 80 00 80 80 a3 a1 9b 13"
+            },
+            {
+              "received": "2026-09-07T13:52:25.315+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 e4 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0e 04 01 8a 00 00 01 5e 01 90 ac da 07 b4 1f 35 00 00 80 c8 00 00 80 80 80 80 80 80 08 01 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 aa 95 b0 b9"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "MaxChargeVol": {
+          "offset": 64,
+          "counts": {
+            "62": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 62,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "BrakePressureAlarm": {
+          "offset": 65,
+          "counts": {
+            "145": 701
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T13:11:36.817+03:00",
+              "raw": 145,
+              "frame_hex": "dc 5a 5c 47 33 f0 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 22 04 6b 00 00 01 5e 01 90 ac da 07 b4 1f 14 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 49 e9 ce e1"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        }
+      }
+    },
+    {
+      "file": "aeon-pc-capture-20260907-140739.txt",
+      "sha256": "f2e69eb1f5af825f07a28fc41a74c1fb74b33862f2f64a435611ad1e10749713",
+      "crc_valid_frames": 5665,
+      "crc_failures": 0,
+      "page8_samples": 283,
+      "fields": {
+        "PedalHardness": {
+          "offset": 50,
+          "counts": {
+            "80": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 80,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "StopSpeed": {
+          "offset": 52,
+          "counts": {
+            "40": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 40,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "StopPowerRate": {
+          "offset": 53,
+          "counts": {
+            "65": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 65,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "ScreenBacklightRate": {
+          "offset": 55,
+          "counts": {
+            "20": 26,
+            "25": 1,
+            "30": 256
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 20,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            },
+            {
+              "received": "2026-09-07T14:09:33.446+03:00",
+              "raw": 25,
+              "frame_hex": "dc 5a 5c 47 33 d9 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 08 04 2c 00 00 01 5e 01 90 ac da 07 b4 1f 0a 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 19 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 20 73 5b 92"
+            },
+            {
+              "received": "2026-09-07T14:09:37.431+03:00",
+              "raw": 30,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0d 10 04 28 00 00 01 5e 01 90 ac da 07 b4 1f 19 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 1e 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 ac 95 4b 89"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Gyro": {
+          "offset": 56,
+          "counts": {
+            "0": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "TransportMode": {
+          "offset": 57,
+          "counts": {
+            "0": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Unit": {
+          "offset": 58,
+          "counts": {
+            "0": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "Vol": {
+          "offset": 59,
+          "counts": {
+            "0": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "LowVolMode": {
+          "offset": 60,
+          "counts": {
+            "128": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 128,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "HighSpeedMode": {
+          "offset": 61,
+          "counts": {
+            "128": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 128,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "KeyTone": {
+          "offset": 63,
+          "counts": {
+            "0": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 0,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "MaxChargeVol": {
+          "offset": 64,
+          "counts": {
+            "62": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 62,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        },
+        "BrakePressureAlarm": {
+          "offset": 65,
+          "counts": {
+            "145": 283
+          },
+          "transitions": [
+            {
+              "received": "2026-09-07T14:07:48.385+03:00",
+              "raw": 145,
+              "frame_hex": "dc 5a 5c 47 33 de 00 00 d4 b2 00 01 d6 9e 00 01 00 00 0b e2 04 99 00 00 01 5e 01 90 ac da 07 b4 1e fa 00 00 80 c8 00 00 80 80 80 80 80 80 08 00 00 80 50 00 28 41 23 14 00 00 00 00 80 80 28 00 3e 91 32 80 00 80 80 f0 63 b5 48"
+            }
+          ],
+          "interpretation": "Source-based field; only SND and BRT changes physically correlated in these recordings. Constant values do not verify writable support."
+        }
+      }
+    }
+  ],
+  "first_pass": {
+    "editable": [
+      "DISPLAY_BRIGHTNESS",
+      "KEY_TONE",
+      "UNITS"
+    ],
+    "read_only": "All other APK settings fields; unknown/sentinel/out-of-range values retained.",
+    "unchanged": "Existing light/horn profile, speed/alarm commands, current/power semantics, BMS36-cell cap; exploratory logging excluded.",
+    "write_guards": "Explicit confirmation, model44, fresh complete settings page, current value in APK range, connected/stationary/not charging; atomic ATT batch bound to current GATT; matching later readback or unknown result, no automatic semantic retry. Existing BLE stack-rejection retry remains transport-level behavior.",
+    "not_claimed": "Full firmware command support, all settings writable, or physically verified new setters."
+  }
+}

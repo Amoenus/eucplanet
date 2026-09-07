@@ -596,7 +596,7 @@ private fun CommandsTab(vm: WheelDiagnosticsViewModel) {
  * families that don't share a common stem (InMotion V2: "V14 realtime",
  * "P6 realtime", "P6 detailed") fall through and render unchanged.
  */
-private fun shortInspectLabel(prefix: String, familyDisplayName: String): String {
+internal fun shortInspectLabel(prefix: String, familyDisplayName: String): String {
     val candidates = listOf(
         familyDisplayName,
         familyDisplayName.split(" / ").first(),
@@ -644,12 +644,10 @@ private fun InspectTab(vm: WheelDiagnosticsViewModel) {
     }
 
     val latestBytes: List<Int> = remember(entries, selected) {
-        val match = entries.lastOrNull {
-            it.kind == DiagnosticsLogger.Kind.NOTE && it.text.startsWith("$selected len=")
-        } ?: return@remember emptyList()
-        match.text.substringAfter("body=", "").trim()
-            .split(' ')
-            .mapNotNull { runCatching { it.toInt(16) }.getOrNull() }
+        entries.asReversed().asSequence()
+            .filter { it.kind == DiagnosticsLogger.Kind.NOTE }
+            .mapNotNull { inspectTraceBytes(it.text, selected) }
+            .firstOrNull() ?: emptyList()
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {

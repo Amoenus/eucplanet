@@ -2,6 +2,15 @@
 
 ## Current source of truth
 
+The durable bidirectional [implementation inventory](aeon/INVENTORY.md) maps the
+EUC Planet interface, capability flags and generic settings to known Aeon controls,
+with separate backend/UI/validation checklists and explicit unmapped entries.
+It is generated from `aeon/capabilities.json`, not maintained independently.
+Run `python tools/render_aeon_capabilities.py --check` to catch inventory drift.
+The pending `LIGHT-SND-01` procedure compares the current remote light command at
+zero and two modest nonzero physical-panel SND levels, then restores the baseline.
+Its hypothesis is not a confirmed relationship between SND and BLE acknowledgements.
+
 ### Dashboard headlight readback
 
 The existing light tile displays Off, Low, Medium or High from the captured

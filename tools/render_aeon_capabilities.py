@@ -1,15 +1,58 @@
 """Render the canonical Aeon capability ledger, without APK access or BLE.
-Scan capabilities.json and this script for secrets before running.
+Scan capabilities.json, this script, WheelAdapter.kt, WheelData.kt and WheelSettings.kt before running.
+For --check, also scan the generated README.md and INVENTORY.md before reading them.
 """
 import json
+import re
+import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 folder = root / 'docs/protocols/aeon'
 data = json.loads((folder / 'capabilities.json').read_text(encoding='utf-8'))
+
+inventory = data['inventory']
+items = inventory['items']
+expected = data['euc_expected_surface']
+ids = {item['id'] for item in items}
+assert len(ids) == len(items), 'Duplicate inventory IDs'
+for refs, source, key in [('command_refs', 'commands', 'semantic'),
+                          ('gap_refs', 'gaps', 'control'),
+                          ('readback_refs', 'readbacks', 'field')]:
+    covered = {ref for item in items for ref in item[refs]}
+    required = {row[key] for row in data[source]}
+    assert covered == required, f'{source} coverage drift: missing={required-covered}, unknown={covered-required}'
+
+adapter_file = root / 'app/src/main/java/com/eried/eucplanet/ble/WheelAdapter.kt'
+wheel_file = root / 'app/src/main/java/com/eried/eucplanet/data/model/WheelData.kt'
+adapter_source = adapter_file.read_text(encoding='utf-8')
+interface = adapter_source.split('interface WheelAdapter {', 1)[1].split('sealed class DecodeResult', 1)[0]
+members = re.findall(r'^    (?:fun|val) (\w+)', interface, re.M)
+documented = [entry['member'] for entry in expected['api']]
+assert len(documented) == len(set(documented)), 'Duplicate API entries'
+assert set(members) == set(documented), f'WheelAdapter drift: {set(members)^set(documented)}'
+flags_source = adapter_source.split('data class WheelCapabilities(', 1)[1].split(') {', 1)[0]
+flags = re.findall(r'val (\w+): Boolean', flags_source)
+assert set(flags) == {entry['name'] for entry in expected['capability_flags']}, 'Capability flag drift'
+for entry in expected['api']:
+    assert set(entry['inventory_refs']) <= ids, f'Unknown inventory reference: {entry}'
+for entry in expected['capability_flags']:
+    assert entry['inventory_ref'] in ids
+wheel_fields = re.findall(r'^    val (\w+):', wheel_file.read_text(encoding='utf-8'), re.M)
+settings_file = root / 'app/src/main/java/com/eried/eucplanet/data/model/WheelSettings.kt'
+settings_fields = re.findall(r'^    val (\w+):', settings_file.read_text(encoding='utf-8'), re.M)
+assert set(settings_fields) == set(expected['wheel_settings']), 'WheelSettings coverage drift'
+assert set(expected['telemetry_notes']) | set(expected['non_wheel_fields']) | set(expected['derived_fields']) <= set(wheel_fields)
+
+def emit(path, content):
+    if '--check' in sys.argv:
+        assert path.exists() and path.read_text(encoding='utf-8') == content, f'Stale generated file: {path}'
+    else:
+        path.write_text(content, encoding='utf-8')
 def cell(value):
     return str(value).replace('|', '\\|').replace('\n', ' ')
 lines = ['# NOSFET Aeon capability ledger', '',
+    'For the bidirectional EUC Planet / Aeon backend, UI and validation checklist, see [INVENTORY.md](INVENTORY.md). Missing mappings are explicit there.', '',
     'Generated from [capabilities.json](capabilities.json). Edit that file first, then run `python tools/render_aeon_capabilities.py`. Earlier timestamped research reports are historical evidence, not competing current maps.', '',
     '## First pass', '',
     'Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. New writes remain APK-confirmed, not physically verified.', '',
@@ -35,5 +78,70 @@ for r in data['gaps']:
 lines += ['', '## Validation boundaries', '',
     'Unit tests validate decoding, model isolation, sentinels, freshness, CRC and splitting. They do not validate firmware execution, alarm behavior, all firmware versions or physical consequences. The ledger retains CRC-valid captured setting frames and file hashes; no raw logs or manufacturer APK are checked into the app repository.', '',
     'UNT was not touched during panel experiments. SND restored0%; display BRT restored30%. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.', '']
-(folder / 'README.md').write_text('\n'.join(lines), encoding='utf-8')
-print(folder / 'README.md')
+emit(folder / 'README.md', '\n'.join(lines))
+
+lines = ['# EUC Planet / NOSFET Aeon implementation inventory', '',
+    'Generated from [capabilities.json](capabilities.json). Edit the ledger, then run `python tools/render_aeon_capabilities.py`; `--check` verifies coverage and generated-file freshness without writing.', '',
+    f"Status date: {inventory['as_of']}. {inventory['scope']}", '',
+    inventory['status_policy'], '',
+    f"Coverage: {len(items)} work items, all {len(data['commands'])} APK construction sites / {len(set(r['semantic'] for r in data['commands']))} command groups, {len(data['readbacks'])} settings readbacks, {len(data['gaps'])} gap groups, {len(members)} WheelAdapter members, {len(flags)} capability flags, {len(settings_fields)} WheelSettings slots and {len(wheel_fields)} WheelData fields.", '',
+    'An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.', '',
+    '## EUC Planet expected surface mapped to Aeon', '',
+    'Confirmed in EUC Planet source means current code behavior only, not firmware verification. Interface coverage is checked against the current source; newly added methods or flags require an explicit entry.', '',
+    '| API / property | Aeon mapping, missing mapping or deliberate absence | Work items |', '|---|---|---|']
+for entry in expected['api']:
+    links = ', '.join(f'[{ref}](#{ref.lower()})' for ref in entry['inventory_refs'])
+    lines.append(f"| `{entry['member']}` | {cell(entry['status'])} | {links} |")
+lines += ['', '### Declared capability flags', '',
+    'These are current app declarations. In particular, speed/alarm true does not establish working Aeon execution; false does not prove the physical feature is absent.', '',
+    '| Flag | Declared on Aeon | Work item |', '|---|---|---|']
+for entry in expected['capability_flags']:
+    ref = entry['inventory_ref']
+    lines.append(f"| `{entry['name']}` | `{str(entry['declared']).lower()}` | [{ref}](#{ref.lower()}) |")
+lines += ['', '### Generic WheelSettings slots', '',
+    'These generic fields include other-family settings. Defaults are not Aeon observations, and similarly named values must not be equated without evidence.', '',
+    '| Expected slot | Aeon mapping or explicit gap |', '|---|---|']
+for field in settings_fields:
+    lines.append(f"| `{field}` | {cell(expected['wheel_settings'][field])} |")
+lines += ['', '## Backend / UI / validation checklist', '',
+    'Priority 1: validate existing low-risk support. Priority 2: passive features and bounded additions. Priority 3: ambiguous or riding-affecting behavior. Priority 4: deferred maintenance/security/safety scope. Priority is not authorization to send commands.', '']
+for item in sorted(items, key=lambda item: item['priority']):
+    lines += [f"### {item['id']}", '', f"**{item['title']}** (priority {item['priority']})", '']
+    api = [entry['member'] for entry in expected['api'] if item['id'] in entry['inventory_refs']]
+    lines += ['EUC Planet API: ' + (', '.join(f'`{name}`' for name in api) if api else 'No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.'), '']
+    if item['command_refs']:
+        lines += ['Official command evidence: ' + ', '.join(item['command_refs']) + '. Exact construction sites, transforms and provenance are in the [command ledger](README.md#command-inventory). APK presence alone does not establish Aeon applicability.', '']
+    if item['gap_refs']:
+        lines += ['Explicit unmapped/gap group: ' + '; '.join(item['gap_refs']) + '.', '']
+    if item['readback_refs']:
+        lines += ['Readback fields: ' + ', '.join(item['readback_refs']) + ' ([offsets and evidence](README.md#settings-page-8)).', '']
+    for stage in ['backend', 'ui', 'validation']:
+        state = item[stage]
+        tick = 'x' if state.startswith('implemented:') or state.startswith('verified:') else ' '
+        lines.append(f"- [{tick}] {stage.capitalize()}: {state}")
+    lines += [f"- [ ] Next: {item['next_action']}", '']
+lines += ['## Full expected WheelData field list', '',
+    'Automatically enumerated, including fields with no established Aeon mapping. UNREVIEWED is explicit missing evidence, not a claim of zero, absence or support. Per-field source/capture reconciliation remains TELEMETRY-AUDIT; this section intentionally does not promote shared parser assumptions into Aeon facts.', '',
+    '| Field | Current inventory disposition |', '|---|---|']
+for field in wheel_fields:
+    if field in expected['telemetry_notes']:
+        note = expected['telemetry_notes'][field]
+    elif field in expected['non_wheel_fields']:
+        note = 'App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments.'
+    elif field in expected['derived_fields']:
+        note = 'App-derived metric; audit source inputs, not a direct wheel setter.'
+    else:
+        note = 'UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet.'
+    lines.append(f'| `{field}` | {cell(note)} |')
+lines += ['', 'Smart-BMS slices, identity and settings events outside WheelData also require TELEMETRY-AUDIT; do not assume this data class exhausts all wire telemetry.', '',
+    '## Open validation procedures', '']
+for plan in inventory['validation_plans']:
+    lines += [f"### {plan['id']}", '', f"Status: **{plan['status']}**. No new live test performed when recording this plan.", '',
+        'Hypothesis: ' + plan['hypothesis'], '', 'Existing evidence: ' + plan['known'], '']
+    for key in ['preconditions', 'steps', 'results_to_record']:
+        lines += [f"#### {key.replace('_', ' ').capitalize()}", '']
+        lines += [f'- [ ] {step}' for step in plan[key]]
+        lines.append('')
+lines += ['Record outcomes in capabilities.json with evidence category, firmware/build and capture references. Never check off physical verification merely because a command was queued or a BLE write succeeded.', '']
+emit(folder / 'INVENTORY.md', '\n'.join(lines))
+print(f"Inventory coverage OK: {len(items)} items, {len(members)} API members, {len(wheel_fields)} WheelData fields")

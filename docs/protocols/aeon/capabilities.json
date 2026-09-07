@@ -1,5 +1,996 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "euc_expected_surface": {
+    "wheel_settings": {
+      "maxSpeedKmh": "TILTBACK: generic settings slot; Aeon uses reported WheelData threshold/commit path. Do not treat default50 as wheel readback.",
+      "alarmSpeedKmh": "ALARM-SPEED: generic slot; exact Aeon reported setting/effect unresolved. Default40 is not evidence.",
+      "pedalAdjustment": "PEDAL-ANGLE: semantic candidate only; generic slot not established as Aeon readback.",
+      "offroadMode": "UNMAPPED on Aeon. Do not equate with hardness or legacy ride modes.",
+      "fancierMode": "UNMAPPED on Aeon. Generic feature has no established Aeon equivalent.",
+      "comfortSensitivity": "UNMAPPED on Aeon. Do not substitute continuous hardness without evidence.",
+      "classicSensitivity": "UNMAPPED on Aeon. No established counterpart.",
+      "standbyDelayMinutes": "UNMAPPED on Aeon. Observed automatic shutdown does not establish an editable standby-delay command.",
+      "mute": "GLOBAL-VOLUME / SND: generic mute is not panel keypress volume or a proven alarm mute.",
+      "drl": "DRL: physical feature observed, remote/readback mapping missing.",
+      "transportMode": "TRANSPORT: separate typed Aeon raw readback exists; generic Boolean slot does not authorize a write or prove equivalent protocol semantics.",
+      "lockState": "LOCK: security lock intentionally unavailable; generic default0 does not prove unlocked state."
+    },
+    "api": [
+      {
+        "member": "buildSettingChange",
+        "inventory_refs": [
+          "SND",
+          "DISPLAY-BRT",
+          "UNITS"
+        ],
+        "status": "Implemented typed extension for these three guarded settings; other Aeon settings rejected."
+      },
+      {
+        "member": "familyId",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Shared veteran wire-family identity, not proof all LeaperKim features apply."
+      },
+      {
+        "member": "capabilities",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Model-specific flags; inspect the flag table below."
+      },
+      {
+        "member": "bleProfile",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Shared HM10 FFE0/FFE1 transport; not a control command."
+      },
+      {
+        "member": "notifyConnectingTo",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Name preselection, then model44 telemetry identification."
+      },
+      {
+        "member": "pickAdapterByDiscoveredServices",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Composite family routing; not a rider capability."
+      },
+      {
+        "member": "initSequence",
+        "inventory_refs": [
+          "TIME"
+        ],
+        "status": "Empty on Veteran/Aeon; official clock sync not currently sent."
+      },
+      {
+        "member": "pollRealtime",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Empty write; wheel streams telemetry. Not a missing mandatory request."
+      },
+      {
+        "member": "pollSettings",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Empty write; settings arrive in stream. Not a generic settings-query mapping."
+      },
+      {
+        "member": "pollStats",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Default null; no separate Aeon stats query mapped."
+      },
+      {
+        "member": "horn",
+        "inventory_refs": [
+          "HORN"
+        ],
+        "status": "Aeon single LkAp frame; current app retest pending."
+      },
+      {
+        "member": "hornFollowup",
+        "inventory_refs": [
+          "HORN"
+        ],
+        "status": "Null deliberately; Aeon does not send the generic Veteran companion."
+      },
+      {
+        "member": "setLight",
+        "inventory_refs": [
+          "LIGHT-TOGGLE",
+          "LIGHT-LEVEL"
+        ],
+        "status": "ASCII on/off, not full physical level cycle. SND interaction unresolved."
+      },
+      {
+        "member": "setLightFollowup",
+        "inventory_refs": [
+          "LIGHT-TOGGLE"
+        ],
+        "status": "Null deliberately for current Aeon path."
+      },
+      {
+        "member": "setMaxSpeed",
+        "inventory_refs": [
+          "TILTBACK",
+          "ALARM-SPEED"
+        ],
+        "status": "Returns null; separate commit methods below carry the commands. Do not count this null alone as no support."
+      },
+      {
+        "member": "setMaxSpeedCommit",
+        "inventory_refs": [
+          "TILTBACK"
+        ],
+        "status": "Shared LdAp builder; Aeon remote effect not verified."
+      },
+      {
+        "member": "setAlarmSpeedCommit",
+        "inventory_refs": [
+          "ALARM-SPEED"
+        ],
+        "status": "Shared LkAp builder; owner reported ineffective setting, unresolved."
+      },
+      {
+        "member": "setVolume",
+        "inventory_refs": [
+          "GLOBAL-VOLUME",
+          "SND"
+        ],
+        "status": "Unsupported/null. Panel SND is separate and must not be substituted for global/alarm volume."
+      },
+      {
+        "member": "setDRL",
+        "inventory_refs": [
+          "DRL"
+        ],
+        "status": "Unsupported/null. Separate physical DRL exists; remote mapping missing."
+      },
+      {
+        "member": "setLock",
+        "inventory_refs": [
+          "LOCK"
+        ],
+        "status": "Disabled/null for Aeon by policy; firmware support unresolved."
+      },
+      {
+        "member": "setLockFollowup",
+        "inventory_refs": [
+          "LOCK"
+        ],
+        "status": "Null for Aeon; no shared Veteran lock tail sent."
+      },
+      {
+        "member": "resetTripMeter",
+        "inventory_refs": [
+          "TRIP-RESET"
+        ],
+        "status": "Existing ASCII CLEARMETER; official binary alternative not adopted or physically verified."
+      },
+      {
+        "member": "requestAuthKey",
+        "inventory_refs": [
+          "AUTH"
+        ],
+        "status": "Null; no equivalent Aeon auth requirement established."
+      },
+      {
+        "member": "verifyAuth",
+        "inventory_refs": [
+          "AUTH"
+        ],
+        "status": "Null; no equivalent Aeon auth flow mapped."
+      },
+      {
+        "member": "requiresConnectAuth",
+        "inventory_refs": [
+          "AUTH"
+        ],
+        "status": "Default false; no connect-time auth flow required by current implementation."
+      },
+      {
+        "member": "onRawNotification",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Shared frame reassembly/CRC/parser plus model-specific readbacks; field audit still open."
+      },
+      {
+        "member": "onDisconnect",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Clears model readbacks, parser and pending lock tail."
+      },
+      {
+        "member": "getDiagnosticCommands",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Legacy family catalogue; entries are not blanket Aeon support."
+      },
+      {
+        "member": "diagnosticCatalogs",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Separate NOSFET catalogue with Aeon light on/off and horn."
+      },
+      {
+        "member": "familyDisplayName",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Shared family LeaperKim; NOSFET catalogue and model brand handled separately."
+      },
+      {
+        "member": "nominalPackVoltage",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Model-table metadata; audit integer representation versus 151.2V class."
+      },
+      {
+        "member": "seriesCells",
+        "inventory_refs": [
+          "TELEMETRY-AUDIT"
+        ],
+        "status": "Expected36S; check metadata and BMS per-pack36-cell cap separately."
+      },
+      {
+        "member": "brand",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Model brand override supplies NOSFET, while shared familyId remains veteran."
+      },
+      {
+        "member": "inspectMessageTypes",
+        "inventory_refs": [
+          "REFERENCE-AUDIT"
+        ],
+        "status": "Aeon-specific Inspector trace selection through model catalogue; no new wheel command."
+      }
+    ],
+    "capability_flags": [
+      {
+        "name": "hasHorn",
+        "declared": true,
+        "inventory_ref": "HORN"
+      },
+      {
+        "name": "hasLight",
+        "declared": true,
+        "inventory_ref": "LIGHT-TOGGLE"
+      },
+      {
+        "name": "hasLock",
+        "declared": false,
+        "inventory_ref": "LOCK"
+      },
+      {
+        "name": "hasMaxSpeed",
+        "declared": true,
+        "inventory_ref": "TILTBACK"
+      },
+      {
+        "name": "hasAlarmSpeed",
+        "declared": true,
+        "inventory_ref": "ALARM-SPEED"
+      },
+      {
+        "name": "hasVolume",
+        "declared": false,
+        "inventory_ref": "GLOBAL-VOLUME"
+      },
+      {
+        "name": "hasDRL",
+        "declared": false,
+        "inventory_ref": "DRL"
+      },
+      {
+        "name": "needsAuthForLock",
+        "declared": false,
+        "inventory_ref": "AUTH"
+      }
+    ],
+    "telemetry_notes": {
+      "headlightReadback": "Implemented generic projection of captured Aeon level; dashboard uses fresh reported state.",
+      "aeonLightState": "Captured Aeon page1 offset49 mapping, preserving raw unknown values.",
+      "aeonSettings": "13 official APK page8 fields decoded; SND and BRT physical transitions captured, other writes not verified.",
+      "lightOn": "Binary projection of reported light level on Aeon; not a complete light-mode representation.",
+      "wheelMaxSpeedKmh": "Shared reported threshold path; exact Aeon verification still open.",
+      "wheelAlarmSpeedKmh": "Aeon reported alarm threshold mapping remains to be audited, not assumed from command presence."
+    },
+    "non_wheel_fields": [
+      "latitude",
+      "longitude",
+      "externalGpsBatteryPercent",
+      "externalGpsSpeedKmh",
+      "gpsSpeedKmh",
+      "gpsAltitudeM",
+      "tripMeterKm",
+      "gForce",
+      "accelX",
+      "accelY",
+      "rssiDbm",
+      "timestamp"
+    ],
+    "derived_fields": [
+      "forwardGFromSpeed",
+      "whConsumed",
+      "whRegen",
+      "whPerKmRecent",
+      "rangeKmEstimate"
+    ]
+  },
+  "inventory": {
+    "as_of": "2026-09-07",
+    "scope": "Complete coverage of the current known control ledger, not a claim of all firmware capabilities or a completed per-field telemetry audit. Shared LeaperKim and WheelLog references remain candidates unless Aeon applicability is established.",
+    "status_policy": "implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.",
+    "items": [
+      {
+        "id": "PANEL-STA",
+        "title": "Panel STA setting",
+        "command_refs": [], "gap_refs": [], "readback_refs": [],
+        "backend": "open: exact command/readback meaning not reconciled",
+        "ui": "deferred: no editor until meaning is established",
+        "validation": "partial: owner observed STA40.0 in advanced panel inventory",
+        "next_action": "Resolve manual meaning and source mapping; do not equate with TLT40 or APK StopSpeed just because the numbers match",
+        "priority": 3
+      },
+      {
+        "id": "GLOBAL-VOLUME",
+        "title": "Generic wheel/alarm volume versus panel SND",
+        "command_refs": [], "gap_refs": [], "readback_refs": [],
+        "backend": "deferred: setVolume returns null; do not route generic volume to panel SND",
+        "ui": "deferred: generic wheel-volume support unavailable; separate SND settings editor exists",
+        "validation": "partial: owner reports speed/fall-related warnings remain loud at SND0; global volume mapping unknown",
+        "next_action": "Preserve independent warning behavior; LIGHT-SND-01 tests only remote light acknowledgement",
+        "priority": 1
+      },
+      {
+        "id": "LIGHT-TOGGLE",
+        "title": "Headlight on/off",
+        "command_refs": [
+          "headlight"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "implemented: Aeon single ASCII command",
+        "ui": "implemented: existing dashboard tile",
+        "validation": "partial: historical remote paths tested; current APK/SND interaction pending",
+        "next_action": "Run LIGHT-SND-01 with current app",
+        "priority": 1
+      },
+      {
+        "id": "LIGHT-LEVEL",
+        "title": "Headlight level readback and remote levels",
+        "command_refs": [],
+        "gap_refs": [
+          "Headlight levels"
+        ],
+        "readback_refs": [],
+        "backend": "partial: page1 byte49 decoder; remote level setter unknown",
+        "ui": "partial: dashboard Off/Low/Medium/High implemented; no level selector",
+        "validation": "partial: physical cycles and captures verified; new dashboard pending",
+        "next_action": "Verify panel changes update dashboard; research remote levels",
+        "priority": 1
+      },
+      {
+        "id": "SND",
+        "title": "Panel keypress sound (SND)",
+        "command_refs": [
+          "key-tone volume"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "KeyTone"
+        ],
+        "backend": "implemented: typed guarded APK setter and readback",
+        "ui": "implemented: settings editor; current menu-key wording",
+        "validation": "partial: physical SND readback verified; remote setter pending",
+        "next_action": "Validate remote setter separately; run LIGHT-SND-01",
+        "priority": 1
+      },
+      {
+        "id": "DISPLAY-BRT",
+        "title": "Display brightness percentage",
+        "command_refs": [
+          "display brightness"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "ScreenBacklightRate"
+        ],
+        "backend": "implemented: typed guarded APK setter and readback",
+        "ui": "implemented: settings editor",
+        "validation": "partial: panel brightness effect verified; remote setter pending",
+        "next_action": "Change one step, check display and readback, restore",
+        "priority": 1
+      },
+      {
+        "id": "UNITS",
+        "title": "Wheel display units",
+        "command_refs": [
+          "unit selection"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "Unit"
+        ],
+        "backend": "implemented: typed guarded APK setter and readback",
+        "ui": "implemented: settings editor",
+        "validation": "open: APK mapping and constant readback only; UNT never changed in panel session",
+        "next_action": "Verify remote change and restore; distinguish app display units",
+        "priority": 1
+      },
+      {
+        "id": "HORN",
+        "title": "Horn",
+        "command_refs": [
+          "horn"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "implemented: Aeon single LkAp, no companion",
+        "ui": "implemented: dashboard action",
+        "validation": "partial: Aeon horn worked; record current single-frame app retest separately",
+        "next_action": "Retest current build once; record packet and audible result",
+        "priority": 1
+      },
+      {
+        "id": "PEDAL-HARDNESS",
+        "title": "Continuous pedal hardness percentage",
+        "command_refs": [
+          "pedal hardness"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "PedalHardness"
+        ],
+        "backend": "partial: readback; matching internal shared builder needs typed routing",
+        "ui": "partial: read-only setting; no editor",
+        "validation": "open: readback80 observed; remote execution untested",
+        "next_action": "Use APK continuous hardness semantics, not legacy modes; stationary validation plan",
+        "priority": 2
+      },
+      {
+        "id": "PWM",
+        "title": "PWM tiltback threshold",
+        "command_refs": [
+          "PWM threshold"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "StopPowerRate"
+        ],
+        "backend": "partial: readback and internal shared builder",
+        "ui": "partial: read-only setting",
+        "validation": "open: remote execution untested",
+        "next_action": "Compare exact APK encoding and bounds; safety review before enabling",
+        "priority": 3
+      },
+      {
+        "id": "TILTBACK",
+        "title": "Speed tiltback threshold",
+        "command_refs": [
+          "tilt-back speed"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "StopSpeed"
+        ],
+        "backend": "partial: existing shared commit path and readback; Aeon semantics not validated",
+        "ui": "partial: existing generic speed control, not validated Aeon support",
+        "validation": "open: current remote path unverified",
+        "next_action": "Compare setter, units, range, readback and restore behavior",
+        "priority": 3
+      },
+      {
+        "id": "ALARM-SPEED",
+        "title": "Speed alarm threshold",
+        "command_refs": [
+          "alarm speed"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "partial: existing generic commit path; effectiveness unresolved",
+        "ui": "partial: existing generic control",
+        "validation": "open: owner reported speed alarm setting not working",
+        "next_action": "Diagnose exact command and response; do not mark as fixed",
+        "priority": 3
+      },
+      {
+        "id": "PEDAL-ANGLE",
+        "title": "Fore/aft pedal angle",
+        "command_refs": [
+          "vertical angle"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "partial: shared internal builder; APK range narrower",
+        "ui": "open: no dedicated Aeon editor",
+        "validation": "open: owner reported setting beep; exact current path needs attribution",
+        "next_action": "Constrain to APK range; distinguish ANG percent and ANG TLT",
+        "priority": 3
+      },
+      {
+        "id": "RIDE-CONTINUOUS",
+        "title": "Legacy continuous ride mode",
+        "command_refs": [
+          "continuous ride mode"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: feature-gated legacy path, not the pedal hardness builder",
+        "ui": "deferred: applicability unresolved",
+        "validation": "open: shared APK presence only",
+        "next_action": "Trace continuousSoftHardSet gating and Aeon precedence",
+        "priority": 3
+      },
+      {
+        "id": "RIDE-DISCRETE",
+        "title": "Legacy soft/medium/hard mode",
+        "command_refs": [
+          "discrete ride mode"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "partial: shared ASCII diagnostics; APK binary alternatives documented",
+        "ui": "deferred: do not duplicate continuous hardness UI",
+        "validation": "open: Aeon applicability unverified",
+        "next_action": "Determine whether Aeon exposes legacy mode separately",
+        "priority": 3
+      },
+      {
+        "id": "TIME",
+        "title": "Clock synchronization",
+        "command_refs": [
+          "time synchronization"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: exact APK builder documented",
+        "ui": "open: proposed manual action in wheel settings",
+        "validation": "partial: official captured payload matches datetime; execution/readback not verified",
+        "next_action": "Resolve timezone, DST and fractional offset behavior before implementation",
+        "priority": 2
+      },
+      {
+        "id": "TRIP-RESET",
+        "title": "Wheel trip reset",
+        "command_refs": [
+          "trip reset"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "partial: existing CLEARMETER; official binary alternative documented",
+        "ui": "partial: existing generic action; review wheel-vs-app reset confirmation",
+        "validation": "open: Aeon execution not verified",
+        "next_action": "Compare vendor binary path; require consent for lost trip mileage",
+        "priority": 2
+      },
+      {
+        "id": "READ-LOG",
+        "title": "Read wheel diagnostic logs",
+        "command_refs": [
+          "read log"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: request known, response parser and lifecycle incomplete",
+        "ui": "open: proposed local diagnostics action",
+        "validation": "open: wheel response and stream impact untested",
+        "next_action": "Implement bounded response handling and cancellation; no automatic upload",
+        "priority": 2
+      },
+      {
+        "id": "TRANSPORT",
+        "title": "Transport mode",
+        "command_refs": [
+          "transport mode"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "TransportMode"
+        ],
+        "backend": "partial: readback only; exact APK setter documented",
+        "ui": "deferred: read-only; no write toggle",
+        "validation": "open: remote effect/recovery unverified",
+        "next_action": "Document entry and recovery; distinguish parking and security lock",
+        "priority": 4
+      },
+      {
+        "id": "SHUTDOWN",
+        "title": "Delayed wheel shutdown",
+        "command_refs": [
+          "shutdown after 10 seconds"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: exact APK action documented",
+        "ui": "deferred: no user-facing action",
+        "validation": "open: not wheel-tested",
+        "next_action": "Keep disabled unless separately requested and safety reviewed",
+        "priority": 4
+      },
+      {
+        "id": "GYRO",
+        "title": "Gyroscope / level calibration",
+        "command_refs": [
+          "gyroscope calibration"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "Gyro"
+        ],
+        "backend": "partial: readback only; APK action documented",
+        "ui": "deferred: read-only; no calibration action",
+        "validation": "open: not wheel-tested",
+        "next_action": "Maintenance-only, no exploratory execution",
+        "priority": 4
+      },
+      {
+        "id": "CHARGE-VOLTAGE",
+        "title": "Maximum charge voltage",
+        "command_refs": [
+          "maximum charge voltage"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "MaxChargeVol"
+        ],
+        "backend": "partial: raw readback with APK interpretation",
+        "ui": "deferred: read-only; no setter",
+        "validation": "open: raw62 captured; physical semantics not validated",
+        "next_action": "APK bounds are not safe pack limits; maintenance review",
+        "priority": 4
+      },
+      {
+        "id": "VOLTAGE-ADJUST",
+        "title": "Voltage adjustment",
+        "command_refs": [
+          "voltage adjustment"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "Vol"
+        ],
+        "backend": "partial: signed raw readback; APK setter documented",
+        "ui": "deferred: read-only; no setter",
+        "validation": "open: remote write untested",
+        "next_action": "Do not confuse Vol with sound volume; calibration scope",
+        "priority": 4
+      },
+      {
+        "id": "FALL-ANGLE",
+        "title": "Side-fall motor cutoff angle",
+        "command_refs": [
+          "side-tilt/fall angle"
+        ],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: exact APK setter; page2 readback needs mapping",
+        "ui": "deferred: no editor",
+        "validation": "open: motor-cutoff semantics not tested",
+        "next_action": "No physical fall/cutoff tests in ordinary validation",
+        "priority": 4
+      },
+      {
+        "id": "HIGH-SPEED",
+        "title": "APK high-speed mode",
+        "command_refs": [
+          "high-speed mode"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "HighSpeedMode"
+        ],
+        "backend": "partial: sentinel-preserving readback",
+        "ui": "deferred: unsupported readback, no toggle",
+        "validation": "open: raw0x80 observed, Aeon support unresolved",
+        "next_action": "Check feature gates; never treat sentinel as false",
+        "priority": 4
+      },
+      {
+        "id": "LOW-BATTERY",
+        "title": "APK low-battery mode",
+        "command_refs": [
+          "low-battery mode"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "LowVolMode"
+        ],
+        "backend": "partial: sentinel-preserving readback",
+        "ui": "deferred: unsupported readback, no toggle",
+        "validation": "open: raw0x80 observed, Aeon support unresolved",
+        "next_action": "Check feature gates before any implementation",
+        "priority": 4
+      },
+      {
+        "id": "BRAKE-PRESSURE",
+        "title": "APK brake-pressure alarm",
+        "command_refs": [
+          "brake-pressure alarm"
+        ],
+        "gap_refs": [],
+        "readback_refs": [
+          "BrakePressureAlarm"
+        ],
+        "backend": "partial: retains raw145 outside APK90..125 range",
+        "ui": "deferred: no writable interpretation",
+        "validation": "open: encoding or semantics discrepancy",
+        "next_action": "Resolve discrepancy; do not equate with ALM on/off",
+        "priority": 4
+      },
+      {
+        "id": "DRL",
+        "title": "Separate daytime light",
+        "command_refs": [],
+        "gap_refs": [
+          "DRL"
+        ],
+        "readback_refs": [],
+        "backend": "open: no confident readback or setter",
+        "ui": "open: no toggle",
+        "validation": "partial: physical on/off observed",
+        "next_action": "Correlate captures and search source; no guessed writes",
+        "priority": 2
+      },
+      {
+        "id": "REAR-ACTIVE",
+        "title": "Rear-light active mode cycle",
+        "command_refs": [],
+        "gap_refs": [
+          "Rear-light active mode / LTB startup mode"
+        ],
+        "readback_refs": [],
+        "backend": "open: no confirmed readback or setter",
+        "ui": "open: planned Lighting menu, not new dashboard buttons",
+        "validation": "partial: physical cycle observed; motion-dependent meaning unresolved",
+        "next_action": "Keep solidred, blueflash, blinkingred, RGB and off distinct",
+        "priority": 2
+      },
+      {
+        "id": "REAR-STARTUP",
+        "title": "Rear-light startup default (LTB)",
+        "command_refs": [],
+        "gap_refs": [
+          "Rear-light active mode / LTB startup mode"
+        ],
+        "readback_refs": [],
+        "backend": "open: mapping unknown",
+        "ui": "open: proposed Lighting setting",
+        "validation": "partial: manual/panel evidence only",
+        "next_action": "Keep startup preference separate from active rear mode",
+        "priority": 2
+      },
+      {
+        "id": "AUTO-LIGHT",
+        "title": "Automatic headlight BRT on/off",
+        "command_refs": [],
+        "gap_refs": [
+          "Auto headlight BRT on/off"
+        ],
+        "readback_refs": [],
+        "backend": "open: no identified setter or readback",
+        "ui": "open: proposed Lighting setting",
+        "validation": "partial: manual documented",
+        "next_action": "Do not substitute display BRT percentage command",
+        "priority": 2
+      },
+      {
+        "id": "ASSIST",
+        "title": "Acceleration assistance ANG percent",
+        "command_refs": [],
+        "gap_refs": [
+          "Acceleration assistance ANG percent / recenter ANG TLT"
+        ],
+        "readback_refs": [],
+        "backend": "open: no established mapping",
+        "ui": "open: proposed Ride setting",
+        "validation": "partial: panel/manual evidence",
+        "next_action": "Separate from pedal angle and hardness",
+        "priority": 3
+      },
+      {
+        "id": "RECENTER",
+        "title": "Recenter ANG TLT",
+        "command_refs": [],
+        "gap_refs": [
+          "Acceleration assistance ANG percent / recenter ANG TLT"
+        ],
+        "readback_refs": [],
+        "backend": "open: no established mapping",
+        "ui": "open: proposed Ride setting",
+        "validation": "partial: panel/manual evidence",
+        "next_action": "Determine exact units and behavior before editor",
+        "priority": 3
+      },
+      {
+        "id": "TORQUE-ALARM",
+        "title": "Torque ALM on/off",
+        "command_refs": [],
+        "gap_refs": [
+          "Torque ALM on/off and ?br / ?bL / ?Adv"
+        ],
+        "readback_refs": [],
+        "backend": "open: no established matching command",
+        "ui": "open: no editor",
+        "validation": "partial: panel/manual evidence",
+        "next_action": "Do not substitute speed alarm or brake-pressure command",
+        "priority": 3
+      },
+      {
+        "id": "PANEL-BR",
+        "title": "Unresolved panel ?br",
+        "command_refs": [],
+        "gap_refs": [
+          "Torque ALM on/off and ?br / ?bL / ?Adv"
+        ],
+        "readback_refs": [],
+        "backend": "open: mapping unknown",
+        "ui": "deferred: preserve raw label",
+        "validation": "open: panel label observed, meaning unresolved",
+        "next_action": "Resolve manual label and applicability",
+        "priority": 3
+      },
+      {
+        "id": "PANEL-BL",
+        "title": "Unresolved panel ?bL",
+        "command_refs": [],
+        "gap_refs": [
+          "Torque ALM on/off and ?br / ?bL / ?Adv"
+        ],
+        "readback_refs": [],
+        "backend": "open: mapping unknown",
+        "ui": "deferred: preserve raw label",
+        "validation": "open: panel label observed, meaning unresolved",
+        "next_action": "Resolve manual label and applicability",
+        "priority": 3
+      },
+      {
+        "id": "PANEL-ADV",
+        "title": "Unresolved panel ?Adv",
+        "command_refs": [],
+        "gap_refs": [
+          "Torque ALM on/off and ?br / ?bL / ?Adv"
+        ],
+        "readback_refs": [],
+        "backend": "open: mapping unknown",
+        "ui": "deferred: preserve raw label",
+        "validation": "open: panel label observed, meaning unresolved",
+        "next_action": "Resolve manual label and applicability",
+        "priority": 3
+      },
+      {
+        "id": "LOCK",
+        "title": "Security lock/unlock",
+        "command_refs": [],
+        "gap_refs": [
+          "Security lock/unlock"
+        ],
+        "readback_refs": [],
+        "backend": "implemented: Aeon capability false and null command",
+        "ui": "implemented: disabled dashboard button after identification",
+        "validation": "partial: app policy tested; firmware support unresolved",
+        "next_action": "Retain conservative policy; do not equate with parking",
+        "priority": 4
+      },
+      {
+        "id": "AUTH",
+        "title": "Wheel authentication",
+        "command_refs": [],
+        "gap_refs": [
+          "Authentication"
+        ],
+        "readback_refs": [],
+        "backend": "deferred: no Aeon auth path established",
+        "ui": "deferred: no new prompt",
+        "validation": "open: no evidence generic flow is required",
+        "next_action": "Only revisit if an actual auth requirement is found",
+        "priority": 4
+      },
+      {
+        "id": "FIRMWARE",
+        "title": "Firmware upgrade / bootloader",
+        "command_refs": [],
+        "gap_refs": [
+          "Firmware update / bootloader"
+        ],
+        "readback_refs": [],
+        "backend": "deferred: excluded from control support",
+        "ui": "deferred: no action",
+        "validation": "open: maintenance paths only inventoried",
+        "next_action": "No probing, flashing or arbitrary payload execution",
+        "priority": 4
+      },
+      {
+        "id": "PARKING",
+        "title": "Physical parking / lift behavior",
+        "command_refs": [],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: remote mapping not established",
+        "ui": "open: do not reuse security-lock button",
+        "validation": "partial: owner described physical button behavior",
+        "next_action": "Record independent semantics before considering remote control",
+        "priority": 3
+      },
+      {
+        "id": "DISPLAY-PAGE",
+        "title": "Physical lower-display page selection",
+        "command_refs": [],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: no remote mapping established",
+        "ui": "deferred: no need to duplicate physical page selector without command",
+        "validation": "partial: mileage, temperature, voltage, current and power pages observed",
+        "next_action": "Keep display-page selection separate from telemetry measurements",
+        "priority": 2
+      },
+      {
+        "id": "TELEMETRY-AUDIT",
+        "title": "Common telemetry and BMS compatibility audit",
+        "command_refs": [],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "partial: shared Veteran parser and existing Aeon adjustments",
+        "ui": "partial: existing dashboard and battery screens",
+        "validation": "open: not a claim every common field is Aeon-verified",
+        "next_action": "Enumerate parser fields against NOSFET APK and WheelLog commit; add per-field records",
+        "priority": 2
+      },
+      {
+        "id": "REFERENCE-AUDIT",
+        "title": "Shared LeaperKim / WheelLog source reconciliation",
+        "command_refs": [],
+        "gap_refs": [],
+        "readback_refs": [],
+        "backend": "open: pin source revisions and reconcile all candidate mappings",
+        "ui": "not applicable: research work item",
+        "validation": "open: no blanket inheritance of other-wheel support",
+        "next_action": "For each source difference add a row or explicit exclusion with provenance",
+        "priority": 2
+      }
+    ],
+    "validation_plans": [
+      {
+        "id": "LIGHT-SND-01",
+        "status": "open",
+        "hypothesis": "The current remote light on/off path produces an acknowledgement at nonzero panel SND and its loudness follows SND. This is not yet verified.",
+        "known": "Owner reports SND affects each physical keypress; speed and fall-related warning beeps remain loud at SND0. Historical paired remote light beeped; PC literal ASCII was silent; earlier ASCII beta report differs.",
+        "preconditions": [
+          "Stationary, upright and securely supported wheel; no riding, drop or speed-warning test.",
+          "One BLE client only. Record exact app build/commit, firmware, initial SND and headlight state.",
+          "Use physical panel to set SND so this test does not also depend on an unverified remote SND setter.",
+          "Start passive capture explicitly, no overall auto-stop timer. Confirm it is receiving before each block; reconnect and re-establish capture after power loss."
+        ],
+        "steps": [
+          "At SND0, confirm displayed value and physical keypress sound. Use app light button once ON and once OFF, waiting for each reported transition; note physical light and audible result separately.",
+          "Repeat at a modest nonzero panel SND value agreed with owner, then at a second modest higher value. Record exact values; do not default to maximum.",
+          "Record capture markers before instructions and after owner reports done. Use the same ON/OFF command path at every SND setting and do not mix in horn or paired legacy commands.",
+          "Restore original SND and headlight state. Confirm both on panel/readback, then explicitly stop capture."
+        ],
+        "results_to_record": [
+          "For each toggle: SND panel/readback, app build, timestamp, exact outbound bytes, previous/resulting light level, beep count and perceived loudness, and whether transition was physically seen.",
+          "No beep at any nonzero SND means this path may simply be silent; it does not demonstrate volume compliance.",
+          "Beep at nonzero and none at zero supports gating; changed loudness at two nonzero levels supports qualitative volume tracking, not a calibrated linear relationship.",
+          "If loudness does not change, preserve the discrepancy. Leave speed/fall alarm independence as the existing owner observation, not something to provoke again."
+        ]
+      }
+    ]
+  },
   "implementation": {
     "headlight_dashboard": "Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.",
     "model_component": "ble/nosfet/NosfetAeonProtocol.kt owns Aeon readbacks, session identity, capabilities and typed settings dispatch; composed behind VeteranModelProtocol.",
@@ -1986,7 +2977,7 @@
     {
       "control": "Headlight levels",
       "apk": "No multilevel write or parsed light-level field found in inspected app code",
-      "euc": "Current uncommitted AeonTelemetryDecoder uses87-byte page1 byte49",
+      "euc": "AeonTelemetryDecoder uses87-byte page1 byte49; dashboard label and highlight use generic HeadlightReadback projection with freshness, committed in3d67c95f",
       "evidence": "Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown."
     },
     {
@@ -2066,7 +3057,7 @@
         "Verified from capture",
         "Confirmed in NOSFET APK"
       ],
-      "fact": "SND0->2->0 maps to page8 byte63; restored0. APK KeyToneSettingActivity gives exact setter.",
+      "fact": "SND0->2->0 maps to page8 byte63; restored0. APK KeyToneSettingActivity gives exact setter. Owner subsequently confirms SND affects every physical-panel keypress, while speed warnings and the beep observed when the wheel fell remain loud at SND0. These additional audible effects are owner-reported physical observations, not newly captured packets.",
       "limitation": "Remote setter and effects on BLE acknowledgement beeps untested."
     },
     {

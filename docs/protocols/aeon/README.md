@@ -1,5 +1,7 @@
 # NOSFET Aeon capability ledger
 
+For the bidirectional EUC Planet / Aeon backend, UI and validation checklist, see [INVENTORY.md](INVENTORY.md). Missing mappings are explicit there.
+
 Generated from [capabilities.json](capabilities.json). Edit that file first, then run `python tools/render_aeon_capabilities.py`. Earlier timestamped research reports are historical evidence, not competing current maps.
 
 ## First pass
@@ -45,7 +47,7 @@ Earlier ASCII-beta beep report differs; keep that history. No proof all BLE ligh
 
 Verified on Aeon, Verified from capture, Confirmed in NOSFET APK.
 
-SND0->2->0 maps to page8 byte63; restored0. APK KeyToneSettingActivity gives exact setter.
+SND0->2->0 maps to page8 byte63; restored0. APK KeyToneSettingActivity gives exact setter. Owner subsequently confirms SND affects every physical-panel keypress, while speed warnings and the beep observed when the wheel fell remain loud at SND0. These additional audible effects are owner-reported physical observations, not newly captured packets.
 
 Remote setter and effects on BLE acknowledgement beeps untested.
 
@@ -140,7 +142,7 @@ Every row is Confirmed in NOSFET APK. Templates exclude the CRC32 big-endian tra
 
 | Control | APK | EUC Planet | Evidence / qualification |
 |---|---|---|---|
-| Headlight levels | No multilevel write or parsed light-level field found in inspected app code | Current uncommitted AeonTelemetryDecoder uses87-byte page1 byte49 | Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown. |
+| Headlight levels | No multilevel write or parsed light-level field found in inspected app code | AeonTelemetryDecoder uses87-byte page1 byte49; dashboard label and highlight use generic HeadlightReadback projection with freshness, committed in3d67c95f | Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown. |
 | DRL | No separate DRL setter found | setDRL returns null | Physical off/on/off observed; no confident readback or remote command. |
 | Rear-light active mode / LTB startup mode | No corresponding setter found | No equivalent API | Physical rear cycle observed; startup setting is a separate manual capability. Counter-like byte48 on pages0/4 rejected as mapping. |
 | Auto headlight BRT on/off | No identified setter | No equivalent API | Manual-documented; separate from BRT percentage display brightness. |

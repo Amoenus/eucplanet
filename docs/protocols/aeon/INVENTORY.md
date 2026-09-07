@@ -6,7 +6,7 @@ Status date: 2026-09-07. Complete coverage of the current known control ledger, 
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 45 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 46 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
 
@@ -16,6 +16,7 @@ These parts are already in source. Pending physical tests do not make backend/UI
 
 | Work item | Backend | UI | Physical validation / remaining work |
 |---|---|---|---|
+| [LEGAL-RESTORE](#legal-restore) | Implemented | Implemented | partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending |
 | [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | partial: historical remote paths tested; current APK/SND interaction pending |
 | [LIGHT-LEVEL](#light-level) | Implemented | Implemented | partial: physical cycles and captures verified; new dashboard pending |
 | [SND](#snd) | Implemented | Implemented | partial: physical SND readback verified; remote setter pending |
@@ -103,6 +104,17 @@ These generic fields include other-family settings. Defaults are not Aeon observ
 ## Backend / UI / validation checklist
 
 Priority 1: validate existing low-risk support. Priority 2: passive features and bounded additions. Priority 3: ambiguous or riding-affecting behavior. Priority 4: deferred maintenance/security/safety scope. Priority is not authorization to send commands.
+
+### LEGAL-RESTORE
+
+**EUC Planet Legal mode: temporary previous speed limits** (priority 1)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+- [x] Backend: implemented: in-memory per-wheel snapshot of configured normal tiltback/alarm before enabling; restore snapshot on disable; protect it and normal settings from temporary readback adoption
+- [x] Ui: implemented: existing Legal toggle uses snapshot for restoration; no new buttons or confirmation UI
+- [ ] Validation: partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending
+- [ ] Next: Stationary validation of both thresholds before/on/off; no riding threshold test required. Transport outcome and optimistic UI behavior remain separate open work, not fixed by the snapshot.
 
 ### GLOBAL-VOLUME
 

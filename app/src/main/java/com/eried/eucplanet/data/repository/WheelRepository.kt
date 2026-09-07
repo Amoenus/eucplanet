@@ -294,6 +294,7 @@ class WheelRepository @Inject constructor(
 
     private val _safetySpeedActive = MutableStateFlow(false)
     val safetySpeedActive: StateFlow<Boolean> = _safetySpeedActive.asStateFlow()
+    private val legalSpeedMemory = com.eried.eucplanet.data.model.LegalModeSpeedMemory()
 
     // Lock state derived from wheel telemetry pcMode
     private val _locked = MutableStateFlow(false)
@@ -874,6 +875,9 @@ class WheelRepository @Inject constructor(
             bleManager.connectionState.collect { state ->
                 when (state) {
                     ConnectionState.CONNECTED -> {
+                        legalSpeedMemory.requestedLegal(bleManager.connectionAddress)?.let {
+                            _safetySpeedActive.value = it
+                        }
                         reconcileNextSettings = true
                         // Hold the audio route warm for the whole ride so the first
                         // beep or voice line after a quiet stretch doesn't carry the
@@ -1363,7 +1367,10 @@ class WheelRepository @Inject constructor(
     @Volatile private var lastSyncedWheelMaxKmh: Float = -1f
     @Volatile private var lastSyncedWheelAlarmKmh: Float = -1f
 
-    private fun syncWheelEnforcedLimits(maxKmh: Float, alarmKmh: Float) {
+    private fun syncWheelEnforcedLimits(maxKmh: Float, alarmKmh: Float, receivedAtMs: Long) {
+        val wheel = bleManager.connectionAddress
+        legalSpeedMemory.observe(wheel, maxKmh, alarmKmh, receivedAtMs)
+        if (legalSpeedMemory.protects(wheel)) return
         // -1f from the parser means "this adapter doesn't surface the limit"
         // (every family except Veteran today). Don't touch settings in that
         // case so wheels we can write to keep their app-side value.
@@ -1377,6 +1384,8 @@ class WheelRepository @Inject constructor(
         if (haveAlarm) lastSyncedWheelAlarmKmh = alarmKmh
         scope.launch {
             val current = settingsRepository.get()
+            // Recheck after suspension: Legal mode may have started while this update waited.
+            if (bleManager.connectionAddress != wheel || legalSpeedMemory.protects(wheel)) return@launch
             val newMax = if (haveMax) maxKmh else current.tiltbackSpeedKmh
             val newAlarm = if (haveAlarm) alarmKmh else current.alarmSpeedKmh
             if (newMax != current.tiltbackSpeedKmh || newAlarm != current.alarmSpeedKmh) {
@@ -1697,8 +1706,10 @@ class WheelRepository @Inject constructor(
     suspend fun toggleSafetySpeed() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
         if (_safetyBusy.value) return  // cooldown active, ignore the spam tap (lock parity)
-        val wantActive = !_safetySpeedActive.value
+        val wheel = bleManager.connectionAddress ?: return
+        val wantActive = !(legalSpeedMemory.requestedLegal(wheel) ?: _safetySpeedActive.value)
         val settings = settingsRepository.get()
+        if (!wheelConnected() || bleManager.connectionAddress != wheel) return
 
         // Flip the flag to user intent immediately for a responsive UI, then hold
         // it through the cooldown (same as toggleLock). setSpeed sets the cooldown
@@ -1708,9 +1719,14 @@ class WheelRepository @Inject constructor(
         startCooldown(_safetyBusy, SAFETY_COOLDOWN_MS) { safetyCooldownUntilMs = it }
 
         if (wantActive) {
+            legalSpeedMemory.enter(wheel, com.eried.eucplanet.data.model.LegalModeSpeedMemory.Limits(
+                settings.tiltbackSpeedKmh, settings.alarmSpeedKmh))
             setSpeed(settings.safetyTiltbackKmh, settings.safetyAlarmKmh)
         } else {
-            setSpeed(settings.tiltbackSpeedKmh, settings.alarmSpeedKmh)
+            val previous = legalSpeedMemory.restore(wheel,
+                com.eried.eucplanet.data.model.LegalModeSpeedMemory.Limits(
+                    settings.tiltbackSpeedKmh, settings.alarmSpeedKmh), System.currentTimeMillis())
+            setSpeed(previous.tiltback, previous.alarm)
         }
         Log.i(TAG, "Safety speed toggle requested: active=$wantActive")
 
@@ -1724,14 +1740,14 @@ class WheelRepository @Inject constructor(
 
     fun enableSafetySpeed() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
-        if (!_safetySpeedActive.value) {
+        if (!(legalSpeedMemory.requestedLegal(bleManager.connectionAddress) ?: _safetySpeedActive.value)) {
             scope.launch { toggleSafetySpeed() }
         }
     }
 
     fun disableSafetySpeed() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
-        if (_safetySpeedActive.value) {
+        if (legalSpeedMemory.requestedLegal(bleManager.connectionAddress) ?: _safetySpeedActive.value) {
             scope.launch { toggleSafetySpeed() }
         }
     }
@@ -2053,7 +2069,8 @@ class WheelRepository @Inject constructor(
                 // every frame; we only write when the wheel's value changes.
                 syncWheelEnforcedLimits(
                     result.data.wheelMaxSpeedKmh,
-                    result.data.wheelAlarmSpeedKmh
+                    result.data.wheelAlarmSpeedKmh,
+                    result.data.timestamp,
                 )
                 // Sample history at the rider-configured graph interval
                 val now = System.currentTimeMillis()
@@ -2151,6 +2168,11 @@ class WheelRepository @Inject constructor(
                     }
                 }
 
+                legalSpeedMemory.observe(bleManager.connectionAddress, ws.maxSpeedKmh,
+                    ws.alarmSpeedKmh, System.currentTimeMillis())
+                // Temporary Legal-mode limits are not new normal presets. Preserve the
+                // existing lock processing above, but skip speed adoption while protected.
+                if (legalSpeedMemory.protects(bleManager.connectionAddress)) return
                 if (reconcileNextSettings) {
                     reconcileNextSettings = false
                     reconcileSpeedLimits(ws, appSettings)

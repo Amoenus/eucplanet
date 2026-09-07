@@ -338,6 +338,16 @@
     "status_policy": "implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.",
     "items": [
       {
+        "id": "LEGAL-RESTORE",
+        "title": "EUC Planet Legal mode: temporary previous speed limits",
+        "command_refs": [], "gap_refs": [], "readback_refs": [],
+        "backend": "implemented: in-memory per-wheel snapshot of configured normal tiltback/alarm before enabling; restore snapshot on disable; protect it and normal settings from temporary readback adoption",
+        "ui": "implemented: existing Legal toggle uses snapshot for restoration; no new buttons or confirmation UI",
+        "validation": "partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending",
+        "next_action": "Stationary validation of both thresholds before/on/off; no riding threshold test required. Transport outcome and optimistic UI behavior remain separate open work, not fixed by the snapshot.",
+        "priority": 1
+      },
+      {
         "id": "LIGHT-LEVEL-WRITE",
         "title": "Remote multilevel headlight selection or cycling",
         "command_refs": [], "gap_refs": ["Headlight levels"], "readback_refs": [],
@@ -1002,6 +1012,7 @@
     ]
   },
   "implementation": {
+    "legal_mode_restore": "LegalModeSpeedMemory stores the configured normal pair before applying Legal mode, keyed by BLE/virtual-wheel address. Both telemetry and Settings adoption paths preserve normal values while the snapshot is protected. Restore uses the original pair, not overwritten readbacks. Repeated enable and same-process reconnect retain the snapshot. It is released only after a later matching pair; missing or partial feedback retains it. Memory is not persistent across app process death. No changes to command bytes, transport failure handling or optimistic Legal UI; no claim of successful wheel execution.",
     "clock_initialization": "Official BtManager.bluetoothHeatBeatOnce -> syncTime -> Util.getTimeBytes -> sendBytesData/CRC path implemented for Aeon. initSequence stays empty until model evidence; pollRealtime consumes a single deferred command after CRC-valid model44 frame. No periodic resync or semantic retry; rearmed on disconnect/model replacement. Date is generated at dispatch, local wall time plus raw standard timezone hours truncated toward zero. Unrepresentable years skipped. Queue success and firmware clock adjustment are not acknowledged by this implementation.",
     "headlight_dashboard": "Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.",
     "model_component": "ble/nosfet/NosfetAeonProtocol.kt owns Aeon readbacks, session identity, capabilities and typed settings dispatch; composed behind VeteranModelProtocol.",

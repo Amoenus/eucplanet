@@ -2,6 +2,22 @@
 
 ## Current source of truth
 
+### Legal-mode previous values
+
+Legal mode now snapshots the configured normal tiltback/alarm pair before enabling,
+then restores that pair when disabled. `LegalModeSpeedMemory` is a small per-wheel
+in-memory store, not a new command-confirmation framework. Temporary readbacks do
+not replace either the restore point or normal settings while protected. Repeated
+enable and reconnect to the same wheel within this app process retain the snapshot;
+other wheel addresses are isolated. Missing or partial restoration feedback retains
+it; a later matching pair releases it for the next cycle.
+
+This does not change command bytes, BLE acknowledgement handling or the optimistic
+button state. It does not recover previous values already lost by an older build,
+or persist snapshots across app process death. Physical restore validation is still
+pending. The broader transport/confirmation work was deliberately left out at the
+owner's request to keep this fix focused on temporary storage.
+
 ### Deferred official clock initialization
 
 NOSFET 1.1.3 calls `BtManager.bluetoothHeatBeatOnce -> syncTime` after receiving

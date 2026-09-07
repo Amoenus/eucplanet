@@ -141,6 +141,8 @@ class BleConnectionManager @Inject constructor(
     }
     private var rxCharacteristic: BluetoothGattCharacteristic? = null
     private var currentAddress: String? = null
+    /** Stable key for session-local per-wheel state, including virtual wheels. */
+    val connectionAddress: String? get() = currentAddress
     /** BLE advertised name from the most recent connect call, kept across reconnects. */
     private var currentName: String? = null
     private var shouldReconnect = true

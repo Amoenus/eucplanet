@@ -72,7 +72,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     // come piggybacked on the same realtime frame (offsets 24..27 / 30) so
     // the dashboard refreshes naturally.
     override fun initSequence(): List<ByteArray> = emptyList()
-    override fun pollRealtime(): ByteArray = ByteArray(0)
+    // Deferred model startup runs only after the model has accepted a valid frame.
+    // Other Veterans keep their empty poll; Aeon sends one official clock-sync frame.
+    override fun pollRealtime(): ByteArray = modelProtocol.takeDeferredInitCommand() ?: ByteArray(0)
     override fun pollSettings(): ByteArray = ByteArray(0)
 
     override fun horn(): ByteArray = controlProfile.horn()

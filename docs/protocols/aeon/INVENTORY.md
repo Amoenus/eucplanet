@@ -22,8 +22,8 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 | `bleProfile` | Shared HM10 FFE0/FFE1 transport; not a control command. | [REFERENCE-AUDIT](#reference-audit) |
 | `notifyConnectingTo` | Name preselection, then model44 telemetry identification. | [REFERENCE-AUDIT](#reference-audit) |
 | `pickAdapterByDiscoveredServices` | Composite family routing; not a rider capability. | [REFERENCE-AUDIT](#reference-audit) |
-| `initSequence` | Empty on Veteran/Aeon; official clock sync not currently sent. | [TIME](#time) |
-| `pollRealtime` | Empty write; wheel streams telemetry. Not a missing mandatory request. | [TELEMETRY-AUDIT](#telemetry-audit) |
+| `initSequence` | Immediate sequence remains empty. Aeon defers official clock sync until a valid model44 frame, then the normal poll loop queues it once per model session. | [TIME](#time) |
+| `pollRealtime` | Normally empty for streamed telemetry. On Aeon, consumes one deferred official clock-sync command after valid model44 data; other Veteran models unchanged. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `pollSettings` | Empty write; settings arrive in stream. Not a generic settings-query mapping. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `pollStats` | Default null; no separate Aeon stats query mapped. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `horn` | Aeon single LkAp frame; current app retest pending. | [HORN](#horn) |
@@ -207,10 +207,10 @@ EUC Planet API: `initSequence`
 
 Official command evidence: time synchronization. Exact construction sites, transforms and provenance are in the [command ledger](README.md#command-inventory). APK presence alone does not establish Aeon applicability.
 
-- [ ] Backend: open: exact APK builder documented
-- [ ] Ui: open: proposed manual action in wheel settings
-- [ ] Validation: partial: official captured payload matches datetime; execution/readback not verified
-- [ ] Next: Resolve timezone, DST and fractional offset behavior before implementation
+- [x] Backend: implemented: APK clock builder plus one-shot deferred startup after valid model44 data; standard raw timezone offset preserved
+- [ ] Ui: not applicable: automatic connection initialization, no new dashboard or settings control
+- [ ] Validation: partial: exact capture fixture, DST/fractional offsets and connection lifecycle covered by unit tests; wheel clock execution/readback unverified
+- [ ] Next: On requested future build, capture one sync after connection and none during steady telemetry; verify wheel clock if observable
 
 ### TRIP-RESET
 

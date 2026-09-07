@@ -2,6 +2,23 @@
 
 ## Current source of truth
 
+### Deferred official clock initialization
+
+NOSFET 1.1.3 calls `BtManager.bluetoothHeatBeatOnce -> syncTime` after receiving
+data; `hasSyncTime` gates one send and resets on connect. `Util.getTimeBytes`
+builds the 14-byte payload and `sendBytesData` appends CRC32, producing 18 bytes.
+Aeon now follows this through model-owned deferred startup on the normal poll
+loop, only after a CRC-valid frame reports model44. Name-only selection cannot
+trigger the write. The immediate `initSequence()` remains empty deliberately.
+
+Local wall time includes DST, but the timezone byte uses the raw standard offset
+in whole hours, truncated toward zero, exactly as the APK does. No timezone
+correction is invented. Invalid phone years outside2000..2255 are skipped rather
+than wrapped. No periodic resync or semantic retry is performed; disconnect or
+model replacement rearms the attempt. A queued command is not clock confirmation.
+The exact frame is checked against the historical official capture; actual wheel
+clock adjustment remains unverified. No new UI is needed.
+
 The durable bidirectional [implementation inventory](aeon/INVENTORY.md) maps the
 EUC Planet interface, capability flags and generic settings to known Aeon controls,
 with separate backend/UI/validation checklists and explicit unmapped entries.

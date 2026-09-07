@@ -18,6 +18,8 @@ internal interface VeteranModelProtocol {
     fun decorateTelemetry(data: WheelData): WheelData = data
     fun buildSettingChange(change: WheelSettingChange): List<ByteArray>? = null
     fun reset() {}
+    /** One-shot startup work requiring received model evidence; normal polling queues it. */
+    fun takeDeferredInitCommand(): ByteArray? = null
 }
 
 /** No model-specific settings readback for the unspecialized family members. */

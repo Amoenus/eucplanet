@@ -8,10 +8,11 @@ Generated from [capabilities.json](capabilities.json). Edit that file first, the
 
 Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. New writes remain APK-confirmed, not physically verified.
 
-All other extracted settings are read-only. No automatic writes, command probing, calibration, experimental logging or global beep-volume reinterpretation. Existing light/horn profile and shared Veteran behavior remain intact. This is an incremental implementation, not complete firmware support.
+All other extracted settings are read-only. Aeon additionally sends the official clock-sync frame once after receiving valid model44 data. No automatic settings rewrites, command probing, calibration, experimental logging or global beep-volume reinterpretation. Existing light/horn profile and other Veteran behavior remain intact. This is an incremental implementation, not complete firmware support.
 
 ## Implementation boundaries
 
+- **clock initialization**: Official BtManager.bluetoothHeatBeatOnce -> syncTime -> Util.getTimeBytes -> sendBytesData/CRC path implemented for Aeon. initSequence stays empty until model evidence; pollRealtime consumes a single deferred command after CRC-valid model44 frame. No periodic resync or semantic retry; rearmed on disconnect/model replacement. Date is generated at dispatch, local wall time plus raw standard timezone hours truncated toward zero. Unrepresentable years skipped. Queue success and firmware clock adjustment are not acknowledged by this implementation.
 - **headlight dashboard**: Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.
 - **model component**: ble/nosfet/NosfetAeonProtocol.kt owns Aeon readbacks, session identity, capabilities and typed settings dispatch; composed behind VeteranModelProtocol.
 - **shared core**: VeteranAdapter retains one parser, model identification, common telemetry/BMS and BLE-family API; no second BLE adapter or duplicated parser.
@@ -136,7 +137,7 @@ Every row is Confirmed in NOSFET APK. Templates exclude the CRC32 big-endian tra
 | discrete ride mode | 4C 6B 41 70 0C 01 80 03 | 1 soft / 2 medium / 3 hard | Existing behavior or documented only; see first_pass |
 | read log | 4C 6B 41 70 14 01 80 80 80 80 80 80 80 80 80 01 | Fixed request1 | Existing behavior or documented only; see first_pass |
 | shutdown after 10 seconds | 4C 6B 41 70 16 01 80 80 80 80 80 80 80 80 80 80 01 80 | Fixed action embedded before final0x80; preserve full bytes | Existing behavior or documented only; see first_pass |
-| time synchronization | 4C 64 41 70 12 00 05 {(byte)(n2 - 2000)} {(byte)(n3 + 1)} {(byte)n4} {(byte)n5} {(byte)n6} {(byte)n7} {(byte)n8} | year-2000, month1..12, day,hour,minute,second; raw timezone offset in whole hours | Existing behavior or documented only; see first_pass |
+| time synchronization | 4C 64 41 70 12 00 05 {(byte)(n2 - 2000)} {(byte)(n3 + 1)} {(byte)n4} {(byte)n5} {(byte)n6} {(byte)n7} {(byte)n8} | year-2000, month1..12, day,hour,minute,second; raw timezone offset in whole hours | Implemented: one official clock-sync attempt after validated model44 data per connection/model session; unit-tested, wheel clock effect unverified |
 
 ## Remaining gaps
 

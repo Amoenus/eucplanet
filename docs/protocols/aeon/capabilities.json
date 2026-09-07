@@ -65,14 +65,14 @@
         "inventory_refs": [
           "TIME"
         ],
-        "status": "Empty on Veteran/Aeon; official clock sync not currently sent."
+        "status": "Immediate sequence remains empty. Aeon defers official clock sync until a valid model44 frame, then the normal poll loop queues it once per model session."
       },
       {
         "member": "pollRealtime",
         "inventory_refs": [
           "TELEMETRY-AUDIT"
         ],
-        "status": "Empty write; wheel streams telemetry. Not a missing mandatory request."
+        "status": "Normally empty for streamed telemetry. On Aeon, consumes one deferred official clock-sync command after valid model44 data; other Veteran models unchanged."
       },
       {
         "member": "pollSettings",
@@ -559,10 +559,10 @@
         ],
         "gap_refs": [],
         "readback_refs": [],
-        "backend": "open: exact APK builder documented",
-        "ui": "open: proposed manual action in wheel settings",
-        "validation": "partial: official captured payload matches datetime; execution/readback not verified",
-        "next_action": "Resolve timezone, DST and fractional offset behavior before implementation",
+        "backend": "implemented: APK clock builder plus one-shot deferred startup after valid model44 data; standard raw timezone offset preserved",
+        "ui": "not applicable: automatic connection initialization, no new dashboard or settings control",
+        "validation": "partial: exact capture fixture, DST/fractional offsets and connection lifecycle covered by unit tests; wheel clock execution/readback unverified",
+        "next_action": "On requested future build, capture one sync after connection and none during steady telemetry; verify wheel clock if observable",
         "priority": 2
       },
       {
@@ -992,6 +992,7 @@
     ]
   },
   "implementation": {
+    "clock_initialization": "Official BtManager.bluetoothHeatBeatOnce -> syncTime -> Util.getTimeBytes -> sendBytesData/CRC path implemented for Aeon. initSequence stays empty until model evidence; pollRealtime consumes a single deferred command after CRC-valid model44 frame. No periodic resync or semantic retry; rearmed on disconnect/model replacement. Date is generated at dispatch, local wall time plus raw standard timezone hours truncated toward zero. Unrepresentable years skipped. Queue success and firmware clock adjustment are not acknowledged by this implementation.",
     "headlight_dashboard": "Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.",
     "model_component": "ble/nosfet/NosfetAeonProtocol.kt owns Aeon readbacks, session identity, capabilities and typed settings dispatch; composed behind VeteranModelProtocol.",
     "shared_core": "VeteranAdapter retains one parser, model identification, common telemetry/BMS and BLE-family API; no second BLE adapter or duplicated parser.",
@@ -2743,14 +2744,14 @@
         13
       ],
       "app_transform": "year-2000, month1..12, day,hour,minute,second; raw timezone offset in whole hours",
-      "euc_mapping": "No matching Veteran init command; initSequence empty",
-      "qualification": "syncTime sends once after receiving data. Raw timezone offset excludes daylight-saving adjustment and truncates fractional hours; preserve APK behavior as observed code, not a universal clock specification.",
+      "euc_mapping": "AeonCommands.synchronizeClock with CRC; NosfetAeonProtocol.takeDeferredInitCommand consumed by VeteranAdapter.pollRealtime after model44 telemetry. Immediate initSequence remains empty deliberately.",
+      "qualification": "Official BtManager.bluetoothHeatBeatOnce calls syncTime; hasSyncTime guards once while receivingData, reset on connect. sendBytesData appends CRC. Raw timezone offset excludes daylight-saving adjustment and truncates fractional hours; local wall-clock fields still include DST. EUC implementation additionally waits for CRC-valid model44 data. Exact frame matches historical capture; firmware execution/readback not newly verified.",
       "live_write_tested_this_turn": false,
       "euc_source": null,
       "readback_field": null,
       "apk_raw_range": null,
       "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
-      "first_pass_status": "Existing behavior or documented only; see first_pass"
+      "first_pass_status": "Implemented: one official clock-sync attempt after validated model44 data per connection/model session; unit-tested, wheel clock effect unverified"
     }
   ],
   "readbacks": [

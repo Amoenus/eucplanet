@@ -1,6 +1,7 @@
 package com.eried.eucplanet.ble.nosfet
 
 import com.eried.eucplanet.ble.VeteranModel
+import com.eried.eucplanet.ble.VeteranParser
 import com.eried.eucplanet.ble.VeteranModelProtocol
 import com.eried.eucplanet.ble.WheelCapabilities
 import com.eried.eucplanet.data.model.AeonLightState
@@ -30,9 +31,13 @@ internal class NosfetAeonProtocol : VeteranModelProtocol {
     private var lightReceivedAtNanos: Long = 0L
     @Volatile private var settings: AeonSettings? = null
     private var sessionId = nextSessionId.incrementAndGet()
+    private var receivedAeonFrame = false
+    private var clockSyncAttempted = false
 
     @Synchronized
     override fun acceptFrame(frame: ByteArray): Boolean? {
+        // Caller supplies CRC-validated complete frames. A name match alone is not enough.
+        if (VeteranParser.mVerOf(frame) == 44) receivedAeonFrame = true
         AeonTelemetryDecoder.settings(frame, VeteranModel.NOSFET_AEON)?.let {
             settings = it.copy(sessionId = sessionId)
         }
@@ -69,7 +74,16 @@ internal class NosfetAeonProtocol : VeteranModelProtocol {
     }
 
     @Synchronized
+    override fun takeDeferredInitCommand(): ByteArray? {
+        if (!receivedAeonFrame || clockSyncAttempted) return null
+        clockSyncAttempted = true
+        return AeonCommands.synchronizeClock()
+    }
+
+    @Synchronized
     override fun reset() {
+        receivedAeonFrame = false
+        clockSyncAttempted = false
         lightState = null
         lightReceivedAtNanos = 0L
         settings = null

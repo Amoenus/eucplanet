@@ -2,11 +2,11 @@
 
 Generated from [capabilities.json](capabilities.json). Edit the ledger, then run `python tools/render_aeon_capabilities.py`; `--check` verifies coverage and generated-file freshness without writing.
 
-Status date: 2026-09-07. Complete coverage of the current known control ledger, not a claim of all firmware capabilities or a completed per-field telemetry audit. Shared LeaperKim and WheelLog references remain candidates unless Aeon applicability is established.
+Status date: 2026-09-08. Complete coverage of the current known control ledger, not a claim of all firmware capabilities or a completed per-field telemetry audit. Shared LeaperKim and WheelLog references remain candidates unless Aeon applicability is established.
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 46 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 48 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
 
@@ -211,6 +211,28 @@ Official command evidence: horn. Exact construction sites, transforms and proven
 - [ ] Validation: partial: Aeon horn worked; record current single-frame app retest separately
 - [ ] Next: Retest current build once; record packet and audible result
 
+### TELEMETRY-CURRENT-POWER
+
+**Separate phase current from estimated battery current and power** (priority 2)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+- [ ] Backend: open: source discrepancy established; parser assigns phase current to generic current and calculates both power fields without PWM
+- [ ] Ui: partial: existing metrics consume these fields; consumer semantics and any existing compensation need audit
+- [ ] Validation: partial: official APK and pinned WheelLog provide distinct phase/PWM-derived-current implementations; no new live verification
+- [ ] Next: Audit downstream compensation and sign assumptions, then implement bounded model-policy correction with current/PWM/power, energy and other-model regression tests. Do not apply PWM twice or claim mechanical motor power.
+
+### TELEMETRY-ROLL
+
+**Expose official roll-angle readback with freshness** (priority 2)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+- [ ] Backend: open: APK page0/4 offset67 signed16 /100 lrAngle is not projected into WheelData.rollAngle
+- [ ] Ui: open: existing roll consumers and unknown/stale-state behavior need review before exposure
+- [ ] Validation: partial: exact APK decoder found; physical sign, stale-page behavior and firmware applicability not tested
+- [ ] Next: Add a model-scoped passive projection with page, length, sign, age, disconnect and model-isolation tests; do not treat intervening-page defaults as observed zero.
+
 ### LIGHT-LEVEL-WRITE
 
 **Remote multilevel headlight selection or cycling** (priority 2)
@@ -349,8 +371,8 @@ EUC Planet API: `pollRealtime`, `pollSettings`, `pollStats`, `onRawNotification`
 
 - [ ] Backend: partial: shared Veteran parser and existing Aeon adjustments
 - [ ] Ui: partial: existing dashboard and battery screens
-- [ ] Validation: open: not a claim every common field is Aeon-verified
-- [ ] Next: Enumerate parser fields against NOSFET APK and WheelLog commit; add per-field records
+- [ ] Validation: partial: offline source reconciliation recorded in telemetry_reconciliation; all WheelData slots have explicit dispositions. Not every field or firmware is physically verified.
+- [ ] Next: Audit current/power downstream consumers and implement a bounded correction with regression tests; separately add fresh roll-angle readback. Resolve official battery lookup, version high byte, charge-mode enum, BMS sentinels and short-frame handling before declaring full parity.
 
 ### REFERENCE-AUDIT
 
@@ -358,7 +380,7 @@ EUC Planet API: `pollRealtime`, `pollSettings`, `pollStats`, `onRawNotification`
 
 EUC Planet API: `familyId`, `capabilities`, `bleProfile`, `notifyConnectingTo`, `pickAdapterByDiscoveredServices`, `getDiagnosticCommands`, `diagnosticCatalogs`, `familyDisplayName`, `brand`, `inspectMessageTypes`
 
-- [ ] Backend: open: pin source revisions and reconcile all candidate mappings
+- [ ] Backend: partial: pinned WheelLog dcf56672 and EUC a1e83af1 against NOSFET1.1.3 decoder in telemetry_reconciliation; control-wide comparison not complete
 - Ui: not applicable: research work item
 - [ ] Validation: open: no blanket inheritance of other-wheel support
 - [ ] Next: For each source difference add a row or explicit exclusion with provenance
@@ -715,27 +737,63 @@ Explicit unmapped/gap group: Firmware update / bootloader.
 - [ ] Validation: open: maintenance paths only inventoried
 - [ ] Next: No probing, flashing or arbitrary payload execution
 
+## Offline telemetry reconciliation
+
+Reviewed: 2026-09-08. Offline source comparison, not new physical verification. Absolute zero-based offsets from DC5A5C; BE means big-endian. Shared decoder code alone does not establish every Aeon firmware's behavior. Review does not change application behavior.
+
+Evidence: EUC and APK columns are Confirmed in EUC Planet source and Confirmed in NOSFET APK respectively. WheelLog is Confirmed in WheelLog source at the pinned revision, not a claim about its current head. Findings distinguish source differences from unverified physical behavior.
+
+### Source anchors
+
+- euc: EUC Planet fork baseline a1e83af1: ble/VeteranParser.kt parseTelemetry/parseLongFrame, ble/VeteranAdapter.kt decode, ble/VeteranModel.kt; paths relative to app/src/main/java/com/eried/eucplanet/.
+- apk: NOSFET 1.1.3, SHA256 f4881479f3c40e2f1d54a8909223af79f5cb18eaf96d9a94f4116ce10e4a5099. com.laoniao.leaperkim.utils.BtManager.handleFullSingleData and parseVersionCode. Fresh JADX export: architecture_as_is/20260907_145845/exports/BtManager-jadx.java in research workspace, not committed. Util.volToBattery checked in earlier CFR export; hardware lookup contents remain open.
+- wheellog: [wheellog](https://github.com/Wheellog/Wheellog.Android/commit/dcf56672)
+- wheellog_adapter: [wheellog_adapter](https://github.com/Wheellog/Wheellog.Android/blob/dcf56672/app/src/main/java/com/cooper/wheellog/utils/VeteranAdapter.java)
+- wheellog_data: [wheellog_data](https://github.com/Wheellog/Wheellog.Android/blob/dcf56672/app/src/main/java/com/cooper/wheellog/WheelData.java)
+
+### Mapping and gaps
+
+| Field group / wire | EUC Planet | Official APK | WheelLog reference | Finding / next action |
+|---|---|---|---|---|
+| VOLTAGE: 4..5 u16 BE /100 V | Retains hundredths of a volt. | Same scale; rounds to one decimal (JADX294). | Same scale. | Aligned encoding; presentation precision differs. Next: No encoding change indicated. |
+| SPEED: 6..7 signed16 BE /10 km/h | applySignMode, default signed. | Absolute magnitude after signed conversion (296..305). | Configurable sign. | Aligned scale; sign policy differs. APK uses >32768 rather than >= for its sign conversion, a boundary quirk not a recommended implementation. Next: Preserve sign policy deliberately; validate direction separately. |
+| DISTANCE: Trip low16 at8, high16 at10; total low16 at12, high16 at14; unsigned meters | Combines word-swapped32 and converts to km. | Same word order; separate trip and total (306..307). | Same word order. | Aligned. App-local trip meter is a different quantity. Next: Retain distinction in UI and reset behavior. |
+| CURRENT-POWER: Phase current16..17 signed16 /10 A; raw PWM34..35 u16 /10000 fraction | Phase current assigned to current; phaseCurrent remains0. batteryPower and motorPower both voltage*phase current. | mechineCurrent=absolute phase; current=round(mechineCurrent*rawPWM/10000,1); power uses that current and voltage (308..312,333..340). | Dedicated phaseCurrent; PWM-derived current; voltage-derived power (WheelData803..805,783..785). | Confirmed source discrepancy. Battery-current estimate is not direct pack-current measurement, and voltage*phase current is not established mechanical motor power. APK absolute-value policy loses sign. Next: Audit repository, energy integration, charging detection, recording and UI consumers for existing PWM compensation before a bounded fix. Preserve intentional sign semantics and avoid applying PWM twice. |
+| CONTROLLER-TEMP: 18..19 signed16 BE /100 C | One temperature plus maxTemperature equal to it. | Same scale, one-decimal rounding (313..317). | Same scale. | Aligned controller measurement, not a maximum over BMS temperatures. Next: No encoding change indicated. |
+| SHUTDOWN-TIMER: 20..21 u16 BE | Not surfaced by inspected parser. | setShutDownTime (318). | Sleep timer, seconds. | Missing projection; exact timer behavior and Aeon readback validation open. Not proof of an editable standby setting. Next: Trace official UI units and record passive countdown before offering UI. |
+| CHARGE-MODE: APK byte23; WheelLog u16 at22 | byte23 >0 mapped to Boolean charging. | Preserves byte23 as chargeMode (319). | Preserves u16 chargeMode. | EUC loses raw mode distinctions. Byte22 and nonzero enum meanings unresolved; stale WheelData comment contradicts parser behavior. Next: Trace APK mode consumers; retain raw enum if meaningful. Do not assume all nonzero values mean active charging. |
+| SPEED-THRESHOLDS: Alarm24..25 and tiltback26..27 u16 BE /10 km/h | wheelAlarmSpeedKmh and wheelMaxSpeedKmh. | dangerSpeed and stopSpeed (320..321). | Same offsets and scale. | Source-confirmed readback mapping, independent of command success, audible feedback or actual riding enforcement. Page8 StopSpeed is a separate encoding. Next: Test legal-mode temporary snapshot using stationary before/on/off readbacks when wheel is available. |
+| IDENTITY: Base version28..29; APK additionally uses byte30 as high byte | u16 /1000 identifies model44; full three-byte interpretation absent from inspected parser. | Builds integer from bytes30,28,29, formats six digits into hardware/software sections (322,726..752). | Model44 and36S explicitly added. | Aeon identity already supported; full version interpretation not equivalent if byte30 is nonzero. No claim observed firmware44250 needs a change. Next: Trace identity event formatting and fixtures before changing version handling. |
+| LEGACY-RIDE-MODE: APK byte31; WheelLog u16 at30 | Not surfaced by inspected telemetry parser. | setRideMode from byte31 (325). | Pedals mode u16. | Legacy mode must not be equated with page8 continuous hardness. Byte30 also participates in official version encoding. Next: Trace official mode consumers and model branching before adding a generic value. |
+| PITCH-PWM: Pitch32..33 signed16; PWM34..35 u16 | pitchAngle=raw/100 degrees; pwm=raw/100 percent, enabled for model44. | Stores signed carPose and raw outPut (326..332); applies output/10000 for derived current. | Pitch/100; hardware PWM/100 percent. | PWM scale aligned. Official carPose presentation scaling remains untraced; physical pitch sign not established. Next: Retain scale evidence without claiming physical orientation proof. |
+| BATTERY-ESTIMATE: Derived from voltage, not a confirmed Aeon SoC byte | Model44 linear curve clamp(round((centivolts-11902)/29.03),0,100). | Util.volToBattery selects hardware-specific CarBaseInfo table, with fallback. Table values not reconciled. | Same simple curve; optional alternative curve. | Already on36S curve; parity with official battery percentage is NOT confirmed. Next: Extract matching hardware table and compare offline values. Do not apply Oryx page2 SoC mapping to Aeon. |
+| BATTERY-TEMP-MODE: 36..37 u16 BE when available | Not surfaced by inspected parser. | batteryTempMode (341 onwards). | Not reconciled. | Named raw field only; semantics and supported Aeon values unresolved. Next: Trace consumers before assigning units or offering UI. |
+| ROLL-PACK-CURRENT: Page0/4: roll67..68 signed16 /100; pack currents69..70 and71..72 signed16 /100 A | Pack currents decoded signed; roll omitted. Pack-current comment incorrectly says0.1 A although code divides100. | lrAngle/100; both pack currents absolute/100 (348..379). | Signed pack currents; no roll projection here. | Roll readback gap and pack-current sign-policy difference. Pack currents are distinct from phase/PWM estimate. Next: Add model-scoped roll readback with age/disconnect handling and tests; preserve signed pack data until conventions verified. |
+| BMS-CELLS: Pages1/5 cells1..15 at53;2/6 cells16..30 at53;3/7 cells31..36 at59; u16 /1000 V | First and final blocks use signed16; middle uses unsigned16. Final parser requires12 slots but adapter caps output to36 cells. | Unsigned cell values; final block reads six cells (401..467). | 36S; shared final block reads up to12 slots. | Normal cell-voltage encoding aligned; Aeon36S display cap already implemented. Sentinel and short-final-page acceptance differences remain. Next: Test invalid/sentinel values and frame-length/CRC boundaries; do not display extra six slots as Aeon cells. |
+| BMS-TEMPS-FALL: Pages3/7 six signed16 temperatures at47+2*i /100 C; page2 byte47 fallProtectionAngle | Six BMS temperatures decoded; fallProtectionAngle not surfaced by inspected parser. | Six temperatures with rounding; stores page2 fallProtectionAngle (415..467). | Six BMS temperatures. | Temperature offsets aligned. Fall-protection readback is a separate missing field; no write authorized by this review. Next: Add read-only fall-angle mapping only after raw/sentinel/model checks. |
+| LIGHT-SETTINGS: Captured page1 byte49 headlight level; page8 settings offsets in existing ledger | Model-specific headlight projection and13 raw settings fields already implemented. | Page8 named settings decoded; see existing command/readback ledger. | Page8 TODO at pinned revision. | Our existing Aeon work exceeds that early WheelLog revision here. Light levels are capture-derived; source presence is not remote multilevel-command proof. Next: Retain existing evidence distinctions and complete pending low-risk write tests. |
+
 ## Full expected WheelData field list
 
-Automatically enumerated, including fields with no established Aeon mapping. UNREVIEWED is explicit missing evidence, not a claim of zero, absence or support. Per-field source/capture reconciliation remains TELEMETRY-AUDIT; this section intentionally does not promote shared parser assumptions into Aeon facts.
+Automatically enumerated with an explicit disposition for every field; new fields fail the generator until classified. UNMAPPED means missing evidence or projection, not measured zero, physical absence or support. Source comparisons do not promote shared parser assumptions into Aeon physical facts.
 
 | Field | Current inventory disposition |
 |---|---|
-| `speed` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `voltage` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `current` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `batteryPercent` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `battery1Percent` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `battery2Percent` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `pwm` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `torque` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `phaseCurrent` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `temperatures` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `maxTemperature` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `tripDistance` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `totalDistance` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `pitchAngle` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `rollAngle` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
+| `speed` | Source-aligned offset6 signed16 /10 km/h. EUC preserves configured direction; official app takes absolute magnitude. Physical direction convention remains unverified. |
+| `voltage` | Source-aligned offset4 unsigned16 /100 V. Official app rounds to one decimal; EUC retains hundredths. |
+| `current` | DISCREPANCY: EUC puts offset16 phase current here. Official app derives current from phase-current magnitude multiplied by raw output /10000. Audit consumers before changing semantics. |
+| `batteryPercent` | Estimated, not measured SoC: EUC model44 uses clamp(round((voltageCentivolts-11902)/29.03),0,100). Matches WheelLog simple curve; official app chooses a hardware-configured lookup table, not yet reconciled. |
+| `battery1Percent` | UNMAPPED: not populated by inspected Veteran parser. Separate pack SoC has not been established; default0 is not evidence of empty pack. |
+| `battery2Percent` | UNMAPPED: not populated by inspected Veteran parser. Separate pack SoC has not been established; default0 is not evidence of empty pack. |
+| `pwm` | Source-aligned offset34 unsigned16 /100 percent on model44. Official raw output /10000 is the fractional multiplier used for current. |
+| `torque` | UNMAPPED: not populated by inspected Veteran parser; no confirmed Aeon torque wire field in this audit. |
+| `phaseCurrent` | MISSING PROJECTION: offset16 provides phase current, but shared parser leaves this dedicated field at default0. Default0 is not a measured zero. |
+| `temperatures` | Source-aligned controller temperature at offset18 signed16 /100 C. Official app rounds to one decimal. BMS temperatures are separate slices. |
+| `maxTemperature` | Same single controller temperature as temperatures[0], not maximum across controller and BMS sensors. |
+| `tripDistance` | Source-aligned low16/high16 word ordering at8/10, meters converted to km. Not the app-local tripMeterKm. |
+| `totalDistance` | Source-aligned low16/high16 word ordering at12/14, meters converted to km. |
+| `pitchAngle` | Offset32 signed16 /100 in EUC and WheelLog. APK stores signed raw carPose; official presentation scaling not yet traced. Positive-direction meaning remains unverified. |
+| `rollAngle` | MISSING: APK page0/4 offset67 signed16 /100 is lrAngle; EUC leaves rollAngle at default0. Need fresh page-aware projection, not copying zero on intervening pages. |
 | `latitude` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 | `longitude` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 | `externalGpsBatteryPercent` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
@@ -747,24 +805,24 @@ Automatically enumerated, including fields with no established Aeon mapping. UNR
 | `accelX` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 | `accelY` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 | `forwardGFromSpeed` | App-derived metric; audit source inputs, not a direct wheel setter. |
-| `batteryPower` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `motorPower` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
+| `batteryPower` | DISCREPANCY: parser computes voltage times phase current, without PWM. Official power uses its PWM-derived current. Repository/energy consumers need separate audit. |
+| `motorPower` | UNRESOLVED semantics: currently identical to batteryPower; not independently measured mechanical or motor electrical power. |
 | `whConsumed` | App-derived metric; audit source inputs, not a direct wheel setter. |
 | `whRegen` | App-derived metric; audit source inputs, not a direct wheel setter. |
 | `whPerKmRecent` | App-derived metric; audit source inputs, not a direct wheel setter. |
 | `rangeKmEstimate` | App-derived metric; audit source inputs, not a direct wheel setter. |
-| `dynamicSpeedLimit` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `dynamicCurrentLimit` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
+| `dynamicSpeedLimit` | UNMAPPED: do not equate with configured tiltback threshold wheelMaxSpeedKmh. |
+| `dynamicCurrentLimit` | UNMAPPED: no confirmed Aeon current-limit telemetry field in this audit. |
 | `lightOn` | Binary projection of reported light level on Aeon; not a complete light-mode representation. |
 | `headlightReadback` | Implemented generic projection of captured Aeon level; dashboard uses fresh reported state. |
 | `aeonLightState` | Captured Aeon page1 offset49 mapping, preserving raw unknown values. |
 | `aeonSettings` | 13 official APK page8 fields decoded; SND and BRT physical transitions captured, other writes not verified. |
-| `charging` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `tirePressureKpa` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `pcMode` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `lockedReported` | UNREVIEWED: exact Aeon field/source/units/applicability and UI validation not reconciled in this inventory yet. |
-| `wheelMaxSpeedKmh` | Shared reported threshold path; exact Aeon verification still open. |
-| `wheelAlarmSpeedKmh` | Aeon reported alarm threshold mapping remains to be audited, not assumed from command presence. |
+| `charging` | APK reads raw byte23 as chargeMode; EUC reduces it to >0. Exact nonzero mode meanings remain unresolved. WheelData comment claiming Veteran always leaves false is stale. |
+| `tirePressureKpa` | UNMAPPED: no confirmed Aeon TPMS telemetry in this audit; default0 does not establish hardware absence. |
+| `pcMode` | UNMAPPED: shared parser leaves -1; do not infer parking or transport mode from this other-family field. |
+| `lockedReported` | UNMAPPED: no confirmed Aeon security-lock readback; null remains distinct from unlocked. |
+| `wheelMaxSpeedKmh` | SOURCE-CONFIRMED mapping: offset26 unsigned16 /10 km/h, APK stopSpeed. Separate from page8 StopSpeed scalar. Physical enforcement and write/readback validation remain pending. |
+| `wheelAlarmSpeedKmh` | SOURCE-CONFIRMED mapping: offset24 unsigned16 /10 km/h, APK dangerSpeed. No audible setting confirmation does not disprove this readback mapping or establish command failure. |
 | `rssiDbm` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 | `timestamp` | App/phone/external-sensor/connection metadata, not an Aeon wheel-command gap. Source: WheelData declaration/comments. |
 

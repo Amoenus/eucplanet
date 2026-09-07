@@ -42,7 +42,13 @@ wheel_fields = re.findall(r'^    val (\w+):', wheel_file.read_text(encoding='utf
 settings_file = root / 'app/src/main/java/com/eried/eucplanet/data/model/WheelSettings.kt'
 settings_fields = re.findall(r'^    val (\w+):', settings_file.read_text(encoding='utf-8'), re.M)
 assert set(settings_fields) == set(expected['wheel_settings']), 'WheelSettings coverage drift'
-assert set(expected['telemetry_notes']) | set(expected['non_wheel_fields']) | set(expected['derived_fields']) <= set(wheel_fields)
+field_groups = [set(expected[key]) for key in ['telemetry_notes', 'non_wheel_fields', 'derived_fields']]
+assert set.union(*field_groups) == set(wheel_fields), 'WheelData disposition coverage drift'
+assert sum(map(len, field_groups)) == len(wheel_fields), 'Overlapping WheelData dispositions'
+telemetry = data['telemetry_reconciliation']
+assert len({row['id'] for row in telemetry['rows']}) == len(telemetry['rows']), 'Duplicate telemetry rows'
+assert all(all(row[key] for key in ['id', 'wire', 'euc', 'apk', 'wheellog', 'finding', 'next'])
+           for row in telemetry['rows']), 'Incomplete telemetry row'
 
 def emit(path, content):
     if '--check' in sys.argv:
@@ -137,8 +143,21 @@ for item in sorted(items, key=lambda item: item['priority']):
         tick = 'x' if state.startswith('implemented:') or state.startswith('verified:') else ' '
         lines.append(f"- [{tick}] {stage.capitalize()}: {state}")
     lines += [f"- [ ] Next: {item['next_action']}", '']
-lines += ['## Full expected WheelData field list', '',
-    'Automatically enumerated, including fields with no established Aeon mapping. UNREVIEWED is explicit missing evidence, not a claim of zero, absence or support. Per-field source/capture reconciliation remains TELEMETRY-AUDIT; this section intentionally does not promote shared parser assumptions into Aeon facts.', '',
+lines += ['## Offline telemetry reconciliation', '',
+    f"Reviewed: {telemetry['as_of']}. {telemetry['scope']}", '',
+    'Evidence: EUC and APK columns are Confirmed in EUC Planet source and Confirmed in NOSFET APK respectively. WheelLog is Confirmed in WheelLog source at the pinned revision, not a claim about its current head. Findings distinguish source differences from unverified physical behavior.', '',
+    '### Source anchors', '']
+for key, value in telemetry['sources'].items():
+    rendered = f'[{key}]({value})' if value.startswith('https://') else value
+    lines.append(f'- {key}: {rendered}')
+lines += ['', '### Mapping and gaps', '',
+    '| Field group / wire | EUC Planet | Official APK | WheelLog reference | Finding / next action |',
+    '|---|---|---|---|---|']
+for row in telemetry['rows']:
+    lines.append('| ' + ' | '.join(map(cell, [row['id'] + ': ' + row['wire'], row['euc'],
+        row['apk'], row['wheellog'], row['finding'] + ' Next: ' + row['next']])) + ' |')
+lines += ['', '## Full expected WheelData field list', '',
+    'Automatically enumerated with an explicit disposition for every field; new fields fail the generator until classified. UNMAPPED means missing evidence or projection, not measured zero, physical absence or support. Source comparisons do not promote shared parser assumptions into Aeon physical facts.', '',
     '| Field | Current inventory disposition |', '|---|---|']
 for field in wheel_fields:
     if field in expected['telemetry_notes']:

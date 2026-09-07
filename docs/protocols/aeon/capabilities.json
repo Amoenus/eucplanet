@@ -137,7 +137,7 @@
         "inventory_refs": [
           "ALARM-SPEED"
         ],
-        "status": "Shared LkAp builder; owner reported ineffective setting, unresolved."
+        "status": "Shared LkAp builder; owner clarifies no audible confirmation when applying the setting. Threshold persistence was uncertain; riding-alarm failure was not established."
       },
       {
         "member": "setVolume",
@@ -515,7 +515,7 @@
         "readback_refs": [],
         "backend": "partial: existing generic commit path; effectiveness unresolved",
         "ui": "partial: existing generic control",
-        "validation": "open: owner reported speed alarm setting not working",
+        "validation": "partial: owner clarifies the missing sound was the audible acknowledgement when applying the speed-warning setting, not a tested absence of warnings at speed. Setting seemed not to stick, but threshold persistence and BLE/application acknowledgement remain unverified.",
         "next_action": "Diagnose exact command and response; do not mark as fixed",
         "priority": 3
       },

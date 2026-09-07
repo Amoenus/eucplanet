@@ -47,7 +47,7 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 | `setLightFollowup` | Null deliberately for current Aeon path. | [LIGHT-TOGGLE](#light-toggle) |
 | `setMaxSpeed` | Returns null; separate commit methods below carry the commands. Do not count this null alone as no support. | [TILTBACK](#tiltback), [ALARM-SPEED](#alarm-speed) |
 | `setMaxSpeedCommit` | Shared LdAp builder; Aeon remote effect not verified. | [TILTBACK](#tiltback) |
-| `setAlarmSpeedCommit` | Shared LkAp builder; owner reported ineffective setting, unresolved. | [ALARM-SPEED](#alarm-speed) |
+| `setAlarmSpeedCommit` | Shared LkAp builder; owner clarifies no audible confirmation when applying the setting. Threshold persistence was uncertain; riding-alarm failure was not established. | [ALARM-SPEED](#alarm-speed) |
 | `setVolume` | Unsupported/null. Panel SND is separate and must not be substituted for global/alarm volume. | [GLOBAL-VOLUME](#global-volume), [SND](#snd) |
 | `setDRL` | Unsupported/null. Separate physical DRL exists; remote mapping missing. | [DRL](#drl) |
 | `setLock` | Disabled/null for Aeon by policy; firmware support unresolved. | [LOCK](#lock) |
@@ -402,7 +402,7 @@ Official command evidence: alarm speed. Exact construction sites, transforms and
 
 - [ ] Backend: partial: existing generic commit path; effectiveness unresolved
 - [ ] Ui: partial: existing generic control
-- [ ] Validation: open: owner reported speed alarm setting not working
+- [ ] Validation: partial: owner clarifies the missing sound was the audible acknowledgement when applying the speed-warning setting, not a tested absence of warnings at speed. Setting seemed not to stick, but threshold persistence and BLE/application acknowledgement remain unverified.
 - [ ] Next: Diagnose exact command and response; do not mark as fixed
 
 ### PEDAL-ANGLE

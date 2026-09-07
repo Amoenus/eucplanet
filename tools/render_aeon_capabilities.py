@@ -86,7 +86,21 @@ lines = ['# EUC Planet / NOSFET Aeon implementation inventory', '',
     inventory['status_policy'], '',
     f"Coverage: {len(items)} work items, all {len(data['commands'])} APK construction sites / {len(set(r['semantic'] for r in data['commands']))} command groups, {len(data['readbacks'])} settings readbacks, {len(data['gaps'])} gap groups, {len(members)} WheelAdapter members, {len(flags)} capability flags, {len(settings_fields)} WheelSettings slots and {len(wheel_fields)} WheelData fields.", '',
     'An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.', '',
-    '## EUC Planet expected surface mapped to Aeon', '',
+    '## Implemented progress', '',
+    'These parts are already in source. Pending physical tests do not make backend/UI work unimplemented. N/A means no UI is needed, not unfinished UI. Partial items remain in the detailed checklist.', '',
+    '| Work item | Backend | UI | Physical validation / remaining work |', '|---|---|---|---|']
+for item in items:
+    if not any(item[stage].startswith('implemented:') for stage in ['backend', 'ui']):
+        continue
+    def progress(state):
+        if state.startswith('implemented:'):
+            return 'Implemented'
+        if state.startswith('not applicable:'):
+            return 'N/A'
+        return state.split(':', 1)[0].capitalize()
+    ref = item['id']
+    lines.append(f"| [{ref}](#{ref.lower()}) | {progress(item['backend'])} | {progress(item['ui'])} | {cell(item['validation'])} |")
+lines += ['', '## EUC Planet expected surface mapped to Aeon', '',
     'Confirmed in EUC Planet source means current code behavior only, not firmware verification. Interface coverage is checked against the current source; newly added methods or flags require an explicit entry.', '',
     '| API / property | Aeon mapping, missing mapping or deliberate absence | Work items |', '|---|---|---|']
 for entry in expected['api']:
@@ -117,6 +131,9 @@ for item in sorted(items, key=lambda item: item['priority']):
         lines += ['Readback fields: ' + ', '.join(item['readback_refs']) + ' ([offsets and evidence](README.md#settings-page-8)).', '']
     for stage in ['backend', 'ui', 'validation']:
         state = item[stage]
+        if state.startswith('not applicable:'):
+            lines.append(f'- {stage.capitalize()}: {state}')
+            continue
         tick = 'x' if state.startswith('implemented:') or state.startswith('verified:') else ' '
         lines.append(f"- [{tick}] {stage.capitalize()}: {state}")
     lines += [f"- [ ] Next: {item['next_action']}", '']

@@ -338,6 +338,16 @@
     "status_policy": "implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.",
     "items": [
       {
+        "id": "LIGHT-LEVEL-WRITE",
+        "title": "Remote multilevel headlight selection or cycling",
+        "command_refs": [], "gap_refs": ["Headlight levels"], "readback_refs": [],
+        "backend": "open: no supported remote multilevel setter found; current on/off command is not mode cycling",
+        "ui": "open: do not offer a level selector or cycle gesture until a command is established",
+        "validation": "open: physical level cycle and readback do not prove remote level control",
+        "next_action": "Identify exact command and Aeon applicability; keep completed readback work in LIGHT-LEVEL separate",
+        "priority": 2
+      },
+      {
         "id": "PANEL-STA",
         "title": "Panel STA setting",
         "command_refs": [], "gap_refs": [], "readback_refs": [],
@@ -373,16 +383,16 @@
       },
       {
         "id": "LIGHT-LEVEL",
-        "title": "Headlight level readback and remote levels",
+        "title": "Headlight level readback and dashboard state",
         "command_refs": [],
         "gap_refs": [
           "Headlight levels"
         ],
         "readback_refs": [],
-        "backend": "partial: page1 byte49 decoder; remote level setter unknown",
-        "ui": "partial: dashboard Off/Low/Medium/High implemented; no level selector",
+        "backend": "implemented: page1 byte49 decoder and freshness-aware HeadlightReadback projection, commit3d67c95f",
+        "ui": "implemented: existing dashboard Off/Low/Medium/High label and theme highlight, commit3d67c95f",
         "validation": "partial: physical cycles and captures verified; new dashboard pending",
-        "next_action": "Verify panel changes update dashboard; research remote levels",
+        "next_action": "Verify physical panel changes update the dashboard; remote multilevel writing is tracked separately in LIGHT-LEVEL-WRITE",
         "priority": 1
       },
       {
@@ -411,9 +421,9 @@
         "readback_refs": [
           "ScreenBacklightRate"
         ],
-        "backend": "implemented: typed guarded APK setter and readback",
-        "ui": "implemented: settings editor",
-        "validation": "partial: panel brightness effect verified; remote setter pending",
+        "backend": "implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f",
+        "ui": "implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f",
+        "validation": "partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending",
         "next_action": "Change one step, check display and readback, restore",
         "priority": 1
       },

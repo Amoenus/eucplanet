@@ -6,9 +6,24 @@ Status date: 2026-09-07. Complete coverage of the current known control ledger, 
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 44 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 45 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
+
+## Implemented progress
+
+These parts are already in source. Pending physical tests do not make backend/UI work unimplemented. N/A means no UI is needed, not unfinished UI. Partial items remain in the detailed checklist.
+
+| Work item | Backend | UI | Physical validation / remaining work |
+|---|---|---|---|
+| [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | partial: historical remote paths tested; current APK/SND interaction pending |
+| [LIGHT-LEVEL](#light-level) | Implemented | Implemented | partial: physical cycles and captures verified; new dashboard pending |
+| [SND](#snd) | Implemented | Implemented | partial: physical SND readback verified; remote setter pending |
+| [DISPLAY-BRT](#display-brt) | Implemented | Implemented | partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending |
+| [UNITS](#units) | Implemented | Implemented | open: APK mapping and constant readback only; UNT never changed in panel session |
+| [HORN](#horn) | Implemented | Implemented | partial: Aeon horn worked; record current single-frame app retest separately |
+| [TIME](#time) | Implemented | N/A | partial: exact capture fixture, DST/fractional offsets and connection lifecycle covered by unit tests; wheel clock execution/readback unverified |
+| [LOCK](#lock) | Implemented | Implemented | partial: app policy tested; firmware support unresolved |
 
 ## EUC Planet expected surface mapped to Aeon
 
@@ -115,16 +130,16 @@ Official command evidence: headlight. Exact construction sites, transforms and p
 
 ### LIGHT-LEVEL
 
-**Headlight level readback and remote levels** (priority 1)
+**Headlight level readback and dashboard state** (priority 1)
 
 EUC Planet API: `setLight`
 
 Explicit unmapped/gap group: Headlight levels.
 
-- [ ] Backend: partial: page1 byte49 decoder; remote level setter unknown
-- [ ] Ui: partial: dashboard Off/Low/Medium/High implemented; no level selector
+- [x] Backend: implemented: page1 byte49 decoder and freshness-aware HeadlightReadback projection, commit3d67c95f
+- [x] Ui: implemented: existing dashboard Off/Low/Medium/High label and theme highlight, commit3d67c95f
 - [ ] Validation: partial: physical cycles and captures verified; new dashboard pending
-- [ ] Next: Verify panel changes update dashboard; research remote levels
+- [ ] Next: Verify physical panel changes update the dashboard; remote multilevel writing is tracked separately in LIGHT-LEVEL-WRITE
 
 ### SND
 
@@ -151,9 +166,9 @@ Official command evidence: display brightness. Exact construction sites, transfo
 
 Readback fields: ScreenBacklightRate ([offsets and evidence](README.md#settings-page-8)).
 
-- [x] Backend: implemented: typed guarded APK setter and readback
-- [x] Ui: implemented: settings editor
-- [ ] Validation: partial: panel brightness effect verified; remote setter pending
+- [x] Backend: implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f
+- [x] Ui: implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f
+- [ ] Validation: partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending
 - [ ] Next: Change one step, check display and readback, restore
 
 ### UNITS
@@ -184,6 +199,19 @@ Official command evidence: horn. Exact construction sites, transforms and proven
 - [ ] Validation: partial: Aeon horn worked; record current single-frame app retest separately
 - [ ] Next: Retest current build once; record packet and audible result
 
+### LIGHT-LEVEL-WRITE
+
+**Remote multilevel headlight selection or cycling** (priority 2)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+Explicit unmapped/gap group: Headlight levels.
+
+- [ ] Backend: open: no supported remote multilevel setter found; current on/off command is not mode cycling
+- [ ] Ui: open: do not offer a level selector or cycle gesture until a command is established
+- [ ] Validation: open: physical level cycle and readback do not prove remote level control
+- [ ] Next: Identify exact command and Aeon applicability; keep completed readback work in LIGHT-LEVEL separate
+
 ### PEDAL-HARDNESS
 
 **Continuous pedal hardness percentage** (priority 2)
@@ -208,7 +236,7 @@ EUC Planet API: `initSequence`
 Official command evidence: time synchronization. Exact construction sites, transforms and provenance are in the [command ledger](README.md#command-inventory). APK presence alone does not establish Aeon applicability.
 
 - [x] Backend: implemented: APK clock builder plus one-shot deferred startup after valid model44 data; standard raw timezone offset preserved
-- [ ] Ui: not applicable: automatic connection initialization, no new dashboard or settings control
+- Ui: not applicable: automatic connection initialization, no new dashboard or settings control
 - [ ] Validation: partial: exact capture fixture, DST/fractional offsets and connection lifecycle covered by unit tests; wheel clock execution/readback unverified
 - [ ] Next: On requested future build, capture one sync after connection and none during steady telemetry; verify wheel clock if observable
 
@@ -319,7 +347,7 @@ EUC Planet API: `pollRealtime`, `pollSettings`, `pollStats`, `onRawNotification`
 EUC Planet API: `familyId`, `capabilities`, `bleProfile`, `notifyConnectingTo`, `pickAdapterByDiscoveredServices`, `getDiagnosticCommands`, `diagnosticCatalogs`, `familyDisplayName`, `brand`, `inspectMessageTypes`
 
 - [ ] Backend: open: pin source revisions and reconcile all candidate mappings
-- [ ] Ui: not applicable: research work item
+- Ui: not applicable: research work item
 - [ ] Validation: open: no blanket inheritance of other-wheel support
 - [ ] Next: For each source difference add a row or explicit exclusion with provenance
 

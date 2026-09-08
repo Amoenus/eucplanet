@@ -29,6 +29,14 @@ APK 1.1.3 SHA256: `f4881479f3c40e2f1d54a8909223af79f5cb18eaf96d9a94f4116ce10e4a5
 
 ## Physical observations and captured readbacks
 
+### AEON-HEADLIGHT-DASHBOARD
+
+Verified on Aeon.
+
+Owner confirms wheel headlight readback works: the app correctly reads all states when selected directly on the wheel. App button only toggles between OFF and LOW.
+
+Owner report following Alpha0.19.0 d01249f3 delivery, not a new packet capture or independent installed-build check. Does not establish what an app tap starting from medium/high does, reconnect/staleness behavior, or a remote medium/high command. Read capability is richer than current write capability.
+
 ### AEON-REMOTE-SETTINGS-SOUND
 
 Verified on Aeon.
@@ -152,7 +160,7 @@ Every row is Confirmed in NOSFET APK. Templates exclude the CRC32 big-endian tra
 
 | Control | APK | EUC Planet | Evidence / qualification |
 |---|---|---|---|
-| Headlight levels | No multilevel write or parsed light-level field found in inspected app code | AeonTelemetryDecoder uses87-byte page1 byte49; dashboard label and highlight use generic HeadlightReadback projection with freshness, committed in3d67c95f | Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown. |
+| Headlight levels | No multilevel write or parsed light-level field found in inspected app code | AeonTelemetryDecoder uses87-byte page1 byte49; dashboard label and highlight use generic HeadlightReadback projection with freshness, committed in3d67c95f | Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Owner additionally verifies dashboard reads all panel-selected states, while app toggles OFF/LOW only. Remote medium/high command still unknown. |
 | DRL | No separate DRL setter found | setDRL returns null | Physical off/on/off observed; no confident readback or remote command. |
 | Rear-light active mode / LTB startup mode | No corresponding setter found | No equivalent API | Physical rear cycle observed; startup setting is a separate manual capability. Counter-like byte48 on pages0/4 rejected as mapping. |
 | Auto headlight BRT on/off | No identified setter | No equivalent API | Manual-documented; separate from BRT percentage display brightness. |

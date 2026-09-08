@@ -17,8 +17,8 @@ These parts are already in source. Pending physical tests do not make backend/UI
 | Work item | Backend | UI | Physical validation / remaining work |
 |---|---|---|---|
 | [LEGAL-RESTORE](#legal-restore) | Implemented | Implemented | partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending |
-| [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements. |
-| [LIGHT-LEVEL](#light-level) | Implemented | Implemented | partial: physical cycles and captures verified; new dashboard pending |
+| [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements. |
+| [LIGHT-LEVEL](#light-level) | Implemented | Implemented | verified: owner confirms dashboard correctly reads all headlight states changed directly on the wheel, in addition to earlier physical cycles and captures |
 | [SND](#snd) | Implemented | Implemented | partial: physical SND readback verified; remote setter pending |
 | [DISPLAY-BRT](#display-brt) | Implemented | Implemented | verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported. |
 | [UNITS](#units) | Implemented | Implemented | verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified. |
@@ -44,7 +44,7 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 | `pollStats` | Default null; no separate Aeon stats query mapped. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `horn` | Aeon single LkAp frame; current app retest pending. | [HORN](#horn) |
 | `hornFollowup` | Null deliberately; Aeon does not send the generic Veteran companion. | [HORN](#horn) |
-| `setLight` | ASCII on/off, not full physical level cycle. Owner confirms current path silent even at SND10%; no generic acknowledgement-mute mechanism established. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
+| `setLight` | Owner-verified ASCII OFF/LOW toggle, not full physical level cycle. Current path silent even at SND10%; no generic acknowledgement-mute mechanism established. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
 | `setLightFollowup` | Null deliberately for current Aeon path. | [LIGHT-TOGGLE](#light-toggle) |
 | `setMaxSpeed` | Returns null; separate commit methods below carry the commands. Do not count this null alone as no support. | [TILTBACK](#tiltback), [ALARM-SPEED](#alarm-speed) |
 | `setMaxSpeedCommit` | Shared LdAp builder; Aeon remote effect not verified. | [TILTBACK](#tiltback) |
@@ -138,7 +138,7 @@ Official command evidence: headlight. Exact construction sites, transforms and p
 
 - [x] Backend: implemented: Aeon single ASCII command
 - [x] Ui: implemented: existing dashboard tile
-- [x] Validation: verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.
+- [x] Validation: verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.
 - [ ] Next: Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.
 
 ### LIGHT-LEVEL
@@ -151,8 +151,8 @@ Explicit unmapped/gap group: Headlight levels.
 
 - [x] Backend: implemented: page1 byte49 decoder and freshness-aware HeadlightReadback projection, commit3d67c95f
 - [x] Ui: implemented: existing dashboard Off/Low/Medium/High label and theme highlight, commit3d67c95f
-- [ ] Validation: partial: physical cycles and captures verified; new dashboard pending
-- [ ] Next: Verify physical panel changes update the dashboard; remote multilevel writing is tracked separately in LIGHT-LEVEL-WRITE
+- [x] Validation: verified: owner confirms dashboard correctly reads all headlight states changed directly on the wheel, in addition to earlier physical cycles and captures
+- [ ] Next: Validate disconnect/reconnect and stale-state handling separately; basic all-level dashboard readback is verified. Remote multilevel writing remains LIGHT-LEVEL-WRITE.
 
 ### SND
 
@@ -242,9 +242,9 @@ EUC Planet API: No dedicated generic control member. Typed settings/readback or 
 
 Explicit unmapped/gap group: Headlight levels.
 
-- [ ] Backend: open: no supported remote multilevel setter found; current on/off command is not mode cycling
+- [ ] Backend: open: no supported remote multilevel setter found; owner confirms current app toggles OFF/LOW only
 - [ ] Ui: open: do not offer a level selector or cycle gesture until a command is established
-- [ ] Validation: open: physical level cycle and readback do not prove remote level control
+- [ ] Validation: partial: owner verifies OFF/LOW app toggle and all-level panel readback; remote medium/high selection remains unmapped, not proven impossible
 - [ ] Next: Identify exact command and Aeon applicability; keep completed readback work in LIGHT-LEVEL separate
 
 ### PEDAL-HARDNESS
@@ -815,7 +815,7 @@ Automatically enumerated with an explicit disposition for every field; new field
 | `dynamicSpeedLimit` | UNMAPPED: do not equate with configured tiltback threshold wheelMaxSpeedKmh. |
 | `dynamicCurrentLimit` | UNMAPPED: no confirmed Aeon current-limit telemetry field in this audit. |
 | `lightOn` | Binary projection of reported light level on Aeon; not a complete light-mode representation. |
-| `headlightReadback` | Implemented generic projection of captured Aeon level; dashboard uses fresh reported state. |
+| `headlightReadback` | Implemented generic projection of captured Aeon level; owner verifies dashboard correctly reads all states changed on the physical panel. Reconnect/staleness behavior not newly physically verified. |
 | `aeonLightState` | Captured Aeon page1 offset49 mapping, preserving raw unknown values. |
 | `aeonSettings` | 13 official APK page8 fields decoded; historical SND/BRT transitions captured. Owner subsequently verified remote brightness and unit changes; remote SND setter remains pending. |
 | `charging` | APK reads raw byte23 as chargeMode; EUC reduces it to >0. Exact nonzero mode meanings remain unresolved. WheelData comment claiming Veteran always leaves false is stale. |

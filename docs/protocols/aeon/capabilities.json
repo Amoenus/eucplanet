@@ -108,7 +108,7 @@
           "LIGHT-TOGGLE",
           "LIGHT-LEVEL"
         ],
-        "status": "ASCII on/off, not full physical level cycle. Owner confirms current path silent even at SND10%; no generic acknowledgement-mute mechanism established."
+        "status": "Owner-verified ASCII OFF/LOW toggle, not full physical level cycle. Current path silent even at SND10%; no generic acknowledgement-mute mechanism established."
       },
       {
         "member": "setLightFollowup",
@@ -331,7 +331,7 @@
       "tirePressureKpa": "UNMAPPED: no confirmed Aeon TPMS telemetry in this audit; default0 does not establish hardware absence.",
       "pcMode": "UNMAPPED: shared parser leaves -1; do not infer parking or transport mode from this other-family field.",
       "lockedReported": "UNMAPPED: no confirmed Aeon security-lock readback; null remains distinct from unlocked.",
-      "headlightReadback": "Implemented generic projection of captured Aeon level; dashboard uses fresh reported state.",
+      "headlightReadback": "Implemented generic projection of captured Aeon level; owner verifies dashboard correctly reads all states changed on the physical panel. Reconnect/staleness behavior not newly physically verified.",
       "aeonLightState": "Captured Aeon page1 offset49 mapping, preserving raw unknown values.",
       "aeonSettings": "13 official APK page8 fields decoded; historical SND/BRT transitions captured. Owner subsequently verified remote brightness and unit changes; remote SND setter remains pending.",
       "lightOn": "Binary projection of reported light level on Aeon; not a complete light-mode representation.",
@@ -497,9 +497,9 @@
         "id": "LIGHT-LEVEL-WRITE",
         "title": "Remote multilevel headlight selection or cycling",
         "command_refs": [], "gap_refs": ["Headlight levels"], "readback_refs": [],
-        "backend": "open: no supported remote multilevel setter found; current on/off command is not mode cycling",
+        "backend": "open: no supported remote multilevel setter found; owner confirms current app toggles OFF/LOW only",
         "ui": "open: do not offer a level selector or cycle gesture until a command is established",
-        "validation": "open: physical level cycle and readback do not prove remote level control",
+        "validation": "partial: owner verifies OFF/LOW app toggle and all-level panel readback; remote medium/high selection remains unmapped, not proven impossible",
         "next_action": "Identify exact command and Aeon applicability; keep completed readback work in LIGHT-LEVEL separate",
         "priority": 2
       },
@@ -533,7 +533,7 @@
         "readback_refs": [],
         "backend": "implemented: Aeon single ASCII command",
         "ui": "implemented: existing dashboard tile",
-        "validation": "verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.",
+        "validation": "verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.",
         "next_action": "Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.",
         "priority": 1
       },
@@ -547,8 +547,8 @@
         "readback_refs": [],
         "backend": "implemented: page1 byte49 decoder and freshness-aware HeadlightReadback projection, commit3d67c95f",
         "ui": "implemented: existing dashboard Off/Low/Medium/High label and theme highlight, commit3d67c95f",
-        "validation": "partial: physical cycles and captures verified; new dashboard pending",
-        "next_action": "Verify physical panel changes update the dashboard; remote multilevel writing is tracked separately in LIGHT-LEVEL-WRITE",
+        "validation": "verified: owner confirms dashboard correctly reads all headlight states changed directly on the wheel, in addition to earlier physical cycles and captures",
+        "next_action": "Validate disconnect/reconnect and stale-state handling separately; basic all-level dashboard readback is verified. Remote multilevel writing remains LIGHT-LEVEL-WRITE.",
         "priority": 1
       },
       {
@@ -3147,7 +3147,7 @@
       "control": "Headlight levels",
       "apk": "No multilevel write or parsed light-level field found in inspected app code",
       "euc": "AeonTelemetryDecoder uses87-byte page1 byte49; dashboard label and highlight use generic HeadlightReadback projection with freshness, committed in3d67c95f",
-      "evidence": "Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Remote level-setting command still unknown."
+      "evidence": "Verified on Aeon/capture: off0 low1 medium2 high3; page8 byte47 corroborates. Owner additionally verifies dashboard reads all panel-selected states, while app toggles OFF/LOW only. Remote medium/high command still unknown."
     },
     {
       "control": "DRL",
@@ -3199,6 +3199,13 @@
     }
   ],
   "observations": [
+    {
+      "id": "AEON-HEADLIGHT-DASHBOARD",
+      "evidence": ["Verified on Aeon"],
+      "fact": "Owner confirms wheel headlight readback works: the app correctly reads all states when selected directly on the wheel. App button only toggles between OFF and LOW.",
+      "limitation": "Owner report following Alpha0.19.0 d01249f3 delivery, not a new packet capture or independent installed-build check. Does not establish what an app tap starting from medium/high does, reconnect/staleness behavior, or a remote medium/high command. Read capability is richer than current write capability.",
+      "source": "Owner message in this task after brightness, units and sound test results"
+    },
     {
       "id": "AEON-REMOTE-SETTINGS-SOUND",
       "evidence": ["Verified on Aeon"],

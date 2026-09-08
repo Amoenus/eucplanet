@@ -72,13 +72,52 @@ class BackupStatusIconTest {
         assertTrue("waiting is not shown", icon.contains("trip.dropboxStatus == 1"))
     }
 
-    @Test fun `failures outrank progress, and a tap acts on the worst thing`() {
-        val body = screen.substringAfter("private fun TripStatusIcon").substringBefore("\n}")
-        assertTrue("a failed backup is not first in the tap order",
-            body.indexOf("backupFailed -> onRetryBackup()") < body.indexOf("flagged -> onRecheckOnline()"))
-        assertTrue("there is no failed icon", body.contains("failed -> Icons.Default.CloudOff"))
+    @Test fun `only the backups pick the color`() {
+        // A months-old leaderboard "held for review" tinted whole pages of
+        // properly backed-up trips orange. The cloud answers "is this ride
+        // safe": red and orange belong to the backups alone, and the
+        // leaderboard speaks only in the message and the tap.
+        val body = screen.substringAfter("private fun TripStatusIcon")
+        assertTrue("there is no failed icon", body.contains("backupFailed -> Icons.Default.CloudOff"))
         assertTrue("failure is not coloured as a problem",
-            body.contains("failed -> MaterialTheme.appColors.statusDanger"))
+            body.contains("backupFailed -> MaterialTheme.appColors.statusDanger"))
+        val icons = body.substringAfter("val icon = when {").substringBefore("}")
+        val tints = body.substringAfter("val tint = when {").substringBefore("}")
+        assertTrue("an interim leaderboard state drives the icon",
+            !icons.contains("flagged") && !tints.contains("flagged"))
+        // The two FINAL bad endings do color it - yellow, never red: red is
+        // the backups' alone, and a failed or rejected share still means the
+        // ride is safe somewhere.
+        assertTrue("a failed or rejected share shows no color",
+            icons.contains("onlineProblem") && tints.contains("onlineProblem"))
+        assertTrue("a leaderboard problem outranks the backups' red",
+            body.indexOf("backupFailed -> Icons.Default.CloudOff") <
+                body.indexOf("onlineProblem -> Icons.Default.Cloud"))
+    }
+
+    @Test fun `a trip restored from Dropbox reads as backed up, not as waiting`() {
+        // uploadStatus 4 means it CAME from a backup. The folder mirror
+        // catching up quietly is not something to warn the rider about.
+        val body = screen.substringAfter("private fun TripStatusIcon")
+        val waiting = body.substringAfter("val backupWaiting =").substringBefore("val backupAt")
+        assertTrue("status 4 counts as an upload in flight", !waiting.contains("== 4"))
+        val held = body.substringAfter("val backupHeld =").substringBefore("// The leaderboard")
+        assertTrue("status 4 does not count as held by a backup", held.contains("trip.uploadStatus == 4"))
+    }
+
+    @Test fun `the tap still acts on what the rider can fix`() {
+        val body = screen.substringAfter("private fun TripStatusIcon")
+        assertTrue(body.contains("backupFailed || backupWaiting -> onRetryBackup()"))
+    }
+
+    @Test fun `one tap, one toast`() {
+        // The recheck that used to ride along with the tap posted two more
+        // toasts of its own, so tapping a held trip produced a three-message
+        // sequence. The informational tap shows exactly the one message.
+        val tap = screen.substringAfter("private fun TripStatusIcon")
+            .substringAfter("IconButton(onClick = {").substringBefore("})")
+        assertTrue("the recheck chatter is back", !tap.contains("onRecheckOnline"))
+        assertTrue(tap.split("showSnackbarLocal").size - 1 == 1)
     }
 
     @Test fun `the message tells the whole story, parts joined`() {
@@ -86,6 +125,19 @@ class BackupStatusIconTest {
         assertTrue(body.contains("parts.joinToString"))
         assertTrue("the leaderboard verdict is missing", body.contains("online_status_shared"))
         assertTrue("the backup time is missing", body.contains("cloud_uploaded_on"))
+    }
+
+    @Test fun `only final leaderboard states are spoken`() {
+        // "Uploading" and "held for automated check" are pipeline states, not
+        // rider states: a months-old hold reads as a problem when it is just a
+        // verdict nobody re-asked for. The tap still re-asks silently.
+        val msgBlock = screen.substringAfter("private fun TripStatusIcon").substringBefore("IconButton")
+        assertTrue("the held-for-review line is back", !msgBlock.contains("online_status_flagged"))
+        assertTrue("the uploading line is back", !msgBlock.contains("online_status_pending"))
+        assertTrue("the held state seeped back into the tap",
+            !screen.substringAfter("private fun TripStatusIcon")
+                .substringAfter("IconButton(onClick = {").substringBefore("})")
+                .contains("flagged"))
     }
 
     @Test fun `nothing is claimed about a destination the rider never set up`() {
@@ -106,5 +158,30 @@ class BackupStatusIconTest {
             !t.contains("backup_status_pending") || !t.contains("backup_status_failed")
         }.map { it.name }
         assertEquals("locales missing the backup strings: $missing", emptyList<String>(), missing)
+    }
+
+    @Test fun `green is only shown when a backup holds the trip`() {
+        // The first cut fell through to green whenever nothing was failing or
+        // uploading, which put a green cloud on trips whose own tap message
+        // said "Not backed up yet".
+        val body = screen.substringAfter("private fun TripStatusIcon")
+        assertTrue(body.contains("backupHeld -> Icons.Default.CloudDone"))
+        assertTrue("an unbacked trip still reads green",
+            body.substringAfter("val icon = when {").substringBefore("}")
+                .lines().any { it.trim() == "else -> Icons.Default.Cloud" })
+        assertTrue("tapping an unbacked trip does not start the backup",
+            body.contains("!backupHeld && (folderConfigured || dropboxLinked) -> onRetryBackup()"))
+    }
+
+    @Test fun `the worker records the backups it verifies, with Dropbox's date`() {
+        // Trips synced before per-trip Dropbox state existed said "not backed
+        // up yet" while the worker proved the opposite on every pass and threw
+        // the answer away. The skip branch records what it verified - stamped
+        // with Dropbox's own date, not the time of the pass that noticed.
+        assertTrue(worker.contains("val known = knownStatus[name.lowercase()]"))
+        assertTrue("the mark does not use Dropbox's date",
+            worker.contains("name, 2, remote.serverModifiedSec * 1000L)"))
+        assertTrue("already-marked rows are rewritten every pass",
+            worker.contains("known != null && known != 2"))
     }
 }

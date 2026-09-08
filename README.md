@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/github/license/eried/eucplanet)](LICENSE)
 [![Google Play](https://img.shields.io/badge/Google_Play-EUC_Planet-3DDC84?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.eried.eucplanet)
 [![Garmin Connect IQ](https://img.shields.io/badge/Connect_IQ-EUC_Planet-007CC3?logo=garmin&logoColor=white)](https://apps.garmin.com/apps/14c2d086-fcb5-4042-bd5b-034519d18a71)
+[![Amazfit Zepp OS](https://img.shields.io/badge/Zepp_OS-EUC_Planet-FF6D00?logo=amazfit&logoColor=white)](docs/AMAZFIT_SETUP.md)
 [![Telegram](https://img.shields.io/badge/Telegram-EUCPlanetApp-26A5E4?logo=telegram&logoColor=white)](https://t.me/EUCPlanetApp)
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-eucstats.ried.no-FF8F00)](https://eucstats.ried.no/)
 [![Trip Viewer](https://img.shields.io/badge/Trip_Viewer-eucviewer.ried.no-2b6fd6)](https://eucviewer.ried.no/)
@@ -85,6 +86,16 @@ footage from another camera. It's not only for recording and replay: the same
 editor designs your **MotoEye / Android HUD** layout, so the visor shows exactly
 the tiles and gauges you arranged.
 
+**Weather.** A score for how the next hours look for riding, from rain, wind and
+gusts, cold, heat, night and golden hour, each weighted by how much you mind it.
+Drag the curve to read any hour, with temperature, wind and humidity underneath.
+Pick the window (next 8 hours, tomorrow, the week), the source, and your comfort
+thresholds.
+
+**Home screen widgets.** Wheel metrics and one-tap buttons, plus two for the
+weather: one cell for right now, and a resizable forecast that shows more as you
+make it bigger.
+
 **Charging monitor.** A live charge curve with a scrubbable prediction line,
 energy split into used and charged, and a per-cell BMS view (Cells tab) for
 smart-BMS wheels (Veteran, KingSong and others) showing individual cell voltages,
@@ -117,9 +128,13 @@ settings, themes and overlays into your own private folder so you can restore th
 on another phone, and you can hand a single ride out as a link when you want to.
 You decide what leaves the phone, where it goes, and who sees it.
 
-**Automations.** Auto Lights on before sunset, off after sunrise, from live GPS.
-Handles midnight sun and polar night (I live in the arctic circle 🧐). Auto Volume
-scales phone volume with speed.
+**Automations.** Headlight control: on before sunset, off after sunrise, from live
+GPS, and it can cut the beam when you slow to walking pace so it is not in the face
+of whoever is waiting at the crossing with you, coming back when you ride on.
+Handles midnight sun and polar night (I live in the arctic circle 🧐). Volume
+control scales phone volume with speed. Each one runs never, whenever the wheel is
+connected, or only while you are actually riding. Charging can tell you when the
+pack passes 80% and when it is full.
 
 **Helmet HUD.** Sideload the small HUD companion on a MotoEye E6 or any
 Android-based head-up display and the dashboard mirrors live to your visor
@@ -133,6 +148,11 @@ on your wrist. Supports Edge 530/540/830/840/1030/1040/1050 and most modern
 Garmin watches (135+ devices). Get it on the
 [Connect IQ Store](https://apps.garmin.com/apps/14c2d086-fcb5-4042-bd5b-034519d18a71),
 or build it yourself from [docs/GARMIN_SETUP.md](docs/GARMIN_SETUP.md).
+
+**Amazfit (Zepp OS) watches.** The same wrist dial on Amazfit watches: speed
+gauge, PWM, three batteries, horn/light remotes, navigation mirror, physical
+buttons. Tested on the T-Rex 3, built for the Balance too. Setup and sideload
+steps in [docs/AMAZFIT_SETUP.md](docs/AMAZFIT_SETUP.md).
 
 **Varia rear-view radar.** Pair a Garmin Varia RTL515 or RCT715 and see
 approaching vehicles on the dashboard. Wire custom alarms (beep, voice, or
@@ -165,6 +185,7 @@ free and sideload it. Same app either way.
 
 On a Garmin watch or Edge, install the EUC Planet data field straight from the
 [Connect IQ Store](https://apps.garmin.com/apps/14c2d086-fcb5-4042-bd5b-034519d18a71).
+On an Amazfit watch, follow [docs/AMAZFIT_SETUP.md](docs/AMAZFIT_SETUP.md).
 
 Build from source:
 

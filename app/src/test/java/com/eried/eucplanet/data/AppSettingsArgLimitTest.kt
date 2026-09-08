@@ -56,6 +56,9 @@ class AppSettingsArgLimitTest {
         // crash report. Moving the voice report flags into VoiceReportSettings
         // bought back 17 slots. Update this when the usage genuinely changes,
         // and prefer nesting over spending the headroom.
+        // 250: the two charge alerts, at 80% and at full. Two flat fields
+        // rather than a nested pair, to sit beside chargingEstimateToFull
+        // where the rest of the charging monitor's own settings already live.
         // 248: dropboxPullRequested, the flag that keeps downloading something
         // the rider asked for rather than something the app decided. It has to
         // outlive the process - a library takes the better part of an hour and
@@ -71,7 +74,26 @@ class AppSettingsArgLimitTest {
         // cached JSON. 239 before that.
         // 239: the widget's nested settings added a field, which also crossed a
         // 32-property boundary and so cost a second bitmask slot.
-        val expectedSlots = 248
+        // 249: folderConflictCount - trips whose file differs between phone
+        // and backup folder. Counted by the folder worker each pass; the
+        // dashboard warning with its Fix button shows while it is non-zero.
+        // It has to survive the process so the warning does not vanish on a
+        // relaunch before the next pass.
+        // 250: watchStem3Click - the Garmin three-button model's Down key.
+        // A single string like its stem siblings; nesting the watch button
+        // fields is the move if another one ever appears.
+        // 251: the weather module. Nested WeatherSettings holds its seven
+        // knobs in ONE slot - the same move that keeps every feature from
+        // spending seven.
+        // 250: DOWN one, for once. Auto-volume's enable flag and its
+        // connected-only flag became a single applyWhen gate shared with the
+        // playback rate (whose own state lives nested in MediaControlSettings).
+        // Two booleans that could disagree replaced by one value that cannot.
+        // 248: down two more. The three flat autoLights* fields became one
+        // nested LightsSettings holding five - the gate, the two sun offsets,
+        // and the walking-pace cut-off with its speed. Adding a feature and
+        // spending fewer slots is the shape this tripwire is asking for.
+        val expectedSlots = 250
         assertEquals(
             "AppSettings slot usage changed. Prefer nesting a group of fields over " +
                 "spending headroom, and update this number deliberately.",

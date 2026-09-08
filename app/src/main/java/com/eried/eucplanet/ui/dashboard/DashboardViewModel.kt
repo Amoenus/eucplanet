@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -69,9 +70,13 @@ class DashboardViewModel @Inject constructor(
     val cheatState: com.eried.eucplanet.cheats.CheatState,
     private val wearBridge: com.eried.eucplanet.wear.WearBridge,
     private val garminBridge: com.eried.eucplanet.garmin.GarminBridge,
+    private val amazfitBridge: com.eried.eucplanet.amazfit.AmazfitBridge,
     private val appHealthRepository: com.eried.eucplanet.data.repository.AppHealthRepository,
+    private val metricsReset: com.eried.eucplanet.data.repository.MetricsReset,
+    private val weatherRepository: com.eried.eucplanet.weather.WeatherRepository,
     private val dropboxRepository: com.eried.eucplanet.data.repository.DropboxRepository,
     private val appNotifier: com.eried.eucplanet.util.AppNotifier,
+    private val navigationEngine: com.eried.eucplanet.nav.NavigationEngine,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -81,14 +86,200 @@ class DashboardViewModel @Inject constructor(
     val warnings: StateFlow<List<com.eried.eucplanet.data.repository.AppWarning>> =
         appHealthRepository.warnings
 
-    companion object {
-        private const val SPARKLINE_SIZE = 300  // 5 minutes at 1 sample/sec
-    }
-
     // Synchronous initial settings read so StateFlows start with the user's persisted values
     // instead of hardcoded defaults (prevents a visible flash on app open).
     private val initialSettings: com.eried.eucplanet.data.model.AppSettings =
         runBlocking(Dispatchers.IO) { settingsRepository.get() }
+
+    // ---- Weather / ridability ----------------------------------------------
+
+    val weatherSettings: StateFlow<com.eried.eucplanet.data.model.WeatherSettings> =
+        settingsRepository.settings
+            .map { it.weather }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, initialSettings.weather)
+
+    val weatherRefreshing: StateFlow<Boolean> = weatherRepository.refreshing
+    val weatherError: StateFlow<String?> = weatherRepository.error
+    val weatherFetchedAt: StateFlow<Long?> = weatherRepository.forecast
+        .map { it?.fetchedAtMs }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Display units for the flyout detail charts: Fahrenheit?, mph? */
+    val weatherUnits: StateFlow<Pair<Boolean, Boolean>> =
+        settingsRepository.settings
+            .map { (it.unitTemp == "F") to (it.unitSpeed == "mph") }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false to false)
+
+    /** The navigator's final stop while a route is active: the destination
+     *  the flyout can forecast instead of here. */
+    val weatherDest: StateFlow<com.eried.eucplanet.data.model.Waypoint?> =
+        navigationEngine.activeLeg
+            .map { it?.waypoints?.lastOrNull() }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    /** Which location the flyout forecasts: false = here, true = destination.
+     *  Plain app state, resets with the process. */
+    val weatherUseDest = kotlinx.coroutines.flow.MutableStateFlow(false)
+
+    /** Reverse-geocoded name of the current forecast cell, chip-sized. */
+    val weatherPlace = kotlinx.coroutines.flow.MutableStateFlow<String?>(null)
+
+    val weatherDestHours: StateFlow<List<ScoredHour>> =
+        kotlinx.coroutines.flow.combine(weatherRepository.destForecast, settingsRepository.settings) { f, st ->
+            val w = st.weather
+            val a = st.advanced
+            f?.hours.orEmpty().map { h ->
+                ScoredHour(
+                    h.timeMs,
+                    com.eried.eucplanet.weather.RidabilityScore.score(
+                        h,
+                        coldC = a.weatherColdC.toFloat(),
+                        hotC = a.weatherHotC.toFloat(),
+                        breezyMs = a.weatherBreezyTenthsMs / 10f,
+                        windyMs = a.weatherWindyTenthsMs / 10f,
+                        prefs = com.eried.eucplanet.weather.RidabilityScore.prefsOf(
+                            w.prefHot, w.prefCold, w.prefRain, w.prefSnow, w.prefWind, w.prefNight, w.prefGolden,
+                        ),
+                    ),
+                    h,
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun toggleWeatherSource() {
+        val turningOn = !weatherUseDest.value
+        if (turningOn && weatherDest.value == null) return
+        weatherUseDest.value = turningOn
+        refreshWeather()
+    }
+
+    private var placeCacheKey: String? = null
+    private fun updateWeatherPlace(lat: Double, lon: Double) {
+        val key = "%.2f,%.2f".format(java.util.Locale.US, lat, lon)
+        if (key == placeCacheKey) return
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                @Suppress("DEPRECATION")
+                val a = android.location.Geocoder(context, java.util.Locale.getDefault())
+                    .getFromLocation(lat, lon, 1)?.firstOrNull()
+                // A PLACE, never a house number. featureName and even
+                // subLocality come back as the street number from some
+                // providers, which is how a rider on number 168 ended up with
+                // a chip that just said "168". Anything without a letter in it
+                // is not a place name, so it is skipped, and the city is
+                // preferred over the street: this labels a forecast, which is
+                // a city-scale thing.
+                val name = listOfNotNull(
+                    a?.locality, a?.subLocality, a?.subAdminArea,
+                    a?.thoroughfare, a?.adminArea, a?.featureName,
+                ).firstOrNull { it.isNotBlank() && it.any { c -> c.isLetter() } }
+                placeCacheKey = key
+                if (!name.isNullOrBlank()) weatherPlace.value = name
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    /** The cached forecast week, scored with the rider's comfort thresholds.
+     *  The flyout slices this per window, so switching windows never fetches. */
+    val weatherHours: StateFlow<List<ScoredHour>> =
+        kotlinx.coroutines.flow.combine(weatherRepository.forecast, settingsRepository.settings) { f, st ->
+            val w = st.weather
+            val a = st.advanced
+            f?.hours.orEmpty().map { h ->
+                ScoredHour(
+                    h.timeMs,
+                    com.eried.eucplanet.weather.RidabilityScore.score(
+                        h,
+                        coldC = a.weatherColdC.toFloat(),
+                        hotC = a.weatherHotC.toFloat(),
+                        breezyMs = a.weatherBreezyTenthsMs / 10f,
+                        windyMs = a.weatherWindyTenthsMs / 10f,
+                        prefs = com.eried.eucplanet.weather.RidabilityScore.prefsOf(
+                            w.prefHot, w.prefCold, w.prefRain, w.prefSnow, w.prefWind, w.prefNight, w.prefGolden,
+                        ),
+                    ),
+                    h,
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Fetch if stale (or [force]); needs a location fix of any age - the
+     *  forecast cell is kilometres wide, so a stale fix is still the right
+     *  weather. No fix at all leaves the flyout to say so. */
+    /** Whether to ask for 15-minute steps: only worth it on a short window,
+     *  where hourly dots leave the curve looking blocky, and only out to
+     *  where the providers publish them. */
+    private fun fineDetail(windowHours: Int): Boolean = windowHours <= 12
+
+    fun refreshWeather(force: Boolean = false) {
+        val loc = tripRepository.currentLocation.value
+            ?: tripRepository.lastKnownLocation.value ?: return
+        val w = weatherSettings.value
+        val dest = weatherDest.value
+        if (dest != null && weatherUseDest.value) {
+            viewModelScope.launch {
+                weatherRepository.ensureFreshDest(
+                    dest.lat, dest.lng,
+                    com.eried.eucplanet.weather.WeatherSource.byId(w.source), force,
+                    fine = fineDetail(w.windowHours),
+                )
+            }
+        }
+        updateWeatherPlace(loc.latitude, loc.longitude)
+        viewModelScope.launch {
+            weatherRepository.ensureFresh(
+                loc.latitude, loc.longitude,
+                com.eried.eucplanet.weather.WeatherSource.byId(w.source), force,
+                fine = fineDetail(w.windowHours),
+            )
+        }
+    }
+
+    init {
+        // Whatever the panel fetches, the home screen widgets get too. A
+        // background worker refreshes them on its own hourly cadence, but it
+        // can only ask about a place it already knows, so the app opening the
+        // panel is what teaches it where the rider is. Does nothing when no
+        // widget is placed.
+        //
+        // Below weatherPlace, and it has to stay there: init blocks run in
+        // declaration order, so collecting a field declared further down means
+        // collecting null, which took the whole dashboard down on launch.
+        viewModelScope.launch {
+            kotlinx.coroutines.flow.combine(
+                weatherRepository.forecast,
+                settingsRepository.settings,
+                weatherPlace,
+            ) { forecast, settings, place -> Triple(forecast, settings, place) }
+                .collect { (forecast, settings, place) ->
+                    if (forecast != null) {
+                        com.eried.eucplanet.widget.WeatherWidgetPublisher.publish(
+                            context, forecast, settings, place,
+                        )
+                    }
+                }
+        }
+    }
+
+    init {
+        // Prefetch on a 30-minute cadence while the module is enabled, so the
+        // flyout opens with the curve already drawn.
+        viewModelScope.launch {
+            weatherSettings.map { it.enabled }.distinctUntilChanged()
+                .collectLatest { on ->
+                    if (!on) return@collectLatest
+                    while (true) {
+                        refreshWeather()
+                        kotlinx.coroutines.delay(30 * 60_000L)
+                    }
+                }
+        }
+    }
+
+    companion object {
+        private const val SPARKLINE_SIZE = 300  // 5 minutes at 1 sample/sec
+    }
 
     val wheelData: StateFlow<com.eried.eucplanet.data.model.WheelData> = wheelRepository.wheelData
 
@@ -108,6 +299,34 @@ class DashboardViewModel @Inject constructor(
     val lockBusy: StateFlow<Boolean> = wheelRepository.lockBusy
     // Proximity auto-lock automation on? Long-pressing the dashboard lock button
     // toggles it - a quick shortcut without opening Settings.
+    init {
+        // Trips whose file differs between phone and backup folder; only the
+        // rider can pick a side, in the sync conflict dialog. Set by the
+        // folder worker on every pass, cleared the same way. Registered in
+        // Needs attention with every other fixable problem - not as a
+        // one-off dashboard banner - so the triangle, the count and the Fix
+        // button all come from the same place.
+        viewModelScope.launch {
+            settingsRepository.settings
+                .map { it.folderConflictCount }
+                .distinctUntilChanged()
+                .collect { conflicts ->
+                    if (conflicts > 0) {
+                        appHealthRepository.upsert(
+                            com.eried.eucplanet.data.repository.AppWarning(
+                                id = "backup_conflicts",
+                                titleRes = com.eried.eucplanet.R.string.backup_conflict_title,
+                                bodyRes = com.eried.eucplanet.R.string.backup_conflict_warning,
+                                settingsTab = 4,
+                            )
+                        )
+                    } else {
+                        appHealthRepository.dismiss("backup_conflicts")
+                    }
+                }
+        }
+    }
+
     val autoLockEnabled: StateFlow<Boolean> = settingsRepository.settings
         .map { it.proximityLock.lockEnabled }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), initialSettings.proximityLock.lockEnabled)
@@ -657,8 +876,10 @@ class DashboardViewModel @Inject constructor(
      * family until a documented reset command is added. Callers should
      * snackbar the result so riders know whether the tap took effect.
      */
-    suspend fun resetWheelTrip(): Boolean =
-        kotlinx.coroutines.withContext(Dispatchers.IO) { wheelRepository.resetTripMeter() }
+    /** Clears the trip meter and the metric history, and the wheel's own trip
+     *  odometer where the family supports it. See [MetricsReset]. */
+    suspend fun resetMetrics(): com.eried.eucplanet.data.repository.MetricsReset.Result =
+        metricsReset.resetAll()
 
     val fullHistory: StateFlow<FullMetricHistory> = wheelRepository.fullHistory
 
@@ -740,6 +961,8 @@ class DashboardViewModel @Inject constructor(
                     // finish before we SIGKILL. sendCloseToWatchBlocking now
                     // actually blocks until the SDK reports the send.
                     garminBridge.sendCloseToWatchBlocking()
+                    // Amazfit polls, so the QUIT waits (briefly) to be fetched.
+                    amazfitBridge.sendCloseToWatchBlocking()
                 }
             } catch (_: Exception) { /* best effort */ }
             // Send ACTION_STOP_ALL_AND_KILL via startService so the service's

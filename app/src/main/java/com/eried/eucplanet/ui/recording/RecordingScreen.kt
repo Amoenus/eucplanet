@@ -30,9 +30,9 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.CloudQueue
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FiberManualRecord
-import androidx.compose.material.icons.filled.Pending
 import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Stop
@@ -258,18 +258,15 @@ fun RecordingScreen(
     wheelToolTrip?.let { trip ->
         // Loaded on open rather than held in state: the picker is rare and the
         // list is tiny, so there is nothing to gain from keeping it warm.
-        var known by remember(trip.id) { mutableStateOf<List<String>?>(null) }
-        LaunchedEffect(trip.id) { known = viewModel.knownWheelNames() }
+        var known by remember(trip.id) {
+            mutableStateOf<List<com.eried.eucplanet.data.repository.WheelChoice>?>(null)
+        }
+        LaunchedEffect(trip.id) { known = viewModel.knownWheels() }
         ChangeWheelDialog(
             knownWheels = known.orEmpty(),
-            currentWheel = trip.wheelMetaJson
-                ?.let { runCatching { org.json.JSONObject(it).optString("ble_name") }.getOrNull() }
-                ?.takeIf { it.isNotBlank() },
-            // Status 2 means the ride is already on the leaderboard, where the
-            // old wheel stays. The rider chose to be warned rather than blocked.
-            alreadyUploaded = trip.eucstatsStatus == 2,
-            onConfirm = { name ->
-                viewModel.changeTripWheel(trip, name)
+            currentWheel = com.eried.eucplanet.data.repository.WheelChoice.fromJson(trip.wheelMetaJson),
+            onConfirm = { wheel ->
+                viewModel.changeTripWheel(trip, wheel)
                 wheelToolTrip = null
             },
             onDismiss = { wheelToolTrip = null },
@@ -779,7 +776,9 @@ private fun PendingStatusIcon() {
     val snackbar = LocalSnackbar.current
     val scope = LocalSnackbarScope.current
     IconButton(onClick = { showSnackbarLocal(snackbar, scope, msg) }) {
-        Icon(Icons.Default.Pending, contentDescription = msg, tint = MaterialTheme.appColors.statusWarn,
+        // Three plain dots. The filled Pending circle read as one more cloud
+        // state; Erwin picked this from the full candidate lineup instead.
+        Icon(Icons.Default.MoreHoriz, contentDescription = msg, tint = MaterialTheme.appColors.statusWarn,
             modifier = Modifier.size(20.dp))
     }
 }
@@ -809,36 +808,53 @@ private fun TripStatusIcon(
 ) {
     val fmt = remember { java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT, Locale.getDefault()) }
 
-    // The rider's own backups.
+    // The rider's own backups. These, and only these, pick the icon's color:
+    // the question the cloud answers is "is this ride safe", and a ride is
+    // safe when a backup holds it. The leaderboard has its own opinions - a
+    // months-old "held for review" among them - and letting those tint the
+    // icon painted whole pages of properly backed-up trips orange.
     val backupFailed = (folderConfigured && trip.uploadStatus == 3) ||
         (dropboxLinked && trip.dropboxStatus == 3)
-    val backupWaiting = (folderConfigured && (trip.uploadStatus == 1 || trip.uploadStatus == 4)) ||
+    // Only an active upload counts as waiting. uploadStatus 4 is a trip that
+    // CAME from Dropbox: a backup already holds it by definition, and the
+    // folder mirror catching up quietly is not something to warn about.
+    val backupWaiting = (folderConfigured && trip.uploadStatus == 1) ||
         (dropboxLinked && trip.dropboxStatus == 1)
     val backupAt = (trip.dropboxUploadedAt ?: trip.uploadedAt)?.let { fmt.format(Date(it)) }
-    val backupDone = !backupFailed && !backupWaiting && backupAt != null
+    val backupHeld = trip.uploadStatus == 2 || trip.uploadStatus == 4 ||
+        trip.dropboxStatus == 2 || backupAt != null
 
-    // The leaderboard.
+    // The leaderboard: message and tap behaviour only, never the color.
     val settled = trip.eucstatsStatus == 2
     val flagged = settled && trip.eucstatsValidation == "flagged"
     val rejected = settled && trip.eucstatsValidation == "rejected"
-    val onlineFailed = trip.eucstatsStatus == 3 || rejected
-    val onlineWaiting = trip.eucstatsStatus == 1 || flagged
     val onlineDone = settled && !flagged && !rejected
 
     // Nothing configured, nothing sent, nothing to say.
-    if (!folderConfigured && !dropboxLinked && trip.eucstatsStatus == 0 && backupAt == null) return
+    if (!folderConfigured && !dropboxLinked && trip.eucstatsStatus == 0 && !backupHeld) return
 
-    val failed = backupFailed || onlineFailed
-    val waiting = backupWaiting || onlineWaiting
+    // Green is a promise - a backup HOLDS this trip - so it is only shown
+    // when one does. The first cut fell through to green whenever nothing was
+    // failing or in flight, which put a green cloud on trips whose own tap
+    // message said "Not backed up yet". A trip in that state gets a muted
+    // cloud instead, and tapping it starts the backup.
+    // The leaderboard's two FINAL bad endings warrant a color of their own:
+    // a failed upload (the tap retries it) and a rejection. Yellow, not red -
+    // the ride itself is safe in a backup, something just wants attention.
+    // Interim pipeline states still color nothing.
+    val onlineProblem = trip.eucstatsStatus == 3 || rejected
     val icon = when {
-        failed -> Icons.Default.CloudOff
-        waiting -> Icons.Default.CloudQueue
-        else -> Icons.Default.CloudDone
+        backupFailed -> Icons.Default.CloudOff
+        backupWaiting -> Icons.Default.CloudQueue
+        onlineProblem -> Icons.Default.Cloud
+        backupHeld -> Icons.Default.CloudDone
+        else -> Icons.Default.Cloud
     }
     val tint = when {
-        failed -> MaterialTheme.appColors.statusDanger
-        waiting -> MaterialTheme.appColors.statusWarn
-        else -> MaterialTheme.appColors.statusGood
+        backupFailed -> MaterialTheme.appColors.statusDanger
+        backupWaiting || onlineProblem -> MaterialTheme.appColors.statusWarn
+        backupHeld -> MaterialTheme.appColors.statusGood
+        else -> MaterialTheme.appColors.textSecondary
     }
     // The whole story in one message: each part only speaks when it has
     // something to say, so a trip with no leaderboard life reads as before.
@@ -849,11 +865,14 @@ private fun TripStatusIcon(
         backupAt != null -> stringResource(R.string.cloud_uploaded_on, backupAt)
         else -> stringResource(R.string.cloud_not_uploaded)
     }
+    // Final leaderboard states only. "Uploading" and "held for automated
+    // check" are the pipeline's business, not the rider's: a hold months old
+    // reads as a problem when it is just a verdict nobody re-asked for.
+    // Tapping a held trip still re-asks silently, so stale holds clear
+    // themselves without ever being announced.
     when {
-        onlineFailed && rejected -> parts += stringResource(R.string.online_status_rejected)
-        onlineFailed -> parts += stringResource(R.string.online_status_failed)
-        flagged -> parts += stringResource(R.string.online_status_flagged)
-        onlineWaiting -> parts += stringResource(R.string.online_status_pending)
+        rejected -> parts += stringResource(R.string.online_status_rejected)
+        trip.eucstatsStatus == 3 -> parts += stringResource(R.string.online_status_failed)
         onlineDone -> parts += stringResource(R.string.online_status_shared)
     }
     val msg = parts.joinToString(separator = "\n")
@@ -862,11 +881,18 @@ private fun TripStatusIcon(
     val scope = LocalSnackbarScope.current
     IconButton(onClick = {
         when {
-            backupFailed -> onRetryBackup()
+            // A backup problem is the rider's to fix, so the tap acts on it.
+            // "Not backed up yet" is one of those problems: the tap sends it.
+            backupFailed || backupWaiting -> onRetryBackup()
+            !backupHeld && (folderConfigured || dropboxLinked) -> onRetryBackup()
+            // A failed leaderboard upload of an original ride can be retried.
             trip.eucstatsStatus == 3 -> onRetryOnline()
-            flagged -> onRecheckOnline()
-            backupWaiting -> onRetryBackup()
-            trip.eucstatsStatus == 1 -> onRetryOnline()
+            // One tap, one toast. The recheck that used to ride along here
+            // posted two more toasts of its own ("Checking with the
+            // leaderboard...", then the verdict), so tapping a held trip
+            // produced a three-message sequence about a pipeline the rider
+            // never asked after. A stale hold can stay stale; it colors
+            // nothing and says nothing.
             else -> showSnackbarLocal(snackbar, scope, msg)
         }
     }) {

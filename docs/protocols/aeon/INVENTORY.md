@@ -6,7 +6,7 @@ Status date: 2026-09-08. Complete coverage of the current known control ledger, 
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 48 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 8 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 48 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 9 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
 
@@ -73,6 +73,7 @@ These are current app declarations. In particular, speed/alarm true does not est
 
 | Flag | Declared on Aeon | Work item |
 |---|---|---|
+| `reportsChargeCurrent` | `true` | [TELEMETRY-CURRENT-POWER](#telemetry-current-power) |
 | `hasHorn` | `true` | [HORN](#horn) |
 | `hasLight` | `true` | [LIGHT-TOGGLE](#light-toggle) |
 | `hasLock` | `false` | [LOCK](#lock) |
@@ -220,7 +221,7 @@ EUC Planet API: No dedicated generic control member. Typed settings/readback or 
 - [ ] Backend: open: source discrepancy established; parser assigns phase current to generic current and calculates both power fields without PWM
 - [ ] Ui: partial: existing metrics consume these fields; consumer semantics and any existing compensation need audit
 - [ ] Validation: partial: official APK and pinned WheelLog provide distinct phase/PWM-derived-current implementations; no new live verification
-- [ ] Next: Audit downstream compensation and sign assumptions, then implement bounded model-policy correction with current/PWM/power, energy and other-model regression tests. Do not apply PWM twice or claim mechanical motor power.
+- [ ] Next: Audit downstream compensation and sign assumptions, including upstream0.19.0 reportsChargeCurrent=true inherited default on Aeon (not physical proof of charger current). Then implement bounded model-policy correction with current/PWM/power, energy and other-model regression tests. Do not apply PWM twice or claim mechanical motor power.
 
 ### TELEMETRY-ROLL
 

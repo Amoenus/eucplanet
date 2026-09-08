@@ -29,8 +29,8 @@ android {
         applicationId = "com.eried.eucplanet"
         minSdk = 29
         targetSdk = 36
-        versionCode = 266
-        versionName = "0.17.0"
+        versionCode = 268
+        versionName = "0.19.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -147,6 +147,16 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    testOptions {
+        unitTests {
+            // JVM tests that exercise plain logic still cross an `android.util.Log`
+            // call on the way in, and the stub android.jar throws on every method
+            // by default. Returning defaults makes logging a no-op in tests
+            // instead of a failure, which is the only reason to touch it here.
+            isReturnDefaultValues = true
+        }
     }
 
     // Output APKs as phone-<buildtype>.apk (phone-debug.apk / phone-release.apk)
@@ -342,6 +352,12 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
+    // Compose gesture tests: the trip charts juggle a long-press scrub, a
+    // two-finger zoom and the page scroll on the same canvas, and multitouch
+    // cannot be driven from adb, so those rules are pinned on-device.
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
 
 // Gradle Play Publisher -- LOCAL publishing only (no browser, NOT wired into CI):

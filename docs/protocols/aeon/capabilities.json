@@ -262,6 +262,11 @@
     ],
     "capability_flags": [
       {
+        "name": "reportsChargeCurrent",
+        "declared": true,
+        "inventory_ref": "TELEMETRY-CURRENT-POWER"
+      },
+      {
         "name": "hasHorn",
         "declared": true,
         "inventory_ref": "HORN"
@@ -465,7 +470,7 @@
         "backend": "open: source discrepancy established; parser assigns phase current to generic current and calculates both power fields without PWM",
         "ui": "partial: existing metrics consume these fields; consumer semantics and any existing compensation need audit",
         "validation": "partial: official APK and pinned WheelLog provide distinct phase/PWM-derived-current implementations; no new live verification",
-        "next_action": "Audit downstream compensation and sign assumptions, then implement bounded model-policy correction with current/PWM/power, energy and other-model regression tests. Do not apply PWM twice or claim mechanical motor power.",
+        "next_action": "Audit downstream compensation and sign assumptions, including upstream0.19.0 reportsChargeCurrent=true inherited default on Aeon (not physical proof of charger current). Then implement bounded model-policy correction with current/PWM/power, energy and other-model regression tests. Do not apply PWM twice or claim mechanical motor power.",
         "priority": 2
       },
       {

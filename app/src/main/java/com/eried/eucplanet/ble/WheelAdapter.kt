@@ -230,9 +230,11 @@ interface WheelAdapter {
      * Resets the wheel's onboard trip meter (the field reported as
      * [com.eried.eucplanet.data.model.WheelData.tripDistance]) by sending the
      * family-specific reset command. Returns null on wheels where the
-     * protocol has no documented reset command; the dashboard's RESET_TRIP
-     * action surfaces a "not supported on this wheel" snackbar in that case.
-     * Veteran is the only family with a public command today (CLEARMETER).
+     * protocol has no documented reset command, and Veteran is the only family
+     * with a public one today (CLEARMETER). That is no longer a dead end for
+     * anyone else: the Reset metrics action clears the app's trip meter and
+     * metric history regardless, and only mentions the wheel's own odometer
+     * when a command actually went out.
      */
     fun resetTripMeter(): ByteArray? = null
 
@@ -424,6 +426,18 @@ data class WheelCapabilities(
     val hasVolume: Boolean = false,
     val hasDRL: Boolean = false,
     val needsAuthForLock: Boolean = false,
+    /**
+     * The wheel puts a real charge current on the wire, so plugging it in shows
+     * up as a signed current the app can both detect and integrate.
+     *
+     * Both InMotion families report nothing useful: the board keeps reporting
+     * its own idle draw (a V8S sits around +0.02 A through a three-hour charge)
+     * and the charger's current never appears. Charge detection there falls back
+     * to the percentage climbing, and charged energy to the pack size, because
+     * integrating that idle draw yields the board's own consumption filed as a
+     * charge - the "Used 4 Wh" a rider saw against +54 % added.
+     */
+    val reportsChargeCurrent: Boolean = true,
 ) {
     companion object {
         /** V11/V12/V13/V14: full feature set, lock requires password auth. */
@@ -435,7 +449,10 @@ data class WheelCapabilities(
             hasAlarmSpeed = true,
             hasVolume = true,
             hasDRL = true,
-            needsAuthForLock = true
+            needsAuthForLock = true,
+            // V14 and P6 both read ~0 A while charging: the charge flag says
+            // they are charging, the current never does.
+            reportsChargeCurrent = false,
         )
 
         /**
@@ -461,6 +478,10 @@ data class WheelCapabilities(
             hasVolume = true,
             hasDRL = true,
             needsAuthForLock = false,
+            // No charge flag and no charge current: a V8S on the charger keeps
+            // reporting the board's own idle draw, so only the percentage
+            // climbing says it is charging.
+            reportsChargeCurrent = false,
         )
 
         /** KingSong KS-* wheels: no software lock, no volume control. */

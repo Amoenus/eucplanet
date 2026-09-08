@@ -146,24 +146,29 @@ fun RenameTripDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(text.trim()) }, shape = RoundedCornerShape(12.dp)) {
-                Text(stringResource(R.string.action_save))
-            }
-        },
-        dismissButton = {
-            Row {
-                // One tap back to the date: clears the name AND accepts, so a
-                // rider undoing a rename is not asked to empty the field by
-                // hand and then find Save. Only offered while there is a name
-                // to clear - on an unnamed trip it would just be a second
-                // Cancel.
+            // Reset sits alone on the far left, apart from Cancel/Save: it is
+            // the one action that destroys something (the rider's name), and
+            // distance is what keeps it from being hit while reaching for
+            // Save. No other dialog has a third action yet; this is the
+            // pattern when one does.
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                // One tap back to the date: clears the name AND accepts. Only
+                // offered while there is a name to clear - on an unnamed trip
+                // it would just be a second Cancel.
                 if (!currentName.isNullOrBlank()) {
                     TextButton(onClick = { onConfirm("") }, shape = RoundedCornerShape(12.dp)) {
                         Text(stringResource(R.string.action_reset))
                     }
+                } else {
+                    Spacer(Modifier.width(1.dp))
                 }
-                TextButton(onClick = onDismiss, shape = RoundedCornerShape(12.dp)) {
-                    Text(stringResource(R.string.action_cancel))
+                Row {
+                    TextButton(onClick = onDismiss, shape = RoundedCornerShape(12.dp)) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    TextButton(onClick = { onConfirm(text.trim()) }, shape = RoundedCornerShape(12.dp)) {
+                        Text(stringResource(R.string.action_save))
+                    }
                 }
             }
         }
@@ -179,27 +184,37 @@ fun RenameTripDialog(
  * exactly when a rider is most likely to be fixing a wrong label. A free-text
  * field still covers a wheel neither source has heard of.
  *
- * [alreadyUploaded] shows the warning the rider agreed to: the leaderboard entry
- * keeps the old wheel and cannot be corrected from the app.
+ * No leaderboard warning here on purpose: the wheel label is for the rider's
+ * own organisation (and eucviewer's wheel selector). An edited trip is never
+ * resubmitted, so the change cannot touch the leaderboard either way.
  */
 @Composable
 fun ChangeWheelDialog(
-    knownWheels: List<String>,
-    currentWheel: String?,
-    alreadyUploaded: Boolean,
-    onConfirm: (String) -> Unit,
+    knownWheels: List<com.eried.eucplanet.data.repository.WheelChoice>,
+    currentWheel: com.eried.eucplanet.data.repository.WheelChoice?,
+    onConfirm: (com.eried.eucplanet.data.repository.WheelChoice) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    // The trip's own wheel leads the list and starts selected, even when it has
-    // no saved profile. Showing the picker with nothing chosen, or with someone
-    // else's wheel chosen, invites a rider to apply a change they never meant.
+    // Every wheel is a whole identity, labelled the way eucviewer labels it,
+    // so picking one here files the trip where eucviewer files it. The
+    // trip's own wheel leads the list and starts selected, even when it has
+    // no saved profile; a trip with no wheel starts with nothing selected,
+    // because starting on someone else's wheel invites a change the rider
+    // never meant.
     val options = remember(currentWheel, knownWheels) {
-        (listOfNotNull(currentWheel?.takeIf { it.isNotBlank() }) + knownWheels).distinct()
+        val all = listOfNotNull(currentWheel) + knownWheels
+        all.distinctBy { it.key }
     }
-    var picked by remember(options) { mutableStateOf(currentWheel ?: options.firstOrNull() ?: "") }
+    var picked by remember(options) { mutableStateOf(currentWheel?.key.orEmpty()) }
     var custom by remember { mutableStateOf("") }
     var usingCustom by remember(options) { mutableStateOf(options.isEmpty()) }
-    val chosen = if (usingCustom) custom.trim() else picked
+    // A known pick carries the whole identity - name, MAC, brand, model,
+    // serial - exactly as eucviewer copies it. "Another wheel" is a name and
+    // nothing else, exactly as eucviewer's custom entry is.
+    val chosen: com.eried.eucplanet.data.repository.WheelChoice? =
+        if (usingCustom) custom.trim().takeIf { it.isNotEmpty() }
+            ?.let { com.eried.eucplanet.data.repository.WheelChoice(name = it) }
+        else options.firstOrNull { it.key == picked }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -207,32 +222,42 @@ fun ChangeWheelDialog(
         title = { Text(stringResource(R.string.trip_tools_change_wheel)) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                if (alreadyUploaded) {
+                // A trip with no wheel recorded says so, instead of quietly
+                // preselecting whatever wheel happened to lead the list.
+                if (currentWheel == null) {
                     Text(
-                        stringResource(R.string.trip_tools_wheel_uploaded_warning),
+                        stringResource(R.string.trip_tools_wheel_none),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.appColors.statusWarn,
+                        color = MaterialTheme.appColors.textSecondary,
                     )
                     Spacer(Modifier.width(8.dp))
                 }
-                options.forEach { name ->
+                options.forEach { wheel ->
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .clickable { usingCustom = false; picked = name }
+                            .clickable { usingCustom = false; picked = wheel.key }
                             .padding(vertical = 6.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = !usingCustom && picked == name,
-                            onClick = { usingCustom = false; picked = name },
+                            selected = !usingCustom && picked == wheel.key,
+                            onClick = { usingCustom = false; picked = wheel.key },
                         )
                         Spacer(Modifier.width(8.dp))
                         Column {
-                            Text(name, color = MaterialTheme.appColors.textPrimary)
+                            Text(wheel.label, color = MaterialTheme.appColors.textPrimary)
+                            // The advertised name, when the label came from
+                            // brand/model and differs from it: it is how the
+                            // wheel shows up when pairing, and how two of the
+                            // same model are told apart.
+                            wheel.name?.takeIf { it != wheel.label }?.let {
+                                Text(it, style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.appColors.textSecondary)
+                            }
                             // Says which one the trip already has, so applying
                             // without changing anything is obviously a no-op.
-                            if (name == currentWheel) {
+                            if (wheel.key == currentWheel?.key) {
                                 Text(
                                     stringResource(R.string.trip_tools_wheel_current),
                                     style = MaterialTheme.typography.bodySmall,
@@ -270,8 +295,8 @@ fun ChangeWheelDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { if (chosen.isNotBlank()) onConfirm(chosen) },
-                enabled = chosen.isNotBlank(),
+                onClick = { chosen?.let(onConfirm) },
+                enabled = chosen != null,
                 shape = RoundedCornerShape(12.dp),
             ) { Text(stringResource(R.string.action_apply)) }
         },

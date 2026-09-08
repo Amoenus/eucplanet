@@ -60,6 +60,9 @@ class WheelService : LifecycleService() {
         // applies: a NotificationChannel's settings are frozen after first
         // creation, so an existing install ignores code changes to the old id.
         const val CHANNEL_ID = "wheel_connection_v2"
+        private const val REQ_CHARGE_ALERT = 4201
+        /** Launch extra: open the charging monitor, where the alert came from. */
+        const val EXTRA_OPEN_CHARGING = "open_charging"
         private const val CHANNEL_ID_LEGACY = "wheel_connection"
         const val NOTIFICATION_ID = 1
         const val ACTION_CONNECT = "com.eried.eucplanet.CONNECT"
@@ -149,12 +152,14 @@ class WheelService : LifecycleService() {
     @Inject lateinit var engineSoundEngine: EngineSoundEngine
     @Inject lateinit var wearBridge: com.eried.eucplanet.wear.WearBridge
     @Inject lateinit var garminBridge: com.eried.eucplanet.garmin.GarminBridge
+    @Inject lateinit var amazfitBridge: com.eried.eucplanet.amazfit.AmazfitBridge
     @Inject lateinit var externalGpsRepository:
         com.eried.eucplanet.data.repository.ExternalGpsRepository
     @Inject lateinit var navigationEngine: com.eried.eucplanet.nav.NavigationEngine
     @Inject lateinit var hudServer: com.eried.eucplanet.service.hud.HudServer
     @Inject lateinit var radarRepository: com.eried.eucplanet.data.repository.RadarRepository
     @Inject lateinit var phoneHudWindow: com.eried.eucplanet.service.overlay.PhoneHudWindow
+    @Inject lateinit var legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController
 
     // Phone HUD, mirrored so the telemetry loop can read it without suspending.
     @Volatile
@@ -263,6 +268,7 @@ class WheelService : LifecycleService() {
                     engineSoundEngine.pushTelemetry(data.speed, data.pwm)
                 }
                 handleAccelSplits(data, settings)
+                checkChargeAlerts(data, settings)
             }
         }
 
@@ -611,6 +617,7 @@ class WheelService : LifecycleService() {
         // fallback. Either way the rider never sees a frozen-stale dial.
         try { wearBridge.publishFarewell() } catch (_: Exception) {}
         try { garminBridge.publishFarewell() } catch (_: Exception) {}
+        try { amazfitBridge.publishFarewell() } catch (_: Exception) {}
         // Stop All from the notification button lands here directly, so nothing
         // has told the paired watch(es) to CLOSE - the farewell above only flips
         // them to a disconnected "--" dial, leaving the watch app open. Send the
@@ -626,6 +633,7 @@ class WheelService : LifecycleService() {
                         if (kotlinx.coroutines.runBlocking { settingsRepository.get() }.watchCloseOnExit) {
                             try { wearBridge.sendCloseToWatchBlocking() } catch (_: Exception) {}
                             try { garminBridge.sendCloseToWatchBlocking() } catch (_: Exception) {}
+                            try { amazfitBridge.sendCloseToWatchBlocking() } catch (_: Exception) {}
                         }
                     }
                 }
@@ -840,6 +848,55 @@ class WheelService : LifecycleService() {
         // duplicate entry don't linger in system settings.
         runCatching { manager.deleteNotificationChannel(CHANNEL_ID_LEGACY) }
         manager.createNotificationChannel(channel)
+
+        ChargeAlertNotification.ensureChannel(this)
+    }
+
+    // --- Charge alerts ---
+
+    private var chargeAlertState = ChargeAlertPolicy.State()
+
+    /**
+     * Tell the rider when the pack passes 80% or finishes, if they asked.
+     *
+     * Runs on every telemetry frame, which is why the deciding is in
+     * [ChargeAlertPolicy] and only the posting is here.
+     */
+    private fun checkChargeAlerts(data: WheelData, settings: AppSettings) {
+        val step = ChargeAlertPolicy.step(
+            chargeAlertState,
+            wheelRepository.chargeStatus.value,
+            data.batteryPercent,
+            want80 = settings.chargingNotify80,
+            wantFull = settings.chargingNotifyFull,
+        )
+        chargeAlertState = step.state
+        when (step.alert) {
+            ChargeAlertPolicy.Alert.AT_80 -> postChargeAlert(
+                R.string.charge_alert_80_title, R.string.charge_alert_80_text,
+            )
+            ChargeAlertPolicy.Alert.FULL -> postChargeAlert(
+                R.string.charge_alert_full_title, R.string.charge_alert_full_text,
+            )
+            ChargeAlertPolicy.Alert.NONE -> Unit
+        }
+    }
+
+    private fun postChargeAlert(titleRes: Int, textRes: Int) {
+        if (shuttingDown) return
+        if (!hasPermission(Manifest.permission.POST_NOTIFICATIONS)) return
+        val open = PendingIntent.getActivity(
+            this, REQ_CHARGE_ALERT,
+            Intent(this, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                .putExtra(EXTRA_OPEN_CHARGING, true),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val n = ChargeAlertNotification.build(this, titleRes, textRes, open)
+        runCatching {
+            getSystemService(NotificationManager::class.java)
+                .notify(ChargeAlertNotification.NOTIFICATION_ID, n)
+        }
     }
 
     private fun buildNotification(data: WheelData?): Notification {
@@ -886,7 +943,11 @@ class WheelService : LifecycleService() {
         // No setSilent(true): IMPORTANCE_LOW already means no sound/peek, and
         // tagging it silent made lock screens set to "hide silent
         // notifications" suppress it entirely.
-        buildNotificationActions(nav.active, data).forEach { builder.addAction(it) }
+        // Lockdown strips the notification buttons: they are another surface
+        // that could reach a gated action.
+        if (!legalLockdown.isEngaged()) {
+            buildNotificationActions(nav.active, data).forEach { builder.addAction(it) }
+        }
         return builder.build()
     }
 
@@ -973,6 +1034,7 @@ class WheelService : LifecycleService() {
      * so a disconnected wheel still has numbers.
      */
     private fun pushWidget(data: WheelData) {
+        if (legalLockdown.isEngaged()) return  // lockdown stops the widgets
         if (!com.eried.eucplanet.widget.EucWidget.isPlaced(this)) return
         val now = System.currentTimeMillis()
         if (now - lastWidgetUpdate < 1_000L) return
@@ -996,6 +1058,13 @@ class WheelService : LifecycleService() {
      * can be called from every settings emission without churning the window.
      */
     private fun applyPhoneHud() {
+        // Legal Mode Lockdown hides the overlay. Not an early return: the
+        // window may already be up when the rider arms, so it has to be told
+        // to go away rather than merely stop being re-shown.
+        if (legalLockdown.isEngaged()) {
+            phoneHudWindow.hide()
+            return
+        }
         // Hidden while the app itself is in front, unless the rider asked for
         // it everywhere. Drawing the overlay over the dashboard would cover a
         // fuller version of the same numbers.
@@ -1042,6 +1111,7 @@ class WheelService : LifecycleService() {
      * out for the same reason: it is a 1100-sample buffer at IMU rate.
      */
     private fun pushPhoneHud(rawData: WheelData) {
+        if (legalLockdown.isEngaged()) return  // lockdown stops the overlay updates
         if (!phoneHudWindow.isShowing) return
         val now = System.currentTimeMillis()
         if (now - lastPhoneHudPush < PHONE_HUD_INTERVAL_MS) return
@@ -1113,6 +1183,7 @@ class WheelService : LifecycleService() {
     }
 
     private fun renderWidget(data: WheelData?) {
+        if (legalLockdown.isEngaged()) return  // lockdown stops the widgets
         if (!com.eried.eucplanet.widget.EucWidget.isPlaced(this)) return
         val connected =
             wheelRepository.connectionState.value == ConnectionState.CONNECTED && data != null
@@ -1138,7 +1209,9 @@ class WheelService : LifecycleService() {
             com.eried.eucplanet.data.model.WidgetMetricType.PHONE_BATTERY -> "%"
             com.eried.eucplanet.data.model.WidgetMetricType.VOLTAGE -> "V"
             com.eried.eucplanet.data.model.WidgetMetricType.TEMP -> u.tempUnit(tempUnit)
-            com.eried.eucplanet.data.model.WidgetMetricType.CURRENT -> "A"
+            com.eried.eucplanet.data.model.WidgetMetricType.CURRENT,
+            com.eried.eucplanet.data.model.WidgetMetricType.PHASE_CURRENT -> "A"
+            com.eried.eucplanet.data.model.WidgetMetricType.TORQUE -> "Nm"
             com.eried.eucplanet.data.model.WidgetMetricType.POWER -> "W"
             com.eried.eucplanet.data.model.WidgetMetricType.WH_CONSUMED -> "Wh"
             com.eried.eucplanet.data.model.WidgetMetricType.WH_PER_KM ->
@@ -1178,6 +1251,10 @@ class WheelService : LifecycleService() {
                     if (data.pwm.isNaN()) "--" else "%.0f".format(data.pwm)
                 com.eried.eucplanet.data.model.WidgetMetricType.CURRENT ->
                     "%.0f".format(kotlin.math.abs(data.current))
+                com.eried.eucplanet.data.model.WidgetMetricType.TORQUE ->
+                    "%.1f".format(kotlin.math.abs(data.torque))
+                com.eried.eucplanet.data.model.WidgetMetricType.PHASE_CURRENT ->
+                    "%.0f".format(kotlin.math.abs(data.phaseCurrent))
                 com.eried.eucplanet.data.model.WidgetMetricType.POWER ->
                     "%.0f".format(kotlin.math.abs(data.voltage * data.current))
                 com.eried.eucplanet.data.model.WidgetMetricType.WH_CONSUMED ->

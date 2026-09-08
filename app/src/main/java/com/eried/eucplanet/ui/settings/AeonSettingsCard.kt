@@ -70,7 +70,7 @@ internal fun AeonSettingsCard(viewModel: SettingsViewModel, connected: Boolean) 
             if (expanded) {
                 AeonSetting.entries.forEach { setting ->
                     val raw = settings.rawValues[setting]
-                    val shown = if (raw == null || raw == 128) stringResource(R.string.action_unsupported_on_wheel)
+                    val shown = if (raw == null || raw == 128) stringResource(R.string.aeon_readback_unavailable)
                         else "${settings.value(setting) ?: raw}"
                     Text("${fieldNames[setting.ordinal]}: $shown")
                 }

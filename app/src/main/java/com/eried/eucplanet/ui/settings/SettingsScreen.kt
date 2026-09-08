@@ -390,6 +390,7 @@ fun SettingsScreen(
     // tab 9 opens General but scrolls to the "Battery monitor" sub-header (not the
     // General section top), so the monitor's Settings link lands right on it.
     val scrollToBattery = initialTab == 9
+    val scrollToWeather = initialTab == 11
     val targetSectionKey = remember(initialTab) { initialTabSectionKey(initialTab) }
     // expandedSections is rememberSaveable above and only seeds on first ever
     // composition; on subsequent visits the user's saved expansion state can hide
@@ -405,15 +406,28 @@ fun SettingsScreen(
     var targetSectionTop by remember { mutableStateOf<Float?>(null) }
     var hasScrolledToSection by rememberSaveable(initialTab) { mutableStateOf(false) }
 
-    LaunchedEffect(scrollContainerTop, targetSectionTop, hasScrolledToSection) {
-        val container = scrollContainerTop
-        val target = targetSectionTop
-        if (!hasScrolledToSection && targetSectionKey != null &&
-            container != null && target != null) {
-            val offset = (target - container).toInt().coerceAtLeast(0)
-            if (offset > 0) scrollState.animateScrollTo(offset)
-            hasScrolledToSection = true
+    // One non-restarting effect. Keying this on the target position - the
+    // obvious thing - cancels its own animateScrollTo the moment the scroll
+    // moves the target, and the restart then computes an absolute offset from
+    // an already-scrolled window: it converges, deterministically, on the
+    // wrong place. So: wait for the position to sit still through the
+    // section-open animation, then scroll RELATIVE to wherever we are, and
+    // once more for late reflows.
+    LaunchedEffect(targetSectionKey) {
+        if (targetSectionKey == null || hasScrolledToSection) return@LaunchedEffect
+        while (scrollContainerTop == null || targetSectionTop == null) kotlinx.coroutines.delay(16)
+        while (true) {
+            val t0 = targetSectionTop
+            kotlinx.coroutines.delay(240)
+            if (targetSectionTop == t0) break
         }
+        val container = scrollContainerTop ?: return@LaunchedEffect
+        repeat(2) {
+            val delta = ((targetSectionTop ?: return@repeat) - container).toInt()
+            if (delta > 8) scrollState.animateScrollTo((scrollState.value + delta).coerceAtLeast(0))
+            kotlinx.coroutines.delay(160)
+        }
+        hasScrolledToSection = true
     }
 
     val settings = settingsState ?: return
@@ -541,6 +555,9 @@ fun SettingsScreen(
         stringResource(R.string.speed_tiltback),
         stringResource(R.string.speed_alarm),
         stringResource(R.string.section_legal_mode_speed),
+        stringResource(R.string.lockdown_title),
+        stringResource(R.string.lockdown_setting_label),
+        stringResource(R.string.lockdown_setting_desc),
         stringResource(R.string.speed_legal_tiltback),
         stringResource(R.string.speed_legal_alarm),
         stringResource(R.string.section_speed_calibration),
@@ -697,7 +714,7 @@ fun SettingsScreen(
         SectionDef("general", titleGeneral, Icons.Default.Tune, corpusGeneral) {
             AeonSettingsCard(viewModel, isConnected)
             GeneralTab(settings, viewModel, scrollToBattery) { y ->
-                if (targetSectionTop == null) targetSectionTop = y
+                targetSectionTop = y
             }
         },
         SectionDef("dashboard", titleDashboard, Icons.Default.Dashboard, corpusDashboard) {
@@ -725,7 +742,10 @@ fun SettingsScreen(
             AutomationsContent()
         },
         SectionDef("navigator", titleNavigator, Icons.Default.Navigation, corpusNavigator) {
-            NavigatorSettingsContent()
+            NavigatorSettingsContent(
+                scrollToWeather = scrollToWeather,
+                onWeatherTop = { y -> targetSectionTop = y },
+            )
         },
         SectionDef("location", titleGpsSensors, Icons.Default.Sensors, corpusGpsSensors) {
             ExternalGpsSection()
@@ -891,9 +911,11 @@ fun SettingsScreen(
                     if (searching && !sec.searchCorpus.contains(query, ignoreCase = true)) return
                     val explicitlyExpanded = expandedSections.contains(sec.key)
                     val isExpanded = explicitlyExpanded || searching
-                    var sectionModifier = if (sec.key == targetSectionKey && !scrollToBattery) {
+                    var sectionModifier = if (
+                        sec.key == targetSectionKey && !scrollToBattery && !scrollToWeather
+                    ) {
                         Modifier.onGloballyPositioned {
-                            if (targetSectionTop == null) targetSectionTop = it.positionInWindow().y
+                            targetSectionTop = it.positionInWindow().y
                         }
                     } else Modifier
                     if (indent) sectionModifier = sectionModifier.padding(start = 12.dp)
@@ -957,6 +979,10 @@ private fun initialTabSectionKey(initialTab: Int): String? = when (initialTab) {
     7 -> "integration"
     8 -> "navigator"
     9 -> "general"
+    10 -> "location"
+    // The weather block lives inside Navigation, so the section is the same
+    // as tab 8; scrollToWeather below is what separates the two.
+    11 -> "navigator"
     else -> null
 }
 
@@ -2038,11 +2064,11 @@ private fun AdvancedTab(
                     Spacer(Modifier.height(8.dp))
                     changed.forEach { spec ->
                         val u = if (spec.unit.isEmpty()) "" else " ${spec.unit}"
-                        Text(
-                            "•  ${stringResource(spec.label)}:  " +
+                        com.eried.eucplanet.ui.common.BulletPoint(
+                            text = "${stringResource(spec.label)}:  " +
                                 "${spec.format(spec.get(settings.advanced))}$u  →  " +
                                 "${spec.format(spec.get(ADVANCED_DEFAULTS))}$u",
-                            fontSize = 13.sp,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
                             modifier = Modifier.padding(vertical = 1.dp),
                         )
                     }
@@ -6750,6 +6776,7 @@ private fun SpeedTab(
             )
         }
 
+        LegalLockdownSetting(viewModel)
     }
 }
 
@@ -7390,6 +7417,12 @@ private fun WatchTab(
     val hasWearOs by viewModel.hasWearOsPaired.collectAsStateWithLifecycle()
     val hasHardwareButtons by viewModel.hasHardwareButtonCapableWatch.collectAsStateWithLifecycle()
     val hasGarminPaired by viewModel.hasGarminPaired.collectAsStateWithLifecycle()
+    val hasAmazfitPaired by viewModel.hasAmazfitPaired.collectAsStateWithLifecycle()
+    // "Not on Amazfit" badge: the Zepp OS dial cannot be launched from the
+    // phone and cannot rotate. Shown only while an Amazfit is polling.
+    val amazfitBadge: (@Composable () -> Unit)? = if (hasAmazfitPaired) {
+        { com.eried.eucplanet.ui.theme.PlatformUnsupportedTextBadge("AMAZFIT") }
+    } else null
     // "Not on Garmin" badge for the Wear-only rows — shown only when a Garmin is
     // ALSO paired (the feature works on the Wear watch, just not the Garmin one).
     // When only a Garmin is paired these rows stay hidden (hasWearOs gate).
@@ -7417,13 +7450,14 @@ private fun WatchTab(
         // openApplication() to launch the watch app (a one-time "Always"
         // consent on the watch, then automatic). Shown whenever any watch is
         // paired, and with no Garmin-unsupported badge anymore.
-        if (hasWearOs || hasGarminPaired) {
+        if (hasWearOs || hasGarminPaired || hasAmazfitPaired) {
             SwitchSettingWithDesc(
                 label = stringResource(R.string.watch_auto_start),
                 description = stringResource(R.string.watch_auto_start_desc),
                 checked = settings.watchAutoStart,
                 onCheckedChange = { viewModel.updateWatchAutoStart(it) },
-                onTest = { viewModel.testWatchWake() }
+                onTest = { viewModel.testWatchWake() },
+                badge = amazfitBadge
             )
         }
         SwitchSettingWithDesc(
@@ -7442,7 +7476,7 @@ private fun WatchTab(
         // tweaks that live in Customization below.
         SectionHeader(stringResource(R.string.section_watch_display))
 
-        if (hasWearOs) {
+        if (hasWearOs || hasAmazfitPaired) {
             SwitchSettingWithDesc(
                 label = stringResource(R.string.watch_keep_on),
                 description = stringResource(R.string.watch_keep_on_desc),
@@ -7472,7 +7506,7 @@ private fun WatchTab(
             // enforces its own rate cap on the Garmin transport regardless
             // of what we set here, so the choice would be misleading on a
             // Garmin-only setup. Surfaced only when a Wear OS device is paired.
-            if (hasWearOs) {
+            if (hasWearOs || hasAmazfitPaired) {
                 val gb = garminBadge
                 val gbTrailing: (@Composable RowScope.() -> Unit)? =
                     if (gb != null) {
@@ -7573,6 +7607,10 @@ private fun WatchTab(
                     Spacer(Modifier.width(6.dp))
                     garminBadge()
                 }
+                if (amazfitBadge != null) {
+                    Spacer(Modifier.width(6.dp))
+                    amazfitBadge()
+                }
             }
             SliderSetting(
                 label = "",
@@ -7605,13 +7643,13 @@ private fun WatchTab(
             // Button 1 click | hold on one row; Button 2 click | hold on the next.
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 WatchActionPicker(
-                    label = "${stringResource(R.string.watch_screen_button_1)} – ${stringResource(R.string.watch_button_click_label)}",
+                    label = "${stringResource(R.string.watch_screen_button_1)} - ${stringResource(R.string.watch_button_click_label)}",
                     currentKey = settings.watchScreen1Click,
                     onSelect = { viewModel.updateWatchScreen1Click(it) },
                     modifier = Modifier.weight(1f),
                 )
                 WatchActionPicker(
-                    label = "${stringResource(R.string.watch_screen_button_1)} – ${stringResource(R.string.watch_button_hold_label)}",
+                    label = "${stringResource(R.string.watch_screen_button_1)} - ${stringResource(R.string.watch_button_hold_label)}",
                     currentKey = settings.watchScreen1Hold,
                     onSelect = { viewModel.updateWatchScreen1Hold(it) },
                     modifier = Modifier.weight(1f),
@@ -7619,13 +7657,13 @@ private fun WatchTab(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 WatchActionPicker(
-                    label = "${stringResource(R.string.watch_screen_button_2)} – ${stringResource(R.string.watch_button_click_label)}",
+                    label = "${stringResource(R.string.watch_screen_button_2)} - ${stringResource(R.string.watch_button_click_label)}",
                     currentKey = settings.watchScreen2Click,
                     onSelect = { viewModel.updateWatchScreen2Click(it) },
                     modifier = Modifier.weight(1f),
                 )
                 WatchActionPicker(
-                    label = "${stringResource(R.string.watch_screen_button_2)} – ${stringResource(R.string.watch_button_hold_label)}",
+                    label = "${stringResource(R.string.watch_screen_button_2)} - ${stringResource(R.string.watch_button_hold_label)}",
                     currentKey = settings.watchScreen2Hold,
                     onSelect = { viewModel.updateWatchScreen2Hold(it) },
                     modifier = Modifier.weight(1f),
@@ -7653,6 +7691,17 @@ private fun WatchTab(
                     holdKey = settings.watchStem2Hold,
                     onClick = { viewModel.updateWatchStem2Click(it) },
                     onHold = { viewModel.updateWatchStem2Hold(it) }
+                )
+                // Third button (Down on Garmin and Amazfit). Click only: the
+                // watch system can claim Down's long press for its own
+                // shortcut, so a hold binding here could never be trusted.
+                HardwareButtonGroup(
+                    title = stringResource(R.string.watch_hardware_button_3),
+                    subtitle = stringResource(R.string.watch_hardware_button_3_subtitle),
+                    clickKey = settings.watchStem3Click,
+                    holdKey = null,
+                    onClick = { viewModel.updateWatchStem3Click(it) },
+                    onHold = null
                 )
             }
         }
@@ -7709,9 +7758,9 @@ private fun HardwareButtonGroup(
     title: String,
     subtitle: String,
     clickKey: String,
-    holdKey: String,
+    holdKey: String?,
     onClick: (String) -> Unit,
-    onHold: (String) -> Unit
+    onHold: ((String) -> Unit)?
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(title, style = MaterialTheme.typography.bodyLarge)
@@ -7727,12 +7776,18 @@ private fun HardwareButtonGroup(
                 onSelect = onClick,
                 modifier = Modifier.weight(1f),
             )
-            WatchActionPicker(
-                label = stringResource(R.string.watch_button_hold_label),
-                currentKey = holdKey,
-                onSelect = onHold,
-                modifier = Modifier.weight(1f),
-            )
+            if (holdKey != null && onHold != null) {
+                WatchActionPicker(
+                    label = stringResource(R.string.watch_button_hold_label),
+                    currentKey = holdKey,
+                    onSelect = onHold,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                // Click-only button: keep the picker half-width, same as
+                // every numeric pill and paired row in Settings.
+                Spacer(Modifier.weight(1f))
+            }
         }
     }
 }
@@ -8146,22 +8201,6 @@ private fun CloudTab(
                 ) { Text(stringResource(R.string.cloud_remove_folder)) }
             }
         } else {
-            // With trips already recorded, the missing folder is not a setting
-            // the rider has yet to reach - it is rides sitting on one phone and
-            // nowhere else. Say so, in the warning colour, and let the line
-            // itself open the picker.
-            val unbackedUp by viewModel.localTripCount.collectAsState()
-            if (unbackedUp > 0) {
-                Text(
-                    stringResource(R.string.cloud_trips_no_folder, unbackedUp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.appColors.statusWarn,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { pickFolder.launch(null) }
-                        .padding(vertical = 6.dp),
-                )
-            }
             LeftAlignedScanButton(
                 label = stringResource(R.string.cloud_choose_folder),
                 onClick = { pickFolder.launch(null) }
@@ -8416,25 +8455,10 @@ private fun CloudTab(
             HintText(stringResource(R.string.cloud_trips_caption))
             var showResetLocalDialog by remember { mutableStateOf(false) }
             val hasLocalTrips by viewModel.hasLocalTrips.collectAsState()
-            // Counted when the section opens: the folder only keeps up with
-            // trips the app put there, so a rider who added the folder later,
-            // or imported a library, can be carrying trips it has never seen.
-            val missingFromFolder by viewModel.tripsMissingFromFolder.collectAsState()
-            LaunchedEffect(Unit) { viewModel.refreshFolderGap() }
-            if (missingFromFolder > 0) {
-                // Tappable, because the hint names the fix: reading "N trips
-                // are not in your backup folder" and then hunting for the
-                // button that copies them is a step the app can save.
-                Text(
-                    stringResource(R.string.cloud_trips_folder_gap, missingFromFolder),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.appColors.statusWarn,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(enabled = !syncRunning) { viewModel.syncAllTrips() }
-                        .padding(vertical = 6.dp),
-                )
-            }
+            // No "N trips are not in your backup folder" line here any more:
+            // the folder worker fills gaps on every pass by itself, and the
+            // one state it cannot fix alone - same name, different content on
+            // the two sides - surfaces as the dashboard warning with Fix.
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -9957,7 +9981,7 @@ private fun AutoRecordModeSelector(
 }
 
 @Composable
-private fun SegmentedChoice(
+internal fun SegmentedChoice(
     label: String,
     options: List<Pair<String, String>>,
     current: String,
@@ -10698,6 +10722,7 @@ private fun DeviceCard(
                 imageVector = when (surface.kind) {
                     com.eried.eucplanet.data.model.PairedSurface.Kind.WEAR_OS -> Icons.Outlined.WatchOutlined
                     com.eried.eucplanet.data.model.PairedSurface.Kind.GARMIN -> Icons.Default.Watch
+                    com.eried.eucplanet.data.model.PairedSurface.Kind.AMAZFIT -> Icons.Default.Watch
                 },
                 contentDescription = null,
                 modifier = Modifier.size(22.dp)
@@ -10817,6 +10842,8 @@ private fun surfaceKindLabel(kind: com.eried.eucplanet.data.model.PairedSurface.
             stringResource(R.string.watch_paired_kind_wear)
         com.eried.eucplanet.data.model.PairedSurface.Kind.GARMIN ->
             stringResource(R.string.watch_paired_kind_garmin)
+        com.eried.eucplanet.data.model.PairedSurface.Kind.AMAZFIT ->
+            stringResource(R.string.watch_paired_kind_amazfit)
     }
 @Composable
 private fun HudInstallHint(pairedHudVersion: String?, hudEverConnected: Boolean) {
@@ -11412,10 +11439,11 @@ private fun HudMapStylePicker(
     settings: com.eried.eucplanet.data.model.AppSettings,
     viewModel: SettingsViewModel
 ) {
-    // Carto raster basemap slugs, all 10 publicly served styles. Labels
-    // are the raw slugs on purpose: the rider asked to see the internal
-    // names, not localised friendly text. Order: voyager family,
-    // positron (light_*) family, dark matter (dark_*) family.
+    // Raw internal codes on purpose: the rider asked to see them, not
+    // localised friendly text. The ten Carto slugs collapsed into "light"
+    // and "dark" when Light/Dark moved to Esri Canvas (the keyless Carto
+    // endpoints are being key-gated); a saved legacy slug still resolves
+    // to the matching Esri style in the HUD's tile cache.
     val options = listOf(
         // The same providers the app's own maps offer, first because they are
         // the ones riders asked for: plain OSM and the two that actually draw
@@ -11426,18 +11454,10 @@ private fun HudMapStylePicker(
         "topo",
         "hot",
         "satellite",
-        "voyager",
-        "voyager_nolabels",
-        "voyager_labels_under",
-        "voyager_only_labels",
-        "light_all",
-        "light_nolabels",
-        "light_only_labels",
-        "dark_all",
-        "dark_nolabels",
-        "dark_only_labels",
+        "light",
+        "dark",
     )
-    val currentCode = settings.hudMapStyle.ifBlank { "voyager" }
+    val currentCode = settings.hudMapStyle.ifBlank { "light" }
     val currentLabel = currentCode
     var expanded by remember { mutableStateOf(false) }
 

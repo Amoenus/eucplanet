@@ -53,7 +53,8 @@ class TripRepository @Inject constructor(
     private val voiceService: VoiceService,
     private val settingsRepository: SettingsRepository,
     private val syncManager: SyncManager,
-    private val externalGpsRepository: ExternalGpsRepository
+    private val externalGpsRepository: ExternalGpsRepository,
+    private val legalLockdown: LegalLockdownController
 ) {
     companion object {
         private const val TAG = "TripRepo"
@@ -207,6 +208,14 @@ class TripRepository @Inject constructor(
         scope.launch {
             runCatching { finalizeUnfinishedTrips() }
             runCatching { adoptOrphanCsvs() }
+            // Then read the wheel out of any file that has never been asked.
+            // Old rows predate the wheelMetaJson column and restored trips
+            // arrived before downloads captured it, so the change-wheel picker
+            // sat empty while every CSV named its wheel. One streaming read
+            // per file, once ever: files with no wheel rows are stamped "{}"
+            // so they are never opened again. A 352-trip library takes a few
+            // seconds in the background; even thousands stay under a minute.
+            runCatching { backfillWheelMetaFromFiles() }
         }
         // App-start recovery sweep. Both workers also pick up orphaned/failed
         // trips (folder: uploadStatus=3; eucstats: status 0 with UUID, 1, or 3),
@@ -519,6 +528,9 @@ class TripRepository @Inject constructor(
         Log.i(TAG, "adoptOrphanCsvs: dir=${dir.absolutePath} csv=${csvs.size}")
         if (csvs.isEmpty()) return
         val known = tripDao.allFileNames().toHashSet()
+        val settings = runCatching { settingsRepository.get() }.getOrNull()
+        val hasFolder = settings?.syncFolderUri != null
+        var adopted = 0
         for (f in csvs) {
             if (f.name in known) continue
             val text = runCatching { f.readText() }.getOrNull() ?: continue
@@ -532,16 +544,30 @@ class TripRepository @Inject constructor(
                     endTime = if (m.valid) m.endMs else null,
                     distanceKm = m.distanceKm,
                     sampleCount = rows,
-                    // A derived file (a saved section, a join) must not gain an
-                    // upload identity just because the database was rebuilt. The
-                    // name is the only marker that survives, which is why
-                    // TripDerive puts it there.
-                    tripUuid = if (TripDerive.isDerived(f.name)) null
-                               else java.util.UUID.randomUUID().toString()
+                    // ALWAYS null. A uuid is this device's claim that it
+                    // recorded the ride itself, and it is what makes a trip
+                    // eligible for an eucstats upload; adoption is finding a
+                    // file, which is not a recording. Minting one here handed
+                    // that claim to imported CSVs, files restored from a
+                    // backup, and anything a rider dropped in the folder, and
+                    // the upload sweep has no age limit, so a whole back
+                    // catalogue went to the leaderboard at once. Live
+                    // recording mints its own at save time (see startTrip).
+                    tripUuid = null,
+                    // The file's own name, the way every other road in reads
+                    // it. Ten real files adopted on the emulator showed "test
+                    // 3" to eucviewer and a date to the phone.
+                    customName = runCatching { readTripNameFromCsv(f) }.getOrNull(),
+                    // Queued for the folder like a recorded trip. Adopted files
+                    // stayed at status 0, which no worker walks, so they never
+                    // reached the backup folder until a manual sync.
+                    uploadStatus = if (hasFolder) 1 else 0,
                 )
             )
+            adopted++
             Log.i(TAG, "Adopted orphan trip CSV ${f.name} ($rows rows, ${m.distanceKm} km)")
         }
+        if (adopted > 0 && hasFolder && settings != null) syncManager.enqueueTripUpload(settings)
     }
 
     /** Header-driven extraction of (date, lat, lon, mileage) rows for metrics. */
@@ -637,7 +663,22 @@ class TripRepository @Inject constructor(
         runCatching { tripDao.updateWheelMeta(id, json) }
     }
 
+    init {
+        // Lockdown can engage long after it was armed, the moment legal mode
+        // comes on, so a ride may already be in progress. Finalise and save it
+        // rather than leaving a partial trip open behind a locked screen.
+        scope.launch {
+            legalLockdown.engaged.collect { engaged ->
+                if (engaged && _recording.value) stopRecording()
+            }
+        }
+    }
+
     suspend fun startRecording() {
+        // Legal Mode Lockdown stops the recorders. Auto-record reaches this same
+        // function, so gating here covers the policy too.
+        if (legalLockdown.isEngaged()) return
+
         // Back off briefly after a failed start. evaluateAutoRecordOnTelemetry
         // calls this on every moving packet (~10/s); without this it would spin
         // retrying a doomed file open.
@@ -1028,6 +1069,7 @@ class TripRepository @Inject constructor(
             runCatching { destFile.delete() }
             return null
         }
+        stampDerived(destFile, source.wheelMetaJson)
         val metrics = TripCsv.metricsFrom(readQuads(destFile))
         val record = TripRecord(
             fileName = destName,
@@ -1041,6 +1083,33 @@ class TripRepository @Inject constructor(
         )
         val id = tripDao.insert(record)
         return record.copy(id = id)
+    }
+
+    /** The wheel the trip row knows, written into a derived file; see
+     *  [TripDerive.stampDerived]. Best effort: a file that cannot carry it
+     *  is still a valid trip. */
+    private fun stampDerived(file: File, wheelJson: String?) {
+        val identity = WheelChoice.fromJson(wheelJson)?.extraFields().orEmpty()
+        runCatching { TripDerive.stampDerived(file, identity) }
+            .onFailure { Log.w(TAG, "Could not stamp derived ${file.name}", it) }
+    }
+
+    /** First trip.name= in the Extra column, the way the sync parser reads it. */
+    private fun readTripNameFromCsv(file: File): String? {
+        file.bufferedReader().use { reader ->
+            val header = reader.readLine() ?: return null
+            val idx = header.lowercase().split(",").map { it.trim() }.indexOf("extra")
+            if (idx < 0) return null
+            while (true) {
+                val line = reader.readLine() ?: break
+                val cell = line.split(",").getOrNull(idx)?.trim().orEmpty()
+                if (cell.startsWith("trip.name=", ignoreCase = true)) {
+                    val v = cell.substringAfter('=').trim().take(60)
+                    if (v.isNotEmpty()) return v
+                }
+            }
+        }
+        return null
     }
 
     /** Date, lat, lon and odometer per row, for metric recomputation. */
@@ -1088,22 +1157,72 @@ class TripRepository @Inject constructor(
      * only ever arrived as an imported CSV, which is exactly the case where the
      * rider is most likely to be correcting a wrong label.
      */
-    suspend fun knownWheelNames(): List<String> {
-        val fromProfiles = runCatching { wheelProfileDao.allNames() }.getOrDefault(emptyList())
-        val fromTrips = runCatching {
-            tripDao.allWheelMeta().mapNotNull { json ->
-                runCatching { org.json.JSONObject(json).optString("ble_name") }
-                    .getOrNull()?.takeIf { it.isNotBlank() }
-            }
-        }.getOrDefault(emptyList())
-        return (fromProfiles + fromTrips).distinct().sorted()
+    private suspend fun backfillWheelMetaFromFiles() {
+        for (trip in tripDao.tripsWithoutWheelMeta()) {
+            val file = getTripFile(trip)
+            if (!file.exists()) continue
+            val json = runCatching { readWheelJsonFromCsv(file) }.getOrNull()
+            // "{}" = looked, nothing there. Distinguishable from NULL (never
+            // looked) so the sweep converges instead of re-reading forever.
+            tripDao.updateWheelMeta(trip.id, json ?: "{}")
+        }
     }
 
-    suspend fun changeTripWheel(trip: TripRecord, bleName: String, mac: String?): Boolean {
+    /** First wheel.name= / wheel.mac= / brand / model in the Extra column,
+     *  as the same JSON shape the recorder caches. Streams; a long ride
+     *  never sits in memory. */
+    private fun readWheelJsonFromCsv(file: java.io.File): String? {
+        var name: String? = null; var mac: String? = null
+        var brand: String? = null; var model: String? = null
+        file.bufferedReader().use { reader ->
+            val header = reader.readLine() ?: return null
+            val idx = header.lowercase().split(",").map { it.trim() }.indexOf("extra")
+            if (idx < 0) return null
+            reader.forEachLine { line ->
+                val cell = line.split(",").getOrNull(idx)?.trim().orEmpty()
+                if (cell.startsWith("wheel.", ignoreCase = true)) {
+                    val v = cell.substringAfter('=').trim().take(80)
+                    if (v.isNotEmpty()) when {
+                        cell.startsWith("wheel.name=", true) -> name = name ?: v
+                        cell.startsWith("wheel.mac=", true) -> mac = mac ?: v
+                        cell.startsWith("wheel.brand=", true) -> brand = brand ?: v
+                        cell.startsWith("wheel.model=", true) -> model = model ?: v
+                    }
+                }
+            }
+        }
+        if (name == null && mac == null) return null
+        return org.json.JSONObject().apply {
+            name?.let { put("ble_name", it) }
+            mac?.let { put("ble_mac", it) }
+            brand?.let { put("brand", it) }
+            model?.let { put("model", it) }
+        }.toString()
+    }
+
+    suspend fun knownWheels(): List<WheelChoice> {
+        val fromProfiles = runCatching { wheelProfileDao.allNames() }.getOrDefault(emptyList())
+            .map { WheelChoice(name = it) }
+        val fromTrips = runCatching {
+            tripDao.allWheelMeta().mapNotNull { WheelChoice.fromJson(it) }
+        }.getOrDefault(emptyList())
+        // Distinct the way eucviewer groups: label plus serial or MAC. A
+        // profile that only knows a name folds into a trip identity with the
+        // same label once one exists, so the list does not show a wheel twice.
+        val byKey = LinkedHashMap<String, WheelChoice>()
+        for (w in fromTrips + fromProfiles) {
+            if (w.isEmpty) continue
+            if (byKey.values.any { it.label == w.label && (w.mac == null || it.mac == w.mac) }) continue
+            byKey.putIfAbsent(w.key, w)
+        }
+        return byKey.values.sortedBy { it.label.lowercase() }
+    }
+
+    suspend fun changeTripWheel(trip: TripRecord, wheel: WheelChoice): Boolean {
         val file = getTripFile(trip)
         if (file.exists()) {
             val tmp = File(file.parentFile, file.name + ".rewrite")
-            val ok = runCatching { TripDerive.rewriteWheelIdentity(file, tmp, bleName, mac) >= 0 }
+            val ok = runCatching { TripDerive.rewriteWheelIdentity(file, tmp, wheel.extraFields()) >= 0 }
                 .getOrElse { e ->
                     Log.e(TAG, "Wheel rewrite failed for ${trip.fileName}", e)
                     runCatching { tmp.delete() }
@@ -1122,16 +1241,10 @@ class TripRepository @Inject constructor(
                 }
             }
         }
-        val meta = org.json.JSONObject().apply {
-            trip.wheelMetaJson?.let { existing ->
-                runCatching { org.json.JSONObject(existing) }.getOrNull()?.let { old ->
-                    old.keys().forEach { k -> put(k, old.get(k)) }
-                }
-            }
-            put("ble_name", bleName)
-            mac?.let { put("ble_mac", it.replace(":", "").replace("-", "").uppercase()) }
-        }
-        tripDao.updateWheelMeta(trip.id, meta.toString())
+        // The cache is replaced, not merged: merging kept the old wheel's
+        // brand and model under the new name, the same stale identity the
+        // file rewrite above now clears.
+        tripDao.updateWheelMeta(trip.id, wheel.toJson())
         resyncEditedTrip(trip.id)
         return true
     }
@@ -1253,6 +1366,7 @@ class TripRepository @Inject constructor(
             return null
         }
         if (rows <= 0) { runCatching { destFile.delete() }; return null }
+        stampDerived(destFile, ordered.first().wheelMetaJson)
         val metrics = TripCsv.metricsFrom(readQuads(destFile))
         val record = TripRecord(
             fileName = destName,

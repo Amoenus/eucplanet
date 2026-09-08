@@ -79,6 +79,7 @@ import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
@@ -272,6 +273,8 @@ fun DashboardScreen(
     onNavigateToTripDetail: (Long) -> Unit = {},
     onNavigateToMetric: (String) -> Unit = {},
     onNavigateToCharging: () -> Unit = {},
+    /** Long-press on the battery icon: charging monitor, details already up. */
+    onNavigateToChargingDetails: () -> Unit = {},
     onNavigateToTripMeter: () -> Unit = {},
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
@@ -431,6 +434,28 @@ fun DashboardScreen(
     var showTextForTile by remember { mutableStateOf<com.eried.eucplanet.ui.settings.CustomTile?>(null) }
     var showDiagnosticsConfirm by remember { mutableStateOf(false) }
     var showMapMenu by remember { mutableStateOf(false) }
+    var showWeatherMenu by remember { mutableStateOf(false) }
+    var showWeatherFlyout by remember { mutableStateOf(false) }
+    // Tapping a home screen weather widget lands here: open the panel and
+    // refresh it, the same as tapping the dashboard's own weather icon.
+    val weatherLaunchPending by WeatherPanelLaunch.pending.collectAsState()
+    LaunchedEffect(weatherLaunchPending) {
+        if (WeatherPanelLaunch.consume()) {
+            showWeatherFlyout = true
+            viewModel.refreshWeather()
+        }
+    }
+    var weatherWindowOverride by remember { mutableStateOf<Int?>(null) }
+    val weatherSettings by viewModel.weatherSettings.collectAsState()
+    val weatherHours by viewModel.weatherHours.collectAsState()
+    val weatherRefreshing by viewModel.weatherRefreshing.collectAsState()
+    val weatherError by viewModel.weatherError.collectAsState()
+    val weatherFetchedAt by viewModel.weatherFetchedAt.collectAsState()
+    val weatherUnits by viewModel.weatherUnits.collectAsState()
+    val weatherUseDest by viewModel.weatherUseDest.collectAsState()
+    val weatherDestHours by viewModel.weatherDestHours.collectAsState()
+    val weatherDest by viewModel.weatherDest.collectAsState()
+    val weatherPlace by viewModel.weatherPlace.collectAsState()
     var showStudioMenu by remember { mutableStateOf(false) }
     var showGpsMenu by remember { mutableStateOf(false) }
     var showRestoreConfirmDialog by remember { mutableStateOf(false) }
@@ -801,7 +826,20 @@ fun DashboardScreen(
                     val chargeStatus by viewModel.chargeStatus.collectAsState()
                     val showChargingIcon by viewModel.chargingDashboardIcon.collectAsState()
                     if (showChargingIcon) {
-                        IconButton(onClick = onNavigateToCharging) {
+                        // Not an IconButton: it has no long-press. A tap opens
+                        // the charging monitor as before; holding opens it with
+                        // the details flyout already up, skipping the extra tap
+                        // for the rider who came for the graphs.
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(androidx.compose.foundation.shape.CircleShape)
+                                .combinedClickable(
+                                    onClick = onNavigateToCharging,
+                                    onLongClick = onNavigateToChargingDetails,
+                                )
+                        ) {
                             val chargingNow = chargeStatus == com.eried.eucplanet.data.model.ChargeStatus.Charging ||
                                 chargeStatus == com.eried.eucplanet.data.model.ChargeStatus.Full
                             Icon(
@@ -1162,7 +1200,10 @@ fun DashboardScreen(
                             },
                             onClick = {
                                 showGpsMenu = false
-                                onNavigateToSettings(7)
+                                // External GPS lives in GPS & sensors, which
+                                // no tab number could reach; 7 landed on
+                                // Integration instead.
+                                onNavigateToSettings(10)
                             }
                         )
                     }
@@ -1234,6 +1275,89 @@ fun DashboardScreen(
                         .align(Alignment.BottomStart)
                         .coachmarkTarget(coachmark, TutorialTarget.MAP_BUTTON)
                 ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Weather / ridability entry, stacked over the map button
+                    // and only present when the module is enabled in
+                    // Navigation & weather. Tap toggles the forecast flyout;
+                    // hold offers the other windows and the settings.
+                    if (weatherSettings.enabled) {
+                        Box {
+                            Icon(
+                                imageVector = PartlyCloudyDayIcon,
+                                contentDescription = stringResource(R.string.weather_icon_desc),
+                                // GPS-style freshness tint: lit while the
+                                // forecast sits inside its half-hour validity,
+                                // neutral once it goes stale.
+                                tint = if (weatherFetchedAt?.let { System.currentTimeMillis() - it < 30 * 60_000L } == true)
+                                    (if (useAccent) primary else MaterialTheme.appColors.statusGood)
+                                else MaterialTheme.appColors.dashIcon.copy(alpha = 0.45f),
+                                modifier = Modifier
+                                    .padding(start = 4.dp, bottom = 12.dp)
+                                    .size(28.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            weatherWindowOverride = null
+                                            showWeatherFlyout = !showWeatherFlyout
+                                            if (showWeatherFlyout) viewModel.refreshWeather()
+                                        },
+                                        onLongClick = { showWeatherMenu = true }
+                                    )
+                            )
+                            DropdownMenu(
+                                expanded = showWeatherMenu,
+                                onDismissRequest = { showWeatherMenu = false },
+                                shape = RoundedCornerShape(12.dp),
+                                containerColor = MaterialTheme.appColors.menuBackground
+                            ) {
+                                listOf(
+                                    // A temporary view, not the setting: these
+                                    // set the override only. The first one
+                                    // matches the shipped default window.
+                                    8 to R.string.weather_window_8h,
+                                    24 to R.string.weather_window_24h,
+                                    72 to R.string.weather_window_3d,
+                                    168 to R.string.weather_window_1w,
+                                ).forEach { (h, res) ->
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(res)) },
+                                        onClick = {
+                                            showWeatherMenu = false
+                                            weatherWindowOverride = h
+                                            showWeatherFlyout = true
+                                            viewModel.refreshWeather()
+                                        }
+                                    )
+                                }
+                                if (weatherDest != null) {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                stringResource(
+                                                    if (weatherUseDest) R.string.weather_src_current
+                                                    else R.string.weather_src_destination
+                                                )
+                                            )
+                                        },
+                                        onClick = {
+                                            showWeatherMenu = false
+                                            viewModel.toggleWeatherSource()
+                                            showWeatherFlyout = true
+                                        }
+                                    )
+                                }
+                                androidx.compose.material3.HorizontalDivider()
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.weather_settings_entry)) },
+                                    onClick = {
+                                        showWeatherMenu = false
+                                        // 11, not 8: the weather block, not
+                                        // the top of Navigation.
+                                        onNavigateToSettings(11)
+                                    }
+                                )
+                            }
+                        }
+                    }
                     Icon(
                         imageVector = if (navActive) Icons.Default.Navigation
                         else Icons.Default.Map,
@@ -1251,6 +1375,7 @@ fun DashboardScreen(
                             )
                             .rotate(if (navActive) navBtnAngle else 0f)
                     )
+                    }
                     DropdownMenu(
                         expanded = showMapMenu,
                         onDismissRequest = { showMapMenu = false },
@@ -2572,13 +2697,20 @@ fun DashboardScreen(
                                                     }
                                                 }
                                                 override fun toggleAlarmsMuted() { viewModel.toggleAlarmsMuted() }
-                                                override fun resetTrip() {
+                                                override fun resetMetrics() {
                                                     snackbarScope.launch {
-                                                        val ok = viewModel.resetWheelTrip()
+                                                        // Always resets the app's trip meter and
+                                                        // metric history; the wheel's own odometer
+                                                        // only on families with a command for it,
+                                                        // so the message says which happened
+                                                        // rather than reporting a failure to
+                                                        // everyone else.
+                                                        val r = viewModel.resetMetrics()
                                                         snackbar.showSnackbar(
                                                             toastContext.getString(
-                                                                if (ok) R.string.action_chip_reset_trip
-                                                                else R.string.action_unsupported_on_wheel
+                                                                if (r.wheelTripCleared)
+                                                                    R.string.action_reset_metrics_wheel_done
+                                                                else R.string.action_reset_metrics_done
                                                             )
                                                         )
                                                     }
@@ -2589,6 +2721,9 @@ fun DashboardScreen(
                                     }
                                     val offlineSafe = key.startsWith("OPEN_") ||
                                             key == "TOGGLE_UNITS" || key == "MUTE_ALARMS" ||
+                                            // Resets the app's own counters, so it
+                                            // works with no wheel in earshot.
+                                            key == "RESET_TRIP" ||
                                             key.startsWith("MEDIA_")
                                     ActionButton(
                                         icon = actionSpec?.icon ?: Icons.Default.Campaign,
@@ -3380,6 +3515,58 @@ fun DashboardScreen(
         val wizardPickFolder = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.OpenDocumentTree()
         ) { uri -> if (uri != null) viewModel.setBackupFolder(uri) }
+        androidx.compose.animation.AnimatedVisibility(
+            visible = showWeatherFlyout && weatherSettings.enabled,
+            enter = androidx.compose.animation.scaleIn(
+                initialScale = 0.92f,
+                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f)
+            ) + androidx.compose.animation.fadeIn(),
+            exit = androidx.compose.animation.scaleOut(
+                targetScale = 0.92f,
+                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f)
+            ) + androidx.compose.animation.fadeOut(),
+        ) {
+            val winH = weatherWindowOverride ?: weatherSettings.windowHours
+            val nowMs = System.currentTimeMillis()
+            val baseHours = if (weatherUseDest) weatherDestHours else weatherHours
+            val altBase = if (weatherUseDest) weatherHours else emptyList()
+            val sliced = baseHours.filter {
+                it.timeMs >= nowMs - 3_600_000L && it.timeMs <= nowMs + winH * 3_600_000L
+            }
+            val slicedAlt = altBase.filter {
+                it.timeMs >= nowMs - 3_600_000L && it.timeMs <= nowMs + winH * 3_600_000L
+            }
+            // Light modal: the app darkens a touch behind the panel and a tap
+            // anywhere outside dismisses it, so the panel needs no X.
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.appColors.scrim.copy(alpha = 0.30f))
+                    .clickable(
+                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                        indication = null
+                    ) { showWeatherFlyout = false }
+                    .statusBarsPadding()
+            ) {
+                WeatherFlyout(
+                    hours = sliced,
+                    altHours = slicedAlt,
+                    windowHours = winH,
+                    tempF = weatherUnits.first,
+                    windMph = weatherUnits.second,
+                    refreshing = weatherRefreshing,
+                    error = weatherError,
+                    updatedAgoMin = weatherFetchedAt?.let { ((nowMs - it) / 60_000L).toInt() },
+                    place = weatherPlace,
+                    destName = weatherDest?.name,
+                    usingDest = weatherUseDest,
+                    onToggleSource = { viewModel.toggleWeatherSource() },
+                    startExpanded = weatherSettings.openExpanded,
+                    onRefresh = { viewModel.refreshWeather(force = true) },
+                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
+                )
+            }
+        }
         if (showWelcomeTour) {
             WelcomeTutorialOverlay(
                 state = coachmark,
@@ -3873,7 +4060,7 @@ private fun FlicIndicator(
 }
 
 @Composable
-private fun ConnectionDot(state: ConnectionState) {
+internal fun ConnectionDot(state: ConnectionState) {
     val color = when (state) {
         ConnectionState.CONNECTED -> MaterialTheme.appColors.connectionActive
         ConnectionState.CONNECTING, ConnectionState.INITIALIZING, ConnectionState.SCANNING -> MaterialTheme.appColors.statusWarn

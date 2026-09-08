@@ -125,6 +125,9 @@ data class AppSettings(
     val mediaControl: MediaControlSettings = MediaControlSettings(),
     // Bluetooth-signal proximity lock / unlock - see ProximityLockSettings.
     val proximityLock: ProximityLockSettings = ProximityLockSettings(),
+    /** Weather / ridability module (dashboard icon + forecast flyout). Nested
+     *  so the whole feature costs one constructor slot; see rule 8. */
+    val weather: WeatherSettings = WeatherSettings(),
     val batteryPercent: BatteryPercentSettings = BatteryPercentSettings(),
 
     // Special announcements (event-driven). All silent by default; the welcome
@@ -186,20 +189,21 @@ data class AppSettings(
     val flicShowOnDashboard: Boolean = true,
 
     // Auto-lights (sunset/sunrise based, uses live GPS from trip repository)
-    val autoLightsEnabled: Boolean = false,
-    val autoLightsOnMinutesBefore: Int = 30,   // minutes before sunset to turn lights ON
-    val autoLightsOffMinutesAfter: Int = 30,   // minutes after sunrise to turn lights OFF
+    val lights: LightsSettings = LightsSettings(),
 
     // Speed-based volume boost. Multiplier curve maps speed to 1×–2× of the user's baseline volume.
     // 1× = no boost (baseline), 2× = double the baseline (capped at 100% by the system).
     // 4 control points at 0/25/50/75 km/h. 0 km/h is locked at 1× (no boost at standstill).
     // Baseline starts at -1 (uninitialized) and is captured from the system music volume on first
     // tick after enable. Manual volume changes during motion rebase: baseline = manual / multiplier.
-    val autoVolumeEnabled: Boolean = false,
+
     // Only adjust the media volume while a wheel is connected (i.e. actually
     // riding). On by default so auto-volume never touches the phone's volume
     // when the app is used without a wheel.
-    val autoVolumeOnlyWhenConnected: Boolean = true,
+    /** When the speed-driven automations may act: "NEVER" (no condition),
+     *  "CONNECTED" (a wheel is linked) or "RIDING" (linked and moving). See
+     *  [com.eried.eucplanet.service.ApplyWhen]. */
+    val autoVolumeApplyWhen: String = ApplyWhenIds.NEVER,
     val autoVolumeCurve: String = "0:1.0,25:1.0,50:1.5,75:2.0",
     val autoVolumeBaselinePercent: Int = -1,
 
@@ -525,6 +529,10 @@ data class AppSettings(
     val watchStem1Click: String = "NONE",
     val watchStem1Hold: String = "NONE",
     val watchStem2Click: String = "NONE",
+    // Third hardware button. Garmin only (the Down key); Wear watches have
+    // two stems, so the wear bridge never sends it. Click only: the watch
+    // system can claim Down's long press for its own shortcut.
+    val watchStem3Click: String = "NONE",
     val watchStem2Hold: String = "NONE",
 
     /**
@@ -731,13 +739,13 @@ data class AppSettings(
      */
     val hudScreensOrder: String = "",
     /**
-     * Which CartoCDN raster style the HUD should use for its Map screen
+     * Which raster map style the HUD should use for its Map screen
      * and the MAP element inside a Custom overlay. Empty = the HUD picks
-     * its compiled-in default (currently "voyager", neutral parchment
-     * background). Other supported codes: "dark_matter",
-     * "dark_matter_nolabels", "voyager", "light_all", "positron".
-     * Anything else falls back to the HUD's compiled default so the
-     * rider doesn't get a blank map if they pick something we removed.
+     * its compiled-in default (a light basemap). Supported codes: "osm",
+     * "cyclosm", "topo", "hot", "satellite", "light", "dark"; legacy Carto
+     * slugs riders have saved ("voyager", "dark_all", ...) still resolve
+     * to the matching Esri style, and anything else falls back to light so
+     * the rider never gets a blank map.
      */
     val hudMapStyle: String = "",
     /**
@@ -888,6 +896,12 @@ data class AppSettings(
 
     /** Battery screen: estimate straight to 100 % instead of stopping at 80 %. */
     val chargingEstimateToFull: Boolean = false,
+    /** Tell the rider when the pack passes 80%, the mark riders unplug at for
+     *  pack life, and when it finishes. Both off: a notification nobody asked
+     *  for is worse than no feature. Local to the charging monitor rather than
+     *  Advanced settings, like [chargingEstimateToFull] beside them. */
+    val chargingNotify80: Boolean = false,
+    val chargingNotifyFull: Boolean = false,
     /** Auto-open the Battery monitor when the wheel starts charging. */
     val chargingAutoOpen: Boolean = true,
     /** Show the Battery monitor access icon (spark) in the dashboard top bar. */
@@ -914,6 +928,10 @@ data class AppSettings(
     /** Number of trips still to upload to Dropbox; drives the "Syncing N trips…"
      *  indicator, decrementing live as each upload lands. */
     val dropboxPendingCount: Int = 0,
+    // Trips whose file exists on both the phone and the backup folder with
+    // different content. The folder worker counts them each pass; the
+    // dashboard shows the warning while it is non-zero.
+    val folderConflictCount: Int = 0,
     /** Trips in the current sync batch, so the pending indicator can show
      *  "X of Y" like the foreground sync (done = total - pending). 0 = no batch. */
     val dropboxSyncTotal: Int = 0,
@@ -1071,6 +1089,39 @@ data class AccelSplitSettings(
  * this feature itself paused, so speeding up never blasts music the rider had
  * deliberately stopped.
  */
+/**
+ * Headlight control: when the automation may act, the sun schedule it follows,
+ * and the walking-pace cut-off.
+ *
+ * Nested rather than flat because it is five fields: AppSettings sits near the
+ * JVM/dex 255-argument limit, and a group like this belongs in one slot.
+ */
+data class LightsSettings(
+    /** NEVER is off; the other two are on, with the condition they name. */
+    val applyWhen: String = ApplyWhenIds.NEVER,
+    /** Minutes before sunset to turn the light on. */
+    val onMinutesBefore: Int = 30,
+    /** Minutes after sunrise to turn it off. */
+    val offMinutesAfter: Int = 30,
+    /** Cut the light when the rider slows to a walk, and restore it when they
+     *  ride on. Independent of the sun schedule, which stays in charge of
+     *  whether a light is wanted at all. */
+    val offWhenSlow: Boolean = false,
+    /** Walking pace, stored metric like every other speed. Five is the figure
+     *  walking speed is normally quoted at; four was low enough that a rider
+     *  rolling gently up to a crossing stayed above it and kept the beam on,
+     *  which is the case the whole cutoff exists for. */
+    val offBelowKmh: Float = 5f,
+)
+
+/** Values for the "apply when" gate shared by the speed-driven automations. */
+object ApplyWhenIds {
+    const val NEVER = "NEVER"
+    const val CONNECTED = "CONNECTED"
+    const val RIDING = "RIDING"
+    val ALL = listOf(NEVER, CONNECTED, RIDING)
+}
+
 data class MediaControlSettings(
     val pauseEnabled: Boolean = false,
     // Pause when speed is at or below this (km/h).
@@ -1082,6 +1133,13 @@ data class MediaControlSettings(
     // (headphones / Bluetooth / wired / USB), never the phone speaker. Pausing is
     // never gated on the route. Only meaningful with resume on. On by default.
     val requireExternalOutput: Boolean = true,
+    // --- Media speed control ---
+    // Playback rate follows speed, on the same "speed:value" curve shape
+    // auto-volume uses, so the same editor drives it. Needs notification
+    // access (see MediaAccessService) and a player that accepts a rate.
+    /** NEVER is off; the other two are on, with the condition they name. */
+    val rateApplyWhen: String = ApplyWhenIds.NEVER,
+    val rateCurve: String = "0:1.0,25:1.15,50:1.30,75:1.45",
 )
 
 /**
@@ -1228,6 +1286,36 @@ data class ProximityLockSettings(
  * momentary peak tells a rider nothing useful about how hard the wheel is
  * working.
  */
+/**
+ * The weather module's own knobs. Disabled by default: enabling it adds the
+ * weather icon above the dashboard's map button. Comfort thresholds are the
+ * rider's, stored metric (°C and tenths of m/s so the shared NumberUpDown
+ * stepper can drive them as Ints); display follows the unit settings.
+ */
+data class WeatherSettings(
+    val enabled: Boolean = false,
+    /** How many hours ahead the panel shows, 2..168. Free-form rather than
+     *  four presets: a rider who wants "the rest of my afternoon" was
+     *  choosing between 6 and 24. The dashboard menu still offers presets,
+     *  but those are a temporary view, not this. */
+    val windowHours: Int = 8,
+    /** Open the panel with its detail charts already unfolded. */
+    val openExpanded: Boolean = false,
+    /** [com.eried.eucplanet.weather.WeatherSource] id. */
+    val source: String = "OPEN_METEO",
+    // Riding preferences: how each condition should count for this rider.
+    // "DISLIKE" | "NEUTRAL" | "LIKE"; the comfort thresholds (Advanced
+    // settings, Weather score group) say when a condition applies, these say
+    // how it scores. Rain, snow and wind ship disliked; the rest neutral.
+    val prefHot: String = "NEUTRAL",
+    val prefCold: String = "NEUTRAL",
+    val prefRain: String = "DISLIKE",
+    val prefSnow: String = "DISLIKE",
+    val prefWind: String = "DISLIKE",
+    val prefNight: String = "NEUTRAL",
+    val prefGolden: String = "NEUTRAL",
+)
+
 data class VoiceReportSettings(
     // Periodic report.
     val periodicSpeed: Boolean = true,
@@ -1263,6 +1351,13 @@ data class VoiceReportSettings(
  * JVM/dex 255-argument limit. All clamped in SettingsRepository.sanitized().
  */
 data class AdvancedSettings(
+    // Weather score thresholds (see the WEATHER spec group): when an hour
+    // reads too cold / too hot (°C) and where wind starts to bite / gets
+    // genuinely hard (tenths of m/s).
+    val weatherColdC: Int = 14,
+    val weatherHotC: Int = 31,
+    val weatherBreezyTenthsMs: Int = 20,
+    val weatherWindyTenthsMs: Int = 45,
     val wheelPollIntervalMs: Int = 250,
     val graphSampleIntervalMs: Int = 1000,
     // Window, in samples, for the smoothed Trip Details graphs and the smoothed

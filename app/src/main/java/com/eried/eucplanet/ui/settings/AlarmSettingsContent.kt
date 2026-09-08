@@ -345,7 +345,9 @@ private fun metricAccent(metric: AlarmMetric): androidx.compose.ui.graphics.Colo
     AlarmMetric.TEMPERATURE -> MaterialTheme.appColors.statusDanger
     AlarmMetric.PWM -> MaterialTheme.appColors.gaugeWarn
     AlarmMetric.VOLTAGE -> MaterialTheme.appColors.metricVoltage
-    AlarmMetric.CURRENT -> MaterialTheme.appColors.metricPosition
+    AlarmMetric.CURRENT,
+    AlarmMetric.TORQUE,
+    AlarmMetric.PHASE_CURRENT -> MaterialTheme.appColors.metricPosition
     AlarmMetric.GPS_SPEED, AlarmMetric.EXTERNAL_GPS_SPEED -> MaterialTheme.appColors.statusWarn
     // Altitude shares the position accent: both are "where you are" readings,
     // and the palette has no altitude token to reuse.
@@ -622,7 +624,7 @@ private fun AlarmRuleEditorDialog(
                                 Text(stringResource(R.string.alarm_constant_body))
                                 if (changes.isNotEmpty()) {
                                     Spacer(Modifier.height(8.dp))
-                                    changes.forEach { Text("• $it", style = MaterialTheme.typography.bodyMedium) }
+                                    changes.forEach { com.eried.eucplanet.ui.common.BulletPoint(it) }
                                 }
                             }
                         },

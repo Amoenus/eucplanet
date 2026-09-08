@@ -10,6 +10,7 @@ import com.eried.eucplanet.data.model.ProximityLockSettings
 import com.eried.eucplanet.data.model.AdvancedSettings
 import com.eried.eucplanet.data.model.AdvancedSpec
 import com.eried.eucplanet.data.model.AppSettings
+import com.eried.eucplanet.data.model.ApplyWhenIds
 import com.eried.eucplanet.data.model.CustomBleCommand
 import com.eried.eucplanet.data.model.PairedSurface
 import com.eried.eucplanet.data.model.SettingsLayout
@@ -105,12 +106,14 @@ internal val DASHBOARD_METRIC_ALIASES = emptySet<String>()
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val wheelRepository: WheelRepository,
+    val legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController,
     private val voiceService: VoiceService,
     private val tripRepository: TripRepository,
     private val syncManager: SyncManager,
     private val automationManager: AutomationManager,
     private val wearBridge: com.eried.eucplanet.wear.WearBridge,
     private val garminBridge: com.eried.eucplanet.garmin.GarminBridge,
+    private val amazfitBridge: com.eried.eucplanet.amazfit.AmazfitBridge,
     private val engineSoundEngine: com.eried.eucplanet.audio.EngineSoundEngine,
     val cheatState: com.eried.eucplanet.cheats.CheatState,
     private val overlayPresetStore: com.eried.eucplanet.data.store.OverlayPresetStore,
@@ -279,13 +282,19 @@ class SettingsViewModel @Inject constructor(
             garminBridge.pairedDevices,
             settingsRepository.settings,
             garminBridge.deliveryRateHz,
-            garminBridge.lastSuccessAtMs
+            garminBridge.lastSuccessAtMs,
+            amazfitBridge.pairedDevices,
+            amazfitBridge.deliveryRateHz,
+            amazfitBridge.lastSuccessAtMs
         ) { args ->
             @Suppress("UNCHECKED_CAST") val wear = args[0] as List<String>
             @Suppress("UNCHECKED_CAST") val garmin = args[1] as List<String>
             val settings = args[2] as AppSettings?
             val garminHz = args[3] as Double
             val lastGarminMs = args[4] as Long
+            @Suppress("UNCHECKED_CAST") val amazfit = args[5] as List<String>
+            val amazfitHz = args[6] as Double
+            val lastAmazfitMs = args[7] as Long
             val wearHz = settings?.let { wearRateHzFor(it.watchUpdateRate) } ?: 5.0
             // "Active" = the bridge has delivered a frame in the last 3 s.
             // Reading the timestamp (not the rolling rate) avoids the
@@ -294,12 +303,18 @@ class SettingsViewModel @Inject constructor(
             val garminActive = lastGarminMs > 0L &&
                 (System.currentTimeMillis() - lastGarminMs) < 3_000L
             val wearActive = wear.isNotEmpty()
+            // Amazfit polls the phone; a poll in the last 3 s means Live.
+            val amazfitActive = lastAmazfitMs > 0L &&
+                (System.currentTimeMillis() - lastAmazfitMs) < 3_000L
             buildList {
                 wear.forEach { name ->
                     add(PairedSurface(PairedSurface.Kind.WEAR_OS, name, wearActive, wearHz))
                 }
                 garmin.forEach { name ->
                     add(PairedSurface(PairedSurface.Kind.GARMIN, name, garminActive, garminHz))
+                }
+                amazfit.forEach { name ->
+                    add(PairedSurface(PairedSurface.Kind.AMAZFIT, name, amazfitActive, amazfitHz))
                 }
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -330,11 +345,21 @@ class SettingsViewModel @Inject constructor(
             .map { it.isNotEmpty() }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    /** True while an Amazfit (Zepp OS) watch is polling the phone. The Watch
+     *  tab uses this to show the rows the Amazfit dial honours (keep-on, update
+     *  rate) and to badge the ones it cannot do (auto-start, dial rotation). */
+    val hasAmazfitPaired: StateFlow<Boolean> =
+        amazfitBridge.pairedDevices
+            .map { it.isNotEmpty() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     /**
      * True when at least one paired surface has bindable hardware buttons:
      *  - Any Garmin device (every Garmin watch ships ≥2 physical buttons,
      *    and our CIQ Delegate maps the universal Start + Up-hold pair to
      *    `stem1` and `stem2`).
+     *  - Any Amazfit (Zepp OS) watch: the dial maps Select to `stem1`, Up to
+     *    `stem2` and Down to `stem3`, the same layout as the Garmin model.
      *  - A Galaxy Watch Ultra on Wear OS — the only Wear OS device that
      *    delivers `KEYCODE_STEM_1` (orange Action) and `KEYCODE_STEM_2`
      *    (bottom side) to third-party apps. Detected by friendly-name
@@ -346,8 +371,13 @@ class SettingsViewModel @Inject constructor(
      * that wouldn't do anything.
      */
     val hasHardwareButtonCapableWatch: StateFlow<Boolean> =
-        wearBridge.pairedNodes.combine(garminBridge.pairedDevices) { wear, garmin ->
-            garmin.isNotEmpty() || wear.any { it.contains("Ultra", ignoreCase = true) }
+        combine(
+            wearBridge.pairedNodes,
+            garminBridge.pairedDevices,
+            amazfitBridge.pairedDevices
+        ) { wear, garmin, amazfit ->
+            garmin.isNotEmpty() || amazfit.isNotEmpty() ||
+                wear.any { it.contains("Ultra", ignoreCase = true) }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     /**
@@ -403,7 +433,48 @@ class SettingsViewModel @Inject constructor(
             wheelRepository.setSpeed(s.tiltbackSpeedKmh.coerceAtLeast(value), value)
         }
     }
+    /**
+     * Arms Legal Mode Lockdown. Order matters: the rider's in-progress trip is
+     * finalised and saved BEFORE the recorder gate goes up, otherwise the
+     * partial ride is stranded by TripRepository.startRecording's own guard.
+     *
+     * Returns false on an invalid code, having changed nothing. Nothing here
+     * writes an AppSettings field: the lock lives in its own store, so the
+     * rider's configuration is untouched by arming.
+     */
+    /** Whether a trip is recording right now, read before arming so the dialog
+     *  can say the trip was saved rather than guessing. */
+    fun isRecordingNow(): Boolean = tripRepository.recording.value
+
+    /** Legal mode's live state, so the arming dialog can warn that the lock
+     *  will take effect immediately instead of waiting. */
+    val legalModeActive: kotlinx.coroutines.flow.StateFlow<Boolean> =
+        wheelRepository.safetySpeedActive
+
+    /**
+     * Arms lockdown mode.
+     *
+     * This does NOT switch legal mode on. Arming is the resident half: if legal
+     * mode is off the mode simply waits, and engages the next time the rider
+     * turns legal mode on. When legal mode is already on there is nothing to
+     * wait for, so it engages at once.
+     *
+     * Nothing here writes an AppSettings field: the lock lives in its own store,
+     * so the rider's configuration is untouched by arming.
+     */
+    suspend fun armLockdown(pin: String): Boolean {
+        if (!com.eried.eucplanet.data.repository.LegalLockdownCode.isValidPin(pin)) return false
+        return legalLockdown.arm(pin, engageNow = wheelRepository.safetySpeedActive.value)
+    }
+
+    /** Switches the resident setting back off. Only possible before it engages. */
+    fun disarmLockdown() {
+        viewModelScope.launch { legalLockdown.disarmIfNotEngaged() }
+    }
+
     fun updateSafetyTiltback(value: Float) {
+        // Legal Mode Lockdown: raising the legal limit would be the bypass.
+        if (legalLockdown.isEngaged()) return
         viewModelScope.launch {
             // Read and write in one transaction: this sits behind a NumberUpDown
             // whose hold-to-repeat fires several of these a second, and reading
@@ -428,6 +499,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun updateSafetyAlarm(value: Float) {
+        // Legal Mode Lockdown: raising the legal limit would be the bypass.
+        if (legalLockdown.isEngaged()) return
         viewModelScope.launch {
             var newTilt = 0f
             settingsRepository.update { current ->
@@ -646,21 +719,48 @@ class SettingsViewModel @Inject constructor(
         update { copy(raceboxMapX = mapX, raceboxMapY = mapY, raceboxMapZ = mapZ) }
 
     // Automations
-    fun updateAutoLightsEnabled(v: Boolean) {
-        update { copy(autoLightsEnabled = v) }
-        // Toggling the setting itself clears any session-level suspension
+    fun updateAutoLightsApplyWhen(v: String) {
+        update { copy(lights = lights.copy(applyWhen = v)) }
+        // Touching the setting clears any session-level suspension
         automationManager.clearLightsSuspension()
         // Apply the correct state immediately instead of waiting for the next 60s tick
-        if (v) automationManager.triggerImmediateLightEvaluation()
+        if (v != ApplyWhenIds.NEVER) automationManager.triggerImmediateLightEvaluation()
     }
-    fun updateAutoLightsOnMinutes(v: Int) = update { copy(autoLightsOnMinutesBefore = v) }
-    fun updateAutoLightsOffMinutes(v: Int) = update { copy(autoLightsOffMinutesAfter = v) }
-    fun updateAutoVolumeEnabled(v: Boolean) = update { copy(autoVolumeEnabled = v) }
-        .also { if (!v) automationManager.restoreBaselineVolume() }
-    fun updateAutoVolumeOnlyWhenConnected(v: Boolean) =
-        update { copy(autoVolumeOnlyWhenConnected = v) }
-            .also { if (v) automationManager.restoreBaselineVolume() }
+    fun updateAutoLightsOnMinutes(v: Int) = update { copy(lights = lights.copy(onMinutesBefore = v)) }
+    fun updateAutoLightsOffMinutes(v: Int) = update { copy(lights = lights.copy(offMinutesAfter = v)) }
+    fun updateAutoLightsOffWhenSlow(v: Boolean) =
+        update { copy(lights = lights.copy(offWhenSlow = v)) }
+            // Switching it off hands the beam straight back to the schedule.
+            .also { automationManager.triggerImmediateLightEvaluation() }
+    fun updateAutoLightsOffBelowKmh(v: Float) =
+        update { copy(lights = lights.copy(offBelowKmh = v)) }
+
+    fun updateAutoVolumeApplyWhen(v: String) =
+        update { copy(autoVolumeApplyWhen = v) }
+            // Any narrowing can leave the volume raised with nothing to lower
+            // it again, so hand the rider's baseline back on every change.
+            .also { automationManager.restoreBaselineVolume() }
     fun updateAutoVolumeCurve(curve: String) = update { copy(autoVolumeCurve = curve) }
+
+    fun updateMediaRateApplyWhenPicked(v: String) = update {
+        copy(mediaControl = mediaControl.copy(rateApplyWhen = v))
+    }.also {
+        // Raise (or clear) the dashboard warning now rather than at the next
+        // activity resume: moving between settings screens is not a resume,
+        // so a rider who switches this on and never leaves the app would see
+        // no sign that the grant it needs is missing.
+        appHealthRepository.refreshPermissionWarnings(
+            mediaRateRequested = v != ApplyWhenIds.NEVER
+        )
+    }
+    fun updateMediaRateCurve(curve: String) = update {
+        copy(mediaControl = mediaControl.copy(rateCurve = curve))
+    }
+
+
+    /** Notification access, which the rate feature needs and nothing else does. */
+    fun notificationAccessAllowed(): Boolean = appHealthRepository.notificationAccessAllowed()
+    fun openNotificationAccessSettings() = appHealthRepository.openNotificationAccessSettings()
 
     // Media control (speed-driven music/podcast pause & resume)
     fun updateMediaPauseEnabled(v: Boolean) = update { copy(mediaControl = mediaControl.copy(pauseEnabled = v)) }
@@ -754,6 +854,7 @@ class SettingsViewModel @Inject constructor(
     fun updateWatchStem1Click(action: String) = update { copy(watchStem1Click = action) }
     fun updateWatchStem1Hold(action: String) = update { copy(watchStem1Hold = action) }
     fun updateWatchStem2Click(action: String) = update { copy(watchStem2Click = action) }
+    fun updateWatchStem3Click(action: String) = update { copy(watchStem3Click = action) }
     fun updateWatchStem2Hold(action: String) = update { copy(watchStem2Hold = action) }
     fun updateWatchScreen1Click(action: String) = update { copy(watchScreen1Click = action) }
     fun updateWatchScreen1Hold(action: String) = update { copy(watchScreen1Hold = action) }
@@ -981,6 +1082,22 @@ class SettingsViewModel @Inject constructor(
 
     // Navigator
     fun updateNavVoiceEnabled(v: Boolean) = update { copy(navVoiceEnabled = v) }
+    fun updateWeatherEnabled(v: Boolean) = update { copy(weather = weather.copy(enabled = v)) }
+    fun updateWeatherWindow(v: Int) = update { copy(weather = weather.copy(windowHours = v)) }
+    fun updateWeatherSource(v: String) = update { copy(weather = weather.copy(source = v)) }
+    fun updateWeatherOpenExpanded(v: Boolean) =
+        update { copy(weather = weather.copy(openExpanded = v)) }
+    fun updateWeatherPref(which: String, v: String) = update {
+        copy(weather = when (which) {
+            "hot" -> weather.copy(prefHot = v)
+            "cold" -> weather.copy(prefCold = v)
+            "rain" -> weather.copy(prefRain = v)
+            "snow" -> weather.copy(prefSnow = v)
+            "wind" -> weather.copy(prefWind = v)
+            "golden" -> weather.copy(prefGolden = v)
+            else -> weather.copy(prefNight = v)
+        })
+    }
     fun updateNavArrivalRadius(v: Int) = update { copy(navArrivalRadiusM = v.coerceIn(5, 100)) }
     fun updateNavOffRouteTolerance(v: Int) = update { copy(navOffRouteToleranceM = v.coerceIn(15, 150)) }
     fun updateNavSolveFullPath(v: Boolean) = update { copy(navSolveFullPath = v) }
@@ -1329,10 +1446,6 @@ class SettingsViewModel @Inject constructor(
     /** True while the phone holds at least one local trip. "Reset local trips"
      *  is disabled when this is false, so it can't be tapped with nothing to
      *  clear (and it greys out the moment a reset empties the list). */
-    /** Trips on this phone, for the "nowhere else but here" warning. */
-    val localTripCount: StateFlow<Int> = tripRepository.tripCount
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
-
     val hasLocalTrips: StateFlow<Boolean> = tripRepository.tripCount
         .map { it > 0 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)

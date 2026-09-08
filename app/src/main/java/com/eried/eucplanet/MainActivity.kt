@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.eried.eucplanet.data.model.ApplyWhenIds
 import com.eried.eucplanet.data.model.ActionUi
 import com.eried.eucplanet.data.model.AppSettings
 import com.eried.eucplanet.data.model.dispatchAction
@@ -35,6 +36,7 @@ import com.eried.eucplanet.diagnostics.ServiceOverlaySnapshot
 import com.eried.eucplanet.diagnostics.ServiceOverlayState
 import com.eried.eucplanet.flic.FlicManager
 import com.eried.eucplanet.service.WheelService
+import androidx.navigation.compose.composable
 import com.eried.eucplanet.ui.navigation.NavGraph
 import com.eried.eucplanet.ui.theme.EucPlanetTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,8 +64,10 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var flicManager: FlicManager
     @Inject lateinit var wearBridge: com.eried.eucplanet.wear.WearBridge
     @Inject lateinit var garminBridge: com.eried.eucplanet.garmin.GarminBridge
+    @Inject lateinit var amazfitBridge: com.eried.eucplanet.amazfit.AmazfitBridge
     @Inject lateinit var tripRepository: com.eried.eucplanet.data.repository.TripRepository
     @Inject lateinit var wheelRepository: com.eried.eucplanet.data.repository.WheelRepository
+    @Inject lateinit var metricsReset: com.eried.eucplanet.data.repository.MetricsReset
     @Inject lateinit var incomingShareRepository:
         com.eried.eucplanet.data.repository.IncomingShareRepository
     @Inject lateinit var dropboxRepository:
@@ -72,6 +76,7 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var appHealthRepository:
         com.eried.eucplanet.data.repository.AppHealthRepository
     @Inject lateinit var appNotifier: com.eried.eucplanet.util.AppNotifier
+    @Inject lateinit var legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController
 
     private val _settings = MutableStateFlow<AppSettings?>(null)
 
@@ -148,6 +153,13 @@ class MainActivity : AppCompatActivity() {
         appHealthRepository.refreshPermissionWarnings(
             pipRequested = pipWanted,
             phoneHudRequested = hudWanted,
+            // Same shape: the rider asked for a feature whose permission is
+            // granted outside the app. Unlike PIP and the overlay this one is
+            // NOT switched back off, because notification access is a trip to
+            // system settings the rider may well be making right now.
+            mediaRateRequested =
+                s?.mediaControl?.rateApplyWhen.orEmpty()
+                    .let { it.isNotEmpty() && it != ApplyWhenIds.NEVER },
         )
         if (pipBlocked || hudBlocked) {
             lifecycleScope.launch {
@@ -368,12 +380,40 @@ class MainActivity : AppCompatActivity() {
         // the intent to an already-running instance instead (singleTop
         // semantics, which we get when the rider just shared again).
         consumeShareIntent(intent)
+        consumeWeatherIntent(intent)
+        consumeChargingIntent(intent)
+    }
+
+    /** A charge alert was tapped: go where the number came from. */
+    private fun consumeChargingIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(
+                com.eried.eucplanet.service.WheelService.EXTRA_OPEN_CHARGING, false,
+            ) == true
+        ) {
+            com.eried.eucplanet.ui.charging.ChargingMonitorLaunch.request()
+            intent.removeExtra(com.eried.eucplanet.service.WheelService.EXTRA_OPEN_CHARGING)
+        }
+    }
+
+    /** A weather widget was tapped: ask the dashboard to unfold the panel. */
+    private fun consumeWeatherIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(
+                com.eried.eucplanet.widget.WeatherWidgetBase.EXTRA_OPEN_WEATHER, false,
+            ) == true
+        ) {
+            com.eried.eucplanet.ui.dashboard.WeatherPanelLaunch.request()
+            // Cleared so a rotation, which redelivers the same intent, does
+            // not re-open a panel the rider has since closed.
+            intent.removeExtra(com.eried.eucplanet.widget.WeatherWidgetBase.EXTRA_OPEN_WEATHER)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         consumeShareIntent(intent)
+        consumeWeatherIntent(intent)
+        consumeChargingIntent(intent)
         // requestMissingPermissions() is intentionally NOT called here.
         // On a clean install, asking before setContent runs means the runtime
         // permission dialogs come up over a black activity, the rider thinks
@@ -553,6 +593,19 @@ class MainActivity : AppCompatActivity() {
                     // to the route builder. The Builder's own LaunchedEffect
                     // then consumes the request and either drops the pin or
                     // surfaces a snackbar.
+                    // A charge alert was tapped before the graph existed;
+                    // now it does, so honour it.
+                    val pendingCharge by com.eried.eucplanet.ui.charging
+                        .ChargingMonitorLaunch.pending.collectAsState()
+                    androidx.compose.runtime.LaunchedEffect(pendingCharge) {
+                        if (com.eried.eucplanet.ui.charging.ChargingMonitorLaunch.consume()) {
+                            runCatching {
+                                navController.navigate(
+                                    com.eried.eucplanet.ui.navigation.Screen.ChargingMonitor.createRoute()
+                                ) { launchSingleTop = true }
+                            }
+                        }
+                    }
                     val pendingShare by incomingShareRepository.pending
                         .collectAsState()
                     androidx.compose.runtime.LaunchedEffect(pendingShare) {
@@ -579,11 +632,22 @@ class MainActivity : AppCompatActivity() {
                     // The main dashboard is portrait-locked by default; the
                     // navigator and other screens default to allowing rotation.
                     val routeNow = currentRoute?.destination?.route
+                    val lockdownArmedForRotation by legalLockdown.engaged.collectAsState()
                     androidx.compose.runtime.LaunchedEffect(
                         routeNow, s?.rotateDashboard, s?.rotateNavigator,
                         s?.rotateOtherScreens, s?.rotateSettings, s?.rotateTripDetail,
-                        s?.rotateTripList, s?.blockUpsideDown, s?.ignoreSystemRotateLock
+                        s?.rotateTripList, s?.blockUpsideDown, s?.ignoreSystemRotateLock,
+                        lockdownArmedForRotation
                     ) {
+                        // Legal Mode Lockdown pins the screen to portrait. It
+                        // reads none of the rotate* settings and writes none of
+                        // them, so the rider's own rotation behaviour is exactly
+                        // what it was once they unlock.
+                        if (legalLockdown.isEngaged()) {
+                            this@MainActivity.requestedOrientation =
+                                android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                            return@LaunchedEffect
+                        }
                         val allow = when (routeNow) {
                             Screen.Dashboard.route, null -> s?.rotateDashboard ?: false
                             Screen.RouteBuilder.route -> s?.rotateNavigator ?: true
@@ -617,6 +681,38 @@ class MainActivity : AppCompatActivity() {
                             else -> android.content.pm.ActivityInfo.SCREEN_ORIENTATION_FULL_USER
                         }
                     }
+                    val lockdownArmed by legalLockdown.engaged.collectAsState()
+                    if (lockdownArmed) {
+                        // Legal Mode Lockdown replaces the whole graph rather
+                        // than changing its start destination. Only these two
+                        // routes exist while armed, so every other screen is
+                        // genuinely unreachable instead of merely not-the-start.
+                        // The navigation overlay and the service-mode overlay
+                        // are outside this branch, so neither can draw here.
+                        val lockdownNav = androidx.navigation.compose.rememberNavController()
+                        androidx.navigation.compose.NavHost(
+                            navController = lockdownNav,
+                            startDestination = "legal_lockdown"
+                        ) {
+                            composable("legal_lockdown") {
+                                com.eried.eucplanet.ui.lockdown.LegalLockdownScreen(
+                                    onNavigateToScan = {
+                                        runCatching {
+                                            lockdownNav.navigate(Screen.Scan.route) {
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                            composable(Screen.Scan.route) {
+                                com.eried.eucplanet.ui.scan.ScanScreen(
+                                    onDeviceSelected = { runCatching { lockdownNav.popBackStack() } },
+                                    onBack = { runCatching { lockdownNav.popBackStack() } }
+                                )
+                            }
+                        }
+                    } else {
                     Box(modifier = Modifier.fillMaxSize()) {
                         NavGraph(navController = navController)
                         com.eried.eucplanet.ui.navigator.NavigationOverlay(
@@ -683,12 +779,11 @@ class MainActivity : AppCompatActivity() {
                                                     settingsRepository.update(c.copy(alarmsMuted = !c.alarmsMuted))
                                                 }
                                             }
-                                            override fun resetTrip() {
-                                                overlayScope.launch {
-                                                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                                                        wheelRepository.resetTripMeter()
-                                                    }
-                                                }
+                                            override fun resetMetrics() {
+                                                // Was sending only the wheel command and
+                                                // dropping the answer, so on a family without
+                                                // one this button did nothing and said nothing.
+                                                overlayScope.launch { metricsReset.resetAll() }
                                             }
                                         },
                                         fallback = { flicManager.dispatchActionByName(it) }
@@ -734,6 +829,7 @@ class MainActivity : AppCompatActivity() {
                             hostState = rootSnackbar,
                             modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter)
                         )
+                    }
                     }
                 }
             }
@@ -846,6 +942,14 @@ class MainActivity : AppCompatActivity() {
                 label = "Watch (Wear)",
                 state = if (nodes.isEmpty()) "none" else "${nodes.size} node(s)",
                 detail = if (nodes.isEmpty()) "no paired watch" else nodes.joinToString("\n")
+            )
+        )
+        val amazfit = amazfitBridge.pairedDevices.value
+        add(
+            ConnectionInfo(
+                label = "Watch (Amazfit)",
+                state = if (amazfit.isEmpty()) "none" else "polling",
+                detail = if (amazfit.isEmpty()) "no watch polling" else amazfit.joinToString("\n")
             )
         )
         val flics = flicManager.pairedButtons.value

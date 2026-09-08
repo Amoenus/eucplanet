@@ -108,7 +108,7 @@
           "LIGHT-TOGGLE",
           "LIGHT-LEVEL"
         ],
-        "status": "ASCII on/off, not full physical level cycle. SND interaction unresolved."
+        "status": "ASCII on/off, not full physical level cycle. Owner confirms current path silent even at SND10%; no generic acknowledgement-mute mechanism established."
       },
       {
         "member": "setLightFollowup",
@@ -333,7 +333,7 @@
       "lockedReported": "UNMAPPED: no confirmed Aeon security-lock readback; null remains distinct from unlocked.",
       "headlightReadback": "Implemented generic projection of captured Aeon level; dashboard uses fresh reported state.",
       "aeonLightState": "Captured Aeon page1 offset49 mapping, preserving raw unknown values.",
-      "aeonSettings": "13 official APK page8 fields decoded; SND and BRT physical transitions captured, other writes not verified.",
+      "aeonSettings": "13 official APK page8 fields decoded; historical SND/BRT transitions captured. Owner subsequently verified remote brightness and unit changes; remote SND setter remains pending.",
       "lightOn": "Binary projection of reported light level on Aeon; not a complete light-mode representation.",
       "wheelMaxSpeedKmh": "SOURCE-CONFIRMED mapping: offset26 unsigned16 /10 km/h, APK stopSpeed. Separate from page8 StopSpeed scalar. Physical enforcement and write/readback validation remain pending.",
       "wheelAlarmSpeedKmh": "SOURCE-CONFIRMED mapping: offset24 unsigned16 /10 km/h, APK dangerSpeed. No audible setting confirmation does not disprove this readback mapping or establish command failure."
@@ -533,8 +533,8 @@
         "readback_refs": [],
         "backend": "implemented: Aeon single ASCII command",
         "ui": "implemented: existing dashboard tile",
-        "validation": "partial: historical remote paths tested; current APK/SND interaction pending",
-        "next_action": "Run LIGHT-SND-01 with current app",
+        "validation": "verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.",
+        "next_action": "Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.",
         "priority": 1
       },
       {
@@ -564,7 +564,7 @@
         "backend": "implemented: typed guarded APK setter and readback",
         "ui": "implemented: settings editor; current menu-key wording",
         "validation": "partial: physical SND readback verified; remote setter pending",
-        "next_action": "Validate remote setter separately; run LIGHT-SND-01",
+        "next_action": "Validate remote SND setter separately; LIGHT-SND-01 owner result is silence at10%, not demonstrated volume tracking.",
         "priority": 1
       },
       {
@@ -579,8 +579,8 @@
         ],
         "backend": "implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f",
         "ui": "implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f",
-        "validation": "partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending",
-        "next_action": "Change one step, check display and readback, restore",
+        "validation": "verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported.",
+        "next_action": "Confirm restoration and record tested brightness/SND values; silent variant remains unmapped. No need to re-prove basic brightness operation.",
         "priority": 1
       },
       {
@@ -595,8 +595,8 @@
         ],
         "backend": "implemented: typed guarded APK setter and readback",
         "ui": "implemented: settings editor",
-        "validation": "open: APK mapping and constant readback only; UNT never changed in panel session",
-        "next_action": "Verify remote change and restore; distinguish app display units",
+        "validation": "verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified.",
+        "next_action": "Confirm original units restored; retain acknowledgement-beep observation without inferring both directions or all SND values were tested.",
         "priority": 1
       },
       {
@@ -1133,8 +1133,9 @@
     "validation_plans": [
       {
         "id": "LIGHT-SND-01",
-        "status": "open",
-        "hypothesis": "The current remote light on/off path produces an acknowledgement at nonzero panel SND and its loudness follows SND. This is not yet verified.",
+        "status": "owner result recorded: silent at SND10%; volume-tracking hypothesis not supported for this tested path",
+        "hypothesis": "Original hypothesis: current remote light acknowledgements follow panel SND. Owner reports silence even at10%, so this test does not demonstrate acknowledgement-volume tracking.",
+        "outcome": "AEON-REMOTE-SETTINGS-SOUND: brightness and unit writes work and beep; current headlight path remains silent even at SND10%. No new packet capture, calibrated loudness measurement or universal beep-control mechanism established.",
         "known": "Owner reports SND affects each physical keypress; speed and fall-related warning beeps remain loud at SND0. Historical paired remote light beeped; PC literal ASCII was silent; earlier ASCII beta report differs.",
         "preconditions": [
           "Stationary, upright and securely supported wheel; no riding, drop or speed-warning test.",
@@ -1615,7 +1616,7 @@
         100
       ],
       "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
-      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+      "first_pass_status": "Implemented; remote brightness effect verified by owner, with SND-independent beep in tested cases. See AEON-REMOTE-SETTINGS-SOUND."
     },
     {
       "class": "StopPowerSettingActivity",
@@ -2077,7 +2078,7 @@
       ],
       "app_transform": "0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending",
       "euc_mapping": "First pass adds AeonSettingChange(UNITS) through generic buildSettingChange; changes wheel display units, not stored app units.",
-      "qualification": "UNT untouched by user. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
+      "qualification": "UNT untouched in the earlier panel capture; owner later verified an app-driven unit change. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
       "live_write_tested_this_turn": false,
       "euc_source": null,
       "readback_field": "Unit",
@@ -2086,7 +2087,7 @@
         1
       ],
       "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
-      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+      "first_pass_status": "Implemented; remote unit change verified by owner and emits beep. Tested direction unspecified; not separate verification of every APK construction site."
     },
     {
       "class": "SetAlarmSpeedActivity",
@@ -2372,7 +2373,7 @@
       ],
       "app_transform": "0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending",
       "euc_mapping": "First pass adds AeonSettingChange(UNITS) through generic buildSettingChange; changes wheel display units, not stored app units.",
-      "qualification": "UNT untouched by user. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
+      "qualification": "UNT untouched in the earlier panel capture; owner later verified an app-driven unit change. ControlActivity hides units row unconditionally, but separate UnitSwitchActivity has a live send path. Do not infer unsupported firmware from hidden UI.",
       "live_write_tested_this_turn": false,
       "euc_source": null,
       "readback_field": "Unit",
@@ -2381,7 +2382,7 @@
         1
       ],
       "range_authority": "APK UI/code only; not firmware limits or permission for live writes",
-      "first_pass_status": "APK-confirmed setter exposed for opt-in validation"
+      "first_pass_status": "Implemented; remote unit change verified by owner and emits beep. Tested direction unspecified; not separate verification of every APK construction site."
     },
     {
       "class": "BtManager",
@@ -3199,6 +3200,13 @@
   ],
   "observations": [
     {
+      "id": "AEON-REMOTE-SETTINGS-SOUND",
+      "evidence": ["Verified on Aeon"],
+      "fact": "Owner reports app-driven screen brightness works and emits an acknowledgement beep regardless of tested SND values. App-driven unit selection also works and beeps. Current headlight toggle remains silent even with SND10%. These are owner-reported physical results, not newly observed BLE packets.",
+      "limitation": "Reported following delivery of Alpha0.19.0 d01249f3; installed build and firmware not independently checked. Exact brightness values, unit direction, full SND test set, restoration and UI readback status were not supplied. Results support command-dependent sound behavior distinct from panel-key SND for these tests, not a universal Bluetooth acknowledgement channel or discovered mute bit.",
+      "source": "Owner message in this task following the Google Drive APK delivery"
+    },
+    {
       "id": "AEON-LIGHT-LEVELS",
       "evidence": [
         "Verified on Aeon",
@@ -3688,6 +3696,6 @@
     "read_only": "All other APK settings fields; unknown/sentinel/out-of-range values retained.",
     "unchanged": "Existing light/horn profile, speed/alarm commands, current/power semantics, BMS36-cell cap; exploratory logging excluded.",
     "write_guards": "Explicit confirmation, model44, fresh complete settings page, current value in APK range, connected/stationary/not charging; atomic ATT batch bound to current GATT; matching later readback or unknown result, no automatic semantic retry. Existing BLE stack-rejection retry remains transport-level behavior.",
-    "not_claimed": "Full firmware command support, all settings writable, or physically verified new setters."
+    "not_claimed": "Full firmware command support, all settings writable, or every new setter physically verified. Brightness and units now have owner-reported physical confirmation; remote SND remains pending."
   }
 }

@@ -6,7 +6,7 @@ Generated from [capabilities.json](capabilities.json). Edit that file first, the
 
 ## First pass
 
-Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. New writes remain APK-confirmed, not physically verified.
+Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. Owner reports confirm remote brightness and unit changes work and beep. Remote SND remains unverified; see the observations and per-control checklist.
 
 All other extracted settings are read-only. Aeon additionally sends the official clock-sync frame once after receiving valid model44 data. No automatic settings rewrites, command probing, calibration, experimental logging or global beep-volume reinterpretation. Existing light/horn profile and other Veteran behavior remain intact. This is an incremental implementation, not complete firmware support.
 
@@ -28,6 +28,14 @@ Verified on Aeon, Verified from capture, Confirmed in NOSFET APK, Confirmed in E
 APK 1.1.3 SHA256: `f4881479f3c40e2f1d54a8909223af79f5cb18eaf96d9a94f4116ce10e4a5099`. Model44, observed firmware44250,36S,151.2V class. APK UI ranges are not firmware safety limits.
 
 ## Physical observations and captured readbacks
+
+### AEON-REMOTE-SETTINGS-SOUND
+
+Verified on Aeon.
+
+Owner reports app-driven screen brightness works and emits an acknowledgement beep regardless of tested SND values. App-driven unit selection also works and beeps. Current headlight toggle remains silent even with SND10%. These are owner-reported physical results, not newly observed BLE packets.
+
+Reported following delivery of Alpha0.19.0 d01249f3; installed build and firmware not independently checked. Exact brightness values, unit direction, full SND test set, restoration and UI readback status were not supplied. Results support command-dependent sound behavior distinct from panel-key SND for these tests, not a universal Bluetooth acknowledgement channel or discovered mute bit.
 
 ### AEON-LIGHT-LEVELS
 
@@ -116,19 +124,19 @@ Every row is Confirmed in NOSFET APK. Templates exclude the CRC32 big-endian tra
 | key-tone volume | 4C 64 41 70 1C 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by} | Progress 0..100 -> raw unchanged | APK-confirmed setter exposed for opt-in validation |
 | maximum charge voltage | 4C 64 41 70 1D 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by} | Progress/raw 0..70; display145.0 + raw/10 V (145.0..152.0) | Existing behavior or documented only; see first_pass |
 | pedal hardness | 4C 64 41 70 0F 01 02 80 80 80 {by} | UI 0..100, raw u8 unchanged | Existing behavior or documented only; see first_pass |
-| display brightness | 4C 64 41 70 14 01 02 80 80 80 80 80 80 80 80 {by} | Progress 0..100 -> raw unchanged; displayed text rounds DOWN to multiple of 5 | APK-confirmed setter exposed for opt-in validation |
+| display brightness | 4C 64 41 70 14 01 02 80 80 80 80 80 80 80 80 {by} | Progress 0..100 -> raw unchanged; displayed text rounds DOWN to multiple of 5 | Implemented; remote brightness effect verified by owner, with SND-independent beep in tested cases. See AEON-REMOTE-SETTINGS-SOUND. |
 | PWM threshold | 4C 64 41 70 12 01 02 80 80 80 80 80 80 {by} | Progress 0..70 -> raw 30..100 percent | Existing behavior or documented only; see first_pass |
 | tilt-back speed | 4C 64 41 70 11 01 02 80 80 80 80 80 {by} | Progress 0..110 -> raw km/h 10..120 | Existing behavior or documented only; see first_pass |
 | voltage adjustment | 4C 64 41 70 18 01 02 80 80 80 80 80 80 80 80 80 80 80 80 {by} | Progress0..30 -> signed raw -15..15; displayed -1.5..+1.5 percent | Existing behavior or documented only; see first_pass |
 | high-speed mode | 4C 64 41 70 1A 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 80 {by} | Boolean raw 0/1 | Existing behavior or documented only; see first_pass |
 | low-battery mode | 4C 64 41 70 19 01 02 80 80 80 80 80 80 80 80 80 80 80 80 80 {by} | Boolean raw 0/1 | Existing behavior or documented only; see first_pass |
 | transport mode | 4C 64 41 70 16 01 02 80 80 80 80 80 80 80 80 80 80 {by} | Boolean raw 0/1 | Existing behavior or documented only; see first_pass |
-| unit selection | 4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by} | 0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending | APK-confirmed setter exposed for opt-in validation |
+| unit selection | 4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by} | 0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending | Implemented; remote unit change verified by owner and emits beep. Tested direction unspecified; not separate verification of every APK construction site. |
 | alarm speed | 4C 6B 41 70 11 01 80 80 80 80 80 80 {by} | Progress 0..110 -> raw km/h 10..120 | Existing behavior or documented only; see first_pass |
 | vertical angle | 4C 6B 41 70 10 01 80 80 80 80 80 {by} | Progress 0..160 -> signed raw -80..80; units tenths of degree (-8..8 degrees) | Existing behavior or documented only; see first_pass |
 | side-tilt/fall angle | 4C 6B 41 70 16 01 80 80 80 80 80 80 80 80 80 80 80 {by} | Progress0..40 -> raw35..75 degrees | Existing behavior or documented only; see first_pass |
 | continuous ride mode | 4C 6B 41 70 0C 01 80 {by} | UI progress 0..100; command = progress+10 (10..110). UI readback initialization = rideMode-100. | Existing behavior or documented only; see first_pass |
-| unit selection | 4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by} | 0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending | APK-confirmed setter exposed for opt-in validation |
+| unit selection | 4C 64 41 70 17 01 02 80 80 80 80 80 80 80 80 80 80 80 {by} | 0 metric / 1 imperial; UnitSwitchActivity inverts isKM Boolean when sending | Implemented; remote unit change verified by owner and emits beep. Tested direction unspecified; not separate verification of every APK construction site. |
 | horn | 4C 6B 41 70 0E 00 80 80 80 01 | Fixed action value 1 | Existing behavior or documented only; see first_pass |
 | headlight | 4C 6B 41 70 0D 01 80 80 01 | 0 off / 1 on only | Existing behavior or documented only; see first_pass |
 | headlight | 4C 6B 41 70 0D 01 80 80 00 | 0 off / 1 on only | Existing behavior or documented only; see first_pass |
@@ -158,4 +166,4 @@ Every row is Confirmed in NOSFET APK. Templates exclude the CRC32 big-endian tra
 
 Unit tests validate decoding, model isolation, sentinels, freshness, CRC and splitting. They do not validate firmware execution, alarm behavior, all firmware versions or physical consequences. The ledger retains CRC-valid captured setting frames and file hashes; no raw logs or manufacturer APK are checked into the app repository.
 
-UNT was not touched during panel experiments. SND restored0%; display BRT restored30%. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.
+In the earlier capture session, UNT was not touched, SND was restored0% and display BRT restored30%. Later owner tests verified remote unit and brightness changes; their final restored values were not reported. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.

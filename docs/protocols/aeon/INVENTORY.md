@@ -17,11 +17,11 @@ These parts are already in source. Pending physical tests do not make backend/UI
 | Work item | Backend | UI | Physical validation / remaining work |
 |---|---|---|---|
 | [LEGAL-RESTORE](#legal-restore) | Implemented | Implemented | partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending |
-| [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | partial: historical remote paths tested; current APK/SND interaction pending |
+| [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements. |
 | [LIGHT-LEVEL](#light-level) | Implemented | Implemented | partial: physical cycles and captures verified; new dashboard pending |
 | [SND](#snd) | Implemented | Implemented | partial: physical SND readback verified; remote setter pending |
-| [DISPLAY-BRT](#display-brt) | Implemented | Implemented | partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending |
-| [UNITS](#units) | Implemented | Implemented | open: APK mapping and constant readback only; UNT never changed in panel session |
+| [DISPLAY-BRT](#display-brt) | Implemented | Implemented | verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported. |
+| [UNITS](#units) | Implemented | Implemented | verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified. |
 | [HORN](#horn) | Implemented | Implemented | partial: Aeon horn worked; record current single-frame app retest separately |
 | [TIME](#time) | Implemented | N/A | partial: exact capture fixture, DST/fractional offsets and connection lifecycle covered by unit tests; wheel clock execution/readback unverified |
 | [LOCK](#lock) | Implemented | Implemented | partial: app policy tested; firmware support unresolved |
@@ -44,7 +44,7 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 | `pollStats` | Default null; no separate Aeon stats query mapped. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `horn` | Aeon single LkAp frame; current app retest pending. | [HORN](#horn) |
 | `hornFollowup` | Null deliberately; Aeon does not send the generic Veteran companion. | [HORN](#horn) |
-| `setLight` | ASCII on/off, not full physical level cycle. SND interaction unresolved. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
+| `setLight` | ASCII on/off, not full physical level cycle. Owner confirms current path silent even at SND10%; no generic acknowledgement-mute mechanism established. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
 | `setLightFollowup` | Null deliberately for current Aeon path. | [LIGHT-TOGGLE](#light-toggle) |
 | `setMaxSpeed` | Returns null; separate commit methods below carry the commands. Do not count this null alone as no support. | [TILTBACK](#tiltback), [ALARM-SPEED](#alarm-speed) |
 | `setMaxSpeedCommit` | Shared LdAp builder; Aeon remote effect not verified. | [TILTBACK](#tiltback) |
@@ -138,8 +138,8 @@ Official command evidence: headlight. Exact construction sites, transforms and p
 
 - [x] Backend: implemented: Aeon single ASCII command
 - [x] Ui: implemented: existing dashboard tile
-- [ ] Validation: partial: historical remote paths tested; current APK/SND interaction pending
-- [ ] Next: Run LIGHT-SND-01 with current app
+- [x] Validation: verified: owner confirms current headlight toggle remains silent even at SND10%; observation AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.
+- [ ] Next: Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.
 
 ### LIGHT-LEVEL
 
@@ -167,7 +167,7 @@ Readback fields: KeyTone ([offsets and evidence](README.md#settings-page-8)).
 - [x] Backend: implemented: typed guarded APK setter and readback
 - [x] Ui: implemented: settings editor; current menu-key wording
 - [ ] Validation: partial: physical SND readback verified; remote setter pending
-- [ ] Next: Validate remote setter separately; run LIGHT-SND-01
+- [ ] Next: Validate remote SND setter separately; LIGHT-SND-01 owner result is silence at10%, not demonstrated volume tracking.
 
 ### DISPLAY-BRT
 
@@ -181,8 +181,8 @@ Readback fields: ScreenBacklightRate ([offsets and evidence](README.md#settings-
 
 - [x] Backend: implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f
 - [x] Ui: implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f
-- [ ] Validation: partial: automated command/readback tests and physical panel brightness effect verified; app-driven wheel change still pending
-- [ ] Next: Change one step, check display and readback, restore
+- [x] Validation: verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported.
+- [ ] Next: Confirm restoration and record tested brightness/SND values; silent variant remains unmapped. No need to re-prove basic brightness operation.
 
 ### UNITS
 
@@ -196,8 +196,8 @@ Readback fields: Unit ([offsets and evidence](README.md#settings-page-8)).
 
 - [x] Backend: implemented: typed guarded APK setter and readback
 - [x] Ui: implemented: settings editor
-- [ ] Validation: open: APK mapping and constant readback only; UNT never changed in panel session
-- [ ] Next: Verify remote change and restore; distinguish app display units
+- [x] Validation: verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified.
+- [ ] Next: Confirm original units restored; retain acknowledgement-beep observation without inferring both directions or all SND values were tested.
 
 ### HORN
 
@@ -817,7 +817,7 @@ Automatically enumerated with an explicit disposition for every field; new field
 | `lightOn` | Binary projection of reported light level on Aeon; not a complete light-mode representation. |
 | `headlightReadback` | Implemented generic projection of captured Aeon level; dashboard uses fresh reported state. |
 | `aeonLightState` | Captured Aeon page1 offset49 mapping, preserving raw unknown values. |
-| `aeonSettings` | 13 official APK page8 fields decoded; SND and BRT physical transitions captured, other writes not verified. |
+| `aeonSettings` | 13 official APK page8 fields decoded; historical SND/BRT transitions captured. Owner subsequently verified remote brightness and unit changes; remote SND setter remains pending. |
 | `charging` | APK reads raw byte23 as chargeMode; EUC reduces it to >0. Exact nonzero mode meanings remain unresolved. WheelData comment claiming Veteran always leaves false is stale. |
 | `tirePressureKpa` | UNMAPPED: no confirmed Aeon TPMS telemetry in this audit; default0 does not establish hardware absence. |
 | `pcMode` | UNMAPPED: shared parser leaves -1; do not infer parking or transport mode from this other-family field. |
@@ -833,11 +833,13 @@ Smart-BMS slices, identity and settings events outside WheelData also require TE
 
 ### LIGHT-SND-01
 
-Status: **open**. No new live test performed when recording this plan.
+Status: **owner result recorded: silent at SND10%; volume-tracking hypothesis not supported for this tested path**. Results are owner-reported where stated; recording this document does not itself perform a live test.
 
-Hypothesis: The current remote light on/off path produces an acknowledgement at nonzero panel SND and its loudness follows SND. This is not yet verified.
+Hypothesis: Original hypothesis: current remote light acknowledgements follow panel SND. Owner reports silence even at10%, so this test does not demonstrate acknowledgement-volume tracking.
 
 Existing evidence: Owner reports SND affects each physical keypress; speed and fall-related warning beeps remain loud at SND0. Historical paired remote light beeped; PC literal ASCII was silent; earlier ASCII beta report differs.
+
+Recorded outcome: AEON-REMOTE-SETTINGS-SOUND: brightness and unit writes work and beep; current headlight path remains silent even at SND10%. No new packet capture, calibrated loudness measurement or universal beep-control mechanism established.
 
 #### Preconditions
 

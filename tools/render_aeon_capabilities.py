@@ -61,7 +61,7 @@ lines = ['# NOSFET Aeon capability ledger', '',
     'For the bidirectional EUC Planet / Aeon backend, UI and validation checklist, see [INVENTORY.md](INVENTORY.md). Missing mappings are explicit there.', '',
     'Generated from [capabilities.json](capabilities.json). Edit that file first, then run `python tools/render_aeon_capabilities.py`. Earlier timestamped research reports are historical evidence, not competing current maps.', '',
     '## First pass', '',
-    'Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. New writes remain APK-confirmed, not physically verified.', '',
+    'Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. Owner reports confirm remote brightness and unit changes work and beep. Remote SND remains unverified; see the observations and per-control checklist.', '',
     'All other extracted settings are read-only. Aeon additionally sends the official clock-sync frame once after receiving valid model44 data. No automatic settings rewrites, command probing, calibration, experimental logging or global beep-volume reinterpretation. Existing light/horn profile and other Veteran behavior remain intact. This is an incremental implementation, not complete firmware support.', '',
     '## Implementation boundaries', '',
     *[f'- **{key.replace("_", " ")}**: {value}' for key, value in data.get('implementation', {}).items()], '',
@@ -83,7 +83,7 @@ for r in data['gaps']:
     lines.append('| '+' | '.join(cell(r[k]) for k in ['control','apk','euc','evidence'])+' |')
 lines += ['', '## Validation boundaries', '',
     'Unit tests validate decoding, model isolation, sentinels, freshness, CRC and splitting. They do not validate firmware execution, alarm behavior, all firmware versions or physical consequences. The ledger retains CRC-valid captured setting frames and file hashes; no raw logs or manufacturer APK are checked into the app repository.', '',
-    'UNT was not touched during panel experiments. SND restored0%; display BRT restored30%. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.', '']
+    'In the earlier capture session, UNT was not touched, SND was restored0% and display BRT restored30%. Later owner tests verified remote unit and brightness changes; their final restored values were not reported. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.', '']
 emit(folder / 'README.md', '\n'.join(lines))
 
 lines = ['# EUC Planet / NOSFET Aeon implementation inventory', '',
@@ -172,8 +172,10 @@ for field in wheel_fields:
 lines += ['', 'Smart-BMS slices, identity and settings events outside WheelData also require TELEMETRY-AUDIT; do not assume this data class exhausts all wire telemetry.', '',
     '## Open validation procedures', '']
 for plan in inventory['validation_plans']:
-    lines += [f"### {plan['id']}", '', f"Status: **{plan['status']}**. No new live test performed when recording this plan.", '',
+    lines += [f"### {plan['id']}", '', f"Status: **{plan['status']}**. Results are owner-reported where stated; recording this document does not itself perform a live test.", '',
         'Hypothesis: ' + plan['hypothesis'], '', 'Existing evidence: ' + plan['known'], '']
+    if plan.get('outcome'):
+        lines += ['Recorded outcome: ' + plan['outcome'], '']
     for key in ['preconditions', 'steps', 'results_to_record']:
         lines += [f"#### {key.replace('_', ' ').capitalize()}", '']
         lines += [f'- [ ] {step}' for step in plan[key]]

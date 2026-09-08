@@ -61,8 +61,8 @@ lines = ['# NOSFET Aeon capability ledger', '',
     'For the bidirectional EUC Planet / Aeon backend, UI and validation checklist, see [INVENTORY.md](INVENTORY.md). Missing mappings are explicit there.', '',
     'Generated from [capabilities.json](capabilities.json). Edit that file first, then run `python tools/render_aeon_capabilities.py`. Earlier timestamped research reports are historical evidence, not competing current maps.', '',
     '## First pass', '',
-    'Settings > General > NOSFET Aeon exposes display brightness, menu-key sound level and wheel display units. Changes require confirmation, a connected stationary non-charging wheel, fresh telemetry and a supported current readback. A subsequent matching readback is reported separately from sending; no automatic retry. Owner reports confirm remote brightness and unit changes work and beep. Remote SND remains unverified; see the observations and per-control checklist.', '',
-    'All other extracted settings are read-only. Aeon additionally sends the official clock-sync frame once after receiving valid model44 data. No automatic settings rewrites, command probing, calibration, experimental logging or global beep-volume reinterpretation. Existing light/horn profile and other Veteran behavior remain intact. This is an incremental implementation, not complete firmware support.', '',
+    'Wheel display brightness and wheel display units use standard controls in Display settings; Wheel button sounds uses a standard numeric control in Speech settings. No separate Aeon card, Apply confirmation or blocking readback wait. Changes dispatch on edit through the model-selected adapter with connection, support and value-range checks. Headlight and speed readbacks remain. Owner verified brightness/units on the earlier build; new placement and SND-controlled headlight selection await wheel testing.', '',
+    'Other extracted settings remain read-only in the Inspector. Aeon sends the official clock-sync frame once after valid model44 data. Fresh SND>0 now selects the previous paired light path; zero/unknown/stale selects silent ASCII. Other settings have no established silent variant. Horn and other Veteran models are unchanged. No command probing, calibration, experimental logging or global warning-volume reinterpretation.', '',
     '## Implementation boundaries', '',
     *[f'- **{key.replace("_", " ")}**: {value}' for key, value in data.get('implementation', {}).items()], '',
     '## Evidence policy', '', ', '.join(data['evidence_policy'])+'.', '',
@@ -83,7 +83,7 @@ for r in data['gaps']:
     lines.append('| '+' | '.join(cell(r[k]) for k in ['control','apk','euc','evidence'])+' |')
 lines += ['', '## Validation boundaries', '',
     'Unit tests validate decoding, model isolation, sentinels, freshness, CRC and splitting. They do not validate firmware execution, alarm behavior, all firmware versions or physical consequences. The ledger retains CRC-valid captured setting frames and file hashes; no raw logs or manufacturer APK are checked into the app repository.', '',
-    'In the earlier capture session, UNT was not touched, SND was restored0% and display BRT restored30%. Later owner tests verified remote unit and brightness changes; their final restored values were not reported. New UI changes are only sent after the rider explicitly confirms them. Cancel resets a draft to the current reported value; no factory default is invented.', '']
+    'In the earlier capture session, UNT was not touched, SND was restored0% and display BRT restored30%. Later owner tests verified remote unit and brightness changes; their final restored values were not reported. The current standard widgets dispatch on user edit; no factory default is invented and queue acceptance does not confirm execution.', '']
 emit(folder / 'README.md', '\n'.join(lines))
 
 lines = ['# EUC Planet / NOSFET Aeon implementation inventory', '',

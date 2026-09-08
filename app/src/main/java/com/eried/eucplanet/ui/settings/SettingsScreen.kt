@@ -541,6 +541,8 @@ fun SettingsScreen(
     ).joinToString(" ")
 
     val corpusDisplay = listOf(
+        stringResource(R.string.wheel_display_brightness),
+        stringResource(R.string.wheel_display_units),
         titleDisplay,
         stringResource(R.string.section_display),
         stringResource(R.string.units_label),
@@ -570,6 +572,7 @@ fun SettingsScreen(
     ).joinToString(" ")
 
     val corpusVoice = listOf(
+        stringResource(R.string.wheel_button_sounds),
         titleVoice,
         stringResource(R.string.section_speech),
         stringResource(R.string.voice_speech_speed),
@@ -712,7 +715,6 @@ fun SettingsScreen(
 
     val sections: List<SectionDef> = listOf(
         SectionDef("general", titleGeneral, Icons.Default.Tune, corpusGeneral) {
-            AeonSettingsCard(viewModel, isConnected)
             GeneralTab(settings, viewModel, scrollToBattery) { y ->
                 targetSectionTop = y
             }
@@ -6313,6 +6315,8 @@ private fun DisplayTab(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         UnitsSetting(settings = settings, viewModel = viewModel)
+        WheelPreferenceSetting(viewModel, com.eried.eucplanet.data.model.WheelPreference.DISPLAY_UNITS)
+        WheelPreferenceSetting(viewModel, com.eried.eucplanet.data.model.WheelPreference.DISPLAY_BRIGHTNESS)
 
         SwitchSetting(stringResource(R.string.phone_keep_screen_on), settings.phoneKeepScreenOn) {
             viewModel.updatePhoneKeepScreenOn(it)
@@ -6793,6 +6797,7 @@ private fun VoiceTab(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         SectionHeader(stringResource(R.string.section_speech))
+        WheelPreferenceSetting(viewModel, com.eried.eucplanet.data.model.WheelPreference.BUTTON_SOUND)
 
         // Voice type selector
         val voices by viewModel.availableVoices.collectAsState()
@@ -9345,7 +9350,7 @@ private fun ThemeDropdown(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SimpleDropdown(
+internal fun SimpleDropdown(
     label: String,
     currentKey: String,
     options: List<Pair<String, String>>,

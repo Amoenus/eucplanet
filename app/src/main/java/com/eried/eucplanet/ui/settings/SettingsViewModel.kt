@@ -126,31 +126,14 @@ class SettingsViewModel @Inject constructor(
         com.eried.eucplanet.data.repository.AppHealthRepository,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-    val aeonWheelData = wheelRepository.wheelData
+    internal val wheelPreferences = wheelRepository.wheelData.map {
+        it.aeonSettings?.preferences() ?: com.eried.eucplanet.data.model.WheelPreferences()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), com.eried.eucplanet.data.model.WheelPreferences())
     internal val speedLimitReadback = wheelRepository.wheelData.map { data ->
         SpeedLimitReadback(data.wheelMaxSpeedKmh, data.wheelAlarmSpeedKmh, data.timestamp)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpeedLimitReadback())
-    private val _aeonSettingBusy = MutableStateFlow(false)
-    val aeonSettingBusy = _aeonSettingBusy.asStateFlow()
-    private val _aeonSettingResult = MutableStateFlow<com.eried.eucplanet.data.model.AeonSettingResult?>(null)
-    val aeonSettingResult = _aeonSettingResult.asStateFlow()
-
-    fun setAeonSetting(setting: com.eried.eucplanet.data.model.AeonSetting, value: Int) {
-        if (_aeonSettingBusy.value) return
-        _aeonSettingBusy.value = true
-        _aeonSettingResult.value = null
-        viewModelScope.launch {
-            try {
-                _aeonSettingResult.value = wheelRepository.setAeonSetting(setting, value)
-            } catch (cancelled: kotlinx.coroutines.CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                _aeonSettingResult.value = com.eried.eucplanet.data.model.AeonSettingResult.UNKNOWN
-            } finally {
-                _aeonSettingBusy.value = false
-            }
-        }
-    }
+    internal fun setWheelPreference(preference: com.eried.eucplanet.data.model.WheelPreference, value: Int): Boolean =
+        wheelRepository.setWheelSetting(com.eried.eucplanet.data.model.WheelPreferenceChange(preference, value))
 
     /** Whether Android will honour a picture-in-picture request from us. */
     fun pipAllowed(): Boolean = appHealthRepository.pipAllowed()

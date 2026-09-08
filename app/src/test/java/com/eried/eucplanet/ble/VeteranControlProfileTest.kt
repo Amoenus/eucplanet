@@ -41,7 +41,8 @@ class VeteranControlProfileTest {
 
     @Test
     fun `only Aeon selects the Aeon control profile`() {
-        assertSame(AeonControlProfile, VeteranModelProtocols.create(VeteranModel.NOSFET_AEON).controls)
+        assertTrue(VeteranModelProtocols.create(VeteranModel.NOSFET_AEON).controls is
+            com.eried.eucplanet.ble.nosfet.AeonAcknowledgedControlProfile)
         for (model in VeteranModel.entries.filter { it != VeteranModel.NOSFET_AEON } + null) {
             assertSame(DefaultVeteranControlProfile, VeteranModelProtocols.create(model).controls)
         }

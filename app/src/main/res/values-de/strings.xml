@@ -2478,4 +2478,7 @@
     <string name="aeon_readback_unavailable">Nicht verfügbar</string>
     <string name="speed_readback_title">Vom Rad gemeldet (schreibgeschützt)</string>
     <string name="speed_readback_unavailable">Nicht verfügbar</string>
+    <string name="wheel_display_brightness">Helligkeit des Raddisplays</string>
+    <string name="wheel_button_sounds">Tastentöne des Rads</string>
+    <string name="wheel_display_units">Einheiten des Raddisplays</string>
 </resources>

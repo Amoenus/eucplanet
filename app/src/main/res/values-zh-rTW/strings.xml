@@ -2457,4 +2457,7 @@
     <string name="aeon_readback_unavailable">無法使用</string>
     <string name="speed_readback_title">車輪回報值（唯讀）</string>
     <string name="speed_readback_unavailable">無法使用</string>
+    <string name="wheel_display_brightness">車輪螢幕亮度</string>
+    <string name="wheel_button_sounds">車輪按鍵音</string>
+    <string name="wheel_display_units">車輪螢幕單位</string>
 </resources>

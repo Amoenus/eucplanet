@@ -2458,4 +2458,7 @@
     <string name="aeon_readback_unavailable">Inte tillgängligt</string>
     <string name="speed_readback_title">Rapporterat av hjulet (skrivskyddat)</string>
     <string name="speed_readback_unavailable">Inte tillgängligt</string>
+    <string name="wheel_display_brightness">Hjulskärmens ljusstyrka</string>
+    <string name="wheel_button_sounds">Hjulets knappljud</string>
+    <string name="wheel_display_units">Hjulskärmens enheter</string>
 </resources>

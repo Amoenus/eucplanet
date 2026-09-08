@@ -2460,4 +2460,7 @@
     <string name="aeon_readback_unavailable">Indisponível</string>
     <string name="speed_readback_title">Valores da roda (somente leitura)</string>
     <string name="speed_readback_unavailable">Indisponível</string>
+    <string name="wheel_display_brightness">Brilho da tela da roda</string>
+    <string name="wheel_button_sounds">Sons dos botões da roda</string>
+    <string name="wheel_display_units">Unidades da tela da roda</string>
 </resources>

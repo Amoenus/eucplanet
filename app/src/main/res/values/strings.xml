@@ -2482,4 +2482,7 @@
     <string name="aeon_readback_unavailable">Unavailable</string>
     <string name="speed_readback_title">Reported by wheel (read-only)</string>
     <string name="speed_readback_unavailable">Unavailable</string>
+    <string name="wheel_display_brightness">Wheel display brightness</string>
+    <string name="wheel_button_sounds">Wheel button sounds</string>
+    <string name="wheel_display_units">Wheel display units</string>
 </resources>

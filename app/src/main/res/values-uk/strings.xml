@@ -2455,4 +2455,7 @@
     <string name="aeon_readback_unavailable">Недоступно</string>
     <string name="speed_readback_title">Дані колеса (лише читання)</string>
     <string name="speed_readback_unavailable">Недоступно</string>
+    <string name="wheel_display_brightness">Яскравість екрана колеса</string>
+    <string name="wheel_button_sounds">Звуки кнопок колеса</string>
+    <string name="wheel_display_units">Одиниці екрана колеса</string>
 </resources>

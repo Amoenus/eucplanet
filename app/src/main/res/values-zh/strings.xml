@@ -2325,4 +2325,7 @@
     <string name="aeon_readback_unavailable">不可用</string>
     <string name="speed_readback_title">车轮报告值（只读）</string>
     <string name="speed_readback_unavailable">不可用</string>
+    <string name="wheel_display_brightness">车轮屏幕亮度</string>
+    <string name="wheel_button_sounds">车轮按键音</string>
+    <string name="wheel_display_units">车轮屏幕单位</string>
 </resources>

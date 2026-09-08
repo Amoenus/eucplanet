@@ -6,7 +6,7 @@ Status date: 2026-09-08. Complete coverage of the current known control ledger, 
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 49 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 9 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 50 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 9 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
 
@@ -33,7 +33,7 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 
 | API / property | Aeon mapping, missing mapping or deliberate absence | Work items |
 |---|---|---|
-| `buildSettingChange` | Implemented typed extension for these three guarded settings; other Aeon settings rejected. | [SND](#snd), [DISPLAY-BRT](#display-brt), [UNITS](#units) |
+| `buildSettingChange` | Normal WheelPreferenceChange extension for brightness, panel-button sound and wheel units; adapter maps to existing Aeon packets. Other Aeon settings rejected. | [SND](#snd), [DISPLAY-BRT](#display-brt), [UNITS](#units) |
 | `familyId` | Shared veteran wire-family identity, not proof all LeaperKim features apply. | [REFERENCE-AUDIT](#reference-audit) |
 | `capabilities` | Model-specific flags; inspect the flag table below. | [REFERENCE-AUDIT](#reference-audit) |
 | `bleProfile` | Shared HM10 FFE0/FFE1 transport; not a control command. | [REFERENCE-AUDIT](#reference-audit) |
@@ -45,8 +45,8 @@ Confirmed in EUC Planet source means current code behavior only, not firmware ve
 | `pollStats` | Default null; no separate Aeon stats query mapped. | [TELEMETRY-AUDIT](#telemetry-audit) |
 | `horn` | Aeon single LkAp frame; current app retest pending. | [HORN](#horn) |
 | `hornFollowup` | Null deliberately; Aeon does not send the generic Veteran companion. | [HORN](#horn) |
-| `setLight` | Owner-verified ASCII OFF/LOW toggle, not full physical level cycle. Current path silent even at SND10%; no generic acknowledgement-mute mechanism established. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
-| `setLightFollowup` | Null deliberately for current Aeon path. | [LIGHT-TOGGLE](#light-toggle) |
+| `setLight` | New policy: fresh SND>0 selects original LkAp/LdAp pair; zero/unknown/stale selects owner-verified silent ASCII path. Prior silent-at10% observation predates this policy. Not volume scaling; integrated policy pending wheel validation. | [LIGHT-TOGGLE](#light-toggle), [LIGHT-LEVEL](#light-level) |
+| `setLightFollowup` | Original LdAp companion only when primary light call selected audible paired path; null for silent ASCII. Snapshot preserves the decision if SND changes between calls. | [LIGHT-TOGGLE](#light-toggle) |
 | `setMaxSpeed` | Returns null; separate commit methods below carry the commands. Do not count this null alone as no support. | [TILTBACK](#tiltback), [ALARM-SPEED](#alarm-speed) |
 | `setMaxSpeedCommit` | Shared LdAp builder; Aeon remote effect not verified. | [TILTBACK](#tiltback) |
 | `setAlarmSpeedCommit` | Shared LkAp builder; owner clarifies no audible confirmation when applying the setting. Threshold persistence was uncertain; riding-alarm failure was not established. | [ALARM-SPEED](#alarm-speed) |
@@ -148,10 +148,10 @@ EUC Planet API: `setLight`, `setLightFollowup`
 
 Official command evidence: headlight. Exact construction sites, transforms and provenance are in the [command ledger](README.md#command-inventory). APK presence alone does not establish Aeon applicability.
 
-- [x] Backend: implemented: Aeon single ASCII command
+- [x] Backend: implemented: AeonAcknowledgementPolicy chooses original paired light command for fresh SND>0, ASCII for SND0/unknown/stale; selection captured across primary/followup calls
 - [x] Ui: implemented: existing dashboard tile
 - [x] Validation: verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.
-- [ ] Next: Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.
+- [ ] Next: On next requested APK validate new SND-gated selection at0 and10%, including resulting brightness and beep count. Paired-path light mode may differ from ASCII LOW. Do not claim loudness scaling or silent brightness/unit variants.
 
 ### LIGHT-LEVEL
 
@@ -176,8 +176,8 @@ Official command evidence: key-tone volume. Exact construction sites, transforms
 
 Readback fields: KeyTone ([offsets and evidence](README.md#settings-page-8)).
 
-- [x] Backend: implemented: typed guarded APK setter and readback
-- [x] Ui: implemented: settings editor; current menu-key wording
+- [x] Backend: implemented: normal WheelPreferenceChange BUTTON_SOUND maps to APK KEY_TONE; existing range/support checks and BLE dispatch, no special confirmation/wait gate
+- [x] Ui: implemented: standard numeric Wheel button sounds entry in Speech settings; no vendor card and no global warning-volume substitution
 - [ ] Validation: partial: physical SND readback verified; remote setter pending
 - [ ] Next: Validate remote SND setter separately; LIGHT-SND-01 owner result is silence at10%, not demonstrated volume tracking.
 
@@ -191,8 +191,8 @@ Official command evidence: display brightness. Exact construction sites, transfo
 
 Readback fields: ScreenBacklightRate ([offsets and evidence](README.md#settings-page-8)).
 
-- [x] Backend: implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f
-- [x] Ui: implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f
+- [x] Backend: implemented: normal WheelPreferenceChange DISPLAY_BRIGHTNESS maps to existing APK packet, range0..100 and supported model check
+- [x] Ui: implemented: standard numeric Wheel display brightness entry in Display settings; immediate edit dispatch, no separate Apply/confirmation
 - [x] Validation: verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported.
 - [ ] Next: Confirm restoration and record tested brightness/SND values; silent variant remains unmapped. No need to re-prove basic brightness operation.
 
@@ -206,8 +206,8 @@ Official command evidence: unit selection. Exact construction sites, transforms 
 
 Readback fields: Unit ([offsets and evidence](README.md#settings-page-8)).
 
-- [x] Backend: implemented: typed guarded APK setter and readback
-- [x] Ui: implemented: settings editor
+- [x] Backend: implemented: normal WheelPreferenceChange DISPLAY_UNITS maps to existing APK packet, separate from app units
+- [x] Ui: implemented: standard Wheel display units dropdown beside app units in Display settings; immediate selection dispatch
 - [x] Validation: verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified.
 - [ ] Next: Confirm original units restored; retain acknowledgement-beep observation without inferring both directions or all SND values were tested.
 
@@ -579,6 +579,17 @@ EUC Planet API: No dedicated generic control member. Typed settings/readback or 
 - [ ] Ui: open: do not reuse security-lock button
 - [ ] Validation: partial: owner described physical button behavior
 - [ ] Next: Record independent semantics before considering remote control
+
+### SILENT-VISUAL-ACK
+
+**Future optional visual acknowledgement for silent commands** (priority 4)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+- [ ] Backend: deferred: idea only; no brake-light blink command or alternative indicator implemented
+- [ ] Ui: deferred: no new option in this scope
+- [ ] Validation: open: preserve original lamp state and avoid confusing brake/safety indications; exact command and physical behavior unknown
+- [ ] Next: Future investigation only: consider a brief rear-light indication or another acknowledgement when sound is disabled. Establish supported commands, restoration, timing and rider meaning first.
 
 ### TRANSPORT
 

@@ -2459,4 +2459,7 @@
     <string name="aeon_readback_unavailable">利用不可</string>
     <string name="speed_readback_title">ホイールからの報告値（読み取り専用）</string>
     <string name="speed_readback_unavailable">利用不可</string>
+    <string name="wheel_display_brightness">ホイール画面の明るさ</string>
+    <string name="wheel_button_sounds">ホイールのボタン音</string>
+    <string name="wheel_display_units">ホイール画面の単位</string>
 </resources>

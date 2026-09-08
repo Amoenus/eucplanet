@@ -23,7 +23,7 @@
           "DISPLAY-BRT",
           "UNITS"
         ],
-        "status": "Implemented typed extension for these three guarded settings; other Aeon settings rejected."
+        "status": "Normal WheelPreferenceChange extension for brightness, panel-button sound and wheel units; adapter maps to existing Aeon packets. Other Aeon settings rejected."
       },
       {
         "member": "familyId",
@@ -108,14 +108,14 @@
           "LIGHT-TOGGLE",
           "LIGHT-LEVEL"
         ],
-        "status": "Owner-verified ASCII OFF/LOW toggle, not full physical level cycle. Current path silent even at SND10%; no generic acknowledgement-mute mechanism established."
+        "status": "New policy: fresh SND>0 selects original LkAp/LdAp pair; zero/unknown/stale selects owner-verified silent ASCII path. Prior silent-at10% observation predates this policy. Not volume scaling; integrated policy pending wheel validation."
       },
       {
         "member": "setLightFollowup",
         "inventory_refs": [
           "LIGHT-TOGGLE"
         ],
-        "status": "Null deliberately for current Aeon path."
+        "status": "Original LdAp companion only when primary light call selected audible paired path; null for silent ASCII. Snapshot preserves the decision if SND changes between calls."
       },
       {
         "member": "setMaxSpeed",
@@ -464,6 +464,16 @@
     "status_policy": "implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.",
     "items": [
       {
+        "id": "SILENT-VISUAL-ACK",
+        "title": "Future optional visual acknowledgement for silent commands",
+        "command_refs": [], "gap_refs": [], "readback_refs": [],
+        "backend": "deferred: idea only; no brake-light blink command or alternative indicator implemented",
+        "ui": "deferred: no new option in this scope",
+        "validation": "open: preserve original lamp state and avoid confusing brake/safety indications; exact command and physical behavior unknown",
+        "next_action": "Future investigation only: consider a brief rear-light indication or another acknowledgement when sound is disabled. Establish supported commands, restoration, timing and rider meaning first.",
+        "priority": 4
+      },
+      {
         "id": "SPEED-LIMIT-READBACK-UI",
         "title": "Read-only wheel-reported tiltback and alarm thresholds",
         "command_refs": [], "gap_refs": [], "readback_refs": [],
@@ -541,10 +551,10 @@
         ],
         "gap_refs": [],
         "readback_refs": [],
-        "backend": "implemented: Aeon single ASCII command",
+        "backend": "implemented: AeonAcknowledgementPolicy chooses original paired light command for fresh SND>0, ASCII for SND0/unknown/stale; selection captured across primary/followup calls",
         "ui": "implemented: existing dashboard tile",
         "validation": "verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements.",
-        "next_action": "Retain silent command path; attach exact build/firmware and capture to the owner report if available. Do not generalize to all Bluetooth commands.",
+        "next_action": "On next requested APK validate new SND-gated selection at0 and10%, including resulting brightness and beep count. Paired-path light mode may differ from ASCII LOW. Do not claim loudness scaling or silent brightness/unit variants.",
         "priority": 1
       },
       {
@@ -571,8 +581,8 @@
         "readback_refs": [
           "KeyTone"
         ],
-        "backend": "implemented: typed guarded APK setter and readback",
-        "ui": "implemented: settings editor; current menu-key wording",
+        "backend": "implemented: normal WheelPreferenceChange BUTTON_SOUND maps to APK KEY_TONE; existing range/support checks and BLE dispatch, no special confirmation/wait gate",
+        "ui": "implemented: standard numeric Wheel button sounds entry in Speech settings; no vendor card and no global warning-volume substitution",
         "validation": "partial: physical SND readback verified; remote setter pending",
         "next_action": "Validate remote SND setter separately; LIGHT-SND-01 owner result is silence at10%, not demonstrated volume tracking.",
         "priority": 1
@@ -587,8 +597,8 @@
         "readback_refs": [
           "ScreenBacklightRate"
         ],
-        "backend": "implemented: AeonCommands DISPLAY_BRIGHTNESS setter, page8 byte55 readback, range0..100 and guarded dispatch; commit3d67c95f",
-        "ui": "implemented: Settings > General > NOSFET Aeon brightness editor, Apply confirmation and readback result; commit3d67c95f",
+        "backend": "implemented: normal WheelPreferenceChange DISPLAY_BRIGHTNESS maps to existing APK packet, range0..100 and supported model check",
+        "ui": "implemented: standard numeric Wheel display brightness entry in Display settings; immediate edit dispatch, no separate Apply/confirmation",
         "validation": "verified: owner reports remote display brightness works, with an acknowledgement beep regardless of tested SND values. Exact values and readback-result UI not reported.",
         "next_action": "Confirm restoration and record tested brightness/SND values; silent variant remains unmapped. No need to re-prove basic brightness operation.",
         "priority": 1
@@ -603,8 +613,8 @@
         "readback_refs": [
           "Unit"
         ],
-        "backend": "implemented: typed guarded APK setter and readback",
-        "ui": "implemented: settings editor",
+        "backend": "implemented: normal WheelPreferenceChange DISPLAY_UNITS maps to existing APK packet, separate from app units",
+        "ui": "implemented: standard Wheel display units dropdown beside app units in Display settings; immediate selection dispatch",
         "validation": "verified: owner reports remote unit selection changes wheel units and produces an acknowledgement beep. Direction, exact SND value and restoration not specified.",
         "next_action": "Confirm original units restored; retain acknowledgement-beep observation without inferring both directions or all SND values were tested.",
         "priority": 1
@@ -1169,6 +1179,8 @@
     ]
   },
   "implementation": {
+    "normal_preferences": "Removed AeonSettingsCard and bespoke Apply/confirmation/readback-wait UI. Standard Display controls for wheel brightness/units and Speech control for wheel button sounds use generic WheelPreferenceChange, mapped in NosfetAeonProtocol. No model branches in widgets. Connection, range, model and known-support checks remain; former stationary/charging/freshness/12-second wait gates removed for these preferences at owner request. Raw Inspector, headlight and speed readbacks remain.",
+    "acknowledgement_policy": "Fresh page8 SND>0 selects original paired headlight path; SND0 or unavailable/stale selects silent ASCII. Transaction snapshot prevents mismatched primary/companion after SND changes. Settings share selector but have no known silent variant, so retain existing beeping packets. Horn remains intentional sound; speed/alarm command policy unchanged. Not a universal mute bit or volume scaling. New automatic selection requires wheel validation.",
     "legal_mode_restore": "LegalModeSpeedMemory stores the configured normal pair before applying Legal mode, keyed by BLE/virtual-wheel address. Both telemetry and Settings adoption paths preserve normal values while the snapshot is protected. Restore uses the original pair, not overwritten readbacks. Repeated enable and same-process reconnect retain the snapshot. It is released only after a later matching pair; missing or partial feedback retains it. Memory is not persistent across app process death. No changes to command bytes, transport failure handling or optimistic Legal UI; no claim of successful wheel execution.",
     "clock_initialization": "Official BtManager.bluetoothHeatBeatOnce -> syncTime -> Util.getTimeBytes -> sendBytesData/CRC path implemented for Aeon. initSequence stays empty until model evidence; pollRealtime consumes a single deferred command after CRC-valid model44 frame. No periodic resync or semantic retry; rearmed on disconnect/model replacement. Date is generated at dispatch, local wall time plus raw standard timezone hours truncated toward zero. Unrepresentable years skipped. Queue success and firmware clock adjustment are not acknowledged by this implementation.",
     "headlight_dashboard": "Existing light tile uses model-provided HeadlightReadback: Off/Low/Medium/High, existing active/inactive colors. Unknown, disconnected or older than eight seconds displays Light: ?. Age is not refreshed by unrelated pages. Tap keeps current on/off command; no remote level cycling claimed. Level-reporting models do not optimistically flip light state; other models unchanged.",
@@ -3712,7 +3724,7 @@
     ],
     "read_only": "All other APK settings fields; unknown/sentinel/out-of-range values retained.",
     "unchanged": "Existing light/horn profile, speed/alarm commands, current/power semantics, BMS36-cell cap; exploratory logging excluded.",
-    "write_guards": "Explicit confirmation, model44, fresh complete settings page, current value in APK range, connected/stationary/not charging; atomic ATT batch bound to current GATT; matching later readback or unknown result, no automatic semantic retry. Existing BLE stack-rejection retry remains transport-level behavior.",
+    "write_guards": "Normal settings flow: connected wheel, adapter-selected model44, known supported preference and APK value range, atomic ATT batch bound to current GATT. No bespoke confirmation, stationary/charging/freshness gate or blocking readback wait for brightness/SND/units. Readback is retained separately; enqueue success is not firmware ACK. Existing BLE stack-rejection retry unchanged.",
     "not_claimed": "Full firmware command support, all settings writable, or every new setter physically verified. Brightness and units now have owner-reported physical confirmation; remote SND remains pending."
   }
 }

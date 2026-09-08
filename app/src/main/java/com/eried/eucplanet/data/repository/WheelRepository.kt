@@ -1641,34 +1641,11 @@ class WheelRepository @Inject constructor(
         wheelAdapter.setDRL(on)?.let { bleManager.writeCommand(it) }
     }
 
-    /** Explicit opt-in settings only. A readback match is not a protocol ACK. */
-    suspend fun setAeonSetting(setting: com.eried.eucplanet.data.model.AeonSetting, value: Int): com.eried.eucplanet.data.model.AeonSettingResult = authMutex.withLock {
-        val telemetry = _wheelData.value
-        val before = telemetry.aeonSettings
-        if (!wheelConnected() || before == null || !before.isFresh() ||
-            !telemetry.speed.isFinite() || kotlin.math.abs(telemetry.speed) > 0.01f ||
-            System.currentTimeMillis() - telemetry.timestamp !in 0..3_000L || telemetry.charging) {
-            return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
-        }
-        if (!setting.editable || value !in setting.range || before.value(setting) == null) {
-            return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
-        }
-        if (before.value(setting) == value) return@withLock com.eried.eucplanet.data.model.AeonSettingResult.UNCHANGED
-        val frames = wheelAdapter.buildSettingChange(com.eried.eucplanet.data.model.AeonSettingChange(setting, value))
-            ?: return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
-        if (!bleManager.writeCommandBatch(frames)) return@withLock com.eried.eucplanet.data.model.AeonSettingResult.NOT_SENT
-        val sentAt = System.nanoTime()
-        repeat(48) {
-            delay(250)
-            val current = _wheelData.value.aeonSettings
-            if (!wheelConnected() || current?.sessionId != before.sessionId) {
-                return@withLock com.eried.eucplanet.data.model.AeonSettingResult.UNKNOWN
-            }
-            if (current.receivedAtNanos > sentAt && current.isFresh() && current.value(setting) == value) {
-                return@withLock com.eried.eucplanet.data.model.AeonSettingResult.READBACK_MATCH
-            }
-        }
-        com.eried.eucplanet.data.model.AeonSettingResult.UNKNOWN
+    /** Normal connected-wheel dispatch. Encoding and supported values belong to the adapter. */
+    fun setWheelSetting(change: com.eried.eucplanet.data.model.WheelSettingChange): Boolean {
+        if (!wheelConnected()) return false
+        val frames = wheelAdapter.buildSettingChange(change) ?: return false
+        return bleManager.writeCommandBatch(frames)
     }
 
     fun setSpeed(tiltbackKmh: Float, beepKmh: Float) {

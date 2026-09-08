@@ -12,6 +12,41 @@ import org.junit.Test
 import java.util.zip.CRC32
 
 class AeonLightReadbackTest {
+    @Test fun `normal wheel preferences preserve the existing APK packets`() {
+        val protocol = NosfetAeonProtocol()
+        protocol.acceptFrame(settingsFrame())
+        val pairs = listOf(
+            com.eried.eucplanet.data.model.WheelPreference.DISPLAY_BRIGHTNESS to AeonSetting.DISPLAY_BRIGHTNESS,
+            com.eried.eucplanet.data.model.WheelPreference.BUTTON_SOUND to AeonSetting.KEY_TONE,
+            com.eried.eucplanet.data.model.WheelPreference.DISPLAY_UNITS to AeonSetting.UNITS,
+        )
+        pairs.forEach { (preference, setting) ->
+            val expected = AeonCommands.setting(setting, 1)!!
+            val actual = protocol.buildSettingChange(com.eried.eucplanet.data.model.WheelPreferenceChange(preference, 1))!!
+            assertEquals(expected.size, actual.size)
+            expected.zip(actual).forEach { (a, b) -> assertArrayEquals(a, b) }
+            assertNull(protocol.buildSettingChange(com.eried.eucplanet.data.model.WheelPreferenceChange(preference, 101)))
+        }
+        val data = protocol.decorateTelemetry(com.eried.eucplanet.data.model.WheelData()).aeonSettings!!.preferences()
+        assertEquals(3, data.values.size)
+        assertEquals(30, data.values[com.eried.eucplanet.data.model.WheelPreference.DISPLAY_BRIGHTNESS])
+        protocol.reset()
+        assertNull(protocol.buildSettingChange(com.eried.eucplanet.data.model.WheelPreferenceChange(
+            com.eried.eucplanet.data.model.WheelPreference.BUTTON_SOUND, 1)))
+    }
+
+    @Test fun `fresh positive SND selects old paired lights and zero restores silent path`() {
+        val protocol = NosfetAeonProtocol()
+        protocol.acceptFrame(settingsFrame(snd = 10))
+        assertArrayEquals(VeteranCommands.setHighBeam(true), protocol.controls.setLight(true))
+        assertArrayEquals(VeteranCommands.setHighBeamCompanion(true), protocol.controls.setLightFollowup(true))
+        protocol.acceptFrame(settingsFrame(snd = 0))
+        assertArrayEquals(VeteranCommands.setLight(false), protocol.controls.setLight(false))
+        assertNull(protocol.controls.setLightFollowup(false))
+        protocol.reset()
+        assertArrayEquals(VeteranCommands.setLight(true), protocol.controls.setLight(true))
+    }
+
     @Test fun `generic light readback preserves reception age and clears on reset`() {
         val protocol = NosfetAeonProtocol()
         val empty = com.eried.eucplanet.data.model.WheelData()
@@ -91,12 +126,12 @@ class AeonLightReadbackTest {
         val snapshot = adapter.onRawNotification(frame(0)).filterIsInstance<DecodeResult.Telemetry>().single().data.aeonSettings!!
         assertEquals(30, snapshot.value(AeonSetting.DISPLAY_BRIGHTNESS))
     }
-    private fun settingsFrame(version: Int = 44250): ByteArray {
+    private fun settingsFrame(version: Int = 44250, snd: Int = 0): ByteArray {
         val bytes = ByteArray(75)
         bytes[0] = 0xdc.toByte(); bytes[1] = 0x5a; bytes[2] = 0x5c; bytes[3] = 71
         bytes[28] = (version shr 8).toByte(); bytes[29] = version.toByte(); bytes[46] = 8
         com.eried.eucplanet.data.model.AeonSetting.entries.forEach { bytes[it.offset] = 128.toByte() }
-        bytes[55] = 30; bytes[63] = 0; bytes[58] = 0; bytes[59] = (-15).toByte(); bytes[65] = 145.toByte()
+        bytes[55] = 30; bytes[63] = snd.toByte(); bytes[58] = 0; bytes[59] = (-15).toByte(); bytes[65] = 145.toByte()
         val crc = CRC32().apply { update(bytes, 0, 71) }.value
         for (i in 0..3) bytes[71 + i] = (crc shr (24 - 8 * i)).toByte()
         return bytes

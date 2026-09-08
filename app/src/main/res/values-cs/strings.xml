@@ -2261,4 +2261,7 @@
     <string name="aeon_readback_unavailable">Nedostupné</string>
     <string name="speed_readback_title">Hlášeno kolem (jen pro čtení)</string>
     <string name="speed_readback_unavailable">Nedostupné</string>
+    <string name="wheel_display_brightness">Jas displeje kola</string>
+    <string name="wheel_button_sounds">Zvuky tlačítek kola</string>
+    <string name="wheel_display_units">Jednotky displeje kola</string>
 </resources>

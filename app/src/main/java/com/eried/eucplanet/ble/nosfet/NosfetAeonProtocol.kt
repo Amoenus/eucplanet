@@ -10,12 +10,14 @@ import com.eried.eucplanet.data.model.AeonSettingChange
 import com.eried.eucplanet.data.model.AeonSettings
 import com.eried.eucplanet.data.model.WheelData
 import com.eried.eucplanet.data.model.WheelSettingChange
+import com.eried.eucplanet.data.model.WheelPreferenceChange
+import com.eried.eucplanet.data.model.aeonSetting
 import java.util.concurrent.atomic.AtomicLong
 
 /** First-class Aeon model component. No parser, transport or common telemetry duplication.
  * Each identified model session owns its readbacks; reset invalidates in-flight confirmations. */
 internal class NosfetAeonProtocol : VeteranModelProtocol {
-    override val controls = AeonControlProfile
+    override val controls = AeonAcknowledgedControlProfile { acknowledgementSound() }
     override val telemetryTracePrefix = TRACE_PREFIX
 
     // Explicit compatibility declaration, not a claim of physical verification.
@@ -67,11 +69,18 @@ internal class NosfetAeonProtocol : VeteranModelProtocol {
 
     @Synchronized
     override fun buildSettingChange(change: WheelSettingChange): List<ByteArray>? {
-        val request = change as? AeonSettingChange ?: return null
+        val request = when (change) {
+            is AeonSettingChange -> change
+            is WheelPreferenceChange -> AeonSettingChange(change.preference.aeonSetting(), change.value)
+        }
         val current = settings ?: return null
-        if (!current.isFresh() || current.value(request.setting) == null) return null
-        return AeonCommands.setting(request.setting, request.value)
+        if (current.value(request.setting) == null) return null
+        val frames = AeonCommands.setting(request.setting, request.value) ?: return null
+        // No silent variant is established for these settings. Keep the known command.
+        return AeonAcknowledgementPolicy.select(acknowledgementSound(), frames, silent = null)
     }
+
+    private fun acknowledgementSound(): Int? = AeonAcknowledgementPolicy.soundLevel(settings)
 
     @Synchronized
     override fun takeDeferredInitCommand(): ByteArray? {
@@ -82,6 +91,7 @@ internal class NosfetAeonProtocol : VeteranModelProtocol {
 
     @Synchronized
     override fun reset() {
+        controls.reset()
         receivedAeonFrame = false
         clockSyncAttempted = false
         lightState = null

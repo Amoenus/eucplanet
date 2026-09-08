@@ -2261,4 +2261,7 @@
     <string name="aeon_readback_unavailable">Indisponibil</string>
     <string name="speed_readback_title">Valori raportate de roată (doar citire)</string>
     <string name="speed_readback_unavailable">Indisponibil</string>
+    <string name="wheel_display_brightness">Luminozitatea ecranului roții</string>
+    <string name="wheel_button_sounds">Sunetele butoanelor roții</string>
+    <string name="wheel_display_units">Unitățile ecranului roții</string>
 </resources>

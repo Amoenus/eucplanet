@@ -1,6 +1,10 @@
 package com.eried.eucplanet.data.model
 
-enum class AeonSettingResult { NOT_SENT, UNCHANGED, READBACK_MATCH, UNKNOWN }
+internal fun WheelPreference.aeonSetting(): AeonSetting = when (this) {
+    WheelPreference.DISPLAY_BRIGHTNESS -> AeonSetting.DISPLAY_BRIGHTNESS
+    WheelPreference.BUTTON_SOUND -> AeonSetting.KEY_TONE
+    WheelPreference.DISPLAY_UNITS -> AeonSetting.UNITS
+}
 
 /** APK-confirmed page-8 fields. Names are not claims of tested Aeon writes.
  * See docs/protocols/aeon/capabilities.json for evidence and exclusions. */
@@ -29,6 +33,11 @@ data class AeonSettings(
     val receivedAtNanos: Long,
     val sessionId: Long = 0,
 ) {
+    fun preferences(): WheelPreferences = WheelPreferences(
+        WheelPreference.entries.mapNotNull { preference ->
+            value(preference.aeonSetting())?.let { preference to it }
+        }.toMap(), sessionId,
+    )
     fun value(setting: AeonSetting): Int? {
         val raw = rawValues[setting] ?: return null
         if (raw == 0x80) return null

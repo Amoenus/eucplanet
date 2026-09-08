@@ -2261,4 +2261,7 @@
     <string name="aeon_readback_unavailable">Nem érhető el</string>
     <string name="speed_readback_title">A kerék által jelentett (csak olvasható)</string>
     <string name="speed_readback_unavailable">Nem érhető el</string>
+    <string name="wheel_display_brightness">A kerék kijelzőjének fényereje</string>
+    <string name="wheel_button_sounds">A kerék gombhangjai</string>
+    <string name="wheel_display_units">A kerék kijelzőjének mértékegységei</string>
 </resources>

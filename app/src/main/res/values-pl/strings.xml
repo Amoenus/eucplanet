@@ -2458,4 +2458,7 @@
     <string name="aeon_readback_unavailable">Niedostępne</string>
     <string name="speed_readback_title">Wartości z koła (tylko do odczytu)</string>
     <string name="speed_readback_unavailable">Niedostępne</string>
+    <string name="wheel_display_brightness">Jasność wyświetlacza koła</string>
+    <string name="wheel_button_sounds">Dźwięki przycisków koła</string>
+    <string name="wheel_display_units">Jednostki wyświetlacza koła</string>
 </resources>

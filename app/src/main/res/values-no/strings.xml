@@ -2346,4 +2346,7 @@
     <string name="aeon_readback_unavailable">Ikke tilgjengelig</string>
     <string name="speed_readback_title">Rapportert av hjulet (skrivebeskyttet)</string>
     <string name="speed_readback_unavailable">Ikke tilgjengelig</string>
+    <string name="wheel_display_brightness">Lysstyrke på hjuldisplay</string>
+    <string name="wheel_button_sounds">Hjulets knappelyder</string>
+    <string name="wheel_display_units">Enheter på hjuldisplay</string>
 </resources>

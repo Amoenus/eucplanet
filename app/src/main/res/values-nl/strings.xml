@@ -2460,4 +2460,7 @@
     <string name="aeon_readback_unavailable">Niet beschikbaar</string>
     <string name="speed_readback_title">Door het wiel gemeld (alleen-lezen)</string>
     <string name="speed_readback_unavailable">Niet beschikbaar</string>
+    <string name="wheel_display_brightness">Helderheid wieldisplay</string>
+    <string name="wheel_button_sounds">Knopgeluiden van het wiel</string>
+    <string name="wheel_display_units">Eenheden wieldisplay</string>
 </resources>

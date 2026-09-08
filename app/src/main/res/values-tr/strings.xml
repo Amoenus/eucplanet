@@ -2455,4 +2455,7 @@
     <string name="aeon_readback_unavailable">Kullanılamıyor</string>
     <string name="speed_readback_title">Tekerlekten bildirilen (salt okunur)</string>
     <string name="speed_readback_unavailable">Kullanılamıyor</string>
+    <string name="wheel_display_brightness">Tekerlek ekran parlaklığı</string>
+    <string name="wheel_button_sounds">Tekerlek düğme sesleri</string>
+    <string name="wheel_display_units">Tekerlek ekran birimleri</string>
 </resources>

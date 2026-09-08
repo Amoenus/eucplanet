@@ -2457,4 +2457,7 @@
     <string name="aeon_readback_unavailable">사용할 수 없음</string>
     <string name="speed_readback_title">휠 보고 값 (읽기 전용)</string>
     <string name="speed_readback_unavailable">사용할 수 없음</string>
+    <string name="wheel_display_brightness">휠 화면 밝기</string>
+    <string name="wheel_button_sounds">휠 버튼 소리</string>
+    <string name="wheel_display_units">휠 화면 단위</string>
 </resources>

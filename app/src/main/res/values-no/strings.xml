@@ -2344,4 +2344,6 @@
     <string name="action_reset_metrics_done">Målingene er nullstilt</string>
     <string name="action_reset_metrics_wheel_done">Målingene er nullstilt, hjulets tripteller er tømt</string>
     <string name="aeon_readback_unavailable">Ikke tilgjengelig</string>
+    <string name="speed_readback_title">Rapportert av hjulet (skrivebeskyttet)</string>
+    <string name="speed_readback_unavailable">Ikke tilgjengelig</string>
 </resources>

@@ -2259,4 +2259,6 @@
     <string name="action_reset_metrics_done">Mittarit nollattu</string>
     <string name="action_reset_metrics_wheel_done">Mittarit nollattu, pyörän matkamittari tyhjennetty</string>
     <string name="aeon_readback_unavailable">Ei saatavilla</string>
+    <string name="speed_readback_title">Pyörän ilmoittama (vain luku)</string>
+    <string name="speed_readback_unavailable">Ei saatavilla</string>
 </resources>

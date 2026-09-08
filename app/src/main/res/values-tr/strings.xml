@@ -2453,4 +2453,6 @@
     <string name="action_reset_metrics_done">Ölçümler sıfırlandı</string>
     <string name="action_reset_metrics_wheel_done">Ölçümler sıfırlandı, tekerin gezi sayacı temizlendi</string>
     <string name="aeon_readback_unavailable">Kullanılamıyor</string>
+    <string name="speed_readback_title">Tekerlekten bildirilen (salt okunur)</string>
+    <string name="speed_readback_unavailable">Kullanılamıyor</string>
 </resources>

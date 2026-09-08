@@ -2456,4 +2456,6 @@
     <string name="action_reset_metrics_done">Mätvärden nollställda</string>
     <string name="action_reset_metrics_wheel_done">Mätvärden nollställda, hjulets trippmätare rensad</string>
     <string name="aeon_readback_unavailable">Inte tillgängligt</string>
+    <string name="speed_readback_title">Rapporterat av hjulet (skrivskyddat)</string>
+    <string name="speed_readback_unavailable">Inte tillgängligt</string>
 </resources>

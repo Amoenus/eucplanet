@@ -2457,4 +2457,6 @@
     <string name="action_reset_metrics_done">記録をリセットしました</string>
     <string name="action_reset_metrics_wheel_done">記録をリセットし、ホイールの積算距離も消去しました</string>
     <string name="aeon_readback_unavailable">利用不可</string>
+    <string name="speed_readback_title">ホイールからの報告値（読み取り専用）</string>
+    <string name="speed_readback_unavailable">利用不可</string>
 </resources>

@@ -2458,4 +2458,6 @@
     <string name="action_reset_metrics_done">Métricas zeradas</string>
     <string name="action_reset_metrics_wheel_done">Métricas zeradas, trajeto da roda limpo</string>
     <string name="aeon_readback_unavailable">Indisponível</string>
+    <string name="speed_readback_title">Valores da roda (somente leitura)</string>
+    <string name="speed_readback_unavailable">Indisponível</string>
 </resources>

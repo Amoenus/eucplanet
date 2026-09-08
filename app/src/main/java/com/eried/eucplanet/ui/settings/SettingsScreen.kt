@@ -6720,6 +6720,7 @@ private fun SpeedTab(
         }
 
         SectionHeader(stringResource(R.string.section_speed_limits))
+        SpeedLimitReadbackRow(viewModel, isConnected, speedUnit)
         // Lower bound is 0 km/h: some Begode / Veteran wheels report
         // tiltback at 0 (= disabled) or a very low value the rider set
         // on the wheel itself, and clamping the slider's floor at 10

@@ -2474,4 +2474,6 @@
     <string name="action_reset_metrics_done">Métricas reiniciadas</string>
     <string name="action_reset_metrics_wheel_done">Métricas reiniciadas, viaje de la rueda borrado</string>
     <string name="aeon_readback_unavailable">No disponible</string>
+    <string name="speed_readback_title">Datos de la rueda (solo lectura)</string>
+    <string name="speed_readback_unavailable">No disponible</string>
 </resources>

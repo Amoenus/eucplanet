@@ -2456,4 +2456,6 @@
     <string name="action_reset_metrics_done">Liczniki wyzerowane</string>
     <string name="action_reset_metrics_wheel_done">Liczniki wyzerowane, licznik koła skasowany</string>
     <string name="aeon_readback_unavailable">Niedostępne</string>
+    <string name="speed_readback_title">Wartości z koła (tylko do odczytu)</string>
+    <string name="speed_readback_unavailable">Niedostępne</string>
 </resources>

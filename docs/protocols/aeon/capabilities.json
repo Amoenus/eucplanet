@@ -464,6 +464,16 @@
     "status_policy": "implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.",
     "items": [
       {
+        "id": "SPEED-LIMIT-READBACK-UI",
+        "title": "Read-only wheel-reported tiltback and alarm thresholds",
+        "command_refs": [], "gap_refs": [], "readback_refs": [],
+        "backend": "implemented: passive projection of WheelData.wheelMaxSpeedKmh and wheelAlarmSpeedKmh, independent of stored normal/Legal presets; no new BLE command",
+        "ui": "implemented: read-only row in Settings > Speed > Speed limits; selected speed units, independent missing values, disconnected/stale values unavailable and new sample required after opening/reconnecting. Hidden when neither threshold is reported.",
+        "validation": "partial: source mapping confirmed; offline tests cover values, zero, missing/nonfinite fields, freshness, disconnect and Legal/restored pairs. Physical UI verification pending; not included in delivered d01249f3 APK.",
+        "next_action": "On the next requested APK, compare both read-only values with panel settings before/on/off Legal mode. A reported threshold is not an execution ACK or proof of riding enforcement.",
+        "priority": 1
+      },
+      {
         "id": "TELEMETRY-CURRENT-POWER",
         "title": "Separate phase current from estimated battery current and power",
         "command_refs": [], "gap_refs": [], "readback_refs": [],

@@ -2453,4 +2453,6 @@
     <string name="action_reset_metrics_done">Показники скинуто</string>
     <string name="action_reset_metrics_wheel_done">Показники скинуто, пробіг колеса обнулено</string>
     <string name="aeon_readback_unavailable">Недоступно</string>
+    <string name="speed_readback_title">Дані колеса (лише читання)</string>
+    <string name="speed_readback_unavailable">Недоступно</string>
 </resources>

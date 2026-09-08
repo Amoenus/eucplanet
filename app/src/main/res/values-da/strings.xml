@@ -2471,4 +2471,6 @@
     <string name="action_reset_metrics_done">Målinger nulstillet</string>
     <string name="action_reset_metrics_wheel_done">Målinger nulstillet, hjulets triptæller ryddet</string>
     <string name="aeon_readback_unavailable">Ikke tilgængelig</string>
+    <string name="speed_readback_title">Rapporteret af hjulet (skrivebeskyttet)</string>
+    <string name="speed_readback_unavailable">Ikke tilgængelig</string>
 </resources>

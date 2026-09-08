@@ -2460,4 +2460,6 @@
     <string name="action_reset_metrics_done">Mesures réinitialisées</string>
     <string name="action_reset_metrics_wheel_done">Mesures réinitialisées, trajet de la roue effacé</string>
     <string name="aeon_readback_unavailable">Indisponible</string>
+    <string name="speed_readback_title">Valeurs de la roue (lecture seule)</string>
+    <string name="speed_readback_unavailable">Indisponible</string>
 </resources>

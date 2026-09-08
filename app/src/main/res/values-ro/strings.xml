@@ -2259,4 +2259,6 @@
     <string name="action_reset_metrics_done">Valori resetate</string>
     <string name="action_reset_metrics_wheel_done">Valori resetate, contorul roții șters</string>
     <string name="aeon_readback_unavailable">Indisponibil</string>
+    <string name="speed_readback_title">Valori raportate de roată (doar citire)</string>
+    <string name="speed_readback_unavailable">Indisponibil</string>
 </resources>

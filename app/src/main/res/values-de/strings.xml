@@ -2476,4 +2476,6 @@
     <string name="action_reset_metrics_done">Werte zurückgesetzt</string>
     <string name="action_reset_metrics_wheel_done">Werte zurückgesetzt, Wheel-Tagesstrecke gelöscht</string>
     <string name="aeon_readback_unavailable">Nicht verfügbar</string>
+    <string name="speed_readback_title">Vom Rad gemeldet (schreibgeschützt)</string>
+    <string name="speed_readback_unavailable">Nicht verfügbar</string>
 </resources>

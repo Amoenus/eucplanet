@@ -2455,4 +2455,6 @@
     <string name="action_reset_metrics_done">數據已重置</string>
     <string name="action_reset_metrics_wheel_done">數據已重置，獨輪車里程已清零</string>
     <string name="aeon_readback_unavailable">無法使用</string>
+    <string name="speed_readback_title">車輪回報值（唯讀）</string>
+    <string name="speed_readback_unavailable">無法使用</string>
 </resources>

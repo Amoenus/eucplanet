@@ -6,7 +6,7 @@ Status date: 2026-09-08. Complete coverage of the current known control ledger, 
 
 implemented means code/UI exists, not physical validation. partial/open/deferred are unchecked. Deferred items may intentionally remain unavailable. Record exact packet/build/firmware and separate send success, readback match and physical effect.
 
-Coverage: 48 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 9 capability flags, 12 WheelSettings slots and 46 WheelData fields.
+Coverage: 49 work items, all 28 APK construction sites / 24 command groups, 13 settings readbacks, 9 gap groups, 34 WheelAdapter members, 9 capability flags, 12 WheelSettings slots and 46 WheelData fields.
 
 An expected API entry is an optional contract, not a requirement that every wheel implement it. Null follow-up packets can be correct. Unmapped, unsupported by app policy and physically absent are different states.
 
@@ -16,6 +16,7 @@ These parts are already in source. Pending physical tests do not make backend/UI
 
 | Work item | Backend | UI | Physical validation / remaining work |
 |---|---|---|---|
+| [SPEED-LIMIT-READBACK-UI](#speed-limit-readback-ui) | Implemented | Implemented | partial: source mapping confirmed; offline tests cover values, zero, missing/nonfinite fields, freshness, disconnect and Legal/restored pairs. Physical UI verification pending; not included in delivered d01249f3 APK. |
 | [LEGAL-RESTORE](#legal-restore) | Implemented | Implemented | partial: offline regression tests cover repeated enable, changed readbacks, partial/missing restoration, late readbacks and per-wheel isolation; actual Aeon command execution remains pending |
 | [LIGHT-TOGGLE](#light-toggle) | Implemented | Implemented | verified: owner confirms app toggles OFF/LOW and remains silent even at SND10%; observations AEON-HEADLIGHT-DASHBOARD and AEON-REMOTE-SETTINGS-SOUND. Not proof of SND-aware acknowledgements. |
 | [LIGHT-LEVEL](#light-level) | Implemented | Implemented | verified: owner confirms dashboard correctly reads all headlight states changed directly on the wheel, in addition to earlier physical cycles and captures |
@@ -105,6 +106,17 @@ These generic fields include other-family settings. Defaults are not Aeon observ
 ## Backend / UI / validation checklist
 
 Priority 1: validate existing low-risk support. Priority 2: passive features and bounded additions. Priority 3: ambiguous or riding-affecting behavior. Priority 4: deferred maintenance/security/safety scope. Priority is not authorization to send commands.
+
+### SPEED-LIMIT-READBACK-UI
+
+**Read-only wheel-reported tiltback and alarm thresholds** (priority 1)
+
+EUC Planet API: No dedicated generic control member. Typed settings/readback or a future extension is needed where applicable.
+
+- [x] Backend: implemented: passive projection of WheelData.wheelMaxSpeedKmh and wheelAlarmSpeedKmh, independent of stored normal/Legal presets; no new BLE command
+- [x] Ui: implemented: read-only row in Settings > Speed > Speed limits; selected speed units, independent missing values, disconnected/stale values unavailable and new sample required after opening/reconnecting. Hidden when neither threshold is reported.
+- [ ] Validation: partial: source mapping confirmed; offline tests cover values, zero, missing/nonfinite fields, freshness, disconnect and Legal/restored pairs. Physical UI verification pending; not included in delivered d01249f3 APK.
+- [ ] Next: On the next requested APK, compare both read-only values with panel settings before/on/off Legal mode. A reported threshold is not an execution ACK or proof of riding enforcement.
 
 ### LEGAL-RESTORE
 

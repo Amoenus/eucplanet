@@ -2259,4 +2259,6 @@
     <string name="action_reset_metrics_done">Mérések nullázva</string>
     <string name="action_reset_metrics_wheel_done">Mérések nullázva, a kerék napi számlálója törölve</string>
     <string name="aeon_readback_unavailable">Nem érhető el</string>
+    <string name="speed_readback_title">A kerék által jelentett (csak olvasható)</string>
+    <string name="speed_readback_unavailable">Nem érhető el</string>
 </resources>

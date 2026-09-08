@@ -2361,4 +2361,6 @@
     <string name="action_reset_metrics_done">Metriche azzerate</string>
     <string name="action_reset_metrics_wheel_done">Metriche azzerate, parziale del monoruota cancellato</string>
     <string name="aeon_readback_unavailable">Non disponibile</string>
+    <string name="speed_readback_title">Valori della ruota (sola lettura)</string>
+    <string name="speed_readback_unavailable">Non disponibile</string>
 </resources>

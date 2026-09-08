@@ -2455,4 +2455,6 @@
     <string name="action_reset_metrics_done">측정값을 초기화했습니다</string>
     <string name="action_reset_metrics_wheel_done">측정값을 초기화하고 휠 주행거리도 지웠습니다</string>
     <string name="aeon_readback_unavailable">사용할 수 없음</string>
+    <string name="speed_readback_title">휠 보고 값 (읽기 전용)</string>
+    <string name="speed_readback_unavailable">사용할 수 없음</string>
 </resources>

@@ -127,6 +127,9 @@ class SettingsViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val aeonWheelData = wheelRepository.wheelData
+    internal val speedLimitReadback = wheelRepository.wheelData.map { data ->
+        SpeedLimitReadback(data.wheelMaxSpeedKmh, data.wheelAlarmSpeedKmh, data.timestamp)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpeedLimitReadback())
     private val _aeonSettingBusy = MutableStateFlow(false)
     val aeonSettingBusy = _aeonSettingBusy.asStateFlow()
     private val _aeonSettingResult = MutableStateFlow<com.eried.eucplanet.data.model.AeonSettingResult?>(null)

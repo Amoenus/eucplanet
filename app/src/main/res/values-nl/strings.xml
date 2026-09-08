@@ -2458,4 +2458,6 @@
     <string name="action_reset_metrics_done">Meters gereset</string>
     <string name="action_reset_metrics_wheel_done">Meters gereset, ritteller van het wiel gewist</string>
     <string name="aeon_readback_unavailable">Niet beschikbaar</string>
+    <string name="speed_readback_title">Door het wiel gemeld (alleen-lezen)</string>
+    <string name="speed_readback_unavailable">Niet beschikbaar</string>
 </resources>

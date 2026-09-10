@@ -333,6 +333,7 @@ fun DashboardScreen(
     val distanceUnit by viewModel.distanceUnit.collectAsState()
     val tempUnit by viewModel.tempUnit.collectAsState()
     val pressureUnit by viewModel.pressureUnit.collectAsState()
+    val splitMode by viewModel.accelSplitMode.collectAsState()
     val accentKey by viewModel.accentKey.collectAsState()
     val showGaugeColorBand by viewModel.showGaugeColorBand.collectAsState()
     val gaugeOrangePct by viewModel.gaugeOrangePct.collectAsState()
@@ -2694,7 +2695,15 @@ fun DashboardScreen(
                                     // is the same ActionUi the service-mode overlay
                                     // builds, so both surfaces fire the full catalog.
                                     val actionSpec = com.eried.eucplanet.data.model.ActionCatalog.byKey(key)
-                                    val labelText = actionSpec?.let { stringResource(it.labelRes) } ?: key
+                                    // The splits tile says which of its four states it
+                                    // is in, the way Legal ON and the recorder's trip
+                                    // count do, since a cycle with no readout is a
+                                    // guessing game.
+                                    val isSplits = key == "SPEED_SPLITS"
+                                    val labelText = when {
+                                        isSplits -> stringResource(splitMode.tileLabelRes)
+                                        else -> actionSpec?.let { stringResource(it.labelRes) } ?: key
+                                    }
                                     val tap: () -> Unit = {
                                         com.eried.eucplanet.data.model.dispatchAction(
                                             key,
@@ -2720,6 +2729,7 @@ fun DashboardScreen(
                                                     }
                                                 }
                                                 override fun toggleAlarmsMuted() { viewModel.toggleAlarmsMuted() }
+                                                override fun cycleSpeedSplits() { viewModel.cycleSpeedSplits() }
                                                 override fun resetMetrics() {
                                                     snackbarScope.launch {
                                                         // Always resets the app's trip meter and
@@ -2747,10 +2757,13 @@ fun DashboardScreen(
                                             // Resets the app's own counters, so it
                                             // works with no wheel in earshot.
                                             key == "RESET_TRIP" ||
+                                            // A settings write; arm it in the hall.
+                                            isSplits ||
                                             key.startsWith("MEDIA_")
                                     ActionButton(
                                         icon = actionSpec?.icon ?: Icons.Default.Campaign,
                                         label = labelText,
+                                        active = isSplits && splitMode != com.eried.eucplanet.data.model.AccelSplitMode.OFF,
                                         enabled = connectionState == ConnectionState.CONNECTED || offlineSafe,
                                         onClick = tap,
                                         modifier = Modifier.weight(1f),

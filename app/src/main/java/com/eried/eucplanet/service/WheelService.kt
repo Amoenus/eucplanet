@@ -206,10 +206,10 @@ class WheelService : LifecycleService() {
 
     // Voice announcement
     private var voiceJob: Job? = null
-    // RaceBox-style acceleration splits. Pure tracker fed the telemetry stream in
-    // the rider's display speed unit; config re-read each sample so a settings
-    // change takes effect without a reconnect. Reset on disconnect.
-    private val accelSplitTracker = AccelSplitTracker(increment = 10, minSpeed = 20)
+    // RaceBox-style acceleration splits. The session lives in a repository so
+    // the settings screen can show and clear it; config is re-read each sample
+    // so a settings change or the dashboard button takes effect at once.
+    @Inject lateinit var accelSplitRepository: com.eried.eucplanet.data.repository.AccelSplitRepository
     private var lastConnectionState: ConnectionState? = null
     private var lastLightOn: Boolean? = null
     // Flipped true by ACTION_STOP_ALL_AND_KILL so onDestroy knows to
@@ -445,10 +445,13 @@ class WheelService : LifecycleService() {
                             automationManager.restoreBaselineVolume()
                             automationManager.resetMediaControl()
                             automationManager.onProximityLinkLost()
-                            // Drop any in-flight run + session history so a fresh
-                            // ride starts clean and a stale timestamp gap can't
-                            // fabricate a summary on reconnect.
-                            accelSplitTracker.hardReset()
+                            // Drop the run in flight so the gap until the next
+                            // sample cannot be read as one very slow step. The
+                            // session's times are kept: a wheel powered off for
+                            // a coffee is the same wheel, and the rider is still
+                            // racing the same numbers. A different wheel resets
+                            // them in WheelRepository.connect().
+                            accelSplitRepository.pause()
                         }
                         else -> {}
                     }
@@ -837,20 +840,17 @@ class WheelService : LifecycleService() {
         // switch, so gating here silenced split announcements for any rider who
         // turned periodic reports off while wanting acceleration splits on.
         if (!cfg.enabled) {
-            accelSplitTracker.hardReset()
+            // Off is a pause, not a reset. The dashboard button cycles through
+            // off mid-ride, and losing the session's bests on every tap would
+            // make it a button nobody presses.
+            accelSplitRepository.pause()
             return
         }
         val unit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
         val speed = com.eried.eucplanet.util.Units.speed(data.speed, unit).toDouble()
-        accelSplitTracker.configure(
-            cfg.increment,
-            cfg.minSpeed,
-            trackAccel = cfg.direction != "BRAKE",
-            trackDecel = cfg.direction != "ACCEL",
-        )
         // announceEvent queues (QUEUE_ADD) and never drops, so a step crossed
         // while the previous line is still speaking is voiced right after.
-        for (s in accelSplitTracker.onSample(data.timestamp, speed)) {
+        for (s in accelSplitRepository.onSample(cfg, data.timestamp, speed)) {
             val text = AccelSplitVoice.splitText(this, s, cfg)
             Log.i(TAG, "accel split: $text")
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("accel_split: $text")

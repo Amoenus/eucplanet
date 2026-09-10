@@ -38,6 +38,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
@@ -349,7 +350,7 @@ private fun MainScreenContent(
                             // term and the long-form "Load (PWM):" wasted glance time.
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = "PWM: ",
+                                    text = stringResource(R.string.watch_pwm_prefix),
                                     fontSize = pwmNumberSp,
                                     fontWeight = FontWeight.Medium,
                                     color = colors.textSecondary

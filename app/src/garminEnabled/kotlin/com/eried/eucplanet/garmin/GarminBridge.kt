@@ -243,7 +243,7 @@ class GarminBridge @Inject constructor(
         scope.launch {
             while (true) {
                 try {
-                    val s = settingsRepository.get()
+                    val s = settingsRepository.currentOrLoad()
                     val effTilt = if (wheelRepository.safetySpeedActive.value)
                         s.safetyTiltbackKmh else s.tiltbackSpeedKmh
                     val gaugeMax = (((effTilt / 10f).toInt() + 1) * 10f).coerceAtLeast(30f)
@@ -270,7 +270,7 @@ class GarminBridge @Inject constructor(
                 // restores the rider's configured rate immediately. The cap in
                 // sendStateToAll bounds how far ahead we get, this bounds how
                 // hard we push while the watch is not answering.
-                val baseIntervalMs = settingsRepository.get().garminReportIntervalMs.toLong()
+                val baseIntervalMs = settingsRepository.currentOrLoad().garminReportIntervalMs.toLong()
                     .coerceAtLeast(PUBLISH_INTERVAL_MS)
                 val lastAckMs = _lastSuccessAtMs.value
                 val quietMs = if (lastAckMs == 0L) 0L

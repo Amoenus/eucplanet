@@ -7439,37 +7439,11 @@ private fun SplitSessionBlock(
     onReset: () -> Unit,
 ) {
     val colors = MaterialTheme.appColors
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(stringResource(R.string.accel_splits_session), style = MaterialTheme.typography.bodyLarge)
-        if (!session.isEmpty) {
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colors.primary.copy(alpha = 0.12f))
-                    .clickable(onClick = onReset)
-                    .padding(horizontal = 14.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    Icons.Filled.Restore,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = colors.primary,
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(
-                    stringResource(R.string.accel_splits_reset),
-                    color = colors.primary,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 13.sp,
-                )
-            }
-        }
-    }
+    Text(
+        stringResource(R.string.accel_splits_session),
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(top = 8.dp),
+    )
     if (session.isEmpty) {
         HintText(stringResource(R.string.accel_splits_session_empty), small = true)
         return
@@ -7511,6 +7485,35 @@ private fun SplitSessionBlock(
     }
     steps(stringResource(R.string.accel_splits_dir_accel), session.accel)
     steps(stringResource(R.string.accel_splits_dir_brake), session.brake)
+    // Below the rows and on the left, where the metric detail screen puts its
+    // Reset. The app never puts a reset on the right of a heading.
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(colors.primary.copy(alpha = 0.12f))
+                .clickable(onClick = onReset)
+                .padding(horizontal = 14.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                Icons.Filled.Restore,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = colors.primary,
+            )
+            Spacer(Modifier.width(6.dp))
+            Text(
+                stringResource(R.string.accel_splits_reset),
+                color = colors.primary,
+                fontWeight = FontWeight.Medium,
+                fontSize = 13.sp,
+            )
+        }
+    }
 }
 
 // --- Integration Tab (Flic + Volume Keys) ---

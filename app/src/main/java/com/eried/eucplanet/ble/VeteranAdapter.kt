@@ -40,6 +40,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override val capabilities = WheelCapabilities.VETERAN
 
     @Volatile private var detectedModel: VeteranModel? = null
+    @Volatile private var alarmCommandModel: VeteranModel? = null
 
     override val nominalPackVoltage: Int? get() = detectedModel?.nominalVoltage
 
@@ -49,6 +50,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
 
     override fun notifyConnectingTo(deviceName: String?): DecodeResult.ModelName? {
         detectedModel = deviceName?.let { VeteranModel.fromReportedName(it) }
+        alarmCommandModel = detectedModel
         return null
     }
 
@@ -127,7 +129,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
         VeteranCommands.setTiltbackSpeed(tiltbackKmh.toInt())
 
     override fun setAlarmSpeedCommit(alarmKmh: Float): ByteArray =
-        VeteranCommands.setAlarmSpeed(alarmKmh.toInt())
+        VeteranCommands.setAlarmSpeed(alarmKmh.toInt(), alarmCommandModel)
 
     // No volume, no DRL on this family.
     override fun setVolume(percent: Int): ByteArray? = null
@@ -258,6 +260,11 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
             // the `f.isLong` branch below.
             val isStandardTelemetry =
                 f.bytes.size > 3 && f.bytes[3] != 0x5f.toByte()
+            // Generic names such as NF7445 need the model from a complete frame.
+            // Keep command identification separate from existing telemetry/UI state.
+            if (isStandardTelemetry) {
+                VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes))?.let { alarmCommandModel = it }
+            }
             val telem = if (isStandardTelemetry)
                 VeteranParser.parseTelemetry(f.bytes, detectedModel) else null
             val emitted = if (telem != null) {
@@ -329,6 +336,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override fun onDisconnect() {
         parser.reset()
         detectedModel = null
+        alarmCommandModel = null
         lastOryxBatterySoc = -1
         emittedModel = false
         // A wheel reboot loses light state on the wheel side, so the rider's

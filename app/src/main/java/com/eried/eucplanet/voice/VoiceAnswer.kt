@@ -51,6 +51,16 @@ object VoiceAnswer {
         /** Explain why not, and what would fix it. */
         data class Unavailable(val name: String, val reason: Reason) : Answer
 
+        /**
+         * Do something, rather than say something.
+         *
+         * [confirm] is set for the few that are hard to undo: stopping a
+         * recording throws away the rest of a ride, and a misheard word should
+         * not be able to do that. Lights and the horn carry no such cost, and
+         * asking twice for them would make the feature tiring.
+         */
+        data class Act(val key: String, val name: String, val confirm: Boolean) : Answer
+
         /** The rider asked what they can say. Offer a few real names. */
         data class Examples(val names: List<String>) : Answer
 

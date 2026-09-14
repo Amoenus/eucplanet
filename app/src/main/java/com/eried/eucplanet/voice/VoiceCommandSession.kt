@@ -35,16 +35,25 @@ object VoiceCommandSession {
      * @param vocabulary  from [VoiceVocabulary.build], in the rider's language
      * @param onDashboard metric keys the rider has as tiles, to break a tie
      * @param read        the current reading for a term, or null if unknown
+     * @param needsConfirm whether an action key is one to ask about first
      */
     fun answer(
         heard: String,
         vocabulary: List<SpokenTerm>,
         onDashboard: Set<String>,
+        // Before `read` on purpose: `read` stays the trailing lambda, so every
+        // existing call site keeps reading as answer(...) { term -> ... }.
+        needsConfirm: (String) -> Boolean = { false },
         read: (SpokenTerm) -> Reading?,
     ): Answer = when (val m = VoiceCommandMatcher.match(heard, vocabulary, onDashboard)) {
         is VoiceMatch.Hit -> if (m.term.kind == VoiceVocabulary.Kind.HELP) {
             // Nothing to read: they asked what to ask for.
             VoiceAnswer.examples(vocabulary, onDashboard)
+        } else if (m.term.kind == VoiceVocabulary.Kind.ACTION) {
+            // Nothing to read either: this one is a thing to do. Whether it
+            // needs confirming is the caller's to decide, since it depends on
+            // what the action costs rather than on the words.
+            VoiceAnswer.Answer.Act(m.term.key, m.term.name, confirm = needsConfirm(m.term.key))
         } else {
             val reading = read(m.term)
             VoiceAnswer.answerFor(

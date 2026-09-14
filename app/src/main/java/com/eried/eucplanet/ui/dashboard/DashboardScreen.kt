@@ -2441,15 +2441,6 @@ fun DashboardScreen(
                                     androidx.compose.material3.HorizontalDivider(
                                         color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
                                     )
-                                    // The list of what can be said, one hold
-                                    // away from the button that listens.
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.voice_command_vocabulary)) },
-                                        onClick = { dismiss(); vocabularyOpen = true }
-                                    )
-                                    androidx.compose.material3.HorizontalDivider(
-                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
-                                    )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_switch_to_voice_report)) },
                                         onClick = {
@@ -2504,15 +2495,6 @@ fun DashboardScreen(
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_voice_speak_report)) },
                                         onClick = { dismiss(); viewModel.onVoiceAnnounce() }
-                                    )
-                                    androidx.compose.material3.HorizontalDivider(
-                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
-                                    )
-                                    // The list of what can be said, one hold
-                                    // away from the button that listens.
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.voice_command_vocabulary)) },
-                                        onClick = { dismiss(); vocabularyOpen = true }
                                     )
                                     androidx.compose.material3.HorizontalDivider(
                                         color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)

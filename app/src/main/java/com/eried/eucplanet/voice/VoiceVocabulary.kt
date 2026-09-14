@@ -29,6 +29,20 @@ object VoiceVocabulary {
 
         /** A request for the list itself, answered with examples. */
         HELP,
+
+        /**
+         * Something the app knows that is not a wheel reading: the weather,
+         * whether a wheel is connected at all, what the navigation says next.
+         * Answered with a whole sentence rather than a value and a unit.
+         */
+        SPECIAL,
+
+        /**
+         * Something the app does rather than says. Routed through the same
+         * action dispatch every button uses, so legal mode and the
+         * connected-wheel preconditions apply exactly as they would to a Flic.
+         */
+        ACTION,
     }
 
     /**
@@ -42,6 +56,18 @@ object VoiceVocabulary {
 
     /** The key every way of asking "what can I say" shares. */
     const val HELP_KEY = "HELP"
+
+    /** Keys for the things the app knows that are not wheel readings. */
+    object Special {
+        const val WEATHER = "SP_WEATHER"
+        const val DAYLIGHT = "SP_DAYLIGHT"
+        const val CONNECTED = "SP_CONNECTED"
+        const val UPTIME = "SP_UPTIME"
+        const val NAV_NEXT = "SP_NAV"
+        const val LAST_TRIP = "SP_LAST_TRIP"
+        const val ALARMS = "SP_ALARMS"
+        const val REPORT = "SP_REPORT"
+    }
 
     /**
      * Build the vocabulary.
@@ -58,12 +84,20 @@ object VoiceVocabulary {
      *                    one string so a translator can add or drop phrasings
      *                    for their language without the app growing a resource
      *                    per synonym. Every phrase shares [HELP_KEY].
+     * @param specialPhrases key to comma-separated phrasings, same shape and
+     *                    for the same reason: "weather" and "is it a good day
+     *                    to ride" are one question, and which phrasings exist
+     *                    is a question about a language, not about the app.
+     * @param actionPhrases key to comma-separated phrasings, for the things
+     *                    the app does rather than says.
      */
     fun build(
         metricNames: Map<String, String>,
         reportNames: Map<String, String>,
         splitName: String,
         helpPhrases: String = "",
+        specialPhrases: Map<String, String> = emptyMap(),
+        actionPhrases: Map<String, String> = emptyMap(),
     ): List<SpokenTerm> {
         val terms = mutableListOf<SpokenTerm>()
         val seen = mutableSetOf<String>()
@@ -87,6 +121,19 @@ object VoiceVocabulary {
         for (phrase in helpPhrases.split(",")) {
             val name = phrase.trim()
             if (name.isNotBlank()) terms += SpokenTerm(HELP_KEY, Kind.HELP, name)
+        }
+        // Same many-names-one-key shape as help, for the same reason.
+        for ((key, phrases) in specialPhrases) {
+            for (phrase in phrases.split(",")) {
+                val name = phrase.trim()
+                if (name.isNotBlank()) terms += SpokenTerm(key, Kind.SPECIAL, name)
+            }
+        }
+        for ((key, phrases) in actionPhrases) {
+            for (phrase in phrases.split(",")) {
+                val name = phrase.trim()
+                if (name.isNotBlank()) terms += SpokenTerm(key, Kind.ACTION, name)
+            }
         }
         return terms
     }

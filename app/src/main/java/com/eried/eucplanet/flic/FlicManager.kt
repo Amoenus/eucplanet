@@ -319,6 +319,18 @@ class FlicManager @Inject constructor(
         wheelRepository.sendCustomBle(cmd.frames)
     }
 
+    /**
+     * Run a catalog action from somewhere that is not a button.
+     *
+     * Voice goes through here rather than calling the repositories itself, so
+     * a spoken "lights" is gated by exactly what a Flic press is gated by:
+     * legal-mode lockdown first, then the catalog's own precondition. A
+     * second path would be a second place for those rules to be forgotten.
+     */
+    suspend fun runAction(key: String) {
+        executeAction(key, settingsRepository.get())
+    }
+
     private suspend fun executeAction(key: String, settings: AppSettings) {
         if (key.isEmpty() || key == "NONE") return
         _lastActionAt.value = System.currentTimeMillis()

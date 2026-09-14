@@ -64,7 +64,10 @@ class AndroidVoiceListener(
             SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
 
     override fun start() {
-        if (_state.value is ListenState.Listening || _state.value is ListenState.Partial) return
+        if (_state.value is ListenState.Listening ||
+            _state.value is ListenState.Preparing ||
+            _state.value is ListenState.Partial
+        ) return
         if (!SpeechRecognizer.isRecognitionAvailable(context) && !isOnDevice) {
             _state.value = ListenState.Failed("no recogniser on this device")
             return
@@ -94,7 +97,9 @@ class AndroidVoiceListener(
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
-        _state.value = ListenState.Listening
+        // Not Listening yet: onReadyForSpeech decides that, and the prompt
+        // waits for it so the beep means "speak now" rather than "soon".
+        _state.value = ListenState.Preparing
         val via = if (useOnDevice) "on-device" else "network"
         Log.i(TAG, "listening via $via recogniser, $languageTag")
         com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(

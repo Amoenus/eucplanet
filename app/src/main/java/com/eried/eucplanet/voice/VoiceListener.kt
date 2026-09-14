@@ -29,6 +29,15 @@ sealed interface ListenState {
     /** Nothing happening. */
     data object Idle : ListenState
 
+    /**
+     * Asked for, not open yet.
+     *
+     * A recogniser takes a moment to start, and anything said before it is
+     * ready is simply lost. That moment is why a rider who pressed the button
+     * and immediately said "help" was not heard: the cue had already played.
+     */
+    data object Preparing : ListenState
+
     /** Microphone open, nothing heard yet. */
     data object Listening : ListenState
 

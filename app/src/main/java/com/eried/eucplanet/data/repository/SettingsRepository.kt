@@ -55,6 +55,7 @@ class SettingsRepository @Inject constructor(
     private companion object {
         /** Prompt styles the segmented row offers. */
         val VOICE_PROMPT_VALUES = setOf("beep", "voice", "none")
+        val VOICE_TONE_VALUES = setOf("chirp", "ping", "soft")
     }
 
     private fun AppSettings.sanitized(): AppSettings = copy(
@@ -66,6 +67,7 @@ class SettingsRepository @Inject constructor(
             // A hand-edited or synced file can carry anything, and an unknown
             // style would leave the segmented row with nothing selected.
             prompt = voiceCommands.prompt.takeIf { it in VOICE_PROMPT_VALUES } ?: "beep",
+            tone = voiceCommands.tone.takeIf { it in VOICE_TONE_VALUES } ?: "chirp",
         ),
         // Weather comfort thresholds from a synced or hand-edited file: keep
         // the window one of the offered four, the bands ordered and sane.

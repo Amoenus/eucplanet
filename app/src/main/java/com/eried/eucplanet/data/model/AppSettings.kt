@@ -105,6 +105,18 @@ data class AppSettings(
     val voiceAudioFocus: String = "DUCK",
     // Where to route the voice: "MEDIA" (music slider), "NOTIFICATION" (ring slider), "ALARM" (alarm slider, loudest)
     val voiceOutputChannel: String = "MEDIA",
+    /** Listening for a spoken question is on. Off by default: it opens a
+     *  microphone, and that is a thing a rider should ask for. */
+    val voiceCommandsEnabled: Boolean = false,
+    /**
+     * How the app signals that the microphone is open: "beep", "voice" or
+     * "none". A tone by default, because a spoken prompt can bleed into the
+     * microphone and the recogniser then hears its own prompt, and because a
+     * tone cuts through wind and opens the microphone sooner.
+     */
+    val voiceCommandPrompt: String = "beep",
+    /** Seconds the microphone stays open with nothing heard. */
+    val voiceCommandWindowSeconds: Int = 6,
     // Periodic and on-trigger voice report toggles, NESTED. These used to be 18
     // top-level flags, which had AppSettings' copy$default sitting right on the
     // JVM's 255-parameter-slot limit with no room for another report type. Read

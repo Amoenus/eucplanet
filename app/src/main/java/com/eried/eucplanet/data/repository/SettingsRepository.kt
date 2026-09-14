@@ -52,8 +52,20 @@ class SettingsRepository @Inject constructor(
         scope.launch { updateLastDevice(address, name) }
     }
 
+    private companion object {
+        /** Prompt styles the segmented row offers. */
+        val VOICE_PROMPT_VALUES = setOf("beep", "voice", "none")
+    }
+
     private fun AppSettings.sanitized(): AppSettings = copy(
         autoRecordStopIdleSeconds = autoRecordStopIdleSeconds.coerceAtLeast(30),
+        // A listening window shorter than a couple of seconds cannot hold a
+        // question, and one longer than half a minute is a microphone left open.
+        voiceCommandWindowSeconds = voiceCommandWindowSeconds.coerceIn(3, 30),
+        // A hand-edited or synced file can carry anything; an unknown prompt
+        // style would leave the segmented row with nothing selected.
+        voiceCommandPrompt =
+            voiceCommandPrompt.takeIf { it in VOICE_PROMPT_VALUES } ?: "beep",
         // Weather comfort thresholds from a synced or hand-edited file: keep
         // the window one of the offered four, the bands ordered and sane.
         weather = weather.copy(

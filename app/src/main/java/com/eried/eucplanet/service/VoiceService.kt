@@ -536,8 +536,39 @@ class VoiceService @Inject constructor(
         }
     }
 
+    /**
+     * Answer one report out loud, for a rider who asked for it by name.
+     *
+     * Separate from [announceTrigger] in one way that matters: it ignores the
+     * per-report enable flags. Those say what a periodic announcement or a
+     * button press should contain, which is a different question from what a
+     * rider just asked for. Someone who says "PWM" wants PWM, whether or not
+     * they wanted it read out every two minutes.
+     *
+     * Returns false when there is nothing to say, so the caller can fall back
+     * to explaining why rather than going silent.
+     */
+    fun answerReport(
+        report: String,
+        data: WheelData,
+        settings: AppSettings,
+        isRecording: Boolean = false,
+    ): Boolean {
+        if (legalLockdown.isEngaged()) return false
+        val parts = buildReportParts(data, settings, isRecording, periodic = false, only = report)
+        if (parts.isEmpty()) return false
+        speakInternal(
+            parts.joinToString(", "), isTrigger = true,
+            rate = settings.voiceSpeechRate, localeTag = settings.voiceLocale,
+            voiceName = settings.voiceName,
+        )
+        return true
+    }
+
     private fun buildReportParts(
-        data: WheelData, settings: AppSettings, isRecording: Boolean, periodic: Boolean
+        data: WheelData, settings: AppSettings, isRecording: Boolean, periodic: Boolean,
+        /** One report only, for a spoken question. Null keeps the planned set. */
+        only: String? = null,
     ): List<String> {
         // Which reports, in what order: VoiceReportPlan, so the choice can be
         // tested without a TTS engine. Everything below is formatting.
@@ -545,7 +576,10 @@ class VoiceService @Inject constructor(
         // samples for the ~1 Hz trip graphs, which makes it seconds here.
         val loadWindowMs = settings.smoothingWindowSamples.coerceAtLeast(1) * 1000L
         val parts = mutableListOf<String>()
-        for (item in VoiceReportPlan.items(settings, periodic)) {
+        // A direct question names its own report and bypasses the plan, which
+        // is about what an unprompted announcement contains.
+        val planned = if (only != null) listOf(only) else VoiceReportPlan.items(settings, periodic)
+        for (item in planned) {
             run {
 
                 // Convert each value to the user's display unit before

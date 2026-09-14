@@ -304,6 +304,7 @@
     <string name="voice_answer_nodata">Még nincs %1$s.</string>
     <string name="voice_answer_setup">%1$s előbb beállítást igényel.</string>
     <string name="voice_answer_unknown">Nem értettem. Próbáld: %1$s vagy %2$s.</string>
+    <string name="voice_answer_mic_busy">Valami más használja a mikrofont.</string>
     <string name="voice_answer_which">%1$s vagy %2$s?</string>
     <string name="action_chip_safety">Legális mód</string>
     <string name="action_chip_lock">Egykerekű zárolása</string>

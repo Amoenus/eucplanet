@@ -304,6 +304,7 @@
     <string name="voice_answer_nodata">Zatím žádné %1$s.</string>
     <string name="voice_answer_setup">%1$s je potřeba nejdřív nastavit.</string>
     <string name="voice_answer_unknown">Nerozuměl jsem. Zkus %1$s nebo %2$s.</string>
+    <string name="voice_answer_mic_busy">Mikrofon právě používá něco jiného.</string>
     <string name="voice_answer_which">Myslel jsi %1$s nebo %2$s?</string>
     <string name="action_chip_safety">Legální režim</string>
     <string name="action_chip_lock">Zamknout monokolo</string>

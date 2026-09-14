@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">아직 %1$s이(가) 없습니다.</string>
     <string name="voice_answer_setup">%1$s은(는) 먼저 설정해야 합니다.</string>
     <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 또는 %2$s을(를) 시도해 보세요.</string>
+    <string name="voice_answer_mic_busy">다른 앱이 마이크를 사용 중입니다.</string>
     <string name="voice_answer_which">%1$s인가요, %2$s인가요?</string>
     <string name="action_chip_safety">리걸 모드</string>
     <string name="action_chip_lock">휠 잠금</string>

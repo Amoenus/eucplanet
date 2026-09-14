@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">Nog geen %1$s.</string>
     <string name="voice_answer_setup">%1$s moet eerst worden ingesteld.</string>
     <string name="voice_answer_unknown">Dat verstond ik niet. Probeer %1$s of %2$s.</string>
+    <string name="voice_answer_mic_busy">Iets anders gebruikt de microfoon.</string>
     <string name="voice_answer_which">Bedoelde je %1$s of %2$s?</string>
     <string name="action_chip_safety">Legale modus</string>
     <string name="action_chip_lock">Wiel vergrendelen</string>

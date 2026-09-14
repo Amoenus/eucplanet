@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">暫無%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先設定。</string>
     <string name="voice_answer_unknown">沒聽清楚。試試%1$s或%2$s。</string>
+    <string name="voice_answer_mic_busy">其他應用程式正在使用麥克風。</string>
     <string name="voice_answer_which">你是指%1$s還是%2$s？</string>
     <string name="action_chip_safety">限速模式</string>
     <string name="action_chip_lock">鎖定車輪</string>

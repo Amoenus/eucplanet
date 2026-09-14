@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">Inget %1$s än.</string>
     <string name="voice_answer_setup">%1$s måste ställas in först.</string>
     <string name="voice_answer_unknown">Det uppfattade jag inte. Prova %1$s eller %2$s.</string>
+    <string name="voice_answer_mic_busy">Något annat använder mikrofonen.</string>
     <string name="voice_answer_which">Menade du %1$s eller %2$s?</string>
     <string name="action_chip_safety">Legal-läge</string>
     <string name="action_chip_lock">Lås hjul</string>

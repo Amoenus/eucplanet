@@ -304,6 +304,7 @@
     <string name="voice_answer_nodata">Încă nu există %1$s.</string>
     <string name="voice_answer_setup">%1$s trebuie configurat mai întâi.</string>
     <string name="voice_answer_unknown">Nu am înțeles. Încearcă %1$s sau %2$s.</string>
+    <string name="voice_answer_mic_busy">Altceva folosește microfonul.</string>
     <string name="voice_answer_which">Ai vrut să spui %1$s sau %2$s?</string>
     <string name="action_chip_safety">Mod legal</string>
     <string name="action_chip_lock">Blochează monociclul</string>

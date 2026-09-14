@@ -1372,6 +1372,7 @@
     <string name="voice_answer_nodata">Ancora nessun %1$s.</string>
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
     <string name="voice_answer_unknown">Non ho capito. Prova %1$s o %2$s.</string>
+    <string name="voice_answer_mic_busy">Il microfono è già in uso.</string>
     <string name="voice_answer_which">Intendevi %1$s o %2$s?</string>
     <string name="alarm_metric_pwm_voice"></string>
     <string name="dashboard_close">Chiudi</string>

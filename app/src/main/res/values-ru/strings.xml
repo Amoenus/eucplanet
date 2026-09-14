@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">Пока нет %1$s.</string>
     <string name="voice_answer_setup">%1$s сначала нужно настроить.</string>
     <string name="voice_answer_unknown">Не расслышал. Попробуйте %1$s или %2$s.</string>
+    <string name="voice_answer_mic_busy">Микрофон занят другим приложением.</string>
     <string name="voice_answer_which">Вы имели в виду %1$s или %2$s?</string>
     <string name="action_chip_safety">Легал-режим</string>
     <string name="action_chip_lock">Заблокировать колесо</string>

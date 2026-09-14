@@ -38,8 +38,19 @@ sealed interface ListenState {
     /** Finished, this is what it heard. */
     data class Final(val text: String) : ListenState
 
-    /** Gave up. [reason] is for the log, not for the rider. */
-    data class Failed(val reason: String) : ListenState
+    /**
+     * Gave up. [reason] is for the log, not for the rider.
+     *
+     * [micUnavailable] is the one distinction the rider does need: something
+     * else holds the microphone, which on this app means the Studio recording
+     * a video, and it owns it through an AudioRecord that will not share.
+     * Telling them "I did not catch that" there sends them chasing a problem
+     * with their voice that does not exist.
+     */
+    data class Failed(
+        val reason: String,
+        val micUnavailable: Boolean = false,
+    ) : ListenState
 }
 
 /**

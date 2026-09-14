@@ -182,7 +182,7 @@ class AndroidVoiceListener(
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                 "Voice: gave up, ${errorName(error)}"
             )
-            _state.value = ListenState.Failed(errorName(error))
+            _state.value = ListenState.Failed(errorName(error), micUnavailable(error))
             release()
         }
 
@@ -192,6 +192,18 @@ class AndroidVoiceListener(
         override fun onBufferReceived(buffer: ByteArray?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
+
+    /**
+     * Errors that mean the microphone was never ours to use.
+     *
+     * The Studio records with an AudioRecord while it is running, and two
+     * things cannot hold the microphone at once, so a rider asking a question
+     * mid-recording gets one of these rather than silence or a bad transcript.
+     */
+    private fun micUnavailable(error: Int): Boolean =
+        error == SpeechRecognizer.ERROR_AUDIO ||
+            error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ||
+            error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
 
     /** Errors that mean "not in this language", rather than "heard nothing". */
     private fun isLanguageUnavailable(error: Int): Boolean =

@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">Ainda não há %1$s.</string>
     <string name="voice_answer_setup">%1$s precisa ser configurado primeiro.</string>
     <string name="voice_answer_unknown">Não entendi. Tente %1$s ou %2$s.</string>
+    <string name="voice_answer_mic_busy">Outra coisa está usando o microfone.</string>
     <string name="voice_answer_which">Você quis dizer %1$s ou %2$s?</string>
     <string name="action_chip_safety">Modo legal</string>
     <string name="action_chip_lock">Travar roda</string>

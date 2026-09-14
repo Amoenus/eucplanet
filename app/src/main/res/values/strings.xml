@@ -346,6 +346,7 @@
     <string name="voice_answer_nodata">No %1$s yet.</string>
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
     <string name="voice_answer_unknown">I did not catch that. Try %1$s, or %2$s.</string>
+    <string name="voice_answer_mic_busy">Something else is using the microphone.</string>
     <string name="voice_answer_which">Did you mean %1$s or %2$s?</string>
     <string name="action_chip_safety">Legal mode</string>
     <string name="action_chip_lock">Lock wheel</string>

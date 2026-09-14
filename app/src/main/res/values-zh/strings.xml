@@ -1336,6 +1336,7 @@
     <string name="voice_answer_nodata">暂无%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先设置。</string>
     <string name="voice_answer_unknown">没听清。试试%1$s或%2$s。</string>
+    <string name="voice_answer_mic_busy">其他应用正在使用麦克风。</string>
     <string name="voice_answer_which">你是指%1$s还是%2$s？</string>
     <string name="alarm_metric_pwm_voice"></string>
     <string name="dashboard_close">关闭</string>

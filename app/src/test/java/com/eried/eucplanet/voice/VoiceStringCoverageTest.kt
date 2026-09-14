@@ -35,6 +35,7 @@ class VoiceStringCoverageTest {
         "voice_answer_nodata",
         "voice_answer_setup",
         "voice_answer_unknown",
+        "voice_answer_mic_busy",
         "voice_answer_which",
     )
 

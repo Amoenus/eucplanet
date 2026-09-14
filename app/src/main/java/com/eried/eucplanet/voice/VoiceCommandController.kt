@@ -97,17 +97,21 @@ class VoiceCommandController @Inject constructor(
             val deadline = System.currentTimeMillis() +
                 settings.voiceCommands.windowSeconds * 1000L
             var heard: String? = null
+            var micBusy = false
             while (System.currentTimeMillis() < deadline) {
                 when (val s = mic.state.value) {
                     is ListenState.Partial -> _state.value = UiState.Heard(s.text)
                     is ListenState.Final -> { heard = s.text; break }
-                    is ListenState.Failed -> break
+                    is ListenState.Failed -> { micBusy = s.micUnavailable; break }
                     else -> {}
                 }
                 delay(60)
             }
             mic.stop()
-            answer(heard, settings)
+            // A rider recording a video did not mumble, they are being told
+            // the microphone is spoken for. Saying "I did not catch that"
+            // there is the app blaming them for its own conflict.
+            if (micBusy) sayMicUnavailable() else answer(heard, settings)
             // Leave the answer on screen briefly, then go quiet.
             delay(4000)
             _state.value = UiState.Idle
@@ -135,6 +139,15 @@ class VoiceCommandController @Inject constructor(
             delay(4000)
             _state.value = UiState.Idle
         }
+    }
+
+    /** Something else holds the microphone. Say so, rather than blame the rider. */
+    private fun sayMicUnavailable() {
+        val text = context.getString(R.string.voice_answer_mic_busy)
+        _state.value = UiState.Spoke(text)
+        voiceService.speak(text)
+        Log.i(TAG, "said \"$text\" (mic busy)")
+        com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("Voice: said \"$text\" (mic busy)")
     }
 
     /** Work out the reply and speak it. Never returns without saying something. */

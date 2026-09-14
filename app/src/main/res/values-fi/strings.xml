@@ -304,6 +304,7 @@
     <string name="voice_answer_nodata">Ei vielä %1$s.</string>
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
     <string name="voice_answer_unknown">En saanut siitä selvää. Kokeile %1$s tai %2$s.</string>
+    <string name="voice_answer_mic_busy">Jokin muu käyttää mikrofonia.</string>
     <string name="voice_answer_which">Tarkoititko %1$s vai %2$s?</string>
     <string name="action_chip_safety">Laillinen tila</string>
     <string name="action_chip_lock">Lukitse yksipyöräinen</string>

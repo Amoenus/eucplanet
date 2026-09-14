@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">Henüz %1$s yok.</string>
     <string name="voice_answer_setup">%1$s önce ayarlanmalı.</string>
     <string name="voice_answer_unknown">Anlayamadım. %1$s veya %2$s dene.</string>
+    <string name="voice_answer_mic_busy">Mikrofonu başka bir şey kullanıyor.</string>
     <string name="voice_answer_which">%1$s mi yoksa %2$s mi?</string>
     <string name="action_chip_safety">Yasal mod</string>
     <string name="action_chip_lock">Tekeri kilitle</string>

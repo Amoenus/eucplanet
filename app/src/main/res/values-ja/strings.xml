@@ -341,6 +341,7 @@
     <string name="voice_answer_nodata">%1$sはまだありません。</string>
     <string name="voice_answer_setup">%1$sは先に設定が必要です。</string>
     <string name="voice_answer_unknown">聞き取れませんでした。%1$sか%2$sをお試しください。</string>
+    <string name="voice_answer_mic_busy">ほかのアプリがマイクを使用しています。</string>
     <string name="voice_answer_which">%1$sですか、%2$sですか？</string>
     <string name="action_chip_safety">リーガルモード</string>
     <string name="action_chip_lock">ホイールをロック</string>

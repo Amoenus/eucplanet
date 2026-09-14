@@ -3,7 +3,8 @@
 Ask the wheel a question out loud and hear the answer. "What is my battery",
 "PWM", "consumption", "last split".
 
-Design only. Nothing is implemented on this branch yet.
+Built. The sections below are the design as it was argued; **Built** and
+**What is unverified** at the end record where it ended up, and where it differs.
 
 ## Why this is smaller than it looks
 
@@ -195,11 +196,70 @@ Rule 13 asks every registry for a drift guard, so one test walks `MetricCatalog`
 and asserts every metric is reachable by its own localised name. A metric added
 later without a spoken form fails that test rather than going quietly missing.
 
+## Built
+
+Everything below is on the branch and running. Fourteen commits, 1236 unit
+tests.
+
+Three things only showed up once it ran on a device, which is the argument for
+having made the What can I say list tappable rather than leaving it a list:
+
+- **Every report-backed question answered "no data yet".** Speed, Battery,
+  Amps, Power, PWM, Temp, Trip and the report-only ones like Time. Their
+  reading came back null so the report could phrase them later, but null also
+  means nothing is known, so the answer became Unavailable and the branch that
+  was meant to rescue them only ran for a Say it could never receive. The
+  sentence is now fetched up front through `VoiceService.reportText`, and
+  carried as its own answer kind so it is spoken whole: a report already says
+  its own name.
+- **The fallback never fell back.** `start()` refuses while the state says
+  Listening, which it does right up to the error that triggers the fallback, so
+  the recursive call returned immediately after logging its intention.
+- **The language tag was `en_US`, not `en-US`.** A recogniser does not throw on
+  that, it quietly uses the device language, so a Spanish rider asking for
+  consumo would have been listened to in English.
+
+One design change came out of use rather than out of the plan: a rider says
+"controller temp", not "controller temperature". Names are matched word by word
+with the end of a word allowed to be missing and the order free, so
+"estimated battery" finds the estimate rather than plain battery. Deliberately
+a rule and not a list of phrasings, so a metric added later inherits it from its
+label with nothing to keep in sync and nothing new to translate. Spelling
+variants (tyre/tire) are the part a rule cannot reach; they would need a
+per-locale synonym list, which is real upkeep for an additive gain, so they wait
+until a rider reports a miss.
+
+The What can I say list is tappable: each name speaks its real answer, from the
+rider's own wheel, units and language. Rule 10 asks a preview to show the real
+configuration, and this is the real path with only the acoustics left out.
+
+## Verified
+
+On device, across four emulators and two languages:
+
+- Every answer route: a report-backed metric, a report with no metric behind
+  it, a plain metric with its unit, and a genuine no-data refusal.
+- German end to end, including the report route that was broken:
+  "Akku 48 Prozent", "Fahrt 0.0 Meilen", "Drehmoment, 0,0Nm" with the decimal
+  comma.
+- The microphone genuinely opening, confirmed by Android's own privacy
+  indicator, and the on-device to network fallback firing on a device with no
+  language pack.
+- The not-understood answer offering two examples taken from the rider's own
+  tiles.
+
 ## What is unverified
+
+**A person speaking to it.** Not for want of trying: no emulator on the build
+machine has a working recognition engine at all. The default on-device one
+reports a missing language pack, and the only alternative reports
+SERVER_DISCONNECTED, both regardless of audio routing - which was itself ruled
+out by booting with `-allow-host-audio` and confirming the guest input threads
+were live. It wants a real phone, which is a few minutes of work and not a risk
+to the design.
 
 Whether a phone microphone is usable at 30 km/h. Wind is broadband and brutal,
 and no amount of design settles it. It wants fifteen minutes on a real wheel,
-trying the phone in a pocket, the phone in hand, and earbuds, before any of this
-is built. If the phone microphone turns out to be hopeless at speed the feature
-still stands up, it just becomes an earbuds feature in practice, and the
-settings should say so.
+trying the phone in a pocket, the phone in hand, and earbuds. If the phone
+microphone turns out to be hopeless at speed the feature still stands up, it
+just becomes an earbuds feature in practice, and the settings should say so.

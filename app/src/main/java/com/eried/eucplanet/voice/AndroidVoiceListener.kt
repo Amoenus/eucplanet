@@ -211,6 +211,15 @@ class AndroidVoiceListener(
         SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "busy"
         SpeechRecognizer.ERROR_SERVER -> "server"
         SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "heard nothing"
+        // Both of these mean the recogniser itself is not usable, rather than
+        // anything about what the rider said. Worth naming: a diagnostics log
+        // reading "error 11" tells whoever reads it nothing, and this is the
+        // one a device with a recognition service it cannot actually run
+        // reports, which is exactly the case that looks like a broken feature.
+        SpeechRecognizer.ERROR_SERVER_DISCONNECTED -> "recogniser unavailable on this device"
+        SpeechRecognizer.ERROR_TOO_MANY_REQUESTS -> "recogniser busy, too many requests"
+        SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> "language not supported"
+        SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE -> "no language pack"
         else -> "error $error"
     }
 }

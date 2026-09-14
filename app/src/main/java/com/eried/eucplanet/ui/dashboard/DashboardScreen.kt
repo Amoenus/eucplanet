@@ -2339,10 +2339,15 @@ fun DashboardScreen(
             // from Settings: a rider who has forgotten what to say is holding
             // that button, not browsing settings.
             var vocabularyOpen by remember { mutableStateOf(false) }
+            // Saying "what can I say" puts the list on screen as well as
+            // speaking three examples: the examples are what fits in an
+            // answer, the list is what was asked for.
+            LaunchedEffect(Unit) {
+                viewModel.showVocabulary.collect { vocabularyOpen = true }
+            }
             if (vocabularyOpen) {
                 com.eried.eucplanet.ui.settings.VoiceVocabularyDialog(
                     onDismiss = { vocabularyOpen = false },
-                    onPreview = { viewModel.previewVoiceAnswer(it) },
                 )
             }
             val lockAtAnySpeed by viewModel.cheatState.lockAtAnySpeed.collectAsState()
@@ -2417,24 +2422,20 @@ fun DashboardScreen(
                                     com.eried.eucplanet.voice.VoiceCommandController.UiState.Idle,
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
-                                    // Verb phrases, like the rest of the
-                                    // dashboard menus ("Back up now", "Stop
-                                    // navigation"). "Listen" and "Voice" were
-                                    // the action names, which say what the app
-                                    // calls them rather than what they do, and
-                                    // the two read as near-identical in a list.
+                                    // One menu for both voice tiles. They
+                                    // are a pair sharing a slot, so a rider
+                                    // holding either should find the same
+                                    // things in the same order; the only
+                                    // difference is which one the switch
+                                    // offers. No icons: nothing else in these
+                                    // menus has them, and two glyphs in a list
+                                    // of plain rows reads as decoration.
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_voice_ask)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.Mic, contentDescription = null)
-                                        },
                                         onClick = { dismiss(); viewModel.onVoiceListen() }
                                     )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_voice_speak_report)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.RecordVoiceOver, contentDescription = null)
-                                        },
                                         onClick = { dismiss(); viewModel.onVoiceAnnounce() }
                                     )
                                     androidx.compose.material3.HorizontalDivider(
@@ -2456,6 +2457,29 @@ fun DashboardScreen(
                                             viewModel.switchVoiceTile("VOICE_LISTEN", "VOICE_ANNOUNCE")
                                         }
                                     )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.tab_voice)) },
+                                        onClick = { dismiss(); onNavigateToSettings(3) }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.tab_alarms)) },
+                                        onClick = { dismiss(); onNavigateToSettings(5) }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                if (periodicVoiceOn) stringResource(R.string.menu_voice_periodic_off)
+                                                else stringResource(R.string.menu_voice_periodic_on)
+                                            )
+                                        },
+                                        onClick = { dismiss(); viewModel.toggleVoicePeriodic() }
+                                    )
                                 }
                             )
                             "VOICE_ANNOUNCE" -> ActionTile(
@@ -2465,24 +2489,20 @@ fun DashboardScreen(
                                 onClick = { viewModel.onVoiceAnnounce() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
-                                    // Verb phrases, like the rest of the
-                                    // dashboard menus ("Back up now", "Stop
-                                    // navigation"). "Listen" and "Voice" were
-                                    // the action names, which say what the app
-                                    // calls them rather than what they do, and
-                                    // the two read as near-identical in a list.
+                                    // One menu for both voice tiles. They
+                                    // are a pair sharing a slot, so a rider
+                                    // holding either should find the same
+                                    // things in the same order; the only
+                                    // difference is which one the switch
+                                    // offers. No icons: nothing else in these
+                                    // menus has them, and two glyphs in a list
+                                    // of plain rows reads as decoration.
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_voice_ask)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.Mic, contentDescription = null)
-                                        },
                                         onClick = { dismiss(); viewModel.onVoiceListen() }
                                     )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_voice_speak_report)) },
-                                        leadingIcon = {
-                                            Icon(Icons.Default.RecordVoiceOver, contentDescription = null)
-                                        },
                                         onClick = { dismiss(); viewModel.onVoiceAnnounce() }
                                     )
                                     androidx.compose.material3.HorizontalDivider(

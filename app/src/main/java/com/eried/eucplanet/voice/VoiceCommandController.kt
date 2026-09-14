@@ -19,8 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -66,6 +69,17 @@ class VoiceCommandController @Inject constructor(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val _state = MutableStateFlow<UiState>(UiState.Idle)
     val state: StateFlow<UiState> = _state.asStateFlow()
+
+    private val _showVocabulary = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    /**
+     * Emitted when the rider asks what they can say.
+     *
+     * Three spoken examples is what fits in an answer at speed; the whole list
+     * is what they actually asked for, and a screen can hold it. Whichever
+     * surface is in front of them opens it.
+     */
+    val showVocabulary: SharedFlow<Unit> = _showVocabulary.asSharedFlow()
 
     private var session: Job? = null
 
@@ -212,6 +226,25 @@ class VoiceCommandController @Inject constructor(
         settings: com.eried.eucplanet.data.model.AppSettings,
     ): VoiceCommandSession.Reading? {
         val data = wheelRepository.wheelData.value
+        val connected = wheelRepository.connectionState.value ==
+            com.eried.eucplanet.ble.ConnectionState.CONNECTED
+
+        // A wheel that is not connected has no readings, only the zeroes a
+        // fresh WheelData is born with. The report route will happily phrase
+        // those as "temperature 0 degrees", which is the one thing this must
+        // never do: a rider hearing a number believes it. Asked with no wheel,
+        // the honest answer is that there is nothing yet.
+        if (!connected && term.key !in OFF_WHEEL) {
+            return VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+        }
+
+        // Some things the wheel simply does not have. That is not "not yet",
+        // and telling a rider to wait for a sensor their wheel was built
+        // without is worse than telling them it is missing.
+        if (UNSUPPORTED[term.key]?.invoke(data) == true) {
+            return VoiceCommandSession.Reading(null, VoiceAnswer.Reason.UNSUPPORTED_BY_WHEEL)
+        }
+
         // Anything with a spoken report of its own borrows that sentence: it is
         // already in the rider's language and units, and it is the same wording
         // the periodic announcement uses, so asking for Battery sounds like the
@@ -261,8 +294,7 @@ class VoiceCommandController @Inject constructor(
             is Answer.Unavailable -> context.getString(reasonRes(answer.reason), answer.name)
             is Answer.NotUnderstood -> context.getString(
                 R.string.voice_answer_unknown,
-                answer.examples.getOrElse(0) { "" },
-                answer.examples.getOrElse(1) { "" },
+                answer.helpPhrase,
             )
             is Answer.Examples -> context.getString(
                 R.string.voice_answer_examples,
@@ -277,6 +309,7 @@ class VoiceCommandController @Inject constructor(
             )
         }
         _state.value = UiState.Spoke(text)
+        if (answer is Answer.Examples) _showVocabulary.tryEmit(Unit)
 
         // One sentence, one way out. The report route used to live here and
         // was unreachable: it only ran for Answer.Say, and a report-backed
@@ -312,6 +345,30 @@ class VoiceCommandController @Inject constructor(
 }
 
 /** Report key to its translated name. */
+/**
+ * Terms that mean something with no wheel connected.
+ *
+ * The clock, the phone's own battery, whether a trip is recording, where the
+ * navigation is going: none of these come off the wheel, so refusing them
+ * while disconnected would be refusing a question the app can answer.
+ * Everything else is a reading, and a reading with no wheel is a zero
+ * pretending to be a measurement.
+ */
+internal val OFF_WHEEL = setOf(
+    "Time", "PhoneBattery", "Recording", "Navigation",
+    "PHONE_BATTERY", "GPS_ALTITUDE", "GPS_SPEED", "EXTERNAL_GPS_BATTERY",
+    VoiceVocabulary.HELP_KEY,
+)
+
+/**
+ * Metrics a wheel can be built without, and how to tell.
+ *
+ * Distinct from having no value yet: the rider should stop waiting rather
+ * than ask again in a minute.
+ */
+private val UNSUPPORTED: Map<String, (com.eried.eucplanet.data.model.WheelData) -> Boolean> =
+    mapOf("TIRE_PRESSURE" to { !it.hasTirePressure })
+
 private val REPORT_NAMES = mapOf(
     "Speed" to R.string.report_speed,
     "Battery" to R.string.report_battery,

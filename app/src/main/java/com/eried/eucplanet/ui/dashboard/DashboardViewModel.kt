@@ -1023,10 +1023,8 @@ class DashboardViewModel @Inject constructor(
     /** What a listening session is doing, for the tile and the transcript. */
     val voiceCommandState = voiceCommands.state
 
-    /** Speak the answer for a name from the What can I say list. */
-    fun previewVoiceAnswer(name: String) {
-        voiceCommands.answerPhrase(name)
-    }
+    /** Asking out loud what can be said puts the list on screen. */
+    val showVocabulary = voiceCommands.showVocabulary
 
     fun onVoiceListen() {
         // The tile lights up, so it does not also need a snackbar saying so.

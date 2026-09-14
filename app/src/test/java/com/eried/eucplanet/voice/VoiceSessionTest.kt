@@ -29,6 +29,7 @@ class VoiceSessionTest {
         ),
         reportNames = mapOf("PWM" to "PWM"),
         splitName = "Last split",
+        helpPhrases = "help,what can I say",
     )
 
     /** What the app does with one spoken phrase. */
@@ -106,12 +107,28 @@ class VoiceSessionTest {
     }
 
     @Test
-    fun `a phrase it did not catch offers examples from the rider's own tiles`() {
+    fun `a phrase it did not catch points at the word that opens the list`() {
+        // It used to name two metrics, which was oddly specific: a rider who
+        // said something unrecognised is not helped by hearing about
+        // Consumption, they need the way to find out what does work.
         val a = ask("what is the weather like", onDashboard = setOf("WH_PER_KM", "MOTOR_TEMP"))
         assertTrue(a is Answer.NotUnderstood)
-        val examples = (a as Answer.NotUnderstood).examples
-        assertEquals(2, examples.size)
-        assertTrue("offered $examples", examples.all { it == "Consumption" || it == "Motor temperature" })
+        assertEquals("help", (a as Answer.NotUnderstood).helpPhrase)
+    }
+
+    @Test
+    fun `the help word it offers is the rider's own language`() {
+        // Telling an Italian rider to say "help" would name a word the matcher
+        // is not listening for: the phrases are translated, so this has to be
+        // whatever their locale ships.
+        val italian = VoiceVocabulary.build(
+            metricNames = mapOf("BATTERY" to "Batteria"),
+            reportNames = emptyMap(),
+            splitName = "Ultimo tratto",
+            helpPhrases = "aiuto,cosa posso dire",
+        )
+        val a = VoiceAnswer.notUnderstood(italian, emptySet())
+        assertEquals("aiuto", (a as Answer.NotUnderstood).helpPhrase)
     }
 
     @Test
@@ -141,7 +158,14 @@ class VoiceSessionTest {
         assertTrue(vocabulary.any { it.kind == Kind.METRIC && it.key == "BATTERY" })
         assertTrue(vocabulary.any { it.kind == Kind.REPORT && it.key == "PWM" })
         assertTrue(vocabulary.any { it.kind == Kind.SPLIT && it.key == VoiceVocabulary.SPLIT_KEY })
-        assertEquals(vocabulary.map { it.key }.distinct().size, vocabulary.size)
+        // Every askable thing appears once. Help is the deliberate exception:
+        // "help" and "what can I say" are several ways to say one request, so
+        // they share a key on purpose, and excluding them here is what keeps
+        // this assertion meaningful rather than simply relaxed.
+        val askable = vocabulary.filter { it.kind != Kind.HELP }
+        assertEquals(askable.map { it.key }.distinct().size, askable.size)
+        assertTrue(vocabulary.count { it.kind == Kind.HELP } > 1)
+        assertEquals(1, vocabulary.filter { it.kind == Kind.HELP }.map { it.key }.distinct().size)
     }
 
     @Test

@@ -54,8 +54,15 @@ object VoiceAnswer {
         /** The rider asked what they can say. Offer a few real names. */
         data class Examples(val names: List<String>) : Answer
 
-        /** Nothing in the phrase was recognised. */
-        data class NotUnderstood(val examples: List<String>) : Answer
+        /**
+         * Nothing in the phrase was recognised.
+         *
+         * Carries the word that opens the list rather than two metric names.
+         * Naming two metrics was oddly specific: a rider who said something
+         * unrecognised is not helped by being told about Battery, they need
+         * the way to find out what does work.
+         */
+        data class NotUnderstood(val helpPhrase: String) : Answer
 
         /** Several things were equally plausible; ask which. */
         data class NeedsChoice(val names: List<String>) : Answer
@@ -99,12 +106,14 @@ object VoiceAnswer {
     }
 
     /**
-     * What to offer when nothing matched. Two examples, not the whole list: the
-     * rider is moving, and a spoken catalogue of 52 names helps nobody.
+     * What to say when nothing matched: the one word that opens the list.
+     *
+     * Spoken in the rider's language, because the help phrases are translated
+     * and telling an Italian rider to say "help" would be telling them to say
+     * a word the matcher will not be listening for.
      */
     fun notUnderstood(vocabulary: List<SpokenTerm>, onDashboard: Set<String>): Answer {
-        val preferred = vocabulary.filter { it.key in onDashboard }
-        val source = preferred.ifEmpty { vocabulary }
-        return Answer.NotUnderstood(source.take(2).map { it.name })
+        val help = vocabulary.firstOrNull { it.kind == VoiceVocabulary.Kind.HELP }
+        return Answer.NotUnderstood(help?.name.orEmpty())
     }
 }

@@ -1,6 +1,5 @@
 package com.eried.eucplanet.ui.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -36,11 +35,7 @@ import com.eried.eucplanet.voice.VoiceVocabulary
  * reads on a tile, so the list doubles as the answer to "what do I call this".
  */
 @Composable
-fun VoiceVocabularyDialog(
-    onDismiss: () -> Unit,
-    /** Speaks the answer for a name, so the list previews itself. */
-    onPreview: (String) -> Unit = {},
-) {
+fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
     val metricNames = MetricCatalog.all.associate { it.key to stringResource(it.labelRes) }
     // The report keys are English identifiers; their names have been
     // translated all along under report_*. Using the keys put "Battery" and
@@ -83,16 +78,14 @@ fun VoiceVocabularyDialog(
                     contentPadding = PaddingValues(vertical = 4.dp),
                 ) {
                     items(names) { name ->
-                        // Tap to hear it. The answer comes from the same path a
-                        // spoken question takes, so what a rider previews here
-                        // is what they will actually hear on the road.
+                        // A reference, not a control. Tapping used to speak the
+                        // answer, which made a list of words look like a list of
+                        // buttons and invited a rider to press one instead of
+                        // reading it.
                         Text(
                             name,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onPreview(name) }
-                                .padding(vertical = 6.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
                         )
                     }
                 }

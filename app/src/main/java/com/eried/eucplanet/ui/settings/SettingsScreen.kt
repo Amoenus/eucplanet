@@ -7242,37 +7242,21 @@ private fun VoiceTab(
         HintText(stringResource(R.string.voice_commands_enable_desc))
         run {
             Spacer(Modifier.height(8.dp))
-            Text(
-                stringResource(R.string.voice_command_prompt),
-                style = MaterialTheme.typography.bodyLarge,
+            // The label belongs to the control, not above it: SegmentedChoice
+            // carries its own, the way the Announce row below does.
+            SegmentedChoice(
+                label = stringResource(R.string.voice_command_prompt),
+                options = listOf(
+                    "beep" to stringResource(R.string.voice_prompt_beep),
+                    "voice" to stringResource(R.string.voice_prompt_voice),
+                    "none" to stringResource(R.string.voice_prompt_none),
+                ),
+                current = settings.voiceCommands.prompt,
+                onChange = { viewModel.updateVoiceCommandPrompt(it) },
             )
-            // A spoken prompt can bleed into the microphone and be heard as
-            // part of the question, so a tone is the default. Three choices,
-            // so a segmented row rather than a pair (rule 4).
-            val promptKeys = listOf("beep", "voice", "none")
-            val promptLabels = listOf(
-                stringResource(R.string.voice_prompt_beep),
-                stringResource(R.string.voice_prompt_voice),
-                stringResource(R.string.voice_prompt_none),
-            )
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                promptKeys.forEachIndexed { i, key ->
-                    SegmentedButton(
-                        selected = settings.voiceCommands.prompt == key,
-                        onClick = { viewModel.updateVoiceCommandPrompt(key) },
-                        shape = SegmentedButtonDefaults.itemShape(i, promptKeys.size),
-                        colors = SegmentedButtonDefaults.colors(
-                            activeContainerColor = MaterialTheme.appColors.primary,
-                            activeContentColor = MaterialTheme.appColors.onPrimary,
-                            inactiveContentColor = MaterialTheme.appColors.textSecondary,
-                        ),
-                    ) { Text(promptLabels[i]) }
-                }
-            }
             Spacer(Modifier.height(8.dp))
-            // Half width with the hint beneath, which is how every other
-            // numeric row in this section sits. The Advanced-style row put it
-            // at a different width from the Interval field right below it.
+            // "Listen for 6 s" says the whole thing, so the sentence that used
+            // to explain it underneath is gone.
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -7288,7 +7272,6 @@ private fun VoiceTab(
                 )
                 Spacer(Modifier.weight(1f))
             }
-            HintText(stringResource(R.string.voice_command_window_desc))
             Spacer(Modifier.height(8.dp))
             // Generated from the same catalogs the matcher listens against, so
             // it cannot promise a rider something that will not work (rule 10).
@@ -7297,10 +7280,7 @@ private fun VoiceTab(
                 Text(stringResource(R.string.voice_command_vocabulary))
             }
             if (vocabularyOpen) {
-                VoiceVocabularyDialog(
-                    onDismiss = { vocabularyOpen = false },
-                    onPreview = { viewModel.previewVoiceAnswer(it) },
-                )
+                VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
             }
         }
 

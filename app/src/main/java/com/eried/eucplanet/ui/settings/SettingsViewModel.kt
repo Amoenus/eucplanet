@@ -564,19 +564,6 @@ class SettingsViewModel @Inject constructor(
      * stepper does not stack a dozen previews; the last change wins after a
      * short pause and plays at the values actually saved (new speed, new voice).
      */
-    /**
-     * Speak the answer for a name from the What can I say list.
-     *
-     * Rule 10: a preview shows the real configuration, so this is the real
-     * path. The rider's own vocabulary, their wheel's current values, their
-     * units, their language and their voice. Only the microphone is left out,
-     * which is also what makes it the one way to exercise the whole chain on a
-     * bench, or on an emulator, where nobody can speak.
-     */
-    fun previewVoiceAnswer(name: String) {
-        voiceCommands.answerPhrase(name)
-    }
-
     private fun previewVoiceChange(welcomeText: String) {
         voicePreviewJob?.cancel()
         voicePreviewJob = viewModelScope.launch {

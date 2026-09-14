@@ -27,7 +27,7 @@ class VoiceSessionTest {
             "RANGE_ESTIMATE" to "Range",
             "UNTRANSLATED" to "   ",
         ),
-        reports = listOf("PWM"),
+        reportNames = mapOf("PWM" to "PWM"),
         splitName = "Last split",
     )
 
@@ -112,6 +112,21 @@ class VoiceSessionTest {
         val examples = (a as Answer.NotUnderstood).examples
         assertEquals(2, examples.size)
         assertTrue("offered $examples", examples.all { it == "Consumption" || it == "Motor temperature" })
+    }
+
+    @Test
+    fun `a report is listed by its translated name, not its key`() {
+        // The keys in VoiceReportPlan are English identifiers. Feeding them in
+        // as spoken names put "Battery", "Current" and "Distance" into the
+        // middle of a German rider's list, beside Akku and Energie, and asked
+        // them to say the English word to be understood.
+        val german = VoiceVocabulary.build(
+            metricNames = mapOf("WH_PER_KM" to "Verbrauch"),
+            reportNames = mapOf("Battery" to "Akku", "Distance" to "Distanz"),
+            splitName = "Letzter Split",
+        )
+        assertEquals(listOf("Akku", "Distanz"), german.filter { it.kind == Kind.REPORT }.map { it.name })
+        assertTrue("a raw key leaked in as a name", german.none { it.name == "Battery" })
     }
 
     @Test

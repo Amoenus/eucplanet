@@ -41,12 +41,17 @@ object VoiceVocabulary {
      * Build the vocabulary.
      *
      * @param metricNames metric key to its localised label
-     * @param reports     the report names VoiceReportPlan knows
+     * @param reportNames report key to its localised label. A map, not the bare
+     *                    key list: VoiceReportPlan's keys are English
+     *                    identifiers, and feeding those in as spoken names put
+     *                    "Battery", "Current" and "Distance" in the middle of a
+     *                    German rider's list, next to Akku and Energie. The
+     *                    report_* strings have been translated all along.
      * @param splitName   the localised name for the last acceleration split
      */
     fun build(
         metricNames: Map<String, String>,
-        reports: List<String>,
+        reportNames: Map<String, String>,
         splitName: String,
     ): List<SpokenTerm> {
         val terms = mutableListOf<SpokenTerm>()
@@ -58,9 +63,9 @@ object VoiceVocabulary {
             if (name.isBlank() || !seen.add(key)) continue
             terms += SpokenTerm(key, Kind.METRIC, name.trim())
         }
-        for (report in reports) {
-            if (report.isBlank() || !seen.add(report)) continue
-            terms += SpokenTerm(report, Kind.REPORT, report.trim())
+        for ((key, name) in reportNames) {
+            if (name.isBlank() || !seen.add(key)) continue
+            terms += SpokenTerm(key, Kind.REPORT, name.trim())
         }
         if (splitName.isNotBlank() && seen.add(SPLIT_KEY)) {
             terms += SpokenTerm(SPLIT_KEY, Kind.SPLIT, splitName.trim())

@@ -36,9 +36,25 @@ import com.eried.eucplanet.voice.VoiceVocabulary
 @Composable
 fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
     val metricNames = MetricCatalog.all.associate { it.key to stringResource(it.labelRes) }
+    // The report keys are English identifiers; their names have been
+    // translated all along under report_*. Using the keys put "Battery" and
+    // "Distance" into a German rider's list beside Akku and Energie.
+    val reportNames = mapOf(
+        "Speed" to stringResource(R.string.report_speed),
+        "Battery" to stringResource(R.string.report_battery),
+        "PhoneBattery" to stringResource(R.string.report_phone_battery),
+        "Temp" to stringResource(R.string.report_temp),
+        "PWM" to stringResource(R.string.report_pwm),
+        "Current" to stringResource(R.string.report_current),
+        "Power" to stringResource(R.string.report_power),
+        "Distance" to stringResource(R.string.report_distance),
+        "Recording" to stringResource(R.string.report_recording),
+        "Time" to stringResource(R.string.report_time),
+        "Navigation" to stringResource(R.string.report_navigation),
+    )
     val terms = VoiceVocabulary.build(
         metricNames = metricNames,
-        reports = VoiceReportPlan.KNOWN,
+        reportNames = reportNames,
         splitName = stringResource(R.string.voice_split_term),
     )
     // Metric and report names overlap by design (Speed is both), so the list a

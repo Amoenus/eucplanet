@@ -1361,7 +1361,6 @@
     <string name="voice_commands_title">Comandi vocali</string>
     <string name="voice_commands_enable_desc">Usa la voce con la app. Niente ascolta finché non premi qualcosa: tieni premuto il pulsante Voce nella dashboard e scegli Ascolta un comando vocale.</string>
     <string name="voice_commands_bind_desc">Assegna l ascolto a un Flic, ai tasti volume, al tuo orologio o allo HUD. Puoi anche cambiare il riquadro della dashboard in Ascolta, così basta un tocco.</string>
-    <string name="voice_commands_ask_desc">Chiedi un valore, o di un comando.</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
     <string name="voice_command_vocabulary_tap">Pronuncia un nome da solo o in una domanda.</string>
     <string name="voice_listening">In ascolto</string>

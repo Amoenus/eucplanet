@@ -293,7 +293,6 @@
     <string name="voice_commands_title">Comenzi vocale</string>
     <string name="voice_commands_enable_desc">Folosește-ți vocea în aplicație. Nimic nu ascultă până nu apeși ceva: ține apăsat butonul Voce de pe tabloul de bord și alege Ascultă o comandă vocală.</string>
     <string name="voice_commands_bind_desc">Atribuie ascultarea unui Flic, tastelor de volum, ceasului tău sau HUD. Poți schimba și cardul de pe tabloul de bord în Ascultă, ca o singură apăsare să pornească.</string>
-    <string name="voice_commands_ask_desc">Cere o valoare sau spune o comandă.</string>
     <string name="voice_command_vocabulary">Ce pot să spun</string>
     <string name="voice_command_vocabulary_tap">Spune un nume singur sau într-o întrebare.</string>
     <string name="voice_listening">Ascult</string>

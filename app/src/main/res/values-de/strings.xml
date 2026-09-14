@@ -330,7 +330,6 @@
     <string name="voice_commands_title">Sprachbefehle</string>
     <string name="voice_commands_enable_desc">Nutze deine Stimme in der App. Nichts hört zu, bis du etwas drückst: Halte die Sprachtaste im Dashboard gedrückt und wähle Auf Sprachbefehl hören.</string>
     <string name="voice_commands_bind_desc">Lege Zuhören auf einen Flic, die Lautstärketasten, deine Uhr oder das HUD. Du kannst die Dashboard-Kachel auch auf Zuhören stellen, dann genügt ein Tipp.</string>
-    <string name="voice_commands_ask_desc">Frage einen Wert ab oder sage einen Befehl.</string>
     <string name="voice_command_vocabulary">Was kann ich sagen</string>
     <string name="voice_command_vocabulary_tap">Sag einen Namen allein oder in einer Frage.</string>
     <string name="voice_listening">Ich höre</string>

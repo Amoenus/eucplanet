@@ -330,7 +330,6 @@
     <string name="voice_commands_title">Comandos de voz</string>
     <string name="voice_commands_enable_desc">Usa tu voz con la app. Nada escucha hasta que pulsas algo: mantén pulsado el botón Voz en el panel y elige Escuchar comando de voz.</string>
     <string name="voice_commands_bind_desc">Asigna Escuchar a un Flic, las teclas de volumen, tu reloj o el HUD. También puedes cambiar el botón del panel a Escuchar para iniciarlo con un toque.</string>
-    <string name="voice_commands_ask_desc">Pide un dato o di una orden.</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>
     <string name="voice_listening">Escuchando</string>

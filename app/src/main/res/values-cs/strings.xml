@@ -293,7 +293,6 @@
     <string name="voice_commands_title">Hlasové příkazy</string>
     <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem. Nic neposlouchá, dokud něco nestiskneš: podrž tlačítko Hlas na palubní desce a vyber Poslouchat hlasový příkaz.</string>
     <string name="voice_commands_bind_desc">Přiřaď poslech Flicu, tlačítkům hlasitosti, hodinkám nebo HUD. Dlaždici na palubní desce můžeš také přepnout na Poslouchat, pak stačí jedno klepnutí.</string>
-    <string name="voice_commands_ask_desc">Zeptej se na hodnotu nebo řekni příkaz.</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
     <string name="voice_command_vocabulary_tap">Řekni název samostatně nebo v otázce.</string>
     <string name="voice_listening">Poslouchám</string>

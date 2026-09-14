@@ -330,7 +330,6 @@
     <string name="voice_commands_title">音声コマンド</string>
     <string name="voice_commands_enable_desc">音声でアプリを使えます。何かを押すまで待ち受けはしません。ダッシュボードの音声ボタンを長押しして、音声コマンドを聞くを選びます。</string>
     <string name="voice_commands_bind_desc">待ち受けは Flic、音量キー、時計、HUD に割り当てられます。ダッシュボードのタイルを聞くに切り替えれば、一度のタップで始まります。</string>
-    <string name="voice_commands_ask_desc">値を尋ねるか、コマンドを言ってください。</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>
     <string name="voice_listening">聞き取り中</string>

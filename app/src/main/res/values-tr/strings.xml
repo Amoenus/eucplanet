@@ -330,7 +330,6 @@
     <string name="voice_commands_title">Sesli komutlar</string>
     <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan. Sen bir şeye basana kadar hiçbir şey dinlemez: panodaki Ses düğmesini basılı tut ve Sesli komut dinle seçeneğini seç.</string>
     <string name="voice_commands_bind_desc">Dinlemeyi bir Flic, ses tuşları, saatin veya HUD için ata. Panodaki kutucuğu Dinle olarak da değiştirebilirsin, o zaman tek dokunuş yeter.</string>
-    <string name="voice_commands_ask_desc">Bir değer sor ya da bir komut söyle.</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>
     <string name="voice_listening">Dinliyorum</string>

@@ -7243,24 +7243,23 @@ private fun VoiceTab(
         // is not a control. It reads better as a link on the sentence that
         // already explains the feature.
         var vocabularyOpen by remember { mutableStateOf(false) }
-        // Three paragraphs, one question each: what it is and how to start it,
-        // how to put it on a button, and what to say once it is listening.
-        HintText(stringResource(R.string.voice_commands_enable_desc))
-        Spacer(Modifier.height(6.dp))
-        HintText(stringResource(R.string.voice_commands_bind_desc))
-        Spacer(Modifier.height(6.dp))
-        // The link sits inside the sentence, but only the link is clickable.
-        // LinkAnnotation.Clickable scopes the tap to its own span, which the
-        // earlier version could not do: making the Text clickable turned a
-        // paragraph about pressing buttons into a button. Same API the service
-        // mode notice already uses.
+        // No spacers between these. The section column already puts 8dp
+        // between its children, and a Spacer is another child, so the 6dp I
+        // added made it 22 and the two paragraphs read as unrelated.
+        //
+        // The link lives in the first paragraph, next to the sentence that
+        // sends a rider looking for a button: what they can say is the next
+        // thing they will want, and a paragraph of its own to hold one link
+        // was a paragraph earning nothing.
         val linkColor = MaterialTheme.appColors.primary
         val vocabularyLabel = stringResource(R.string.voice_command_vocabulary)
-        val askText = stringResource(R.string.voice_commands_ask_desc)
+        val introText = stringResource(R.string.voice_commands_enable_desc)
         Text(
             buildAnnotatedString {
-                append(askText)
+                append(introText)
                 append(" ")
+                // Only the link is tappable: LinkAnnotation scopes the tap to
+                // its own span, so the explanation around it stays text.
                 withLink(
                     LinkAnnotation.Clickable(
                         tag = "vocabulary",
@@ -7275,8 +7274,9 @@ private fun VoiceTab(
             },
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.appColors.textSecondary,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
+        HintText(stringResource(R.string.voice_commands_bind_desc))
         if (vocabularyOpen) {
             VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
         }

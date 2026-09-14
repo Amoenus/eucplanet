@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Ses</string>
     <string name="voice_prompt_none">Yok</string>
-    <string name="voice_command_tone">Ton</string>
-    <string name="voice_tone_chirp">Cıvıltı</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Yumuşak</string>
     <string name="voice_command_window">Dinleme süresi</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>

@@ -296,10 +296,6 @@
     <string name="voice_prompt_beep">Äänimerkki</string>
     <string name="voice_prompt_voice">Puhe</string>
     <string name="voice_prompt_none">Ei mitään</string>
-    <string name="voice_command_tone">Ääni</string>
-    <string name="voice_tone_chirp">Viserrys</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Pehmeä</string>
     <string name="voice_command_window">Kuuntele</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>

@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Pip</string>
     <string name="voice_prompt_voice">Röst</string>
     <string name="voice_prompt_none">Ingen</string>
-    <string name="voice_command_tone">Ton</string>
-    <string name="voice_tone_chirp">Kvitter</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Mjuk</string>
     <string name="voice_command_window">Lyssna i</string>
     <string name="voice_command_vocabulary">Vad kan jag säga</string>
     <string name="voice_command_vocabulary_tap">Säg ett namn ensamt eller i en fråga.</string>

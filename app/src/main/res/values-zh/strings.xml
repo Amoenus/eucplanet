@@ -1328,10 +1328,6 @@
     <string name="voice_prompt_beep">提示音</string>
     <string name="voice_prompt_voice">语音</string>
     <string name="voice_prompt_none">无</string>
-    <string name="voice_command_tone">提示音</string>
-    <string name="voice_tone_chirp">鸟鸣</string>
-    <string name="voice_tone_ping">叮</string>
-    <string name="voice_tone_soft">柔和</string>
     <string name="voice_command_window">聆听时长</string>
     <string name="voice_command_vocabulary">我可以说什么</string>
     <string name="voice_command_vocabulary_tap">可以只说名称，也可以放在问题里。</string>

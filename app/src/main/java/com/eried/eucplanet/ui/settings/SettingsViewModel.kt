@@ -799,16 +799,6 @@ class SettingsViewModel @Inject constructor(
     fun updateVoiceCommandPrompt(v: String) =
         update { copy(voiceCommands = voiceCommands.copy(prompt = v)) }
 
-    /**
-     * Pick a listening tone, and play it.
-     *
-     * Rule 10: choosing a sound you cannot hear is choosing blind, and the
-     * tone that plays here is the one the microphone will use.
-     */
-    fun updateVoiceCommandTone(v: String) {
-        update { copy(voiceCommands = voiceCommands.copy(tone = v)) }
-        viewModelScope.launch { tonePlayer.playPrompt(v) }
-    }
 
     fun updateVoiceCommandWindowSeconds(v: Int) =
         update { copy(voiceCommands = voiceCommands.copy(windowSeconds = v.coerceIn(3, 30))) }

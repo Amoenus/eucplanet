@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voix</string>
     <string name="voice_prompt_none">Aucun</string>
-    <string name="voice_command_tone">Tonalité</string>
-    <string name="voice_tone_chirp">Trille</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Doux</string>
     <string name="voice_command_window">Écouter pendant</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
     <string name="voice_command_vocabulary_tap">Dites un nom seul ou dans une question.</string>

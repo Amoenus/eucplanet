@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Piep</string>
     <string name="voice_prompt_voice">Stem</string>
     <string name="voice_prompt_none">Geen</string>
-    <string name="voice_command_tone">Toon</string>
-    <string name="voice_tone_chirp">Tjilp</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Zacht</string>
     <string name="voice_command_window">Luisteren gedurende</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
     <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag.</string>

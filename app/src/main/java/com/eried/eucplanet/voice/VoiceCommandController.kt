@@ -171,7 +171,7 @@ class VoiceCommandController @Inject constructor(
                 delay(20)
             }
             when (settings.voiceCommands.prompt) {
-                "beep" -> tonePlayer.playPrompt(settings.voiceCommands.tone)
+                "beep" -> tonePlayer.playPrompt()
                 "voice" -> voiceService.speak(context.getString(R.string.voice_listening))
                 // "none": the tile going into its listening state is the cue.
             }
@@ -424,7 +424,7 @@ class VoiceCommandController @Inject constructor(
         while (System.currentTimeMillis() < readyBy && mic.state.value is ListenState.Preparing) {
             delay(20)
         }
-        tonePlayer.playPrompt(settings.voiceCommands.tone)
+        tonePlayer.playPrompt()
         val deadline = System.currentTimeMillis() + CONFIRM_WINDOW_MS
         var said: String? = null
         while (System.currentTimeMillis() < deadline) {

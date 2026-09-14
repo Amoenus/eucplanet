@@ -296,10 +296,6 @@
     <string name="voice_prompt_beep">Hangjelzés</string>
     <string name="voice_prompt_voice">Beszéd</string>
     <string name="voice_prompt_none">Nincs</string>
-    <string name="voice_command_tone">Hang</string>
-    <string name="voice_tone_chirp">Csiripelés</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Lágy</string>
     <string name="voice_command_window">Figyelés ideje</string>
     <string name="voice_command_vocabulary">Mit mondhatok</string>
     <string name="voice_command_vocabulary_tap">Mondd a nevet önmagában vagy egy kérdésben.</string>

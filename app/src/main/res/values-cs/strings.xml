@@ -296,10 +296,6 @@
     <string name="voice_prompt_beep">Pípnutí</string>
     <string name="voice_prompt_voice">Hlas</string>
     <string name="voice_prompt_none">Žádný</string>
-    <string name="voice_command_tone">Tón</string>
-    <string name="voice_tone_chirp">Cvrlikání</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Jemný</string>
     <string name="voice_command_window">Poslouchat po dobu</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
     <string name="voice_command_vocabulary_tap">Řekni název samostatně nebo v otázce.</string>

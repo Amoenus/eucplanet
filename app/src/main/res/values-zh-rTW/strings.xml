@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">提示音</string>
     <string name="voice_prompt_voice">語音</string>
     <string name="voice_prompt_none">無</string>
-    <string name="voice_command_tone">提示音</string>
-    <string name="voice_tone_chirp">鳥鳴</string>
-    <string name="voice_tone_ping">叮</string>
-    <string name="voice_tone_soft">柔和</string>
     <string name="voice_command_window">聆聽時長</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
     <string name="voice_command_vocabulary_tap">可以只說名稱，也可以放在問題裡。</string>

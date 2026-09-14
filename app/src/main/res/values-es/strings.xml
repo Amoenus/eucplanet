@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Pitido</string>
     <string name="voice_prompt_voice">Voz</string>
     <string name="voice_prompt_none">Ninguno</string>
-    <string name="voice_command_tone">Tono</string>
-    <string name="voice_tone_chirp">Trino</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Suave</string>
     <string name="voice_command_window">Escuchar durante</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>

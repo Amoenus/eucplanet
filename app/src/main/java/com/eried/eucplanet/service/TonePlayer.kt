@@ -105,24 +105,17 @@ class TonePlayer @Inject constructor() {
     /**
      * The cue that the microphone is open.
      *
-     * Short on purpose: it has to be over before the rider starts speaking, or
-     * the recogniser spends its first moments listening to us.
+     * Two notes rising, low. Nothing a wheel does sounds like this, which is
+     * the point: a single flat beep is easy to read as the wheel warning about
+     * something. Low rather than piercing, because it arrives in earbuds at
+     * whatever volume the rider set for music.
+     *
+     * Short on purpose too: it has to be over before the rider starts
+     * speaking, or the recogniser spends its first moments listening to us.
      */
-    suspend fun playPrompt(tone: String) {
-        when (tone) {
-            // One clean note, the original.
-            "ping" -> playBeep(1320, 90)
-            // Lower and gentler, for riders who find the high note piercing
-            // through earbuds.
-            "soft" -> playBeep(760, 130, volumePct = 70)
-            // Two notes going up. Nothing a wheel does sounds like this, which
-            // is the point: a single beep is easy to read as the wheel warning
-            // about something.
-            else -> {
-                playBeep(1180, 60)
-                playBeep(1600, 70)
-            }
-        }
+    suspend fun playPrompt() {
+        playBeep(640, 60)
+        playBeep(860, 70)
     }
 
     suspend fun playBeep(

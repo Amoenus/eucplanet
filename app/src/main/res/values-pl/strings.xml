@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Sygnał</string>
     <string name="voice_prompt_voice">Głos</string>
     <string name="voice_prompt_none">Brak</string>
-    <string name="voice_command_tone">Dźwięk</string>
-    <string name="voice_tone_chirp">Ćwierk</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Miękki</string>
     <string name="voice_command_window">Słuchaj przez</string>
     <string name="voice_command_vocabulary">Co mogę powiedzieć</string>
     <string name="voice_command_vocabulary_tap">Powiedz nazwę samodzielnie lub w pytaniu.</string>

@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Звук</string>
     <string name="voice_prompt_voice">Голос</string>
     <string name="voice_prompt_none">Немає</string>
-    <string name="voice_command_tone">Сигнал</string>
-    <string name="voice_tone_chirp">Трель</string>
-    <string name="voice_tone_ping">Пінг</string>
-    <string name="voice_tone_soft">М’який</string>
     <string name="voice_command_window">Слухати</string>
     <string name="voice_command_vocabulary">Що можна сказати</string>
     <string name="voice_command_vocabulary_tap">Назвіть пункт окремо або у запитанні.</string>

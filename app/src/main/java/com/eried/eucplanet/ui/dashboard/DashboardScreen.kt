@@ -1227,8 +1227,9 @@ fun DashboardScreen(
                         shape = RoundedCornerShape(12.dp),
                         containerColor = MaterialTheme.appColors.menuBackground
                     ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.dash_view_video_gallery)) },
+                        ActionMenuItem(
+                            actionKey = "OPEN_STUDIO",
+                            label = stringResource(R.string.dash_view_video_gallery),
                             onClick = {
                                 showStudioMenu = false
                                 openMediaGallery(toastContext, video = true) {
@@ -1238,8 +1239,9 @@ fun DashboardScreen(
                                 }
                             }
                         )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.dash_view_photo_gallery)) },
+                        ActionMenuItem(
+                            actionKey = "OPEN_STUDIO",
+                            label = stringResource(R.string.dash_view_photo_gallery),
                             onClick = {
                                 showStudioMenu = false
                                 openMediaGallery(toastContext, video = false) {
@@ -1337,8 +1339,9 @@ fun DashboardScreen(
                                     )
                                 }
                                 androidx.compose.material3.HorizontalDivider()
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(R.string.weather_settings_entry)) },
+                                ActionMenuItem(
+                                    actionKey = "OPEN_WEATHER",
+                                    label = stringResource(R.string.weather_settings_entry),
                                     onClick = {
                                         showWeatherMenu = false
                                         // 11, not 8: the weather block, not
@@ -1379,16 +1382,18 @@ fun DashboardScreen(
                         // a) Start / Stop, shown only when there is an active
                         // session to stop, or a saved route to start.
                         if (navActive) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.nav_stop_short)) },
+                            ActionMenuItem(
+                                actionKey = "OPEN_NAVIGATION",
+                                label = stringResource(R.string.nav_stop_short),
                                 onClick = {
                                     showMapMenu = false
                                     navOverlayVm.endNavigation()
                                 }
                             )
                         } else if (currentRoute != null) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.nav_start_short)) },
+                            ActionMenuItem(
+                                actionKey = "OPEN_NAVIGATION",
+                                label = stringResource(R.string.nav_start_short),
                                 onClick = {
                                     showMapMenu = false
                                     navOverlayVm.startCurrentRoute()
@@ -1927,12 +1932,14 @@ fun DashboardScreen(
                                     onDismissRequest = { batteryMenuOpen = false },
                                     shape = RoundedCornerShape(12.dp),
                                 ) {
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.charging_monitor)) },
+                                    ActionMenuItem(
+                                        actionKey = "OPEN_CHARGING",
+                                        label = stringResource(R.string.charging_monitor),
                                         onClick = { batteryMenuOpen = false; onNavigateToCharging() },
                                     )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.battery_history)) },
+                                    ActionMenuItem(
+                                        actionKey = "OPEN_TRIPS",
+                                        label = stringResource(R.string.battery_history),
                                         onClick = { batteryMenuOpen = false; onNavigateToMetric("BATTERY") },
                                     )
                                 }
@@ -2403,8 +2410,9 @@ fun DashboardScreen(
                                 onClick = { viewModel.onLightToggle() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_auto_lights)) },
+                                    ActionMenuItem(
+                                        actionKey = "LIGHT_TOGGLE",
+                                        label = stringResource(R.string.menu_auto_lights),
                                         onClick = { dismiss(); onNavigateToSettings(6) }
                                     )
                                 }
@@ -2430,13 +2438,15 @@ fun DashboardScreen(
                                     // offers. No icons: nothing else in these
                                     // menus has them, and two glyphs in a list
                                     // of plain rows reads as decoration.
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
-                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    ActionMenuItem(
+                                        actionKey = "VOICE_LISTEN",
+                                        label = stringResource(R.string.menu_voice_ask),
+                                        onClick = { dismiss(); viewModel.onVoiceListen() },
                                     )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
-                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    ActionMenuItem(
+                                        actionKey = "VOICE_ANNOUNCE",
+                                        label = stringResource(R.string.menu_voice_speak_report),
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() },
                                     )
                                     androidx.compose.material3.HorizontalDivider(
                                         color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
@@ -2488,13 +2498,15 @@ fun DashboardScreen(
                                     // offers. No icons: nothing else in these
                                     // menus has them, and two glyphs in a list
                                     // of plain rows reads as decoration.
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
-                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    ActionMenuItem(
+                                        actionKey = "VOICE_LISTEN",
+                                        label = stringResource(R.string.menu_voice_ask),
+                                        onClick = { dismiss(); viewModel.onVoiceListen() },
                                     )
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
-                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    ActionMenuItem(
+                                        actionKey = "VOICE_ANNOUNCE",
+                                        label = stringResource(R.string.menu_voice_speak_report),
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() },
                                     )
                                     androidx.compose.material3.HorizontalDivider(
                                         color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
@@ -2542,8 +2554,9 @@ fun DashboardScreen(
                                 onClick = { viewModel.onSafetySpeedToggle() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.section_legal_mode_speed)) },
+                                    ActionMenuItem(
+                                        actionKey = "SAFETY_TOGGLE",
+                                        label = stringResource(R.string.section_legal_mode_speed),
                                         onClick = { dismiss(); onNavigateToSettings(2) }
                                     )
                                 }
@@ -2581,8 +2594,9 @@ fun DashboardScreen(
                                 },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
-                                    DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.menu_auto_lock_settings)) },
+                                    ActionMenuItem(
+                                        actionKey = "LOCK_TOGGLE",
+                                        label = stringResource(R.string.menu_auto_lock_settings),
                                         onClick = { dismiss(); onNavigateToSettings(6) }
                                     )
                                     androidx.compose.material3.HorizontalDivider(
@@ -4452,6 +4466,35 @@ private fun MicroMetricTile(
 }
 
 @OptIn(ExperimentalFoundationApi::class)
+/**
+ * A menu row for something the action catalog already knows, wearing that
+ * action's own icon.
+ *
+ * The icon is looked up by key rather than passed in, so a menu row and the
+ * tile that does the same thing cannot drift to different glyphs, and a new
+ * action gets its icon here for free.
+ *
+ * Rows with no catalog action behind them stay plain on purpose. An icon
+ * invented for a row is decoration, and decoration is what made the first
+ * version of the voice menu read badly.
+ */
+@Composable
+private fun ActionMenuItem(
+    actionKey: String,
+    label: String,
+    onClick: () -> Unit,
+) {
+    val spec = com.eried.eucplanet.data.model.ActionCatalog.byKey(actionKey)
+    val tint = MaterialTheme.appColors.textSecondary
+    DropdownMenuItem(
+        text = { Text(label) },
+        leadingIcon = spec?.icon?.let { icon ->
+            { Icon(icon, contentDescription = null, tint = tint) }
+        },
+        onClick = onClick,
+    )
+}
+
 @Composable
 private fun ActionTile(
     modifier: Modifier,

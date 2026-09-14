@@ -338,10 +338,6 @@
     <string name="voice_prompt_beep">Beep</string>
     <string name="voice_prompt_voice">Voice</string>
     <string name="voice_prompt_none">None</string>
-    <string name="voice_command_tone">Tone</string>
-    <string name="voice_tone_chirp">Chirp</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Soft</string>
     <string name="voice_command_window">Listen for</string>
     <string name="voice_command_vocabulary">What can I say</string>
     <string name="voice_command_vocabulary_tap">Say a name on its own or inside a question.</string>

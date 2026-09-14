@@ -1364,10 +1364,6 @@
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>
     <string name="voice_prompt_none">Nessuno</string>
-    <string name="voice_command_tone">Tono</string>
-    <string name="voice_tone_chirp">Trillo</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Morbido</string>
     <string name="voice_command_window">Ascolta per</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
     <string name="voice_command_vocabulary_tap">Pronuncia un nome da solo o in una domanda.</string>

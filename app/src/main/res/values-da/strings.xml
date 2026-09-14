@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Stemme</string>
     <string name="voice_prompt_none">Ingen</string>
-    <string name="voice_command_tone">Tone</string>
-    <string name="voice_tone_chirp">Kvidren</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Blød</string>
     <string name="voice_command_window">Lyt i</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
     <string name="voice_command_vocabulary_tap">Sig et navn alene eller i et spørgsmål.</string>

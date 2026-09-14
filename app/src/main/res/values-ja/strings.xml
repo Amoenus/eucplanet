@@ -333,10 +333,6 @@
     <string name="voice_prompt_beep">ビープ</string>
     <string name="voice_prompt_voice">音声</string>
     <string name="voice_prompt_none">なし</string>
-    <string name="voice_command_tone">音</string>
-    <string name="voice_tone_chirp">チャープ</string>
-    <string name="voice_tone_ping">ピン</string>
-    <string name="voice_tone_soft">やわらか</string>
     <string name="voice_command_window">聞く時間</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>

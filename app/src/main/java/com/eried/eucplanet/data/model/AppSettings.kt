@@ -1215,14 +1215,6 @@ data class VoiceCommandSettings(
      * wind and opens the microphone sooner.
      */
     val prompt: String = "beep",
-    /**
-     * Which tone says the microphone is open: "chirp", "ping" or "soft".
-     *
-     * A rising chirp by default. One flat note is easy to miss under a helmet
-     * and easy to mistake for one of the wheel's own beeps; two notes going up
-     * is a shape nothing else on a wheel makes.
-     */
-    val tone: String = "chirp",
 
     /** Seconds the microphone stays open having heard nothing. */
     val windowSeconds: Int = 6,

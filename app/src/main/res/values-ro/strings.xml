@@ -296,10 +296,6 @@
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>
     <string name="voice_prompt_none">Niciunul</string>
-    <string name="voice_command_tone">Ton</string>
-    <string name="voice_tone_chirp">Ciripit</string>
-    <string name="voice_tone_ping">Ping</string>
-    <string name="voice_tone_soft">Blând</string>
     <string name="voice_command_window">Ascultă timp de</string>
     <string name="voice_command_vocabulary">Ce pot să spun</string>
     <string name="voice_command_vocabulary_tap">Spune un nume singur sau într-o întrebare.</string>

@@ -699,7 +699,6 @@ fun SettingsScreen(
         stringResource(R.string.announce_welcome),
         stringResource(R.string.voice_commands_title),
         stringResource(R.string.voice_command_prompt),
-        stringResource(R.string.voice_command_tone),
         stringResource(R.string.voice_command_window),
         stringResource(R.string.voice_command_vocabulary),
         stringResource(R.string.section_report_status),
@@ -7255,20 +7254,6 @@ private fun VoiceTab(
                 current = settings.voiceCommands.prompt,
                 onChange = { viewModel.updateVoiceCommandPrompt(it) },
             )
-            // Only when there is a tone to choose.
-            if (settings.voiceCommands.prompt == "beep") {
-                Spacer(Modifier.height(8.dp))
-                SegmentedChoice(
-                    label = stringResource(R.string.voice_command_tone),
-                    options = listOf(
-                        "chirp" to stringResource(R.string.voice_tone_chirp),
-                        "ping" to stringResource(R.string.voice_tone_ping),
-                        "soft" to stringResource(R.string.voice_tone_soft),
-                    ),
-                    current = settings.voiceCommands.tone,
-                    onChange = { viewModel.updateVoiceCommandTone(it) },
-                )
-            }
             Spacer(Modifier.height(8.dp))
             // "Listen for 6 s" says the whole thing, so the sentence that used
             // to explain it underneath is gone.

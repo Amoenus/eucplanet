@@ -1289,8 +1289,9 @@ private fun GeneralTab(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    NumberUpDown(
+                    NumberFieldWithDefault(
                         value = idleSec,
+                        default = SETTINGS_DEFAULTS.autoRecordStopIdleSeconds,
                         onValueChange = {
                             viewModel.updateAutoRecordStopIdleSeconds(
                                 (Math.round(it / 30f) * 30).coerceIn(30, 600)
@@ -1795,6 +1796,57 @@ private fun AdvRow(spec: AdvancedSpec, advanced: AdvancedSettings, onChange: (In
 }
 
 /**
+ * A numeric field that carries its own default underneath it.
+ *
+ * Drops into an existing Row in place of a bare [NumberUpDown] without moving
+ * anything: same modifier, same width, the chip simply appears below. That
+ * matters for the rows that hold two fields side by side, like the empty and
+ * full cell voltages, where turning each into a full settings row would break
+ * the pairing that makes them readable.
+ *
+ * [default] is meant to come from `SETTINGS_DEFAULTS` rather than being typed
+ * in, so the chip cannot drift from the shipped value.
+ */
+@Composable
+internal fun NumberFieldWithDefault(
+    value: Int,
+    onValueChange: (Int) -> Unit,
+    range: IntRange,
+    default: Int,
+    modifier: Modifier = Modifier,
+    step: Int = 1,
+    suffix: String = "",
+    label: String? = null,
+    enabled: Boolean = true,
+    format: (Int) -> String = { it.toString() },
+    parse: (String) -> Int? = { it.toIntOrNull() },
+    allowSign: Boolean = false,
+    numberAlign: TextAlign = TextAlign.End,
+) {
+    Column(modifier = modifier) {
+        NumberUpDown(
+            value = value,
+            onValueChange = onValueChange,
+            range = range,
+            modifier = Modifier.fillMaxWidth(),
+            step = step,
+            suffix = suffix,
+            label = label,
+            enabled = enabled,
+            format = format,
+            parse = parse,
+            allowSign = allowSign,
+            numberAlign = numberAlign,
+        )
+        val unit = if (suffix.isEmpty()) "" else " $suffix"
+        RestoreChip(
+            text = "${format(default)}$unit",
+            enabled = enabled && value != default,
+        ) { onValueChange(default) }
+    }
+}
+
+/**
  * A numeric setting, in the shape the Advanced section established.
  *
  * The label lives inside the field rather than as a separate Text beside it,
@@ -1892,7 +1944,7 @@ internal fun RestoreChip(text: String, enabled: Boolean, onClick: () -> Unit) {
  * promise a default that the model no longer has. A plain data class with
  * default arguments, so constructing one costs nothing.
  */
-private val SETTINGS_DEFAULTS = com.eried.eucplanet.data.model.AppSettings()
+internal val SETTINGS_DEFAULTS = com.eried.eucplanet.data.model.AppSettings()
 
 /** Lightweight handle for the reorganize editor: a section's key, title, icon. */
 private data class SectionHandle(val key: String, val title: String, val icon: ImageVector)
@@ -6766,8 +6818,9 @@ private fun SpeedTab(
             // Tenths-of-a-percent domain so the pill keeps the slider's 0.1%
             // precision: the Int value is tenths, displayed as a signed 1-decimal
             // percent, stepped 0.1% per tap (hold to sweep).
-            NumberUpDown(
+            NumberFieldWithDefault(
                 value = (calPct * 10).roundToInt(),
+                default = (SETTINGS_DEFAULTS.speedCalibrationOffsetPct * 10).roundToInt(),
                 onValueChange = { viewModel.updateSpeedCalibrationOffsetPct(it / 10f) },
                 range = -150..150,
                 step = 1,
@@ -6830,8 +6883,9 @@ private fun SpeedTab(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    NumberUpDown(
+                    NumberFieldWithDefault(
                         value = bp.seriesCells,
+                        default = SETTINGS_DEFAULTS.batteryPercent.seriesCells,
                         onValueChange = { viewModel.updateBatteryPercentSeriesCells(it) },
                         range = BatteryPercentSettings.SERIES_RANGE,
                         modifier = Modifier.weight(1f),
@@ -6889,8 +6943,9 @@ private fun SpeedTab(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                NumberUpDown(
+                NumberFieldWithDefault(
                     value = bp.capacityWh,
+                    default = SETTINGS_DEFAULTS.batteryPercent.capacityWh,
                     onValueChange = { viewModel.updateBatteryPercentCapacityWh(it) },
                     range = 0..BatteryPercentSettings.MAX_CAPACITY_WH,
                     modifier = Modifier.weight(1f),
@@ -6938,8 +6993,9 @@ private fun SpeedTab(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        NumberUpDown(
+                        NumberFieldWithDefault(
                             value = bp.minimumCellVoltageMv,
+                            default = SETTINGS_DEFAULTS.batteryPercent.minimumCellVoltageMv,
                             onValueChange = { viewModel.updateBatteryPercentMinimumMv(it) },
                             range = BatteryPercentSettings.MIN_CELL_MV..BatteryPercentSettings.MAX_CELL_MV,
                             modifier = Modifier.weight(1f),
@@ -6951,8 +7007,9 @@ private fun SpeedTab(
                             enabled = isConnected,
                             numberAlign = TextAlign.End,
                         )
-                        NumberUpDown(
+                        NumberFieldWithDefault(
                             value = bp.maximumCellVoltageMv,
+                            default = SETTINGS_DEFAULTS.batteryPercent.maximumCellVoltageMv,
                             onValueChange = { viewModel.updateBatteryPercentMaximumMv(it) },
                             range = BatteryPercentSettings.MIN_FULL_MV..BatteryPercentSettings.MAX_FULL_MV,
                             modifier = Modifier.weight(1f),
@@ -6986,6 +7043,7 @@ private fun SpeedTab(
             SpeedNumberSetting(
                 label = stringResource(R.string.speed_tiltback),
                 valueKmh = settings.tiltbackSpeedKmh,
+                defaultKmh = SETTINGS_DEFAULTS.tiltbackSpeedKmh,
                 rangeKmh = 0f..maxSpeedCap,
                 speedUnit = speedUnit,
                 enabled = isConnected,
@@ -6995,6 +7053,7 @@ private fun SpeedTab(
             SpeedNumberSetting(
                 label = stringResource(R.string.speed_alarm),
                 valueKmh = settings.alarmSpeedKmh,
+                defaultKmh = SETTINGS_DEFAULTS.alarmSpeedKmh,
                 rangeKmh = 0f..settings.tiltbackSpeedKmh,
                 speedUnit = speedUnit,
                 enabled = isConnected,
@@ -7013,6 +7072,7 @@ private fun SpeedTab(
             SpeedNumberSetting(
                 label = stringResource(R.string.speed_legal_tiltback),
                 valueKmh = settings.safetyTiltbackKmh,
+                defaultKmh = SETTINGS_DEFAULTS.safetyTiltbackKmh,
                 rangeKmh = 0f..(settings.tiltbackSpeedKmh - 1f).coerceAtLeast(0f),
                 speedUnit = speedUnit,
                 enabled = isConnected,
@@ -7022,6 +7082,7 @@ private fun SpeedTab(
             SpeedNumberSetting(
                 label = stringResource(R.string.speed_legal_alarm),
                 valueKmh = settings.safetyAlarmKmh,
+                defaultKmh = SETTINGS_DEFAULTS.safetyAlarmKmh,
                 rangeKmh = 0f..settings.safetyTiltbackKmh,
                 speedUnit = speedUnit,
                 enabled = isConnected,
@@ -7095,8 +7156,9 @@ private fun VoiceTab(
             ) {
                 // Tenths-of-x domain so it reads as the original "1.2x" with 0.1
                 // steps, not a percentage.
-                NumberUpDown(
+                NumberFieldWithDefault(
                     value = (settings.voiceSpeechRate * 10).roundToInt(),
+                    default = (SETTINGS_DEFAULTS.voiceSpeechRate * 10).roundToInt(),
                     onValueChange = { viewModel.updateVoiceSpeechRate(it / 10f, voiceWelcome) },
                     range = 5..25,
                     step = 1,
@@ -7342,8 +7404,9 @@ private fun VoiceTab(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                NumberUpDown(
+                NumberFieldWithDefault(
                     value = settings.voiceIntervalSeconds,
+                    default = SETTINGS_DEFAULTS.voiceIntervalSeconds,
                     onValueChange = {
                         viewModel.updateVoiceInterval((Math.round(it / 10f) * 10).coerceIn(10, 300))
                     },
@@ -7535,8 +7598,9 @@ private fun VoiceTab(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                NumberUpDown(
+                NumberFieldWithDefault(
                     value = accel.minSpeed,
+                    default = SETTINGS_DEFAULTS.accelSplit.minSpeed,
                     onValueChange = { viewModel.updateAccelSplitMinSpeed(it) },
                     range = 0..200,
                     step = 5,
@@ -7544,8 +7608,9 @@ private fun VoiceTab(
                     label = stringResource(R.string.accel_splits_from),
                     modifier = Modifier.weight(1f),
                 )
-                NumberUpDown(
+                NumberFieldWithDefault(
                     value = accel.increment,
+                    default = SETTINGS_DEFAULTS.accelSplit.increment,
                     onValueChange = { viewModel.updateAccelSplitIncrement(it) },
                     range = 1..50,
                     step = 1,
@@ -9393,6 +9458,8 @@ internal fun SpeedNumberSetting(
     valueKmh: Float,
     rangeKmh: ClosedFloatingPointRange<Float>,
     speedUnit: String,
+    /** The shipped value, shown as the restore chip in the rider's own unit. */
+    defaultKmh: Float,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onValueChangeKmh: (Float) -> Unit
@@ -9406,18 +9473,28 @@ internal fun SpeedNumberSetting(
     val displayEnd = if (displayEndRaw < displayStart) displayStart else displayEndRaw
     val displayValue = Units.speed(valueKmh, speedUnit).roundToInt()
         .coerceIn(displayStart, displayEnd)
-    NumberUpDown(
-        value = displayValue,
-        onValueChange = { displayed ->
-            val kmh = Units.speedToKmh(displayed.toFloat(), speedUnit)
-            onValueChangeKmh(kmh.coerceIn(rangeKmh))
-        },
-        range = displayStart..displayEnd,
-        suffix = Units.speedUnit(LocalContext.current, speedUnit),
-        label = label,
-        enabled = enabled,
-        modifier = modifier,
-    )
+    val unitLabel = Units.speedUnit(LocalContext.current, speedUnit)
+    // The chip speaks the rider's unit too: a default of 25 km/h has to read
+    // as 16 mph to somebody riding in mph, or it is not their default.
+    val displayDefault = Units.speed(defaultKmh, speedUnit).roundToInt()
+    Column(modifier = modifier) {
+        NumberUpDown(
+            value = displayValue,
+            onValueChange = { displayed ->
+                val kmh = Units.speedToKmh(displayed.toFloat(), speedUnit)
+                onValueChangeKmh(kmh.coerceIn(rangeKmh))
+            },
+            range = displayStart..displayEnd,
+            suffix = unitLabel,
+            label = label,
+            enabled = enabled,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        RestoreChip(
+            text = "$displayDefault $unitLabel",
+            enabled = enabled && displayValue != displayDefault,
+        ) { onValueChangeKmh(defaultKmh.coerceIn(rangeKmh)) }
+    }
 }
 
 @Composable

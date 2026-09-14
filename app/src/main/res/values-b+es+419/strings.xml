@@ -333,8 +333,9 @@
     <string name="voice_prompt_voice">Voz</string>
     <string name="voice_prompt_none">Ninguno</string>
     <string name="voice_command_window">Ventana de escucha</string>
+    <string name="voice_command_window_desc">Cuánto tiempo sigue abierto el micrófono tras el aviso.</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
-    <string name="voice_command_vocabulary_tap">Toca un nombre para escuchar la respuesta.</string>
+    <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta. Toca uno para escuchar la respuesta.</string>
     <string name="voice_listening">Escuchando</string>
     <string name="voice_answer_off">%1$s está desactivado. Podés activarlo en los ajustes.</string>
     <string name="voice_answer_unsupported">Tu rueda no informa %1$s.</string>

@@ -333,8 +333,9 @@
     <string name="voice_prompt_voice">Głos</string>
     <string name="voice_prompt_none">Brak</string>
     <string name="voice_command_window">Okno nasłuchu</string>
+    <string name="voice_command_window_desc">Jak długo mikrofon pozostaje otwarty po sygnale.</string>
     <string name="voice_command_vocabulary">Co mogę powiedzieć</string>
-    <string name="voice_command_vocabulary_tap">Dotknij nazwy, aby usłyszeć odpowiedź.</string>
+    <string name="voice_command_vocabulary_tap">Powiedz nazwę samodzielnie lub w pytaniu. Dotknij nazwy, aby usłyszeć odpowiedź.</string>
     <string name="voice_listening">Słucham</string>
     <string name="voice_answer_off">%1$s jest wyłączone. Możesz to włączyć w ustawieniach.</string>
     <string name="voice_answer_unsupported">Twoje koło nie podaje %1$s.</string>

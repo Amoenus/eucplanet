@@ -1794,6 +1794,73 @@ private fun AdvRow(spec: AdvancedSpec, advanced: AdvancedSettings, onChange: (In
     }
 }
 
+/**
+ * A numeric setting, in the shape the Advanced section established.
+ *
+ * The label lives inside the field rather than as a separate Text beside it,
+ * and the default sits under it as a restore chip that is always visible and
+ * goes grey once the value matches it. Rules 4 and 9 ask for both, and the
+ * Advanced rows were the only place in Settings honouring them: everywhere
+ * else a rider who had nudged a number had no way back to the default and no
+ * way to know what it had been.
+ *
+ * [default] is meant to be read from `AppSettings()` at the call site rather
+ * than typed in, so the chip cannot drift from the real default.
+ *
+ * [description] is optional: with one the row reads control-then-explanation
+ * like an Advanced row, without one the control keeps the same width so a
+ * column of these still lines up.
+ */
+@Composable
+internal fun NumberSettingRow(
+    label: String,
+    value: Int,
+    default: Int,
+    range: IntRange,
+    onChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    step: Int = 1,
+    suffix: String = "",
+    description: String? = null,
+    enabled: Boolean = true,
+    format: (Int) -> String = { it.toString() },
+    parse: (String) -> Int? = { it.toIntOrNull() },
+    allowSign: Boolean = false,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1.4f)) {
+            NumberUpDown(
+                value = value,
+                onValueChange = onChange,
+                range = range,
+                modifier = Modifier.fillMaxWidth(),
+                step = step,
+                suffix = suffix,
+                label = label,
+                enabled = enabled,
+                format = format,
+                parse = parse,
+                allowSign = allowSign,
+                numberAlign = TextAlign.End,
+            )
+            val unit = if (suffix.isEmpty()) "" else " $suffix"
+            RestoreChip(
+                text = "${format(default)}$unit",
+                enabled = enabled && value != default,
+            ) { onChange(default) }
+        }
+        Spacer(Modifier.width(10.dp))
+        if (description != null) {
+            HintText(description, modifier = Modifier.weight(1f), small = true)
+        } else {
+            Spacer(Modifier.weight(1f))
+        }
+    }
+}
+
 /** Always-visible "undo -> <default>" affordance. Active (accent, clickable) when
  *  the value is off its default; greyed and inert once it matches. */
 @Composable
@@ -1817,6 +1884,15 @@ internal fun RestoreChip(text: String, enabled: Boolean, onClick: () -> Unit) {
         Text(text, fontSize = 12.sp, color = color)
     }
 }
+
+/**
+ * The shipped defaults, for the restore chips.
+ *
+ * Read from the model rather than retyped at each call site, so a chip cannot
+ * promise a default that the model no longer has. A plain data class with
+ * default arguments, so constructing one costs nothing.
+ */
+private val SETTINGS_DEFAULTS = com.eried.eucplanet.data.model.AppSettings()
 
 /** Lightweight handle for the reorganize editor: a section's key, title, icon. */
 private data class SectionHandle(val key: String, val title: String, val icon: ImageVector)
@@ -7138,25 +7214,15 @@ private fun VoiceTab(
                 }
             }
             Spacer(Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    stringResource(R.string.voice_command_window),
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Box(modifier = Modifier.weight(1.4f)) {
-                    NumberUpDown(
-                        value = settings.voiceCommands.windowSeconds,
-                        onValueChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
-                        range = 3..30,
-                        step = 1,
-                        suffix = "s",
-                    )
-                }
-            }
+            NumberSettingRow(
+                label = stringResource(R.string.voice_command_window),
+                value = settings.voiceCommands.windowSeconds,
+                default = SETTINGS_DEFAULTS.voiceCommands.windowSeconds,
+                range = 3..30,
+                suffix = "s",
+                description = stringResource(R.string.voice_command_window_desc),
+                onChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
+            )
             Spacer(Modifier.height(8.dp))
             // Generated from the same catalogs the matcher listens against, so
             // it cannot promise a rider something that will not work (rule 10).

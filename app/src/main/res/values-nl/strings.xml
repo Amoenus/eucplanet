@@ -333,8 +333,9 @@
     <string name="voice_prompt_voice">Stem</string>
     <string name="voice_prompt_none">Geen</string>
     <string name="voice_command_window">Luistervenster</string>
+    <string name="voice_command_window_desc">Hoe lang de microfoon open blijft na het signaal.</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
-    <string name="voice_command_vocabulary_tap">Tik op een naam om het antwoord te horen.</string>
+    <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag. Tik op een naam om het antwoord te horen.</string>
     <string name="voice_listening">Luisteren</string>
     <string name="voice_answer_off">%1$s staat uit. Je kunt het aanzetten in de instellingen.</string>
     <string name="voice_answer_unsupported">Je wiel rapporteert %1$s niet.</string>

@@ -333,8 +333,9 @@
     <string name="voice_prompt_voice">音声</string>
     <string name="voice_prompt_none">なし</string>
     <string name="voice_command_window">聞き取り時間</string>
+    <string name="voice_command_window_desc">合図のあと、マイクを開いておく長さ。</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
-    <string name="voice_command_vocabulary_tap">名前をタップすると答えを読み上げます。</string>
+    <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。タップすると答えを読み上げます。</string>
     <string name="voice_listening">聞き取り中</string>
     <string name="voice_answer_off">%1$sはオフです。設定でオンにできます。</string>
     <string name="voice_answer_unsupported">このホイールは%1$sを報告しません。</string>

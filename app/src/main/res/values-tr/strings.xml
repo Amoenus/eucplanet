@@ -333,8 +333,9 @@
     <string name="voice_prompt_voice">Ses</string>
     <string name="voice_prompt_none">Yok</string>
     <string name="voice_command_window">Dinleme penceresi</string>
+    <string name="voice_command_window_desc">Sesli uyarıdan sonra mikrofonun ne kadar açık kalacağı.</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
-    <string name="voice_command_vocabulary_tap">Cevabı duymak için bir ada dokun.</string>
+    <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle. Cevabı duymak için bir ada dokun.</string>
     <string name="voice_listening">Dinliyorum</string>
     <string name="voice_answer_off">%1$s kapalı. Ayarlardan açabilirsin.</string>
     <string name="voice_answer_unsupported">Tekerleğin %1$s bildirmiyor.</string>

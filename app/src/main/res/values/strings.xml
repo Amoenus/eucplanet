@@ -338,8 +338,9 @@
     <string name="voice_prompt_voice">Voice</string>
     <string name="voice_prompt_none">None</string>
     <string name="voice_command_window">Listen window</string>
+    <string name="voice_command_window_desc">How long the microphone stays open after the prompt.</string>
     <string name="voice_command_vocabulary">What can I say</string>
-    <string name="voice_command_vocabulary_tap">Tap a name to hear the answer.</string>
+    <string name="voice_command_vocabulary_tap">Say a name on its own or inside a question. Tap one to hear the answer.</string>
     <string name="voice_listening">Listening</string>
     <string name="voice_answer_off">%1$s is off. You can turn it on in settings.</string>
     <string name="voice_answer_unsupported">Your wheel does not report %1$s.</string>

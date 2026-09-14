@@ -296,8 +296,9 @@
     <string name="voice_prompt_voice">Voce</string>
     <string name="voice_prompt_none">Niciunul</string>
     <string name="voice_command_window">Fereastră de ascultare</string>
+    <string name="voice_command_window_desc">Cât timp rămâne microfonul deschis după semnal.</string>
     <string name="voice_command_vocabulary">Ce pot să spun</string>
-    <string name="voice_command_vocabulary_tap">Atinge un nume pentru a auzi răspunsul.</string>
+    <string name="voice_command_vocabulary_tap">Spune un nume singur sau într-o întrebare. Atinge un nume pentru a auzi răspunsul.</string>
     <string name="voice_listening">Ascult</string>
     <string name="voice_answer_off">%1$s este dezactivat. Îl poți activa din setări.</string>
     <string name="voice_answer_unsupported">Roata ta nu raportează %1$s.</string>

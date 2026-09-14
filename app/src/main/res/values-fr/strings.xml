@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Passer à la commande vocale</string>
     <string name="menu_switch_to_voice_report">Basculer vers annonce vocale</string>
     <string name="voice_commands_title">Commandes vocales</string>
-    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application. Rien n écoute tant que vous n appuyez pas : maintenez le bouton Voix du tableau de bord et choisissez Écouter une commande vocale. L écoute peut aussi être liée à un Flic, aux touches de volume, à votre montre ou au HUD.</string>
-    <string name="voice_commands_ask_desc">Demandez une valeur comme batterie ou vitesse, la météo ou la navigation, ou dites une commande comme lumière allumée.</string>
+    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application. Rien n écoute tant que vous n appuyez pas : maintenez le bouton Voix du tableau de bord et choisissez Écouter une commande vocale.</string>
+    <string name="voice_commands_bind_desc">Liez l écoute à un Flic, aux touches de volume, à votre montre ou au HUD. Vous pouvez aussi basculer la tuile du tableau de bord sur Écouter pour un seul appui.</string>
+    <string name="voice_commands_ask_desc">Demandez une valeur, ou dites une commande.</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
     <string name="voice_command_vocabulary_tap">Dites un nom seul ou dans une question.</string>
     <string name="voice_listening">J\'écoute</string>

@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
     <string name="menu_switch_to_voice_report">Skift til stemmebesked</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
-    <string name="voice_commands_enable_desc">Brug din stemme i appen. Intet lytter, før du trykker på noget: hold Stemme-knappen på dashboardet nede og vælg Lyt efter stemmekommando. Lytning kan også tildeles en Flic, lydstyrketasterne, dit ur eller HUD.</string>
-    <string name="voice_commands_ask_desc">Spørg om en værdi som batteri eller fart, spørg om vejret eller navigationen, eller sig en kommando som lys tændt.</string>
+    <string name="voice_commands_enable_desc">Brug din stemme i appen. Intet lytter, før du trykker på noget: hold Stemme-knappen på dashboardet nede og vælg Lyt efter stemmekommando.</string>
+    <string name="voice_commands_bind_desc">Tildel lytning til en Flic, lydstyrketasterne, dit ur eller HUD. Du kan også skifte feltet på dashboardet til Lyt, så ét tryk starter det.</string>
+    <string name="voice_commands_ask_desc">Spørg om en værdi, eller sig en kommando.</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
     <string name="voice_command_vocabulary_tap">Sig et navn alene eller i et spørgsmål.</string>
     <string name="voice_listening">Lytter</string>

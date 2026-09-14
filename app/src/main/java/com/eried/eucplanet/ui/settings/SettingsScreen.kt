@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -7242,28 +7243,22 @@ private fun VoiceTab(
         // is not a control. It reads better as a link on the sentence that
         // already explains the feature.
         var vocabularyOpen by remember { mutableStateOf(false) }
-        // Two paragraphs, because they answer two different questions: how do
-        // I start it, and what do I say once it is listening. One block ran
-        // them together and the second half was read as more of the first.
+        // Three paragraphs, one question each: what it is and how to start it,
+        // how to put it on a button, and what to say once it is listening.
         HintText(stringResource(R.string.voice_commands_enable_desc))
         Spacer(Modifier.height(6.dp))
-        // Only this one is a tap target. Making the whole block clickable
-        // meant a paragraph about pressing buttons was itself a button.
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.voice_commands_ask_desc))
-                append("  ")
-                withStyle(SpanStyle(color = MaterialTheme.appColors.primary)) {
-                    append(stringResource(R.string.voice_command_vocabulary))
-                }
-            },
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.appColors.textSecondary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { vocabularyOpen = true }
-                .padding(vertical = 2.dp),
-        )
+        HintText(stringResource(R.string.voice_commands_bind_desc))
+        Spacer(Modifier.height(6.dp))
+        HintText(stringResource(R.string.voice_commands_ask_desc))
+        // The list is a control, not a sentence. Folding it into the paragraph
+        // made a block of explanation into a tap target, so a rider reading
+        // about buttons was standing on one.
+        TextButton(
+            onClick = { vocabularyOpen = true },
+            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 4.dp),
+        ) {
+            Text(stringResource(R.string.voice_command_vocabulary))
+        }
         if (vocabularyOpen) {
             VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
         }

@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">切換到語音指令</string>
     <string name="menu_switch_to_voice_report">切換到語音播報</string>
     <string name="voice_commands_title">語音指令</string>
-    <string name="voice_commands_enable_desc">用語音使用這個應用程式。在你按下之前什麼都不會聆聽：長按儀表板上的語音按鈕，選擇聆聽語音指令。聆聽也可以綁定到 Flic、音量鍵、手錶或 HUD。</string>
-    <string name="voice_commands_ask_desc">可以詢問電量或速度等數值，詢問天氣或導航，也可以說開燈這樣的指令。</string>
+    <string name="voice_commands_enable_desc">用語音使用這個應用程式。在你按下之前什麼都不會聆聽：長按儀表板上的語音按鈕，選擇聆聽語音指令。</string>
+    <string name="voice_commands_bind_desc">可以把聆聽綁定到 Flic、音量鍵、手錶或 HUD。也可以把儀表板磁貼切換為聆聽，一按即可開始。</string>
+    <string name="voice_commands_ask_desc">可以詢問數值，也可以說指令。</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
     <string name="voice_command_vocabulary_tap">可以只說名稱，也可以放在問題裡。</string>
     <string name="voice_listening">聆聽中</string>

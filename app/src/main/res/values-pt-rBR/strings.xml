@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Mudar para comando de voz</string>
     <string name="menu_switch_to_voice_report">Mudar para aviso de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
-    <string name="voice_commands_enable_desc">Use sua voz com o app. Nada escuta até você pressionar algo: segure o botão Voz no painel e escolha Ouvir comando de voz. Ouvir também pode ser vinculado a um Flic, às teclas de volume, ao seu relógio ou ao HUD.</string>
-    <string name="voice_commands_ask_desc">Peça um dado como bateria ou velocidade, pergunte sobre o tempo ou a navegação, ou diga um comando como luzes ligadas.</string>
+    <string name="voice_commands_enable_desc">Use sua voz com o app. Nada escuta até você pressionar algo: segure o botão Voz no painel e escolha Ouvir comando de voz.</string>
+    <string name="voice_commands_bind_desc">Vincule Ouvir a um Flic, às teclas de volume, ao seu relógio ou ao HUD. Você também pode trocar o bloco do painel para Ouvir e iniciar com um toque.</string>
+    <string name="voice_commands_ask_desc">Peça um dado, ou diga um comando.</string>
     <string name="voice_command_vocabulary">O que posso dizer</string>
     <string name="voice_command_vocabulary_tap">Diga um nome sozinho ou dentro de uma pergunta.</string>
     <string name="voice_listening">Ouvindo</string>

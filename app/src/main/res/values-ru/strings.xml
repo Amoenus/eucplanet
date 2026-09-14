@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Перейти к голосовой команде</string>
     <string name="menu_switch_to_voice_report">Переключить на голосовое сообщение</string>
     <string name="voice_commands_title">Голосовые команды</string>
-    <string name="voice_commands_enable_desc">Управляйте приложением голосом. Ничего не слушает, пока вы не нажмёте: удерживайте кнопку Голос на панели и выберите Слушать голосовую команду. Прослушивание можно назначить на Flic, клавиши громкости, часы или HUD.</string>
-    <string name="voice_commands_ask_desc">Спросите значение, например заряд или скорость, спросите о погоде или навигации, или скажите команду, например свет включить.</string>
+    <string name="voice_commands_enable_desc">Управляйте приложением голосом. Ничего не слушает, пока вы не нажмёте: удерживайте кнопку Голос на панели и выберите Слушать голосовую команду.</string>
+    <string name="voice_commands_bind_desc">Назначьте прослушивание на Flic, клавиши громкости, часы или HUD. Плитку на панели тоже можно переключить на Слушать, тогда хватит одного касания.</string>
+    <string name="voice_commands_ask_desc">Спросите значение или скажите команду.</string>
     <string name="voice_command_vocabulary">Что можно сказать</string>
     <string name="voice_command_vocabulary_tap">Назовите пункт отдельно или в вопросе.</string>
     <string name="voice_listening">Слушаю</string>

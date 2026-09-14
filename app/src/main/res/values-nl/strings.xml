@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
     <string name="menu_switch_to_voice_report">Wisselen naar spraakmelding</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
-    <string name="voice_commands_enable_desc">Gebruik je stem in de app. Er luistert niets tot je iets indrukt: houd de knop Stem op het dashboard ingedrukt en kies Luisteren naar spraakopdracht. Luisteren kan ook aan een Flic, de volumeknoppen, je horloge of de HUD gekoppeld worden.</string>
-    <string name="voice_commands_ask_desc">Vraag een waarde als accu of snelheid, vraag naar het weer of de navigatie, of zeg een opdracht zoals licht aan.</string>
+    <string name="voice_commands_enable_desc">Gebruik je stem in de app. Er luistert niets tot je iets indrukt: houd de knop Stem op het dashboard ingedrukt en kies Luisteren naar spraakopdracht.</string>
+    <string name="voice_commands_bind_desc">Koppel luisteren aan een Flic, de volumeknoppen, je horloge of de HUD. Je kunt de dashboardtegel ook op Luisteren zetten, dan volstaat één tik.</string>
+    <string name="voice_commands_ask_desc">Vraag een waarde, of zeg een opdracht.</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
     <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag.</string>
     <string name="voice_listening">Luisteren</string>

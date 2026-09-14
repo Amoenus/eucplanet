@@ -328,8 +328,9 @@
     <string name="menu_switch_to_voice_command">Byt till röstkommando</string>
     <string name="menu_switch_to_voice_report">Byt till röstmeddelande</string>
     <string name="voice_commands_title">Röstkommandon</string>
-    <string name="voice_commands_enable_desc">Använd rösten i appen. Ingenting lyssnar förrän du trycker på något: håll in Röst-knappen på instrumentpanelen och välj Lyssna efter röstkommando. Lyssning kan också kopplas till en Flic, volymknapparna, din klocka eller HUD.</string>
-    <string name="voice_commands_ask_desc">Fråga efter ett värde som batteri eller fart, fråga om vädret eller navigationen, eller säg ett kommando som ljus på.</string>
+    <string name="voice_commands_enable_desc">Använd rösten i appen. Ingenting lyssnar förrän du trycker på något: håll in Röst-knappen på instrumentpanelen och välj Lyssna efter röstkommando.</string>
+    <string name="voice_commands_bind_desc">Koppla lyssning till en Flic, volymknapparna, din klocka eller HUD. Du kan också byta rutan på instrumentpanelen till Lyssna, då räcker ett tryck.</string>
+    <string name="voice_commands_ask_desc">Fråga efter ett värde, eller säg ett kommando.</string>
     <string name="voice_command_vocabulary">Vad kan jag säga</string>
     <string name="voice_command_vocabulary_tap">Säg ett namn ensamt eller i en fråga.</string>
     <string name="voice_listening">Lyssnar</string>

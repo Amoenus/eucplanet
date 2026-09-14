@@ -1340,8 +1340,9 @@
     <string name="menu_switch_to_voice_command">Bytt til talekommando</string>
     <string name="menu_switch_to_voice_report">Bytt til talemelding</string>
     <string name="voice_commands_title">Talekommandoer</string>
-    <string name="voice_commands_enable_desc">Bruk stemmen din i appen. Ingenting lytter før du trykker på noe: hold inne Stemme-knappen på dashbordet og velg Lytt etter talekommando. Lytting kan også knyttes til en Flic, volumtastene, klokken din eller HUD.</string>
-    <string name="voice_commands_ask_desc">Spør om en verdi som batteri eller fart, spør om været eller navigasjonen, eller si en kommando som lys på.</string>
+    <string name="voice_commands_enable_desc">Bruk stemmen din i appen. Ingenting lytter før du trykker på noe: hold inne Stemme-knappen på dashbordet og velg Lytt etter talekommando.</string>
+    <string name="voice_commands_bind_desc">Knytt lytting til en Flic, volumtastene, klokken din eller HUD. Du kan også bytte ruten på dashbordet til Lytt, så starter ett trykk det.</string>
+    <string name="voice_commands_ask_desc">Spør om en verdi, eller si en kommando.</string>
     <string name="voice_command_vocabulary">Hva kan jeg si</string>
     <string name="voice_command_vocabulary_tap">Si et navn alene eller i et spørsmål.</string>
     <string name="voice_listening">Lytter</string>

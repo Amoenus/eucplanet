@@ -1323,7 +1323,7 @@
     <string name="menu_switch_to_voice_command">切换到语音命令</string>
     <string name="menu_switch_to_voice_report">切换到语音播报</string>
     <string name="voice_commands_title">语音命令</string>
-    <string name="voice_commands_enable_desc">大声询问一个数值并听取答案。</string>
+    <string name="voice_commands_enable_desc">用语音询问数值。</string>
     <string name="voice_command_prompt">聆听提示</string>
     <string name="voice_prompt_beep">提示音</string>
     <string name="voice_prompt_voice">语音</string>
@@ -1336,8 +1336,8 @@
     <string name="voice_answer_unsupported">你的轮子不提供%1$s。</string>
     <string name="voice_answer_nodata">暂无%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先设置。</string>
-    <string name="voice_answer_unknown">没有听清。说 %1$s 查看列表。</string>
-    <string name="voice_help_terms">帮助,我能说什么,我能问什么</string>
+    <string name="voice_answer_unknown">没有听清。说 %1$s 获取帮助。</string>
+    <string name="voice_help_terms">我能说什么,帮助,我能问什么</string>
     <string name="voice_answer_examples">这是可以说的内容列表。</string>
     <string name="voice_special_connected">已连接 %1$s。</string>
     <string name="voice_special_not_connected">未连接轮子。</string>

@@ -333,7 +333,7 @@
     <string name="menu_switch_to_voice_command">Switch to voice command</string>
     <string name="menu_switch_to_voice_report">Switch to voice announcement</string>
     <string name="voice_commands_title">Voice commands</string>
-    <string name="voice_commands_enable_desc">Ask for a metric out loud and hear the answer.</string>
+    <string name="voice_commands_enable_desc">Ask for a metric out loud.</string>
     <string name="voice_command_prompt">Listening prompt</string>
     <string name="voice_prompt_beep">Beep</string>
     <string name="voice_prompt_voice">Voice</string>
@@ -346,8 +346,8 @@
     <string name="voice_answer_unsupported">Your wheel does not report %1$s.</string>
     <string name="voice_answer_nodata">No %1$s yet.</string>
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
-    <string name="voice_answer_unknown">I did not catch that. Say %1$s for the list.</string>
-    <string name="voice_help_terms">help,what can I say,what can I do</string>
+    <string name="voice_answer_unknown">I did not catch that. Say %1$s for help.</string>
+    <string name="voice_help_terms">what can I say,help,what can I do</string>
     <string name="voice_answer_examples">Here is the list of what you can say.</string>
     <string name="voice_special_connected">Connected to %1$s.</string>
     <string name="voice_special_not_connected">No wheel connected.</string>

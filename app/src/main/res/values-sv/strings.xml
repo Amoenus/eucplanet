@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Byt till röstkommando</string>
     <string name="menu_switch_to_voice_report">Byt till röstmeddelande</string>
     <string name="voice_commands_title">Röstkommandon</string>
-    <string name="voice_commands_enable_desc">Fråga efter ett värde högt och hör svaret.</string>
+    <string name="voice_commands_enable_desc">Fråga efter ett värde högt.</string>
     <string name="voice_command_prompt">Lyssningssignal</string>
     <string name="voice_prompt_beep">Pip</string>
     <string name="voice_prompt_voice">Röst</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Ditt hjul rapporterar inte %1$s.</string>
     <string name="voice_answer_nodata">Inget %1$s än.</string>
     <string name="voice_answer_setup">%1$s måste ställas in först.</string>
-    <string name="voice_answer_unknown">Jag uppfattade inte. Säg %1$s för listan.</string>
-    <string name="voice_help_terms">hjälp,vad kan jag säga,vad kan jag fråga</string>
+    <string name="voice_answer_unknown">Jag uppfattade inte. Säg %1$s för hjälp.</string>
+    <string name="voice_help_terms">vad kan jag säga,hjälp,vad kan jag fråga</string>
     <string name="voice_answer_examples">Här är listan över vad du kan säga.</string>
     <string name="voice_special_connected">Ansluten till %1$s.</string>
     <string name="voice_special_not_connected">Inget wheel anslutet.</string>

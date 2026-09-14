@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Перейти до голосової команди</string>
     <string name="menu_switch_to_voice_report">Перемкнути на голосове повідомлення</string>
     <string name="voice_commands_title">Голосові команди</string>
-    <string name="voice_commands_enable_desc">Запитайте показник уголос і почуйте відповідь.</string>
+    <string name="voice_commands_enable_desc">Запитайте значення вголос.</string>
     <string name="voice_command_prompt">Сигнал прослуховування</string>
     <string name="voice_prompt_beep">Звук</string>
     <string name="voice_prompt_voice">Голос</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Ваше колесо не повідомляє %1$s.</string>
     <string name="voice_answer_nodata">Поки немає %1$s.</string>
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
-    <string name="voice_answer_unknown">Не розчув. Скажіть %1$s, щоб побачити список.</string>
-    <string name="voice_help_terms">допомога,що можна сказати,що можна запитати</string>
+    <string name="voice_answer_unknown">Не розчув. Скажіть %1$s для підказки.</string>
+    <string name="voice_help_terms">що можна сказати,допомога,що можна запитати</string>
     <string name="voice_answer_examples">Ось список того, що можна сказати.</string>
     <string name="voice_special_connected">Підключено до %1$s.</string>
     <string name="voice_special_not_connected">Колесо не підключено.</string>

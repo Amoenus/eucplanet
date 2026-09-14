@@ -291,7 +291,7 @@
     <string name="menu_switch_to_voice_command">Vaihda puhekomentoon</string>
     <string name="menu_switch_to_voice_report">Vaihda ääni-ilmoitukseen</string>
     <string name="voice_commands_title">Puhekomennot</string>
-    <string name="voice_commands_enable_desc">Kysy arvoa ääneen ja kuule vastaus.</string>
+    <string name="voice_commands_enable_desc">Kysy arvoa ääneen.</string>
     <string name="voice_command_prompt">Kuuntelumerkki</string>
     <string name="voice_prompt_beep">Äänimerkki</string>
     <string name="voice_prompt_voice">Puhe</string>
@@ -304,8 +304,8 @@
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>
     <string name="voice_answer_nodata">Ei vielä %1$s.</string>
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
-    <string name="voice_answer_unknown">En saanut selvää. Sano %1$s nähdäksesi listan.</string>
-    <string name="voice_help_terms">apua,mitä voin sanoa,mitä voin kysyä</string>
+    <string name="voice_answer_unknown">En saanut selvää. Sano %1$s saadaksesi apua.</string>
+    <string name="voice_help_terms">mitä voin sanoa,apua,mitä voin kysyä</string>
     <string name="voice_answer_examples">Tässä on lista siitä, mitä voit sanoa.</string>
     <string name="voice_special_connected">Yhdistetty: %1$s.</string>
     <string name="voice_special_not_connected">Ei yhdistettyä pyörää.</string>

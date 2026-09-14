@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
     <string name="menu_switch_to_voice_report">Skift til stemmebesked</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
-    <string name="voice_commands_enable_desc">Spørg højt om en værdi og hør svaret.</string>
+    <string name="voice_commands_enable_desc">Spørg om en værdi højt.</string>
     <string name="voice_command_prompt">Lyttesignal</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Stemme</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Dit hjul rapporterer ikke %1$s.</string>
     <string name="voice_answer_nodata">Ingen %1$s endnu.</string>
     <string name="voice_answer_setup">%1$s skal sættes op først.</string>
-    <string name="voice_answer_unknown">Det fangede jeg ikke. Sig %1$s for listen.</string>
-    <string name="voice_help_terms">hjælp,hvad kan jeg sige,hvad kan jeg spørge om</string>
+    <string name="voice_answer_unknown">Det fangede jeg ikke. Sig %1$s for hjælp.</string>
+    <string name="voice_help_terms">hvad kan jeg sige,hjælp,hvad kan jeg spørge om</string>
     <string name="voice_answer_examples">Her er listen over, hvad du kan sige.</string>
     <string name="voice_special_connected">Forbundet til %1$s.</string>
     <string name="voice_special_not_connected">Intet wheel forbundet.</string>

@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">음성 명령으로 전환</string>
     <string name="menu_switch_to_voice_report">음성 안내로 전환</string>
     <string name="voice_commands_title">음성 명령</string>
-    <string name="voice_commands_enable_desc">수치를 소리 내어 묻고 답을 들으세요.</string>
+    <string name="voice_commands_enable_desc">값을 소리 내어 물어보세요.</string>
     <string name="voice_command_prompt">듣기 알림</string>
     <string name="voice_prompt_beep">알림음</string>
     <string name="voice_prompt_voice">음성</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">이 휠은 %1$s을(를) 보고하지 않습니다.</string>
     <string name="voice_answer_nodata">아직 %1$s이(가) 없습니다.</string>
     <string name="voice_answer_setup">%1$s은(는) 먼저 설정해야 합니다.</string>
-    <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 라고 말하면 목록이 나옵니다.</string>
-    <string name="voice_help_terms">도움말,뭐라고 말하면 돼,뭔 물어볼 수 있어</string>
+    <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 라고 말해 보세요.</string>
+    <string name="voice_help_terms">뭐라고 말하면 돼,도움말,뭘 물어볼 수 있어</string>
     <string name="voice_answer_examples">말할 수 있는 항목 목록입니다.</string>
     <string name="voice_special_connected">%1$s 에 연결됨.</string>
     <string name="voice_special_not_connected">연결된 휠 없음.</string>

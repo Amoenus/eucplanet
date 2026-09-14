@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
     <string name="menu_switch_to_voice_report">Wisselen naar spraakmelding</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
-    <string name="voice_commands_enable_desc">Vraag een waarde hardop en hoor het antwoord.</string>
+    <string name="voice_commands_enable_desc">Vraag een waarde hardop.</string>
     <string name="voice_command_prompt">Luistersignaal</string>
     <string name="voice_prompt_beep">Piep</string>
     <string name="voice_prompt_voice">Stem</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Je wiel rapporteert %1$s niet.</string>
     <string name="voice_answer_nodata">Nog geen %1$s.</string>
     <string name="voice_answer_setup">%1$s moet eerst worden ingesteld.</string>
-    <string name="voice_answer_unknown">Ik heb dat niet verstaan. Zeg %1$s voor de lijst.</string>
-    <string name="voice_help_terms">help,wat kan ik zeggen,wat kan ik vragen</string>
+    <string name="voice_answer_unknown">Ik heb dat niet verstaan. Zeg %1$s voor hulp.</string>
+    <string name="voice_help_terms">wat kan ik zeggen,help,wat kan ik vragen</string>
     <string name="voice_answer_examples">Dit is de lijst met wat je kunt zeggen.</string>
     <string name="voice_special_connected">Verbonden met %1$s.</string>
     <string name="voice_special_not_connected">Geen wheel verbonden.</string>

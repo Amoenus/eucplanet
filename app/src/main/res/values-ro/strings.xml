@@ -291,7 +291,7 @@
     <string name="menu_switch_to_voice_command">Comută la comanda vocală</string>
     <string name="menu_switch_to_voice_report">Comută la anunț vocal</string>
     <string name="voice_commands_title">Comenzi vocale</string>
-    <string name="voice_commands_enable_desc">Întreabă cu voce tare o valoare și ascultă răspunsul.</string>
+    <string name="voice_commands_enable_desc">Cere o valoare cu voce tare.</string>
     <string name="voice_command_prompt">Semnal de ascultare</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>
@@ -304,8 +304,8 @@
     <string name="voice_answer_unsupported">Roata ta nu raportează %1$s.</string>
     <string name="voice_answer_nodata">Încă nu există %1$s.</string>
     <string name="voice_answer_setup">%1$s trebuie configurat mai întâi.</string>
-    <string name="voice_answer_unknown">Nu am înțeles. Spune %1$s pentru listă.</string>
-    <string name="voice_help_terms">ajutor,ce pot spune,ce pot cere</string>
+    <string name="voice_answer_unknown">Nu am înțeles. Spune %1$s pentru ajutor.</string>
+    <string name="voice_help_terms">ce pot spune,ajutor,ce pot cere</string>
     <string name="voice_answer_examples">Aceasta este lista cu ce poți spune.</string>
     <string name="voice_special_connected">Conectat la %1$s.</string>
     <string name="voice_special_not_connected">Nicio roată conectată.</string>

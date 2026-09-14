@@ -1340,7 +1340,7 @@
     <string name="menu_switch_to_voice_command">Bytt til talekommando</string>
     <string name="menu_switch_to_voice_report">Bytt til talemelding</string>
     <string name="voice_commands_title">Talekommandoer</string>
-    <string name="voice_commands_enable_desc">Spør høyt om en verdi og hør svaret.</string>
+    <string name="voice_commands_enable_desc">Spør om en verdi høyt.</string>
     <string name="voice_command_prompt">Lyttesignal</string>
     <string name="voice_prompt_beep">Pip</string>
     <string name="voice_prompt_voice">Stemme</string>
@@ -1353,8 +1353,8 @@
     <string name="voice_answer_unsupported">Hjulet ditt rapporterer ikke %1$s.</string>
     <string name="voice_answer_nodata">Ingen %1$s ennå.</string>
     <string name="voice_answer_setup">%1$s må settes opp først.</string>
-    <string name="voice_answer_unknown">Det fikk jeg ikke med meg. Si %1$s for listen.</string>
-    <string name="voice_help_terms">hjelp,hva kan jeg si,hva kan jeg spørre om</string>
+    <string name="voice_answer_unknown">Det fikk jeg ikke med meg. Si %1$s for hjelp.</string>
+    <string name="voice_help_terms">hva kan jeg si,hjelp,hva kan jeg spørre om</string>
     <string name="voice_answer_examples">Her er listen over hva du kan si.</string>
     <string name="voice_special_connected">Koblet til %1$s.</string>
     <string name="voice_special_not_connected">Ingen wheel tilkoblet.</string>

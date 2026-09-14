@@ -1359,7 +1359,7 @@
     <string name="menu_switch_to_voice_command">Passa al comando vocale</string>
     <string name="menu_switch_to_voice_report">Passa ad annuncio vocale</string>
     <string name="voice_commands_title">Comandi vocali</string>
-    <string name="voice_commands_enable_desc">Chiedi un dato ad alta voce e ascolta la risposta.</string>
+    <string name="voice_commands_enable_desc">Chiedi un valore ad alta voce.</string>
     <string name="voice_command_prompt">Segnale di ascolto</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>
@@ -1372,8 +1372,8 @@
     <string name="voice_answer_unsupported">La tua ruota non riporta %1$s.</string>
     <string name="voice_answer_nodata">Ancora nessun %1$s.</string>
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
-    <string name="voice_answer_unknown">Non ho capito. Di %1$s per la lista.</string>
-    <string name="voice_help_terms">aiuto,cosa posso dire,cosa posso chiedere</string>
+    <string name="voice_answer_unknown">Non ho capito. Di %1$s per aiuto.</string>
+    <string name="voice_help_terms">cosa posso dire,aiuto,cosa posso chiedere</string>
     <string name="voice_answer_examples">Ecco la lista di quello che puoi dire.</string>
     <string name="voice_special_connected">Collegato a %1$s.</string>
     <string name="voice_special_not_connected">Nessun monoruota collegato.</string>

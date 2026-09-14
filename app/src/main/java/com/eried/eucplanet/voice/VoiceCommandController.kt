@@ -160,6 +160,9 @@ class VoiceCommandController @Inject constructor(
         val handingOver = activeMic != null
         activeMic?.stop()
         activeMic = null
+        // Taking the microphone off a session in flight is that session
+        // ending, and it ends the way any other does.
+        if (handingOver) scope.launch { tonePlayer.playEndPrompt() }
         _state.value = UiState.Idle
         session = scope.launch {
             val settings = settingsRepository.get()
@@ -245,6 +248,12 @@ class VoiceCommandController @Inject constructor(
             }
             mic.stop()
             if (activeMic === mic) activeMic = null
+            // The mirror of the opening cue, so a closed window is audible.
+            // Only when the rider was not understood or said nothing: an
+            // answer is its own proof that listening ended.
+            if (heard.isNullOrBlank() && settings.voiceCommands.prompt == "beep") {
+                tonePlayer.playEndPrompt()
+            }
             // A rider recording a video did not mumble, they are being told
             // the microphone is spoken for. Saying "I did not catch that"
             // there is the app blaming them for its own conflict.

@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Passer à la commande vocale</string>
     <string name="menu_switch_to_voice_report">Basculer vers annonce vocale</string>
     <string name="voice_commands_title">Commandes vocales</string>
-    <string name="voice_commands_enable_desc">Demandez une valeur à voix haute et écoutez la réponse.</string>
+    <string name="voice_commands_enable_desc">Demandez une valeur à voix haute.</string>
     <string name="voice_command_prompt">Signal d\'écoute</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voix</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Votre roue ne communique pas %1$s.</string>
     <string name="voice_answer_nodata">Pas encore de %1$s.</string>
     <string name="voice_answer_setup">%1$s doit d\'abord être configuré.</string>
-    <string name="voice_answer_unknown">Pas compris. Dites %1$s pour la liste.</string>
-    <string name="voice_help_terms">aide,que puis-je dire,que puis-je demander</string>
+    <string name="voice_answer_unknown">Pas compris. Dites %1$s pour de l aide.</string>
+    <string name="voice_help_terms">que puis-je dire,aide,que puis-je demander</string>
     <string name="voice_answer_examples">Voici la liste de ce que vous pouvez dire.</string>
     <string name="voice_special_connected">Connecté à %1$s.</string>
     <string name="voice_special_not_connected">Aucune roue connectée.</string>

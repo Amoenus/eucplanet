@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Auf Sprachbefehl umschalten</string>
     <string name="menu_switch_to_voice_report">Zu Sprachansage wechseln</string>
     <string name="voice_commands_title">Sprachbefehle</string>
-    <string name="voice_commands_enable_desc">Einen Wert laut abfragen und die Antwort hören.</string>
+    <string name="voice_commands_enable_desc">Einen Wert laut abfragen.</string>
     <string name="voice_command_prompt">Hörsignal</string>
     <string name="voice_prompt_beep">Ton</string>
     <string name="voice_prompt_voice">Stimme</string>
@@ -341,8 +341,8 @@
     <string name="voice_answer_unsupported">Dein Wheel meldet %1$s nicht.</string>
     <string name="voice_answer_nodata">Noch kein %1$s.</string>
     <string name="voice_answer_setup">%1$s muss zuerst eingerichtet werden.</string>
-    <string name="voice_answer_unknown">Das habe ich nicht verstanden. Sag %1$s für die Liste.</string>
-    <string name="voice_help_terms">hilfe,was kann ich sagen,was kann ich fragen</string>
+    <string name="voice_answer_unknown">Das habe ich nicht verstanden. Sag %1$s für Hilfe.</string>
+    <string name="voice_help_terms">was kann ich sagen,hilfe,was kann ich fragen</string>
     <string name="voice_answer_examples">Hier ist die Liste dessen, was du sagen kannst.</string>
     <string name="voice_special_connected">Verbunden mit %1$s.</string>
     <string name="voice_special_not_connected">Kein Wheel verbunden.</string>

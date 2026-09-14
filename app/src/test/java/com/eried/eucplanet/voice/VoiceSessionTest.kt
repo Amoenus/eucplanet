@@ -29,7 +29,10 @@ class VoiceSessionTest {
         ),
         reportNames = mapOf("PWM" to "PWM"),
         splitName = "Last split",
-        helpPhrases = "help,what can I say",
+        // "what can I say" first: it is the phrase the not-understood
+        // answer names, and the one the list shows, so the order here
+        // matches what the app actually ships.
+        helpPhrases = "what can I say,help",
     )
 
     /** What the app does with one spoken phrase. */
@@ -113,7 +116,7 @@ class VoiceSessionTest {
         // Consumption, they need the way to find out what does work.
         val a = ask("what is the weather like", onDashboard = setOf("WH_PER_KM", "MOTOR_TEMP"))
         assertTrue(a is Answer.NotUnderstood)
-        assertEquals("help", (a as Answer.NotUnderstood).helpPhrase)
+        assertEquals("what can I say", (a as Answer.NotUnderstood).helpPhrase)
     }
 
     @Test

@@ -95,8 +95,10 @@ class AndroidVoiceListener(
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
         _state.value = ListenState.Listening
+        val via = if (useOnDevice) "on-device" else "network"
+        Log.i(TAG, "listening via $via recogniser, $languageTag")
         com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
-            "Voice: listening via ${if (useOnDevice) "on-device" else "network"} recogniser, $languageTag"
+            "Voice: listening via $via recogniser, $languageTag"
         )
         try {
             r.startListening(intent)
@@ -142,6 +144,7 @@ class AndroidVoiceListener(
                 ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 ?.firstOrNull()
                 .orEmpty()
+            Log.i(TAG, if (text.isBlank()) "heard nothing" else "heard \"$text\"")
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                 if (text.isBlank()) "Voice: heard nothing" else "Voice: heard \"$text\""
             )
@@ -157,17 +160,25 @@ class AndroidVoiceListener(
             // Remember that and take the networked route from here, which is
             // what a rider who has never downloaded a pack will always hit.
             if (!onDeviceFailed && isOnDevice && isLanguageUnavailable(error)) {
+                Log.i(TAG, "no on-device language pack (${errorName(error)}), trying the network one")
                 com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                     "Voice: no on-device language pack (${errorName(error)}), trying the network one"
                 )
                 onDeviceFailed = true
                 release()
+                // start() refuses while the state still says Listening, which
+                // it does right up to this error. Without clearing it the
+                // fallback logs its intention and then returns without ever
+                // opening the microphone again, which is a wheel that has gone
+                // quiet by a longer route.
+                _state.value = ListenState.Idle
                 start()
                 return
             }
             // The rider never sees this string; it is for the diagnostics log.
             // What they hear is the spoken "I did not catch that", which the
             // controller says for every failure so silence is never the answer.
+            Log.i(TAG, "gave up, ${errorName(error)}")
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                 "Voice: gave up, ${errorName(error)}"
             )

@@ -82,7 +82,7 @@ class VoiceCommandController @Inject constructor(
             if (!settings.voiceCommands.enabled) return@launch
             val mic = listener ?: AndroidVoiceListener(
                 context = context,
-                languageTag = settings.voiceLocale.ifBlank { "en-US" },
+                languageTag = VoiceLocaleTag.tag(settings.voiceLocale),
             )
             _state.value = UiState.Listening
             when (settings.voiceCommands.prompt) {

@@ -291,7 +291,7 @@
     <string name="menu_switch_to_voice_command">Přepnout na hlasový příkaz</string>
     <string name="menu_switch_to_voice_report">Přepnout na hlasové hlášení</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
-    <string name="voice_commands_enable_desc">Zeptej se na hodnotu nahlas.</string>
+    <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem.</string>
     <string name="voice_command_prompt">Signál naslouchání</string>
     <string name="voice_prompt_beep">Pípnutí</string>
     <string name="voice_prompt_voice">Hlas</string>

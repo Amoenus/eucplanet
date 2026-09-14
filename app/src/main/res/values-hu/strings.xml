@@ -291,7 +291,7 @@
     <string name="menu_switch_to_voice_command">Váltás hangparancsra</string>
     <string name="menu_switch_to_voice_report">Váltás hangbemondásra</string>
     <string name="voice_commands_title">Hangparancsok</string>
-    <string name="voice_commands_enable_desc">Kérdezz egy értéket hangosan.</string>
+    <string name="voice_commands_enable_desc">Használd a hangod az alkalmazásban.</string>
     <string name="voice_command_prompt">Hallgatás jelzése</string>
     <string name="voice_prompt_beep">Hangjelzés</string>
     <string name="voice_prompt_voice">Beszéd</string>

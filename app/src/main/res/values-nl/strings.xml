@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
     <string name="menu_switch_to_voice_report">Wisselen naar spraakmelding</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
-    <string name="voice_commands_enable_desc">Vraag een waarde hardop.</string>
+    <string name="voice_commands_enable_desc">Gebruik je stem in de app.</string>
     <string name="voice_command_prompt">Luistersignaal</string>
     <string name="voice_prompt_beep">Piep</string>
     <string name="voice_prompt_voice">Stem</string>

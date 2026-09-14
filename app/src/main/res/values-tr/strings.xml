@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Sesli komuta geç</string>
     <string name="menu_switch_to_voice_report">Sesli anonsa geç</string>
     <string name="voice_commands_title">Sesli komutlar</string>
-    <string name="voice_commands_enable_desc">Bir değeri sesli sor.</string>
+    <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan.</string>
     <string name="voice_command_prompt">Dinleme uyarısı</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Ses</string>

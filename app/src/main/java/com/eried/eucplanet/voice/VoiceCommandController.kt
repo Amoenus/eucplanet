@@ -91,6 +91,14 @@ class VoiceCommandController @Inject constructor(
          */
         const val ROUTE_SETTLE_MS = 220L
 
+        /**
+         * How long the answer stays up after the speech has finished.
+         *
+         * Enough that the tile does not blink out mid-syllable on a device
+         * that reports the end early, short enough that it reads as done.
+         */
+        const val ANSWER_LINGER_MS = 600L
+
         /** How long to wait for the speech to begin before giving up on it. */
         const val SPEECH_START_WAIT_MS = 1500L
 
@@ -205,7 +213,7 @@ class VoiceCommandController @Inject constructor(
                 com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
                     "Voice: refused, no microphone permission"
                 )
-                delay(4000)
+                delay(ANSWER_LINGER_MS)
                 _state.value = UiState.Idle
                 return@launch
             }
@@ -294,31 +302,13 @@ class VoiceCommandController @Inject constructor(
                 tonePlayer.playEndPrompt()
             }
 
-            // Leave the answer on screen briefly, then go quiet.
-            delay(4000)
-            _state.value = UiState.Idle
-        }
-    }
-
-    /**
-     * Answer a phrase without opening the microphone.
-     *
-     * Backs the tappable What can I say list: a rider picks a name and hears
-     * exactly what asking for it would say, with their own wheel's values,
-     * their own units and their own language. Rule 10 asks a preview to show
-     * the real configuration, and this is the real path, with only the
-     * acoustics left out.
-     *
-     * It is also the only way to exercise the whole chain on a device where
-     * nobody can speak: an emulator, or a bench.
-     */
-    fun answerPhrase(phrase: String) {
-        if (session?.isActive == true) return
-        session = scope.launch {
-            val settings = settingsRepository.get()
-            _state.value = UiState.Heard(phrase)
-            answer(phrase, settings)
-            delay(4000)
+            // A short tail, not four seconds. That number was chosen when the
+            // session ended the moment the speech started, so it was the only
+            // thing keeping the answer on screen while it was being said. The
+            // session now waits for the speech to finish, so four more
+            // seconds on top is four seconds of a tile that looks busy and is
+            // not.
+            delay(ANSWER_LINGER_MS)
             _state.value = UiState.Idle
         }
     }

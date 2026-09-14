@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Перейти до голосової команди</string>
     <string name="menu_switch_to_voice_report">Перемкнути на голосове повідомлення</string>
     <string name="voice_commands_title">Голосові команди</string>
-    <string name="voice_commands_enable_desc">Запитайте значення вголос.</string>
+    <string name="voice_commands_enable_desc">Керуйте застосунком голосом.</string>
     <string name="voice_command_prompt">Сигнал прослуховування</string>
     <string name="voice_prompt_beep">Звук</string>
     <string name="voice_prompt_voice">Голос</string>

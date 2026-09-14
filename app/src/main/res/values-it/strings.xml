@@ -1359,7 +1359,7 @@
     <string name="menu_switch_to_voice_command">Passa al comando vocale</string>
     <string name="menu_switch_to_voice_report">Passa ad annuncio vocale</string>
     <string name="voice_commands_title">Comandi vocali</string>
-    <string name="voice_commands_enable_desc">Chiedi un valore ad alta voce.</string>
+    <string name="voice_commands_enable_desc">Usa la voce con la app.</string>
     <string name="voice_command_prompt">Segnale di ascolto</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>

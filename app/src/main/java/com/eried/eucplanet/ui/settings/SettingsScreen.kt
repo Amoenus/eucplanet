@@ -7249,16 +7249,34 @@ private fun VoiceTab(
         Spacer(Modifier.height(6.dp))
         HintText(stringResource(R.string.voice_commands_bind_desc))
         Spacer(Modifier.height(6.dp))
-        HintText(stringResource(R.string.voice_commands_ask_desc))
-        // The list is a control, not a sentence. Folding it into the paragraph
-        // made a block of explanation into a tap target, so a rider reading
-        // about buttons was standing on one.
-        TextButton(
-            onClick = { vocabularyOpen = true },
-            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 4.dp),
-        ) {
-            Text(stringResource(R.string.voice_command_vocabulary))
-        }
+        // The link sits inside the sentence, but only the link is clickable.
+        // LinkAnnotation.Clickable scopes the tap to its own span, which the
+        // earlier version could not do: making the Text clickable turned a
+        // paragraph about pressing buttons into a button. Same API the service
+        // mode notice already uses.
+        val linkColor = MaterialTheme.appColors.primary
+        val vocabularyLabel = stringResource(R.string.voice_command_vocabulary)
+        val askText = stringResource(R.string.voice_commands_ask_desc)
+        Text(
+            buildAnnotatedString {
+                append(askText)
+                append(" ")
+                withLink(
+                    LinkAnnotation.Clickable(
+                        tag = "vocabulary",
+                        styles = TextLinkStyles(
+                            style = SpanStyle(
+                                color = linkColor,
+                                textDecoration = TextDecoration.Underline,
+                            )
+                        ),
+                    ) { vocabularyOpen = true }
+                ) { append(vocabularyLabel) }
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.appColors.textSecondary,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+        )
         if (vocabularyOpen) {
             VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
         }

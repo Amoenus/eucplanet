@@ -7263,7 +7263,9 @@ private fun VoiceTab(
             VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
         }
         run {
-            Spacer(Modifier.height(8.dp))
+            // No spacer: SegmentedChoice already pads itself top and bottom,
+            // and adding eight more put this row seventeen pixels down while
+            // every other row in Settings sits at nine.
             // The label belongs to the control, not above it: SegmentedChoice
             // carries its own, the way the Announce row below does.
             SegmentedChoice(

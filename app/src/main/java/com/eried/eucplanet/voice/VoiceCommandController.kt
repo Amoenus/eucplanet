@@ -73,6 +73,15 @@ class VoiceCommandController @Inject constructor(
         /** How still the words must be before the transcript shows them. */
         const val PARTIAL_SETTLE_MS = 500L
 
+        /**
+         * How long the system recogniser needs to let go.
+         *
+         * Only paid when replacing a session already listening, so a first
+         * press is as quick as it ever was. Measured rather than guessed: a
+         * replacement 50 milliseconds after the stop was still refused.
+         */
+        const val RECOGNISER_RELEASE_MS = 300L
+
         /** How long to wait for a yes. Short: it is one word. */
         const val CONFIRM_WINDOW_MS = 4000L
 
@@ -105,6 +114,18 @@ class VoiceCommandController @Inject constructor(
 
     private var session: Job? = null
 
+    /**
+     * The microphone currently open, if any.
+     *
+     * Cancelling the session coroutine does not close a recogniser: it is an
+     * Android object with its own lifetime, and the stop call lives in code
+     * the cancellation skips. Held here so a second press can close the first
+     * one before opening its own, which is the difference between "listening
+     * again" and ERROR_RECOGNIZER_BUSY dressed up as another app stealing the
+     * microphone.
+     */
+    private var activeMic: VoiceListener? = null
+
     /** The last finished ride, read before a match so `read` need not suspend. */
     private var lastTripSnapshot: com.eried.eucplanet.data.model.TripRecord? = null
 
@@ -131,6 +152,14 @@ class VoiceCommandController @Inject constructor(
         // session ran out its window, so a rider who fumbled the first
         // question had to wait for the app to finish not understanding it.
         session?.cancel()
+        // Whether we are taking the microphone off ourselves. The system
+        // recogniser does not hand it back the instant stop() returns, so the
+        // replacement waits a moment rather than racing its predecessor and
+        // being told the microphone is busy - which it then reported as
+        // another app holding it, blaming a stranger for our own handover.
+        val handingOver = activeMic != null
+        activeMic?.stop()
+        activeMic = null
         _state.value = UiState.Idle
         session = scope.launch {
             val settings = settingsRepository.get()
@@ -168,6 +197,8 @@ class VoiceCommandController @Inject constructor(
             // come first, so a rider who answered it promptly spoke into a
             // recogniser that had not finished starting and lost the first
             // word, which is why a word as short as "help" rarely landed.
+            if (handingOver) delay(RECOGNISER_RELEASE_MS)
+            activeMic = mic
             mic.start()
             val readyBy = System.currentTimeMillis() + READY_WAIT_MS
             while (System.currentTimeMillis() < readyBy &&
@@ -213,6 +244,7 @@ class VoiceCommandController @Inject constructor(
                 delay(60)
             }
             mic.stop()
+            if (activeMic === mic) activeMic = null
             // A rider recording a video did not mumble, they are being told
             // the microphone is spoken for. Saying "I did not catch that"
             // there is the app blaming them for its own conflict.

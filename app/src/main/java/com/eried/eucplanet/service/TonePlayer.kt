@@ -114,8 +114,7 @@ class TonePlayer @Inject constructor() {
      * speaking, or the recogniser spends its first moments listening to us.
      */
     suspend fun playPrompt() {
-        playBeep(640, 60)
-        playBeep(860, 70)
+        playBeep(620, 150, glideToHz = 880)
     }
 
     suspend fun playBeep(
@@ -127,6 +126,15 @@ class TonePlayer @Inject constructor() {
         transitionMs: Int = -1,
         waveform: Int = 0,
         effect: Int = 0,
+        /**
+         * Sweep to this frequency across the run, 0 for a steady tone.
+         *
+         * A rising cue used to be two playBeep calls back to back, which is
+         * two AudioTracks, two starts and two stops: the seam between them
+         * clicked, and at low frequencies the click is the loudest part of the
+         * sound. One buffer that changes pitch has no seam.
+         */
+        glideToHz: Int = 0,
     ) {
         if (count <= 0 || durationMs <= 0) return
         Log.d(TAG, "playBeep freq=$frequencyHz dur=$durationMs count=$count gap=$gapMs vol=$volumePct")
@@ -172,6 +180,7 @@ class TonePlayer @Inject constructor() {
 
             var w = leadPadN  // write cursor; leading silence pad already skipped
             val inc = frequencyHz.toDouble() / sampleRate
+            val glideEnd = if (glideToHz > 0) glideToHz.toDouble() else frequencyHz.toDouble()
             var phase = 0.0       // carrier phase in cycles; continuous within a run
             var modPhase = 0.0    // FM modulator phase (runs at 2x carrier)
             val fx = Fx()
@@ -184,10 +193,18 @@ class TonePlayer @Inject constructor() {
                         if (i >= runN - edge) (runN - i).toDouble() / edge else 1.0
                     )
                     val env = 0.5 - 0.5 * cos(Math.PI * ramp)
-                    val osc = applyFx(effect, waveSample(waveform, phase, modPhase), frequencyHz.toDouble(), fx)
+                    // Steady unless gliding, in which case the frequency walks
+                    // from one end to the other across the run.
+                    val freqNow = if (glideToHz > 0) {
+                        frequencyHz + (glideEnd - frequencyHz) * (i.toDouble() / runN)
+                    } else {
+                        frequencyHz.toDouble()
+                    }
+                    val incNow = if (glideToHz > 0) freqNow / sampleRate else inc
+                    val osc = applyFx(effect, waveSample(waveform, phase, modPhase), freqNow, fx)
                     samples[w++] = (osc * env * gain * Short.MAX_VALUE).toInt().toShort()
-                    phase += inc; if (phase >= 1.0) phase -= 1.0
-                    modPhase += 2.0 * inc; if (modPhase >= 1.0) modPhase -= 1.0
+                    phase += incNow; if (phase >= 1.0) phase -= 1.0
+                    modPhase += 2.0 * incNow; if (modPhase >= 1.0) modPhase -= 1.0
                 }
                 if (b < runCount - 1 && gapN > 0) {
                     w += gapN   // leave zeros (silence); restart phase + effect state after the gap

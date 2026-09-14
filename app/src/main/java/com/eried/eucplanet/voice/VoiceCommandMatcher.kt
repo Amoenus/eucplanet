@@ -9,6 +9,15 @@ import com.eried.eucplanet.voice.VoiceVocabulary.SpokenTerm
  * hot is the motor", "consumption". So this looks for any known name inside the
  * phrase rather than demanding the phrase be a name.
  *
+ * And they shorten things. Nobody says "controller temperature" out loud, they
+ * say "controller temp", so a name is matched word by word with the last part
+ * of a word allowed to be missing, rather than as one exact run of characters.
+ * That also stops word order from mattering: "estimated battery" finds the
+ * estimate rather than landing on plain battery because the label happened to
+ * read the other way round. It is a rule and not a list of phrasings, which is
+ * the point: a metric added tomorrow gets all of this from the label alone,
+ * with nothing to keep in sync and nothing new to translate.
+ *
  * The hard part is not matching, it is the near neighbours. There are three
  * temperatures in the catalog (motor, controller, battery) and two speed
  * limits, so "temperature" on its own is genuinely ambiguous and "motor
@@ -46,9 +55,10 @@ object VoiceCommandMatcher {
         val phrase = normalise(heard)
         if (phrase.isBlank()) return VoiceMatch.None
 
+        val spoken = phrase.split(" ").filter { it.isNotBlank() }
         val present = vocabulary.filter { term ->
             val name = normalise(term.name)
-            name.isNotBlank() && phrase.contains(name)
+            name.isNotBlank() && covers(spoken, name.split(" "))
         }
         if (present.isEmpty()) return VoiceMatch.None
 
@@ -64,6 +74,39 @@ object VoiceCommandMatcher {
 
         return VoiceMatch.Ambiguous(best)
     }
+
+    /**
+     * True when every word of a name is somewhere in what the rider said.
+     *
+     * Order is not required, because a rider reaching for a name rarely
+     * reproduces the label's word order, and requiring it buys nothing: the
+     * words themselves are specific enough. "Motor temperature" still cannot
+     * match a phrase that never says motor, which is what keeps the three
+     * temperatures apart.
+     */
+    private fun covers(spoken: List<String>, nameWords: List<String>): Boolean =
+        nameWords.all { word -> spoken.any { matches(it, word) } }
+
+    /**
+     * One spoken word against one word of a name.
+     *
+     * Either may be the shortened one: a rider says "temp" for temperature,
+     * and a recogniser hearing "temperatures" should still land on a label
+     * that reads "temperature". Three characters is the floor, so that a stray
+     * short word cannot drag in a name: it is enough for "est" in
+     * "Battery (est)" to find "estimated", and short enough to stay honest.
+     * Anything shorter has to be said exactly, which is what "PWM" and the "g"
+     * of "g force" want anyway.
+     */
+    private fun matches(spokenWord: String, nameWord: String): Boolean {
+        if (spokenWord == nameWord) return true
+        val shorter = if (spokenWord.length <= nameWord.length) spokenWord else nameWord
+        val longer = if (shorter === spokenWord) nameWord else spokenWord
+        return shorter.length >= MIN_PREFIX && longer.startsWith(shorter)
+    }
+
+    /** Below this, a word has to be said exactly. */
+    private const val MIN_PREFIX = 3
 
     /**
      * Lower case, punctuation out, runs of blanks collapsed. Recognisers differ

@@ -114,7 +114,7 @@ class TonePlayer @Inject constructor() {
      * speaking, or the recogniser spends its first moments listening to us.
      */
     suspend fun playPrompt() {
-        playBeep(620, 150, glideToHz = 880)
+        playBeep(620, 150, glideToHz = 880, leadPadMs = 160)
     }
 
     suspend fun playBeep(
@@ -135,6 +135,16 @@ class TonePlayer @Inject constructor() {
          * sound. One buffer that changes pitch has no seam.
          */
         glideToHz: Int = 0,
+        /**
+         * Silence written before the tone, milliseconds.
+         *
+         * Thirty is enough for a beep on a settled route. The listening cue is
+         * not on a settled route: the recogniser has just opened the
+         * microphone, which moves the device into a communication audio mode,
+         * and a tone started into that transition arrives with the switch
+         * still audible under it.
+         */
+        leadPadMs: Int = 30,
     ) {
         if (count <= 0 || durationMs <= 0) return
         Log.d(TAG, "playBeep freq=$frequencyHz dur=$durationMs count=$count gap=$gapMs vol=$volumePct")
@@ -153,7 +163,7 @@ class TonePlayer @Inject constructor() {
             // Lead-in silence so the audio route/amp power-up transient (a start-of-
             // playback pop) settles in silence before the tone ramps in; a small tail
             // pad drains cleanly before stop().
-            val leadPadN = sampleRate * 30 / 1000
+            val leadPadN = sampleRate * leadPadMs.coerceAtLeast(0) / 1000
             val tailPadN = sampleRate * 12 / 1000
             val bodyN = leadPadN + runN * runCount + gapN * (runCount - 1).coerceAtLeast(0) + tailPadN
             // MODE_STREAM only begins playing once the written frames reach its start

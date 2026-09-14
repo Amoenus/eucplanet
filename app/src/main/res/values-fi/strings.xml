@@ -306,7 +306,7 @@
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
     <string name="voice_answer_unknown">En saanut selvää. Sano %1$s nähdäksesi listan.</string>
     <string name="voice_help_terms">apua,mitä voin sanoa,mitä voin kysyä</string>
-    <string name="voice_answer_examples">Voit kysyä %1$s, %2$s tai %3$s.</string>
+    <string name="voice_answer_examples">Tässä on lista siitä, mitä voit sanoa.</string>
     <string name="voice_special_connected">Yhdistetty: %1$s.</string>
     <string name="voice_special_not_connected">Ei yhdistettyä pyörää.</string>
     <string name="voice_special_uptime">Yhdistettynä %1$s.</string>

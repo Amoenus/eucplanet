@@ -1374,7 +1374,7 @@
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
     <string name="voice_answer_unknown">Non ho capito. Di %1$s per la lista.</string>
     <string name="voice_help_terms">aiuto,cosa posso dire,cosa posso chiedere</string>
-    <string name="voice_answer_examples">Puoi chiedere %1$s, %2$s o %3$s.</string>
+    <string name="voice_answer_examples">Ecco la lista di quello che puoi dire.</string>
     <string name="voice_special_connected">Collegato a %1$s.</string>
     <string name="voice_special_not_connected">Nessun monoruota collegato.</string>
     <string name="voice_special_uptime">Collegato da %1$s.</string>

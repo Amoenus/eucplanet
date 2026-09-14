@@ -1338,7 +1338,7 @@
     <string name="voice_answer_setup">%1$s需要先设置。</string>
     <string name="voice_answer_unknown">没有听清。说 %1$s 查看列表。</string>
     <string name="voice_help_terms">帮助,我能说什么,我能问什么</string>
-    <string name="voice_answer_examples">可以问 %1$s、%2$s 或 %3$s。</string>
+    <string name="voice_answer_examples">这是可以说的内容列表。</string>
     <string name="voice_special_connected">已连接 %1$s。</string>
     <string name="voice_special_not_connected">未连接轮子。</string>
     <string name="voice_special_uptime">已连接 %1$s。</string>

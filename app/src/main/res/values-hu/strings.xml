@@ -306,7 +306,7 @@
     <string name="voice_answer_setup">%1$s előbb beállítást igényel.</string>
     <string name="voice_answer_unknown">Nem értettem. Mondd: %1$s a listához.</string>
     <string name="voice_help_terms">segítség,mit mondhatok,mit kérdezhetek</string>
-    <string name="voice_answer_examples">Kérdezhetsz erre: %1$s, %2$s vagy %3$s.</string>
+    <string name="voice_answer_examples">Itt a lista arról, mit mondhatsz.</string>
     <string name="voice_special_connected">Csatlakoztatva: %1$s.</string>
     <string name="voice_special_not_connected">Nincs csatlakoztatott kerék.</string>
     <string name="voice_special_uptime">%1$s óta csatlakozva.</string>

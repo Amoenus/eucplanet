@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
     <string name="voice_answer_unknown">Не розчув. Скажіть %1$s, щоб побачити список.</string>
     <string name="voice_help_terms">допомога,що можна сказати,що можна запитати</string>
-    <string name="voice_answer_examples">Можна запитати %1$s, %2$s або %3$s.</string>
+    <string name="voice_answer_examples">Ось список того, що можна сказати.</string>
     <string name="voice_special_connected">Підключено до %1$s.</string>
     <string name="voice_special_not_connected">Колесо не підключено.</string>
     <string name="voice_special_uptime">Підключено %1$s.</string>

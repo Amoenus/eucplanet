@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$sは先に設定が必要です。</string>
     <string name="voice_answer_unknown">聞き取れませんでした。%1$s と言うと一覧が出ます。</string>
     <string name="voice_help_terms">ヘルプ,何と言えばいい,何を聞ける</string>
-    <string name="voice_answer_examples">%1$s、%2$s、%3$s などを聞けます。</string>
+    <string name="voice_answer_examples">言えることの一覧です。</string>
     <string name="voice_special_connected">%1$s に接続中。</string>
     <string name="voice_special_not_connected">ホイール未接続。</string>
     <string name="voice_special_uptime">接続してから %1$s。</string>

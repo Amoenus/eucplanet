@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s muss zuerst eingerichtet werden.</string>
     <string name="voice_answer_unknown">Das habe ich nicht verstanden. Sag %1$s für die Liste.</string>
     <string name="voice_help_terms">hilfe,was kann ich sagen,was kann ich fragen</string>
-    <string name="voice_answer_examples">Du kannst nach %1$s, %2$s oder %3$s fragen.</string>
+    <string name="voice_answer_examples">Hier ist die Liste dessen, was du sagen kannst.</string>
     <string name="voice_special_connected">Verbunden mit %1$s.</string>
     <string name="voice_special_not_connected">Kein Wheel verbunden.</string>
     <string name="voice_special_uptime">Seit %1$s verbunden.</string>

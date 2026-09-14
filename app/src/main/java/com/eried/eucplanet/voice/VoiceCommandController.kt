@@ -627,12 +627,10 @@ class VoiceCommandController @Inject constructor(
                 R.string.voice_answer_unknown,
                 answer.helpPhrase,
             )
-            is Answer.Examples -> context.getString(
-                R.string.voice_answer_examples,
-                answer.names.getOrElse(0) { "" },
-                answer.names.getOrElse(1) { "" },
-                answer.names.getOrElse(2) { "" },
-            )
+            // The list goes on screen, so the spoken half says where to look
+            // rather than reciting three of fifty names. Reading examples out
+            // was the answer when there was nothing to show.
+            is Answer.Examples -> context.getString(R.string.voice_answer_examples)
             is Answer.NeedsChoice -> context.getString(
                 R.string.voice_answer_which,
                 answer.names.getOrElse(0) { "" },

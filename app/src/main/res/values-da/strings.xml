@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s skal sættes op først.</string>
     <string name="voice_answer_unknown">Det fangede jeg ikke. Sig %1$s for listen.</string>
     <string name="voice_help_terms">hjælp,hvad kan jeg sige,hvad kan jeg spørge om</string>
-    <string name="voice_answer_examples">Du kan bede om %1$s, %2$s eller %3$s.</string>
+    <string name="voice_answer_examples">Her er listen over, hvad du kan sige.</string>
     <string name="voice_special_connected">Forbundet til %1$s.</string>
     <string name="voice_special_not_connected">Intet wheel forbundet.</string>
     <string name="voice_special_uptime">Forbundet i %1$s.</string>

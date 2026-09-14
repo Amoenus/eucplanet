@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s necesita configurarse primero.</string>
     <string name="voice_answer_unknown">No te entendí. Di %1$s para ver la lista.</string>
     <string name="voice_help_terms">ayuda,qué puedo decir,qué puedo pedir</string>
-    <string name="voice_answer_examples">Puedes pedir %1$s, %2$s o %3$s.</string>
+    <string name="voice_answer_examples">Esta es la lista de lo que puedes decir.</string>
     <string name="voice_special_connected">Conectado a %1$s.</string>
     <string name="voice_special_not_connected">Ninguna rueda conectada.</string>
     <string name="voice_special_uptime">Conectado desde hace %1$s.</string>

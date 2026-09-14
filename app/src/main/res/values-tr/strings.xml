@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s önce ayarlanmalı.</string>
     <string name="voice_answer_unknown">Anlayamadım. Liste için %1$s de.</string>
     <string name="voice_help_terms">yardım,ne diyebilirim,ne sorabilirim</string>
-    <string name="voice_answer_examples">%1$s, %2$s ya da %3$s isteyebilirsin.</string>
+    <string name="voice_answer_examples">Söyleyebileceklerinin listesi burada.</string>
     <string name="voice_special_connected">%1$s bağlandı.</string>
     <string name="voice_special_not_connected">Bağlı teker yok.</string>
     <string name="voice_special_uptime">%1$s bağlı.</string>

@@ -306,7 +306,7 @@
     <string name="voice_answer_setup">%1$s je potřeba nejdřív nastavit.</string>
     <string name="voice_answer_unknown">Nerozuměl jsem. Řekni %1$s pro seznam.</string>
     <string name="voice_help_terms">pomoc,co můžu říct,na co se můžu zeptat</string>
-    <string name="voice_answer_examples">Můžeš se zeptat na %1$s, %2$s nebo %3$s.</string>
+    <string name="voice_answer_examples">Tady je seznam toho, co můžeš říct.</string>
     <string name="voice_special_connected">Připojeno k %1$s.</string>
     <string name="voice_special_not_connected">Není připojeno žádné kolo.</string>
     <string name="voice_special_uptime">Připojeno %1$s.</string>

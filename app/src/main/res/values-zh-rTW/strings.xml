@@ -343,7 +343,7 @@
     <string name="voice_answer_setup">%1$s需要先設定。</string>
     <string name="voice_answer_unknown">沒有聽清楚。說 %1$s 查看清單。</string>
     <string name="voice_help_terms">幫助,我能說什麼,我能問什麼</string>
-    <string name="voice_answer_examples">可以問 %1$s、%2$s 或 %3$s。</string>
+    <string name="voice_answer_examples">這是可以說的內容清單。</string>
     <string name="voice_special_connected">已連接 %1$s。</string>
     <string name="voice_special_not_connected">未連接輪子。</string>
     <string name="voice_special_uptime">已連接 %1$s。</string>

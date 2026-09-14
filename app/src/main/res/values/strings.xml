@@ -348,7 +348,7 @@
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
     <string name="voice_answer_unknown">I did not catch that. Say %1$s for the list.</string>
     <string name="voice_help_terms">help,what can I say,what can I do</string>
-    <string name="voice_answer_examples">You can ask for %1$s, %2$s, or %3$s.</string>
+    <string name="voice_answer_examples">Here is the list of what you can say.</string>
     <string name="voice_special_connected">Connected to %1$s.</string>
     <string name="voice_special_not_connected">No wheel connected.</string>
     <string name="voice_special_uptime">Connected for %1$s.</string>

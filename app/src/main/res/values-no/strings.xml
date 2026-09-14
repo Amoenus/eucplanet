@@ -1355,7 +1355,7 @@
     <string name="voice_answer_setup">%1$s må settes opp først.</string>
     <string name="voice_answer_unknown">Det fikk jeg ikke med meg. Si %1$s for listen.</string>
     <string name="voice_help_terms">hjelp,hva kan jeg si,hva kan jeg spørre om</string>
-    <string name="voice_answer_examples">Du kan be om %1$s, %2$s eller %3$s.</string>
+    <string name="voice_answer_examples">Her er listen over hva du kan si.</string>
     <string name="voice_special_connected">Koblet til %1$s.</string>
     <string name="voice_special_not_connected">Ingen wheel tilkoblet.</string>
     <string name="voice_special_uptime">Tilkoblet i %1$s.</string>

@@ -1317,6 +1317,7 @@
     <string name="action_chip_toggle_units">切换单位</string>
     <string name="action_chip_voice">语音</string>
     <string name="action_chip_voice_listen">聆听</string>
+    <string name="voice_split_term">上次加速</string>
     <string name="voice_commands_title">语音命令</string>
     <string name="voice_commands_enable">聆听提问</string>
     <string name="voice_commands_enable_desc">大声询问一个数值并听取答案</string>

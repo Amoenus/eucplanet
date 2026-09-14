@@ -322,6 +322,7 @@
     <string name="action_chip_light">Світло</string>
     <string name="action_chip_voice">Голос</string>
     <string name="action_chip_voice_listen">Слухати</string>
+    <string name="voice_split_term">Останній замір</string>
     <string name="voice_commands_title">Голосові команди</string>
     <string name="voice_commands_enable">Слухати запитання</string>
     <string name="voice_commands_enable_desc">Запитайте показник уголос і почуйте відповідь</string>

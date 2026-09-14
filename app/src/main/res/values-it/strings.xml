@@ -1353,6 +1353,7 @@
     <string name="action_chip_toggle_units">Cambia unità</string>
     <string name="action_chip_voice">Voce</string>
     <string name="action_chip_voice_listen">Ascolta</string>
+    <string name="voice_split_term">Ultimo split</string>
     <string name="voice_commands_title">Comandi vocali</string>
     <string name="voice_commands_enable">Ascolta le domande</string>
     <string name="voice_commands_enable_desc">Chiedi un dato ad alta voce e ascolta la risposta</string>

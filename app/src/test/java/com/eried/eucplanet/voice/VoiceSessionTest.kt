@@ -130,6 +130,42 @@ class VoiceSessionTest {
     }
 
     @Test
+    fun `the whole chain runs through one entry point`() {
+        // What the service will call: a phrase in, a sentence out, with the two
+        // Android-shaped things (the names, the readings) passed in.
+        val a = VoiceCommandSession.answer(
+            heard = "what is my consumption",
+            vocabulary = vocabulary,
+            onDashboard = setOf("WH_PER_KM"),
+            read = { VoiceCommandSession.Reading("18 watt hours per kilometre", null) },
+        )
+        assertEquals(Answer.Say("Consumption", "18 watt hours per kilometre"), a)
+    }
+
+    @Test
+    fun `a term the app knows nothing about is still not silence`() {
+        val a = VoiceCommandSession.answer(
+            heard = "battery",
+            vocabulary = vocabulary,
+            onDashboard = emptySet(),
+            read = { null },
+        )
+        assertEquals(Answer.Unavailable("Battery", Reason.NO_DATA_YET), a)
+    }
+
+    @Test
+    fun `an ambiguous question asks which, with two names not five`() {
+        val tied = listOf(
+            SpokenTerm("A", Kind.METRIC, "Left sensor"),
+            SpokenTerm("B", Kind.METRIC, "Left sensor"),
+            SpokenTerm("C", Kind.METRIC, "Left sensor"),
+        )
+        val a = VoiceCommandSession.answer("left sensor", tied, emptySet()) { null }
+        assertTrue(a is Answer.NeedsChoice)
+        assertEquals(2, (a as Answer.NeedsChoice).names.size)
+    }
+
+    @Test
     fun `asking for the specific temperature does not get the general one`() {
         val withBoth = vocabulary + SpokenTerm("TEMPERATURE", Kind.METRIC, "Temperature")
         val m = VoiceCommandMatcher.match("motor temperature", withBoth)

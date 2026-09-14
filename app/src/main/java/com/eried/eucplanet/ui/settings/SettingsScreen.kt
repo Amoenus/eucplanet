@@ -7089,6 +7089,81 @@ private fun VoiceTab(
             onCheckedChange = { viewModel.updateAnnounceWelcome(it) },
             onTest = { viewModel.testSpeak(sWelcome) })
 
+        // Voice commands. Its own heading rather than its own section: the
+        // whole area is a toggle, a segmented row, a number and a viewer, which
+        // beside a dozen announcement rows would be a section that looks empty.
+        SectionHeader(stringResource(R.string.voice_commands_title))
+        SwitchSetting(
+            label = stringResource(R.string.voice_commands_enable),
+            checked = settings.voiceCommandsEnabled,
+            onCheckedChange = { viewModel.updateVoiceCommandsEnabled(it) },
+        )
+        Text(
+            stringResource(R.string.voice_commands_enable_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.appColors.textSecondary,
+        )
+        if (settings.voiceCommandsEnabled) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.voice_command_prompt),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            // A spoken prompt can bleed into the microphone and be heard as
+            // part of the question, so a tone is the default. Three choices,
+            // so a segmented row rather than a pair (rule 4).
+            val promptKeys = listOf("beep", "voice", "none")
+            val promptLabels = listOf(
+                stringResource(R.string.voice_prompt_beep),
+                stringResource(R.string.voice_prompt_voice),
+                stringResource(R.string.voice_prompt_none),
+            )
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                promptKeys.forEachIndexed { i, key ->
+                    SegmentedButton(
+                        selected = settings.voiceCommandPrompt == key,
+                        onClick = { viewModel.updateVoiceCommandPrompt(key) },
+                        shape = SegmentedButtonDefaults.itemShape(i, promptKeys.size),
+                        colors = SegmentedButtonDefaults.colors(
+                            activeContainerColor = MaterialTheme.appColors.primary,
+                            activeContentColor = MaterialTheme.appColors.onPrimary,
+                            inactiveContentColor = MaterialTheme.appColors.textSecondary,
+                        ),
+                    ) { Text(promptLabels[i]) }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    stringResource(R.string.voice_command_window),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Box(modifier = Modifier.weight(1.4f)) {
+                    NumberUpDown(
+                        value = settings.voiceCommandWindowSeconds,
+                        onValueChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
+                        range = 3..30,
+                        step = 1,
+                        suffix = "s",
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            // Generated from the same catalogs the matcher listens against, so
+            // it cannot promise a rider something that will not work (rule 10).
+            var vocabularyOpen by remember { mutableStateOf(false) }
+            TextButton(onClick = { vocabularyOpen = true }) {
+                Text(stringResource(R.string.voice_command_vocabulary))
+            }
+            if (vocabularyOpen) {
+                VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
+            }
+        }
+
         // Report status: the periodic-report enable + when/interval, then the
         // draggable per-metric Periodic/Trigger matrix, all tucked into a
         // collapsible so the long list no longer dominates the tab.

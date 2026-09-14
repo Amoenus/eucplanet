@@ -791,6 +791,16 @@ class SettingsViewModel @Inject constructor(
 
     fun updateVoiceReportOrder(order: String) = update { copy(voiceReportOrder = order) }
 
+    // Voice commands. The window and the prompt are clamped in
+    // SettingsRepository.sanitized(), so a synced file cannot leave the
+    // segmented row with nothing selected.
+    fun updateVoiceCommandsEnabled(v: Boolean) = update { copy(voiceCommandsEnabled = v) }
+
+    fun updateVoiceCommandPrompt(v: String) = update { copy(voiceCommandPrompt = v) }
+
+    fun updateVoiceCommandWindowSeconds(v: Int) =
+        update { copy(voiceCommandWindowSeconds = v.coerceIn(3, 30)) }
+
     // Measurement units: speed, distance and temperature are independently
     // selectable. Metric/Imperial/Custom is a derived label (see Units.unitSystemOf).
     fun setUnitSpeed(v: String) = update { copy(unitSpeed = v) }

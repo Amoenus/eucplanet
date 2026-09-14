@@ -322,6 +322,7 @@
     <string name="action_chip_light">Licht</string>
     <string name="action_chip_voice">Stimme</string>
     <string name="action_chip_voice_listen">Zuhören</string>
+    <string name="voice_split_term">Letzter Split</string>
     <string name="voice_commands_title">Sprachbefehle</string>
     <string name="voice_commands_enable">Auf Fragen hören</string>
     <string name="voice_commands_enable_desc">Einen Wert laut abfragen und die Antwort hören</string>

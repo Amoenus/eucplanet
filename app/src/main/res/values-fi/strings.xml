@@ -285,6 +285,7 @@
     <string name="action_chip_light">Valo</string>
     <string name="action_chip_voice">Ääni</string>
     <string name="action_chip_voice_listen">Kuuntele</string>
+    <string name="voice_split_term">Viimeisin väliaika</string>
     <string name="voice_commands_title">Puhekomennot</string>
     <string name="voice_commands_enable">Kuuntele kysymyksiä</string>
     <string name="voice_commands_enable_desc">Kysy arvoa ääneen ja kuule vastaus</string>

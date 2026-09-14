@@ -1334,6 +1334,7 @@
     <string name="action_chip_toggle_units">Bytt enheter</string>
     <string name="action_chip_voice">Tale</string>
     <string name="action_chip_voice_listen">Lytt</string>
+    <string name="voice_split_term">Siste split</string>
     <string name="voice_commands_title">Talekommandoer</string>
     <string name="voice_commands_enable">Lytt etter spørsmål</string>
     <string name="voice_commands_enable_desc">Spør høyt om en verdi og hør svaret</string>

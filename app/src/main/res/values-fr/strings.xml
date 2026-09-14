@@ -322,6 +322,7 @@
     <string name="action_chip_light">Phare</string>
     <string name="action_chip_voice">Voix</string>
     <string name="action_chip_voice_listen">Écouter</string>
+    <string name="voice_split_term">Dernier relevé</string>
     <string name="voice_commands_title">Commandes vocales</string>
     <string name="voice_commands_enable">Écouter les questions</string>
     <string name="voice_commands_enable_desc">Demandez une valeur à voix haute et écoutez la réponse</string>

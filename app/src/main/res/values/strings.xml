@@ -327,6 +327,7 @@
     <string name="action_chip_light">Light</string>
     <string name="action_chip_voice">Voice</string>
     <string name="action_chip_voice_listen">Listen</string>
+    <string name="voice_split_term">Last split</string>
     <string name="voice_commands_title">Voice commands</string>
     <string name="voice_commands_enable">Listen for questions</string>
     <string name="voice_commands_enable_desc">Ask for a metric out loud and hear the answer</string>

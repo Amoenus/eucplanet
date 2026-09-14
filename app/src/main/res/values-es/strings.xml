@@ -322,6 +322,7 @@
     <string name="action_chip_light">Luz</string>
     <string name="action_chip_voice">Voz</string>
     <string name="action_chip_voice_listen">Escuchar</string>
+    <string name="voice_split_term">Último tramo</string>
     <string name="voice_commands_title">Comandos de voz</string>
     <string name="voice_commands_enable">Escuchar preguntas</string>
     <string name="voice_commands_enable_desc">Pregunta un dato en voz alta y escucha la respuesta</string>

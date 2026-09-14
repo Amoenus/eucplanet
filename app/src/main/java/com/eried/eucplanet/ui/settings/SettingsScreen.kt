@@ -698,7 +698,6 @@ fun SettingsScreen(
         stringResource(R.string.announce_legal_mode),
         stringResource(R.string.announce_welcome),
         stringResource(R.string.voice_commands_title),
-        stringResource(R.string.voice_commands_enable),
         stringResource(R.string.voice_command_prompt),
         stringResource(R.string.voice_command_window),
         stringResource(R.string.voice_command_vocabulary),
@@ -7236,17 +7235,12 @@ private fun VoiceTab(
         // whole area is a toggle, a segmented row, a number and a viewer, which
         // beside a dozen announcement rows would be a section that looks empty.
         SectionHeader(stringResource(R.string.voice_commands_title))
-        SwitchSetting(
-            label = stringResource(R.string.voice_commands_enable),
-            checked = settings.voiceCommands.enabled,
-            onCheckedChange = { viewModel.updateVoiceCommandsEnabled(it) },
-        )
-        Text(
-            stringResource(R.string.voice_commands_enable_desc),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.appColors.textSecondary,
-        )
-        if (settings.voiceCommands.enabled) {
+        // No enable switch. Nothing here runs until the rider presses a button,
+        // so a toggle only added a second thing to find and a way for that
+        // press to do nothing. A rider who does not want it simply does not
+        // put the action on a surface.
+        HintText(stringResource(R.string.voice_commands_enable_desc))
+        run {
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.voice_command_prompt),
@@ -7276,15 +7270,25 @@ private fun VoiceTab(
                 }
             }
             Spacer(Modifier.height(8.dp))
-            NumberSettingRow(
-                label = stringResource(R.string.voice_command_window),
-                value = settings.voiceCommands.windowSeconds,
-                default = SETTINGS_DEFAULTS.voiceCommands.windowSeconds,
-                range = 3..30,
-                suffix = "s",
-                description = stringResource(R.string.voice_command_window_desc),
-                onChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
-            )
+            // Half width with the hint beneath, which is how every other
+            // numeric row in this section sits. The Advanced-style row put it
+            // at a different width from the Interval field right below it.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                NumberFieldWithDefault(
+                    value = settings.voiceCommands.windowSeconds,
+                    onValueChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
+                    range = 3..30,
+                    default = SETTINGS_DEFAULTS.voiceCommands.windowSeconds,
+                    suffix = "s",
+                    label = stringResource(R.string.voice_command_window),
+                    modifier = Modifier.weight(1f),
+                )
+                Spacer(Modifier.weight(1f))
+            }
+            HintText(stringResource(R.string.voice_command_window_desc))
             Spacer(Modifier.height(8.dp))
             // Generated from the same catalogs the matcher listens against, so
             // it cannot promise a rider something that will not work (rule 10).

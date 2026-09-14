@@ -42,7 +42,10 @@ object VoiceCommandSession {
         onDashboard: Set<String>,
         read: (SpokenTerm) -> Reading?,
     ): Answer = when (val m = VoiceCommandMatcher.match(heard, vocabulary, onDashboard)) {
-        is VoiceMatch.Hit -> {
+        is VoiceMatch.Hit -> if (m.term.kind == VoiceVocabulary.Kind.HELP) {
+            // Nothing to read: they asked what to ask for.
+            VoiceAnswer.examples(vocabulary, onDashboard)
+        } else {
             val reading = read(m.term)
             VoiceAnswer.answerFor(
                 m.term, reading?.value, reading?.unavailable, reading?.reportText,

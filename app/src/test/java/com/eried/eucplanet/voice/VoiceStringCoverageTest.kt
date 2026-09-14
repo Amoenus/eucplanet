@@ -21,7 +21,6 @@ class VoiceStringCoverageTest {
     private val voiceKeys = listOf(
         "action_chip_voice_listen",
         "voice_commands_title",
-        "voice_commands_enable",
         "voice_commands_enable_desc",
         "voice_command_prompt",
         "voice_prompt_beep",
@@ -35,6 +34,8 @@ class VoiceStringCoverageTest {
         "voice_answer_nodata",
         "voice_answer_setup",
         "voice_answer_unknown",
+        "voice_help_terms",
+        "voice_answer_examples",
         "voice_answer_mic_busy",
         "voice_answer_which",
     )

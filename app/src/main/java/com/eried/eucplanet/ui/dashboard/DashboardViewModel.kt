@@ -1023,14 +1023,14 @@ class DashboardViewModel @Inject constructor(
     /** What a listening session is doing, for the tile and the transcript. */
     val voiceCommandState = voiceCommands.state
 
+    /** Speak the answer for a name from the What can I say list. */
+    fun previewVoiceAnswer(name: String) {
+        voiceCommands.answerPhrase(name)
+    }
+
     fun onVoiceListen() {
-        viewModelScope.launch {
-            if (!settingsRepository.get().voiceCommands.enabled) {
-                appNotifier.post(context.getString(R.string.voice_commands_enable_desc))
-                return@launch
-            }
-            voiceCommands.listen()
-        }
+        // The tile lights up, so it does not also need a snackbar saying so.
+        voiceCommands.listen(notify = false)
     }
 
     /**

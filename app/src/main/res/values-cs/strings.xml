@@ -285,11 +285,12 @@
     <string name="action_chip_light">Světlo</string>
     <string name="action_chip_voice">Hlas</string>
     <string name="action_chip_voice_listen">Poslouchat</string>
+    <string name="menu_voice_ask">Položit otázku</string>
+    <string name="menu_voice_speak_report">Přečíst hlášení</string>
     <string name="voice_split_term">Poslední split</string>
     <string name="menu_switch_to_voice_command">Přepnout na hlasový příkaz</string>
     <string name="menu_switch_to_voice_report">Přepnout na hlasový přehled</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
-    <string name="voice_commands_enable">Naslouchat dotazům</string>
     <string name="voice_commands_enable_desc">Zeptej se nahlas na údaj a poslechni si odpověď.</string>
     <string name="voice_command_prompt">Signál naslouchání</string>
     <string name="voice_prompt_beep">Pípnutí</string>
@@ -305,6 +306,8 @@
     <string name="voice_answer_nodata">Zatím žádné %1$s.</string>
     <string name="voice_answer_setup">%1$s je potřeba nejdřív nastavit.</string>
     <string name="voice_answer_unknown">Nerozuměl jsem. Zkus %1$s nebo %2$s.</string>
+    <string name="voice_help_terms">pomoc,co můžu říct,na co se můžu zeptat</string>
+    <string name="voice_answer_examples">Můžeš se zeptat na %1$s, %2$s nebo %3$s.</string>
     <string name="voice_answer_mic_busy">Mikrofon právě používá něco jiného.</string>
     <string name="voice_answer_which">Myslel jsi %1$s nebo %2$s?</string>
     <string name="action_chip_safety">Legální režim</string>

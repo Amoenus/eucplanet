@@ -105,7 +105,6 @@ object SettingsJson {
         put("voiceAudioFocus", s.voiceAudioFocus)
         put("voiceOutputChannel", s.voiceOutputChannel)
         put("voiceCommands", JSONObject().apply {
-            put("enabled", s.voiceCommands.enabled)
             put("prompt", s.voiceCommands.prompt)
             put("windowSeconds", s.voiceCommands.windowSeconds)
         })
@@ -449,7 +448,6 @@ object SettingsJson {
         voiceOutputChannel = j.optString("voiceOutputChannel", base.voiceOutputChannel),
         voiceCommands = j.optJSONObject("voiceCommands")?.let { v ->
             com.eried.eucplanet.data.model.VoiceCommandSettings(
-                enabled = v.optBoolean("enabled", base.voiceCommands.enabled),
                 prompt = v.optString("prompt", base.voiceCommands.prompt),
                 windowSeconds = v.optInt("windowSeconds", base.voiceCommands.windowSeconds),
             )

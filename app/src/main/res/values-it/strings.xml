@@ -1353,11 +1353,12 @@
     <string name="action_chip_toggle_units">Cambia unità</string>
     <string name="action_chip_voice">Voce</string>
     <string name="action_chip_voice_listen">Ascolta</string>
+    <string name="menu_voice_ask">Fare una domanda</string>
+    <string name="menu_voice_speak_report">Annunciare un report</string>
     <string name="voice_split_term">Ultimo split</string>
     <string name="menu_switch_to_voice_command">Passa al comando vocale</string>
     <string name="menu_switch_to_voice_report">Passa al rapporto vocale</string>
     <string name="voice_commands_title">Comandi vocali</string>
-    <string name="voice_commands_enable">Ascolta le domande</string>
     <string name="voice_commands_enable_desc">Chiedi un dato ad alta voce e ascolta la risposta.</string>
     <string name="voice_command_prompt">Segnale di ascolto</string>
     <string name="voice_prompt_beep">Bip</string>
@@ -1373,6 +1374,8 @@
     <string name="voice_answer_nodata">Ancora nessun %1$s.</string>
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
     <string name="voice_answer_unknown">Non ho capito. Prova %1$s o %2$s.</string>
+    <string name="voice_help_terms">aiuto,cosa posso dire,cosa posso chiedere</string>
+    <string name="voice_answer_examples">Puoi chiedere %1$s, %2$s o %3$s.</string>
     <string name="voice_answer_mic_busy">Il microfono è già in uso.</string>
     <string name="voice_answer_which">Intendevi %1$s o %2$s?</string>
     <string name="alarm_metric_pwm_voice"></string>

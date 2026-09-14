@@ -327,11 +327,12 @@
     <string name="action_chip_light">Light</string>
     <string name="action_chip_voice">Voice</string>
     <string name="action_chip_voice_listen">Listen</string>
+    <string name="menu_voice_ask">Ask a question</string>
+    <string name="menu_voice_speak_report">Speak a report</string>
     <string name="voice_split_term">Last split</string>
     <string name="menu_switch_to_voice_command">Switch to voice command</string>
     <string name="menu_switch_to_voice_report">Switch to voice report</string>
     <string name="voice_commands_title">Voice commands</string>
-    <string name="voice_commands_enable">Listen for questions</string>
     <string name="voice_commands_enable_desc">Ask for a metric out loud and hear the answer.</string>
     <string name="voice_command_prompt">Listening prompt</string>
     <string name="voice_prompt_beep">Beep</string>
@@ -347,6 +348,8 @@
     <string name="voice_answer_nodata">No %1$s yet.</string>
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
     <string name="voice_answer_unknown">I did not catch that. Try %1$s, or %2$s.</string>
+    <string name="voice_help_terms">help,what can I say,what can I do</string>
+    <string name="voice_answer_examples">You can ask for %1$s, %2$s, or %3$s.</string>
     <string name="voice_answer_mic_busy">Something else is using the microphone.</string>
     <string name="voice_answer_which">Did you mean %1$s or %2$s?</string>
     <string name="action_chip_safety">Legal mode</string>

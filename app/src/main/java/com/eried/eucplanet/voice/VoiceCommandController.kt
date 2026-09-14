@@ -44,6 +44,7 @@ class VoiceCommandController @Inject constructor(
     private val wheelRepository: WheelRepository,
     private val voiceService: VoiceService,
     private val tonePlayer: TonePlayer,
+    private val appNotifier: com.eried.eucplanet.util.AppNotifier,
 ) {
 
     private companion object {
@@ -77,11 +78,18 @@ class VoiceCommandController @Inject constructor(
      * Open the microphone. Safe to call again while listening: the rider
      * pressing twice should not start a second recogniser on top of the first.
      */
-    fun listen(listener: VoiceListener? = null) {
+    /**
+     * @param notify post a transient saying it is listening. The default,
+     *   because most surfaces that start this - a Flic, a volume key, the
+     *   watch, the HUD - show the rider nothing at all, and a microphone that
+     *   opened silently is indistinguishable from a button that did nothing.
+     *   The dashboard tile passes false: it lights up, and two cues for one
+     *   press is noise.
+     */
+    fun listen(listener: VoiceListener? = null, notify: Boolean = true) {
         if (session?.isActive == true) return
         session = scope.launch {
             val settings = settingsRepository.get()
-            if (!settings.voiceCommands.enabled) return@launch
             // Every surface that can start listening goes through here, so the
             // check belongs here rather than in each of them. A rider pressing
             // a watch stem or a HUD button with the permission never granted
@@ -107,6 +115,10 @@ class VoiceCommandController @Inject constructor(
                 languageTag = VoiceLocaleTag.tag(settings.voiceLocale),
             )
             _state.value = UiState.Listening
+            // Whatever the app was saying, it stops now. Otherwise the
+            // recogniser spends the window listening to our own voice.
+            voiceService.stopSpeaking()
+            if (notify) appNotifier.post(context.getString(R.string.voice_listening))
             when (settings.voiceCommands.prompt) {
                 "beep" -> tonePlayer.playBeep(PROMPT_HZ, PROMPT_MS)
                 "voice" -> voiceService.speak(context.getString(R.string.voice_listening))
@@ -252,6 +264,12 @@ class VoiceCommandController @Inject constructor(
                 answer.examples.getOrElse(0) { "" },
                 answer.examples.getOrElse(1) { "" },
             )
+            is Answer.Examples -> context.getString(
+                R.string.voice_answer_examples,
+                answer.names.getOrElse(0) { "" },
+                answer.names.getOrElse(1) { "" },
+                answer.names.getOrElse(2) { "" },
+            )
             is Answer.NeedsChoice -> context.getString(
                 R.string.voice_answer_which,
                 answer.names.getOrElse(0) { "" },
@@ -279,6 +297,7 @@ class VoiceCommandController @Inject constructor(
         metricNames = MetricCatalog.all.associate { it.key to context.getString(it.labelRes) },
         reportNames = REPORT_NAMES.mapValues { context.getString(it.value) },
         splitName = context.getString(R.string.voice_split_term),
+        helpPhrases = context.getString(R.string.voice_help_terms),
     )
 
     private fun reasonRes(reason: VoiceAnswer.Reason): Int = when (reason) {

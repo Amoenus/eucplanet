@@ -322,11 +322,12 @@
     <string name="action_chip_light">Licht</string>
     <string name="action_chip_voice">Stem</string>
     <string name="action_chip_voice_listen">Luisteren</string>
+    <string name="menu_voice_ask">Een vraag stellen</string>
+    <string name="menu_voice_speak_report">Rapport uitspreken</string>
     <string name="voice_split_term">Laatste split</string>
     <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
     <string name="menu_switch_to_voice_report">Naar spraakrapport wisselen</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
-    <string name="voice_commands_enable">Luisteren naar vragen</string>
     <string name="voice_commands_enable_desc">Vraag een waarde hardop en hoor het antwoord.</string>
     <string name="voice_command_prompt">Luistersignaal</string>
     <string name="voice_prompt_beep">Piep</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">Nog geen %1$s.</string>
     <string name="voice_answer_setup">%1$s moet eerst worden ingesteld.</string>
     <string name="voice_answer_unknown">Dat verstond ik niet. Probeer %1$s of %2$s.</string>
+    <string name="voice_help_terms">help,wat kan ik zeggen,wat kan ik vragen</string>
+    <string name="voice_answer_examples">Je kunt vragen om %1$s, %2$s of %3$s.</string>
     <string name="voice_answer_mic_busy">Iets anders gebruikt de microfoon.</string>
     <string name="voice_answer_which">Bedoelde je %1$s of %2$s?</string>
     <string name="action_chip_safety">Legale modus</string>

@@ -322,11 +322,12 @@
     <string name="action_chip_light">Światło</string>
     <string name="action_chip_voice">Głos</string>
     <string name="action_chip_voice_listen">Słuchaj</string>
+    <string name="menu_voice_ask">Zadaj pytanie</string>
+    <string name="menu_voice_speak_report">Odczytaj raport</string>
     <string name="voice_split_term">Ostatni pomiar</string>
     <string name="menu_switch_to_voice_command">Przełącz na polecenie głosowe</string>
     <string name="menu_switch_to_voice_report">Przełącz na raport głosowy</string>
     <string name="voice_commands_title">Polecenia głosowe</string>
-    <string name="voice_commands_enable">Nasłuchuj pytań</string>
     <string name="voice_commands_enable_desc">Zapytaj o wartość na głos i usłysz odpowiedź.</string>
     <string name="voice_command_prompt">Sygnał nasłuchu</string>
     <string name="voice_prompt_beep">Sygnał</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">Brak jeszcze %1$s.</string>
     <string name="voice_answer_setup">%1$s wymaga najpierw konfiguracji.</string>
     <string name="voice_answer_unknown">Nie zrozumiałem. Spróbuj %1$s lub %2$s.</string>
+    <string name="voice_help_terms">pomoc,co mogę powiedzieć,o co mogę zapytać</string>
+    <string name="voice_answer_examples">Możesz zapytać o %1$s, %2$s lub %3$s.</string>
     <string name="voice_answer_mic_busy">Mikrofon jest używany przez coś innego.</string>
     <string name="voice_answer_which">Czy chodziło o %1$s czy %2$s?</string>
     <string name="action_chip_safety">Tryb legalny</string>

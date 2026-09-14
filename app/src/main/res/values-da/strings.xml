@@ -322,11 +322,12 @@
     <string name="action_chip_light">Lys</string>
     <string name="action_chip_voice">Tale</string>
     <string name="action_chip_voice_listen">Lyt</string>
+    <string name="menu_voice_ask">Stil et spørgsmål</string>
+    <string name="menu_voice_speak_report">Sig en rapport</string>
     <string name="voice_split_term">Sidste split</string>
     <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
     <string name="menu_switch_to_voice_report">Skift til stemmerapport</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
-    <string name="voice_commands_enable">Lyt efter spørgsmål</string>
     <string name="voice_commands_enable_desc">Spørg højt om en værdi og hør svaret.</string>
     <string name="voice_command_prompt">Lyttesignal</string>
     <string name="voice_prompt_beep">Bip</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">Ingen %1$s endnu.</string>
     <string name="voice_answer_setup">%1$s skal sættes op først.</string>
     <string name="voice_answer_unknown">Det fangede jeg ikke. Prøv %1$s eller %2$s.</string>
+    <string name="voice_help_terms">hjælp,hvad kan jeg sige,hvad kan jeg spørge om</string>
+    <string name="voice_answer_examples">Du kan bede om %1$s, %2$s eller %3$s.</string>
     <string name="voice_answer_mic_busy">Noget andet bruger mikrofonen.</string>
     <string name="voice_answer_which">Mente du %1$s eller %2$s?</string>
     <string name="action_chip_safety">Legal-tilstand</string>

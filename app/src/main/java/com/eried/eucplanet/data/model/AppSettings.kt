@@ -1209,17 +1209,6 @@ data class ShareSettings(
  */
 data class VoiceCommandSettings(
     /**
-     * Listening is on.
-     *
-     * On by default, because nothing listens until the rider asks it to: there
-     * is no wake word and no idle microphone, only a button that has to be
-     * pressed. Defaulting this off meant a rider pressing that button got
-     * nothing and no explanation, which reads as broken rather than as a
-     * setting they had not found. Turning it off remains the way to take the
-     * action off the surfaces entirely.
-     */
-    val enabled: Boolean = true,
-    /**
      * How the app signals the microphone is open: "beep", "voice" or "none".
      * A tone by default, because a spoken prompt can bleed into the microphone
      * and be heard as part of the question, and because a tone cuts through

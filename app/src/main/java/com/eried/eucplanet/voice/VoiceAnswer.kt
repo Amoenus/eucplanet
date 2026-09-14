@@ -51,6 +51,9 @@ object VoiceAnswer {
         /** Explain why not, and what would fix it. */
         data class Unavailable(val name: String, val reason: Reason) : Answer
 
+        /** The rider asked what they can say. Offer a few real names. */
+        data class Examples(val names: List<String>) : Answer
+
         /** Nothing in the phrase was recognised. */
         data class NotUnderstood(val examples: List<String>) : Answer
 
@@ -78,6 +81,21 @@ object VoiceAnswer {
         if (!reportText.isNullOrBlank()) return Answer.SayReport(term.name, reportText)
         if (value.isNullOrBlank()) return Answer.Unavailable(term.name, Reason.NO_DATA_YET)
         return Answer.Say(term.name, value)
+    }
+
+    /**
+     * Three things a rider could ask for, for when they asked what they can
+     * ask for.
+     *
+     * Drawn from their own dashboard first, same as [notUnderstood], because
+     * the tiles they chose are the values they care about. Three rather than
+     * the whole catalog: this is spoken, usually while moving.
+     */
+    fun examples(vocabulary: List<SpokenTerm>, onDashboard: Set<String>): Answer {
+        val askable = vocabulary.filter { it.kind != VoiceVocabulary.Kind.HELP }
+        val preferred = askable.filter { it.key in onDashboard }
+        val source = preferred.ifEmpty { askable }
+        return Answer.Examples(source.take(3).map { it.name })
     }
 
     /**

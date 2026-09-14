@@ -26,6 +26,9 @@ object VoiceVocabulary {
 
         /** An acceleration split, rendered by AccelSplitVoice. */
         SPLIT,
+
+        /** A request for the list itself, answered with examples. */
+        HELP,
     }
 
     /**
@@ -36,6 +39,9 @@ object VoiceVocabulary {
 
     /** The key the split terms use, so callers do not repeat the literal. */
     const val SPLIT_KEY = "LAST_SPLIT"
+
+    /** The key every way of asking "what can I say" shares. */
+    const val HELP_KEY = "HELP"
 
     /**
      * Build the vocabulary.
@@ -48,11 +54,16 @@ object VoiceVocabulary {
      *                    German rider's list, next to Akku and Energie. The
      *                    report_* strings have been translated all along.
      * @param splitName   the localised name for the last acceleration split
+     * @param helpPhrases comma-separated ways of asking what can be said, as
+     *                    one string so a translator can add or drop phrasings
+     *                    for their language without the app growing a resource
+     *                    per synonym. Every phrase shares [HELP_KEY].
      */
     fun build(
         metricNames: Map<String, String>,
         reportNames: Map<String, String>,
         splitName: String,
+        helpPhrases: String = "",
     ): List<SpokenTerm> {
         val terms = mutableListOf<SpokenTerm>()
         val seen = mutableSetOf<String>()
@@ -69,6 +80,13 @@ object VoiceVocabulary {
         }
         if (splitName.isNotBlank() && seen.add(SPLIT_KEY)) {
             terms += SpokenTerm(SPLIT_KEY, Kind.SPLIT, splitName.trim())
+        }
+        // Several names, one key: "help" and "what can I say" are the same
+        // request, and the matcher's longest-name-wins rule then prefers the
+        // fuller phrasing over the bare word inside it.
+        for (phrase in helpPhrases.split(",")) {
+            val name = phrase.trim()
+            if (name.isNotBlank()) terms += SpokenTerm(HELP_KEY, Kind.HELP, name)
         }
         return terms
     }

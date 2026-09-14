@@ -322,11 +322,12 @@
     <string name="action_chip_light">Luz</string>
     <string name="action_chip_voice">Voz</string>
     <string name="action_chip_voice_listen">Escuchar</string>
+    <string name="menu_voice_ask">Hacer una pregunta</string>
+    <string name="menu_voice_speak_report">Decir un informe</string>
     <string name="voice_split_term">Último tramo</string>
     <string name="menu_switch_to_voice_command">Cambiar a comando de voz</string>
     <string name="menu_switch_to_voice_report">Cambiar a informe de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
-    <string name="voice_commands_enable">Escuchar preguntas</string>
     <string name="voice_commands_enable_desc">Preguntá un dato en voz alta y escuchá la respuesta.</string>
     <string name="voice_command_prompt">Aviso de escucha</string>
     <string name="voice_prompt_beep">Pitido</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">Todavía no hay %1$s.</string>
     <string name="voice_answer_setup">%1$s necesita configurarse primero.</string>
     <string name="voice_answer_unknown">No te entendí. Probá %1$s o %2$s.</string>
+    <string name="voice_help_terms">ayuda,qué puedo decir,qué puedo pedir</string>
+    <string name="voice_answer_examples">Puedes pedir %1$s, %2$s o %3$s.</string>
     <string name="voice_answer_mic_busy">Algo más está usando el micrófono.</string>
     <string name="voice_answer_which">¿Querías decir %1$s o %2$s?</string>
     <string name="action_chip_safety">Modo legal</string>

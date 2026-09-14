@@ -285,11 +285,12 @@
     <string name="action_chip_light">Valo</string>
     <string name="action_chip_voice">Ääni</string>
     <string name="action_chip_voice_listen">Kuuntele</string>
+    <string name="menu_voice_ask">Kysy kysymys</string>
+    <string name="menu_voice_speak_report">Lue raportti</string>
     <string name="voice_split_term">Viimeisin väliaika</string>
     <string name="menu_switch_to_voice_command">Vaihda puhekomentoon</string>
     <string name="menu_switch_to_voice_report">Vaihda puheraporttiin</string>
     <string name="voice_commands_title">Puhekomennot</string>
-    <string name="voice_commands_enable">Kuuntele kysymyksiä</string>
     <string name="voice_commands_enable_desc">Kysy arvoa ääneen ja kuule vastaus.</string>
     <string name="voice_command_prompt">Kuuntelumerkki</string>
     <string name="voice_prompt_beep">Äänimerkki</string>
@@ -305,6 +306,8 @@
     <string name="voice_answer_nodata">Ei vielä %1$s.</string>
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
     <string name="voice_answer_unknown">En saanut siitä selvää. Kokeile %1$s tai %2$s.</string>
+    <string name="voice_help_terms">apua,mitä voin sanoa,mitä voin kysyä</string>
+    <string name="voice_answer_examples">Voit kysyä %1$s, %2$s tai %3$s.</string>
     <string name="voice_answer_mic_busy">Jokin muu käyttää mikrofonia.</string>
     <string name="voice_answer_which">Tarkoititko %1$s vai %2$s?</string>
     <string name="action_chip_safety">Laillinen tila</string>

@@ -322,11 +322,12 @@
     <string name="action_chip_light">Світло</string>
     <string name="action_chip_voice">Голос</string>
     <string name="action_chip_voice_listen">Слухати</string>
+    <string name="menu_voice_ask">Поставити запитання</string>
+    <string name="menu_voice_speak_report">Озвучити звіт</string>
     <string name="voice_split_term">Останній замір</string>
     <string name="menu_switch_to_voice_command">Перейти до голосової команди</string>
     <string name="menu_switch_to_voice_report">Перейти до голосового звіту</string>
     <string name="voice_commands_title">Голосові команди</string>
-    <string name="voice_commands_enable">Слухати запитання</string>
     <string name="voice_commands_enable_desc">Запитайте показник уголос і почуйте відповідь.</string>
     <string name="voice_command_prompt">Сигнал прослуховування</string>
     <string name="voice_prompt_beep">Звук</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">Поки немає %1$s.</string>
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
     <string name="voice_answer_unknown">Не розчув. Спробуйте %1$s або %2$s.</string>
+    <string name="voice_help_terms">допомога,що можна сказати,що можна запитати</string>
+    <string name="voice_answer_examples">Можна запитати %1$s, %2$s або %3$s.</string>
     <string name="voice_answer_mic_busy">Мікрофон зайнятий іншим застосунком.</string>
     <string name="voice_answer_which">Ви мали на увазі %1$s чи %2$s?</string>
     <string name="action_chip_safety">Легал-режим</string>

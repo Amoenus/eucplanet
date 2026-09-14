@@ -322,11 +322,12 @@
     <string name="action_chip_light">라이트</string>
     <string name="action_chip_voice">음성</string>
     <string name="action_chip_voice_listen">듣기</string>
+    <string name="menu_voice_ask">질문하기</string>
+    <string name="menu_voice_speak_report">리포트 읍기</string>
     <string name="voice_split_term">마지막 구간</string>
     <string name="menu_switch_to_voice_command">음성 명령으로 전환</string>
     <string name="menu_switch_to_voice_report">음성 보고로 전환</string>
     <string name="voice_commands_title">음성 명령</string>
-    <string name="voice_commands_enable">질문 듣기</string>
     <string name="voice_commands_enable_desc">수치를 소리 내어 묻고 답을 들으세요.</string>
     <string name="voice_command_prompt">듣기 알림</string>
     <string name="voice_prompt_beep">알림음</string>
@@ -342,6 +343,8 @@
     <string name="voice_answer_nodata">아직 %1$s이(가) 없습니다.</string>
     <string name="voice_answer_setup">%1$s은(는) 먼저 설정해야 합니다.</string>
     <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 또는 %2$s을(를) 시도해 보세요.</string>
+    <string name="voice_help_terms">도움말,뭐라고 말하면 돼,뭔 물어볼 수 있어</string>
+    <string name="voice_answer_examples">%1$s, %2$s, %3$s 등을 물어볼 수 있습니다.</string>
     <string name="voice_answer_mic_busy">다른 앱이 마이크를 사용 중입니다.</string>
     <string name="voice_answer_which">%1$s인가요, %2$s인가요?</string>
     <string name="action_chip_safety">리걸 모드</string>

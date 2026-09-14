@@ -421,6 +421,29 @@ class VoiceService @Inject constructor(
         }
     }
 
+    /**
+     * Stop talking now, keeping the engine alive.
+     *
+     * The microphone cannot politely wait for a report to finish: a rider who
+     * presses listen while the app is mid-announcement wants to ask something,
+     * and leaving the speech running means the recogniser hears the app rather
+     * than the rider, which is the one way this feature reliably fails.
+     * Shutting down would have worked too and would have cost a re-init before
+     * the answer could be spoken.
+     */
+    fun stopSpeaking() {
+        try {
+            tts?.stop()
+        } catch (_: Exception) {
+        }
+        synchronized(pendingBeforeReady) { pendingBeforeReady.clear() }
+        synchronized(this) {
+            pendingUtterances = 0
+            triggerInFlight = false
+        }
+        abandonAudioFocus()
+    }
+
     fun shutdown() {
         tts?.stop()
         tts?.shutdown()

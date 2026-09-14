@@ -2335,6 +2335,16 @@ fun DashboardScreen(
                 (parsed + defaults).distinct().take(6)
             }
             val periodicVoiceOn by viewModel.voicePeriodicEnabled.collectAsState()
+            // The vocabulary is reachable from the tile that listens, not only
+            // from Settings: a rider who has forgotten what to say is holding
+            // that button, not browsing settings.
+            var vocabularyOpen by remember { mutableStateOf(false) }
+            if (vocabularyOpen) {
+                com.eried.eucplanet.ui.settings.VoiceVocabularyDialog(
+                    onDismiss = { vocabularyOpen = false },
+                    onPreview = { viewModel.previewVoiceAnswer(it) },
+                )
+            }
             val lockAtAnySpeed by viewModel.cheatState.lockAtAnySpeed.collectAsState()
             val lockBlockedBySpeed = !locked && kotlin.math.abs(wheelData.speed) >= 5f && !lockAtAnySpeed
             val wheelHasLock by viewModel.wheelHasLock.collectAsState()
@@ -2407,13 +2417,34 @@ fun DashboardScreen(
                                     com.eried.eucplanet.voice.VoiceCommandController.UiState.Idle,
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
+                                    // Verb phrases, like the rest of the
+                                    // dashboard menus ("Back up now", "Stop
+                                    // navigation"). "Listen" and "Voice" were
+                                    // the action names, which say what the app
+                                    // calls them rather than what they do, and
+                                    // the two read as near-identical in a list.
                                     DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.action_chip_voice_listen)) },
+                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
+                                        leadingIcon = {
+                                            Icon(Icons.Default.Mic, contentDescription = null)
+                                        },
                                         onClick = { dismiss(); viewModel.onVoiceListen() }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.action_voice)) },
+                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
+                                        leadingIcon = {
+                                            Icon(Icons.Default.RecordVoiceOver, contentDescription = null)
+                                        },
                                         onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    // The list of what can be said, one hold
+                                    // away from the button that listens.
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.voice_command_vocabulary)) },
+                                        onClick = { dismiss(); vocabularyOpen = true }
                                     )
                                     androidx.compose.material3.HorizontalDivider(
                                         color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
@@ -2434,13 +2465,37 @@ fun DashboardScreen(
                                 onClick = { viewModel.onVoiceAnnounce() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
+                                    // Verb phrases, like the rest of the
+                                    // dashboard menus ("Back up now", "Stop
+                                    // navigation"). "Listen" and "Voice" were
+                                    // the action names, which say what the app
+                                    // calls them rather than what they do, and
+                                    // the two read as near-identical in a list.
                                     DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.action_chip_voice_listen)) },
+                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
+                                        leadingIcon = {
+                                            Icon(Icons.Default.Mic, contentDescription = null)
+                                        },
                                         onClick = { dismiss(); viewModel.onVoiceListen() }
                                     )
                                     DropdownMenuItem(
-                                        text = { Text(stringResource(R.string.action_voice)) },
+                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
+                                        leadingIcon = {
+                                            Icon(Icons.Default.RecordVoiceOver, contentDescription = null)
+                                        },
                                         onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    // The list of what can be said, one hold
+                                    // away from the button that listens.
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.voice_command_vocabulary)) },
+                                        onClick = { dismiss(); vocabularyOpen = true }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
                                     )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.menu_switch_to_voice_command)) },

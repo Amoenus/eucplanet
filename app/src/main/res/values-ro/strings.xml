@@ -285,11 +285,12 @@
     <string name="action_chip_light">Lumină</string>
     <string name="action_chip_voice">Voce</string>
     <string name="action_chip_voice_listen">Ascultă</string>
+    <string name="menu_voice_ask">Pune o întrebare</string>
+    <string name="menu_voice_speak_report">Spune un raport</string>
     <string name="voice_split_term">Ultimul split</string>
     <string name="menu_switch_to_voice_command">Comută la comanda vocală</string>
     <string name="menu_switch_to_voice_report">Comută la raportul vocal</string>
     <string name="voice_commands_title">Comenzi vocale</string>
-    <string name="voice_commands_enable">Ascultă întrebările</string>
     <string name="voice_commands_enable_desc">Întreabă cu voce tare o valoare și ascultă răspunsul.</string>
     <string name="voice_command_prompt">Semnal de ascultare</string>
     <string name="voice_prompt_beep">Bip</string>
@@ -305,6 +306,8 @@
     <string name="voice_answer_nodata">Încă nu există %1$s.</string>
     <string name="voice_answer_setup">%1$s trebuie configurat mai întâi.</string>
     <string name="voice_answer_unknown">Nu am înțeles. Încearcă %1$s sau %2$s.</string>
+    <string name="voice_help_terms">ajutor,ce pot spune,ce pot cere</string>
+    <string name="voice_answer_examples">Poți cere %1$s, %2$s sau %3$s.</string>
     <string name="voice_answer_mic_busy">Altceva folosește microfonul.</string>
     <string name="voice_answer_which">Ai vrut să spui %1$s sau %2$s?</string>
     <string name="action_chip_safety">Mod legal</string>

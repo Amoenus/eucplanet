@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -81,6 +82,20 @@ class VoiceCommandController @Inject constructor(
          * replacement 50 milliseconds after the stop was still refused.
          */
         const val RECOGNISER_RELEASE_MS = 300L
+
+        /**
+         * How long the audio route needs after the microphone closes.
+         *
+         * Paid once per answer, and it buys the difference between a clean
+         * first word and a scratch in front of it.
+         */
+        const val ROUTE_SETTLE_MS = 220L
+
+        /** How long to wait for the speech to begin before giving up on it. */
+        const val SPEECH_START_WAIT_MS = 1500L
+
+        /** And for it to end. Generous: a report can be a long sentence. */
+        const val SPEECH_END_WAIT_MS = 20000L
 
         /** How long to wait for a yes. Short: it is one word. */
         const val CONFIRM_WINDOW_MS = 4000L
@@ -151,18 +166,26 @@ class VoiceCommandController @Inject constructor(
         // nothing at all: the second press was swallowed while the first
         // session ran out its window, so a rider who fumbled the first
         // question had to wait for the app to finish not understanding it.
-        session?.cancel()
-        // Whether we are taking the microphone off ourselves. The system
-        // recogniser does not hand it back the instant stop() returns, so the
-        // replacement waits a moment rather than racing its predecessor and
-        // being told the microphone is busy - which it then reported as
-        // another app holding it, blaming a stranger for our own handover.
+        // A press while it is listening means stop. It used to mean start
+        // again, which looked the same from the outside for the first moment
+        // and then was not: the rider got a fresh window they had not asked
+        // for, and the only way out was to wait it out.
+        if (session?.isActive == true) {
+            session?.cancel()
+            activeMic?.stop()
+            activeMic = null
+            _state.value = UiState.Idle
+            scope.launch { tonePlayer.playEndPrompt() }
+            Log.i(TAG, "stopped by a second press")
+            com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("Voice: stopped by a second press")
+            return
+        }
+        // Nothing should be holding the microphone here, but a session that
+        // ended badly can leave one behind, and the recogniser does not hand
+        // it back the instant stop() returns.
         val handingOver = activeMic != null
         activeMic?.stop()
         activeMic = null
-        // Taking the microphone off a session in flight is that session
-        // ending, and it ends the way any other does.
-        if (handingOver) scope.launch { tonePlayer.playEndPrompt() }
         _state.value = UiState.Idle
         session = scope.launch {
             val settings = settingsRepository.get()
@@ -248,16 +271,29 @@ class VoiceCommandController @Inject constructor(
             }
             mic.stop()
             if (activeMic === mic) activeMic = null
-            // The mirror of the opening cue, so a closed window is audible.
-            // Only when the rider was not understood or said nothing: an
-            // answer is its own proof that listening ended.
-            if (heard.isNullOrBlank() && settings.voiceCommands.prompt == "beep") {
-                tonePlayer.playEndPrompt()
-            }
+            // Closing the microphone takes the device back out of its
+            // communication audio mode, and speech started during that switch
+            // arrives with the switch audible under its first syllable. The
+            // chirp had the same problem at the other end of the session; this
+            // is the same wait, for the same reason.
+            delay(ROUTE_SETTLE_MS)
             // A rider recording a video did not mumble, they are being told
             // the microphone is spoken for. Saying "I did not catch that"
             // there is the app blaming them for its own conflict.
             if (micBusy) sayMicUnavailable() else answer(heard, settings)
+
+            // The falling cue closes every session, after whatever was said
+            // rather than over it. It is the question ending, not the answer
+            // beginning, so it waits for the speech to finish: the listener
+            // tells us when it starts and when it stops, and both waits are
+            // capped so a speech engine that never reports back cannot leave
+            // the session hanging.
+            if (settings.voiceCommands.prompt == "beep") {
+                withTimeoutOrNull(SPEECH_START_WAIT_MS) { voiceService.isSpeaking.first { it } }
+                withTimeoutOrNull(SPEECH_END_WAIT_MS) { voiceService.isSpeaking.first { !it } }
+                tonePlayer.playEndPrompt()
+            }
+
             // Leave the answer on screen briefly, then go quiet.
             delay(4000)
             _state.value = UiState.Idle

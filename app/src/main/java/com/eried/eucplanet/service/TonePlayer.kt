@@ -228,7 +228,7 @@ class TonePlayer @Inject constructor() {
      * warning about something.
      */
     suspend fun playPrompt() {
-        playNotes(listOf(880 to 70, 1170 to 80), gapMs = 45, leadPadMs = 160)
+        playNotes(listOf(780 to 70, 1040 to 80), gapMs = 45, leadPadMs = 160)
     }
 
     /**
@@ -239,7 +239,7 @@ class TonePlayer @Inject constructor() {
      * quiet in a way that cannot be told from it still listening.
      */
     suspend fun playEndPrompt() {
-        playNotes(listOf(1170 to 70, 880 to 80), gapMs = 45, leadPadMs = 20, volumePct = 75)
+        playNotes(listOf(1040 to 70, 780 to 80), gapMs = 45, leadPadMs = 20, volumePct = 75)
     }
 
     suspend fun playBeep(

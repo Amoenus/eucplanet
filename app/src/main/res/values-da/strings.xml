@@ -325,7 +325,7 @@
     <string name="voice_split_term">Sidste split</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
     <string name="voice_commands_enable">Lyt efter spørgsmål</string>
-    <string name="voice_commands_enable_desc">Spørg højt om en værdi og hør svaret</string>
+    <string name="voice_commands_enable_desc">Spørg højt om en værdi og hør svaret.</string>
     <string name="voice_command_prompt">Lyttesignal</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Stemme</string>

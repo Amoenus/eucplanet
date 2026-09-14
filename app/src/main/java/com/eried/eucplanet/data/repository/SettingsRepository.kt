@@ -59,13 +59,14 @@ class SettingsRepository @Inject constructor(
 
     private fun AppSettings.sanitized(): AppSettings = copy(
         autoRecordStopIdleSeconds = autoRecordStopIdleSeconds.coerceAtLeast(30),
-        // A listening window shorter than a couple of seconds cannot hold a
-        // question, and one longer than half a minute is a microphone left open.
-        voiceCommandWindowSeconds = voiceCommandWindowSeconds.coerceIn(3, 30),
-        // A hand-edited or synced file can carry anything; an unknown prompt
-        // style would leave the segmented row with nothing selected.
-        voiceCommandPrompt =
-            voiceCommandPrompt.takeIf { it in VOICE_PROMPT_VALUES } ?: "beep",
+        voiceCommands = voiceCommands.copy(
+            // Shorter than a couple of seconds cannot hold a question; longer
+            // than half a minute is a microphone left open.
+            windowSeconds = voiceCommands.windowSeconds.coerceIn(3, 30),
+            // A hand-edited or synced file can carry anything, and an unknown
+            // style would leave the segmented row with nothing selected.
+            prompt = voiceCommands.prompt.takeIf { it in VOICE_PROMPT_VALUES } ?: "beep",
+        ),
         // Weather comfort thresholds from a synced or hand-edited file: keep
         // the window one of the offered four, the bands ordered and sane.
         weather = weather.copy(

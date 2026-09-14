@@ -288,7 +288,7 @@
     <string name="voice_split_term">Viimeisin väliaika</string>
     <string name="voice_commands_title">Puhekomennot</string>
     <string name="voice_commands_enable">Kuuntele kysymyksiä</string>
-    <string name="voice_commands_enable_desc">Kysy arvoa ääneen ja kuule vastaus</string>
+    <string name="voice_commands_enable_desc">Kysy arvoa ääneen ja kuule vastaus.</string>
     <string name="voice_command_prompt">Kuuntelumerkki</string>
     <string name="voice_prompt_beep">Äänimerkki</string>
     <string name="voice_prompt_voice">Puhe</string>

@@ -288,7 +288,7 @@
     <string name="voice_split_term">Poslední split</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
     <string name="voice_commands_enable">Naslouchat dotazům</string>
-    <string name="voice_commands_enable_desc">Zeptej se nahlas na údaj a poslechni si odpověď</string>
+    <string name="voice_commands_enable_desc">Zeptej se nahlas na údaj a poslechni si odpověď.</string>
     <string name="voice_command_prompt">Signál naslouchání</string>
     <string name="voice_prompt_beep">Pípnutí</string>
     <string name="voice_prompt_voice">Hlas</string>

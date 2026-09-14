@@ -288,7 +288,7 @@
     <string name="voice_split_term">Ultimul split</string>
     <string name="voice_commands_title">Comenzi vocale</string>
     <string name="voice_commands_enable">Ascultă întrebările</string>
-    <string name="voice_commands_enable_desc">Întreabă cu voce tare o valoare și ascultă răspunsul</string>
+    <string name="voice_commands_enable_desc">Întreabă cu voce tare o valoare și ascultă răspunsul.</string>
     <string name="voice_command_prompt">Semnal de ascultare</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>

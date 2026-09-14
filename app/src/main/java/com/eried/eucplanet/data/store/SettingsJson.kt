@@ -104,9 +104,11 @@ object SettingsJson {
         put("voiceLocaleOverridden", s.voiceLocaleOverridden)
         put("voiceAudioFocus", s.voiceAudioFocus)
         put("voiceOutputChannel", s.voiceOutputChannel)
-        put("voiceCommandsEnabled", s.voiceCommandsEnabled)
-        put("voiceCommandPrompt", s.voiceCommandPrompt)
-        put("voiceCommandWindowSeconds", s.voiceCommandWindowSeconds)
+        put("voiceCommands", JSONObject().apply {
+            put("enabled", s.voiceCommands.enabled)
+            put("prompt", s.voiceCommands.prompt)
+            put("windowSeconds", s.voiceCommands.windowSeconds)
+        })
         put("voiceReportSpeed", s.voiceReportSpeed)
         put("voiceReportBattery", s.voiceReportBattery)
         put("voiceReportTemp", s.voiceReportTemp)
@@ -445,10 +447,13 @@ object SettingsJson {
         voiceLocaleOverridden = j.optBoolean("voiceLocaleOverridden", base.voiceLocaleOverridden),
         voiceAudioFocus = j.optString("voiceAudioFocus", base.voiceAudioFocus),
         voiceOutputChannel = j.optString("voiceOutputChannel", base.voiceOutputChannel),
-        voiceCommandsEnabled = j.optBoolean("voiceCommandsEnabled", base.voiceCommandsEnabled),
-        voiceCommandPrompt = j.optString("voiceCommandPrompt", base.voiceCommandPrompt),
-        voiceCommandWindowSeconds =
-            j.optInt("voiceCommandWindowSeconds", base.voiceCommandWindowSeconds),
+        voiceCommands = j.optJSONObject("voiceCommands")?.let { v ->
+            com.eried.eucplanet.data.model.VoiceCommandSettings(
+                enabled = v.optBoolean("enabled", base.voiceCommands.enabled),
+                prompt = v.optString("prompt", base.voiceCommands.prompt),
+                windowSeconds = v.optInt("windowSeconds", base.voiceCommands.windowSeconds),
+            )
+        } ?: base.voiceCommands,
         // Flat JSON keys preserved for back-compat; the fields now live nested.
         weather = com.eried.eucplanet.data.model.WeatherSettings(
             enabled = j.optBoolean("weatherEnabled", base.weather.enabled),

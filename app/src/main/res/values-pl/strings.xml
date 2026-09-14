@@ -325,7 +325,7 @@
     <string name="voice_split_term">Ostatni pomiar</string>
     <string name="voice_commands_title">Polecenia głosowe</string>
     <string name="voice_commands_enable">Nasłuchuj pytań</string>
-    <string name="voice_commands_enable_desc">Zapytaj o wartość na głos i usłysz odpowiedź</string>
+    <string name="voice_commands_enable_desc">Zapytaj o wartość na głos i usłysz odpowiedź.</string>
     <string name="voice_command_prompt">Sygnał nasłuchu</string>
     <string name="voice_prompt_beep">Sygnał</string>
     <string name="voice_prompt_voice">Głos</string>

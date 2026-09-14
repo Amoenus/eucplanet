@@ -697,6 +697,11 @@ fun SettingsScreen(
         stringResource(R.string.announce_gps),
         stringResource(R.string.announce_legal_mode),
         stringResource(R.string.announce_welcome),
+        stringResource(R.string.voice_commands_title),
+        stringResource(R.string.voice_commands_enable),
+        stringResource(R.string.voice_command_prompt),
+        stringResource(R.string.voice_command_window),
+        stringResource(R.string.voice_command_vocabulary),
         stringResource(R.string.section_report_status),
         stringResource(R.string.report_speed),
         stringResource(R.string.report_battery),
@@ -7095,7 +7100,7 @@ private fun VoiceTab(
         SectionHeader(stringResource(R.string.voice_commands_title))
         SwitchSetting(
             label = stringResource(R.string.voice_commands_enable),
-            checked = settings.voiceCommandsEnabled,
+            checked = settings.voiceCommands.enabled,
             onCheckedChange = { viewModel.updateVoiceCommandsEnabled(it) },
         )
         Text(
@@ -7103,7 +7108,7 @@ private fun VoiceTab(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.appColors.textSecondary,
         )
-        if (settings.voiceCommandsEnabled) {
+        if (settings.voiceCommands.enabled) {
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.voice_command_prompt),
@@ -7121,7 +7126,7 @@ private fun VoiceTab(
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                 promptKeys.forEachIndexed { i, key ->
                     SegmentedButton(
-                        selected = settings.voiceCommandPrompt == key,
+                        selected = settings.voiceCommands.prompt == key,
                         onClick = { viewModel.updateVoiceCommandPrompt(key) },
                         shape = SegmentedButtonDefaults.itemShape(i, promptKeys.size),
                         colors = SegmentedButtonDefaults.colors(
@@ -7144,7 +7149,7 @@ private fun VoiceTab(
                 )
                 Box(modifier = Modifier.weight(1.4f)) {
                     NumberUpDown(
-                        value = settings.voiceCommandWindowSeconds,
+                        value = settings.voiceCommands.windowSeconds,
                         onValueChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
                         range = 3..30,
                         step = 1,

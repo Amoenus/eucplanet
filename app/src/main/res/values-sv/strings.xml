@@ -325,7 +325,7 @@
     <string name="voice_split_term">Senaste split</string>
     <string name="voice_commands_title">Röstkommandon</string>
     <string name="voice_commands_enable">Lyssna efter frågor</string>
-    <string name="voice_commands_enable_desc">Fråga efter ett värde högt och hör svaret</string>
+    <string name="voice_commands_enable_desc">Fråga efter ett värde högt och hör svaret.</string>
     <string name="voice_command_prompt">Lyssningssignal</string>
     <string name="voice_prompt_beep">Pip</string>
     <string name="voice_prompt_voice">Röst</string>

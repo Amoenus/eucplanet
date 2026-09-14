@@ -325,7 +325,7 @@
     <string name="voice_split_term">마지막 구간</string>
     <string name="voice_commands_title">음성 명령</string>
     <string name="voice_commands_enable">질문 듣기</string>
-    <string name="voice_commands_enable_desc">수치를 소리 내어 묻고 답을 들으세요</string>
+    <string name="voice_commands_enable_desc">수치를 소리 내어 묻고 답을 들으세요.</string>
     <string name="voice_command_prompt">듣기 알림</string>
     <string name="voice_prompt_beep">알림음</string>
     <string name="voice_prompt_voice">음성</string>

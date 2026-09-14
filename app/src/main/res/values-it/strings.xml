@@ -1356,7 +1356,7 @@
     <string name="voice_split_term">Ultimo split</string>
     <string name="voice_commands_title">Comandi vocali</string>
     <string name="voice_commands_enable">Ascolta le domande</string>
-    <string name="voice_commands_enable_desc">Chiedi un dato ad alta voce e ascolta la risposta</string>
+    <string name="voice_commands_enable_desc">Chiedi un dato ad alta voce e ascolta la risposta.</string>
     <string name="voice_command_prompt">Segnale di ascolto</string>
     <string name="voice_prompt_beep">Bip</string>
     <string name="voice_prompt_voice">Voce</string>

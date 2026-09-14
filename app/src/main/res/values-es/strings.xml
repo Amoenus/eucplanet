@@ -325,7 +325,7 @@
     <string name="voice_split_term">Último tramo</string>
     <string name="voice_commands_title">Comandos de voz</string>
     <string name="voice_commands_enable">Escuchar preguntas</string>
-    <string name="voice_commands_enable_desc">Pregunta un dato en voz alta y escucha la respuesta</string>
+    <string name="voice_commands_enable_desc">Pregunta un dato en voz alta y escucha la respuesta.</string>
     <string name="voice_command_prompt">Aviso de escucha</string>
     <string name="voice_prompt_beep">Pitido</string>
     <string name="voice_prompt_voice">Voz</string>

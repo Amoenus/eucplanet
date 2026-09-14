@@ -1337,7 +1337,7 @@
     <string name="voice_split_term">Siste split</string>
     <string name="voice_commands_title">Talekommandoer</string>
     <string name="voice_commands_enable">Lytt etter spørsmål</string>
-    <string name="voice_commands_enable_desc">Spør høyt om en verdi og hør svaret</string>
+    <string name="voice_commands_enable_desc">Spør høyt om en verdi og hør svaret.</string>
     <string name="voice_command_prompt">Lyttesignal</string>
     <string name="voice_prompt_beep">Pip</string>
     <string name="voice_prompt_voice">Stemme</string>

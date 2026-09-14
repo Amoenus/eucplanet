@@ -288,7 +288,7 @@
     <string name="voice_split_term">Utolsó részidő</string>
     <string name="voice_commands_title">Hangparancsok</string>
     <string name="voice_commands_enable">Kérdések figyelése</string>
-    <string name="voice_commands_enable_desc">Kérdezz rá egy értékre hangosan és hallgasd meg a választ</string>
+    <string name="voice_commands_enable_desc">Kérdezz rá egy értékre hangosan és hallgasd meg a választ.</string>
     <string name="voice_command_prompt">Hallgatás jelzése</string>
     <string name="voice_prompt_beep">Hangjelzés</string>
     <string name="voice_prompt_voice">Beszéd</string>

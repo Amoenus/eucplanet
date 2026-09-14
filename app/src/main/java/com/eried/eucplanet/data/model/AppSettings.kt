@@ -105,18 +105,10 @@ data class AppSettings(
     val voiceAudioFocus: String = "DUCK",
     // Where to route the voice: "MEDIA" (music slider), "NOTIFICATION" (ring slider), "ALARM" (alarm slider, loudest)
     val voiceOutputChannel: String = "MEDIA",
-    /** Listening for a spoken question is on. Off by default: it opens a
-     *  microphone, and that is a thing a rider should ask for. */
-    val voiceCommandsEnabled: Boolean = false,
-    /**
-     * How the app signals that the microphone is open: "beep", "voice" or
-     * "none". A tone by default, because a spoken prompt can bleed into the
-     * microphone and the recogniser then hears its own prompt, and because a
-     * tone cuts through wind and opens the microphone sooner.
-     */
-    val voiceCommandPrompt: String = "beep",
-    /** Seconds the microphone stays open with nothing heard. */
-    val voiceCommandWindowSeconds: Int = 6,
+    /** Voice commands, nested rather than three more slots. See rule 8: this
+     *  class is one field away from the 255-argument limit where copy() stops
+     *  verifying and the app dies at runtime. */
+    val voiceCommands: VoiceCommandSettings = VoiceCommandSettings(),
     // Periodic and on-trigger voice report toggles, NESTED. These used to be 18
     // top-level flags, which had AppSettings' copy$default sitting right on the
     // JVM's 255-parameter-slot limit with no room for another report type. Read
@@ -1208,6 +1200,28 @@ data class ShareSettings(
  * model is unrecognised, since a live pack voltage alone cannot distinguish a
  * 20S from a 30S.
  */
+/**
+ * Everything the voice-command area configures.
+ *
+ * A group rather than three fields on [AppSettings], because that class sits
+ * one field short of the 255-argument JVM limit: past it, `copy()` fails
+ * verification and the app dies at runtime rather than at build time (rule 8).
+ */
+data class VoiceCommandSettings(
+    /** Listening is on. Off by default: it opens a microphone, and that is
+     *  something a rider should ask for rather than inherit. */
+    val enabled: Boolean = false,
+    /**
+     * How the app signals the microphone is open: "beep", "voice" or "none".
+     * A tone by default, because a spoken prompt can bleed into the microphone
+     * and be heard as part of the question, and because a tone cuts through
+     * wind and opens the microphone sooner.
+     */
+    val prompt: String = "beep",
+    /** Seconds the microphone stays open having heard nothing. */
+    val windowSeconds: Int = 6,
+)
+
 data class BatteryPercentSettings(
     /**
      * Where the percentage on screen comes from. One answer to one question,

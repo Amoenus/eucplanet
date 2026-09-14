@@ -325,7 +325,7 @@
     <string name="voice_split_term">最後の加速測定</string>
     <string name="voice_commands_title">音声コマンド</string>
     <string name="voice_commands_enable">質問を聞き取る</string>
-    <string name="voice_commands_enable_desc">数値を声で聞くと答えます</string>
+    <string name="voice_commands_enable_desc">数値を声で聞くと答えます。</string>
     <string name="voice_command_prompt">聞き取りの合図</string>
     <string name="voice_prompt_beep">ビープ</string>
     <string name="voice_prompt_voice">音声</string>

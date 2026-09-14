@@ -325,7 +325,7 @@
     <string name="voice_split_term">Останній замір</string>
     <string name="voice_commands_title">Голосові команди</string>
     <string name="voice_commands_enable">Слухати запитання</string>
-    <string name="voice_commands_enable_desc">Запитайте показник уголос і почуйте відповідь</string>
+    <string name="voice_commands_enable_desc">Запитайте показник уголос і почуйте відповідь.</string>
     <string name="voice_command_prompt">Сигнал прослуховування</string>
     <string name="voice_prompt_beep">Звук</string>
     <string name="voice_prompt_voice">Голос</string>

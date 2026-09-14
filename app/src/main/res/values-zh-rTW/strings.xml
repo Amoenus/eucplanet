@@ -325,7 +325,7 @@
     <string name="voice_split_term">上次加速</string>
     <string name="voice_commands_title">語音指令</string>
     <string name="voice_commands_enable">聆聽提問</string>
-    <string name="voice_commands_enable_desc">大聲詢問一個數值並聽取答案</string>
+    <string name="voice_commands_enable_desc">大聲詢問一個數值並聽取答案。</string>
     <string name="voice_command_prompt">聆聽提示</string>
     <string name="voice_prompt_beep">提示音</string>
     <string name="voice_prompt_voice">語音</string>

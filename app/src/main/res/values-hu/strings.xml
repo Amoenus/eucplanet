@@ -286,6 +286,8 @@
     <string name="action_chip_voice">Hang</string>
     <string name="action_chip_voice_listen">Hallgatás</string>
     <string name="voice_split_term">Utolsó részidő</string>
+    <string name="menu_switch_to_voice_command">Váltás hangparancsra</string>
+    <string name="menu_switch_to_voice_report">Váltás hangjelentésre</string>
     <string name="voice_commands_title">Hangparancsok</string>
     <string name="voice_commands_enable">Kérdések figyelése</string>
     <string name="voice_commands_enable_desc">Kérdezz rá egy értékre hangosan és hallgasd meg a választ.</string>

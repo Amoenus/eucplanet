@@ -286,6 +286,8 @@
     <string name="action_chip_voice">Hlas</string>
     <string name="action_chip_voice_listen">Poslouchat</string>
     <string name="voice_split_term">Poslední split</string>
+    <string name="menu_switch_to_voice_command">Přepnout na hlasový příkaz</string>
+    <string name="menu_switch_to_voice_report">Přepnout na hlasový přehled</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
     <string name="voice_commands_enable">Naslouchat dotazům</string>
     <string name="voice_commands_enable_desc">Zeptej se nahlas na údaj a poslechni si odpověď.</string>

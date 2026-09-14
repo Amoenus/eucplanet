@@ -323,6 +323,8 @@
     <string name="action_chip_voice">語音</string>
     <string name="action_chip_voice_listen">聆聽</string>
     <string name="voice_split_term">上次加速</string>
+    <string name="menu_switch_to_voice_command">切換到語音指令</string>
+    <string name="menu_switch_to_voice_report">切換到語音報告</string>
     <string name="voice_commands_title">語音指令</string>
     <string name="voice_commands_enable">聆聽提問</string>
     <string name="voice_commands_enable_desc">大聲詢問一個數值並聽取答案。</string>

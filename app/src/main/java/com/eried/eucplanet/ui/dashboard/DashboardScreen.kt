@@ -77,6 +77,7 @@ import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -348,6 +349,13 @@ fun DashboardScreen(
     // this the rider could be coasting down the street and have the Battery
     // monitor steal the dashboard, which is both wrong and unsafe.
     val chargeStatusForAutoOpen by viewModel.chargeStatus.collectAsState()
+    // Drives the listening tile and the transcript pill.
+    val voiceCommandState by viewModel.voiceCommandState.collectAsState()
+    // The live transcript, and then the answer, as a snackbar rather than a
+    // dialog: fired from a Flic at speed the rider cannot look at the screen
+    // anyway, and a modal is something they could be left holding. Rule 3 makes
+    // this the transient surface.
+
     val chargingAutoOpen by viewModel.chargingAutoOpen.collectAsState()
     var lastChargeStatus by remember { mutableStateOf(chargeStatusForAutoOpen) }
     var lastNonZeroSpeedAt by remember { mutableStateOf(System.currentTimeMillis()) }
@@ -473,6 +481,19 @@ fun DashboardScreen(
     // dashboard styles match Overlay Studio / Navigator / Settings (no system
     // icon, swipe-to-dismiss).
     val snackbar = remember { androidx.compose.material3.SnackbarHostState() }
+    // The live transcript, then the answer. A snackbar rather than a dialog:
+    // fired from a Flic at speed the rider cannot look at the screen anyway,
+    // and a modal is something they could be left holding. Rule 3 makes this
+    // the transient surface.
+    LaunchedEffect(voiceCommandState) {
+        when (val v = voiceCommandState) {
+            is com.eried.eucplanet.voice.VoiceCommandController.UiState.Heard ->
+                snackbar.showSnackbar(v.text)
+            is com.eried.eucplanet.voice.VoiceCommandController.UiState.Spoke ->
+                snackbar.showSnackbar(v.text)
+            else -> {}
+        }
+    }
     val snackbarScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.cloudToasts.collect { resId ->
@@ -2408,6 +2429,39 @@ fun DashboardScreen(
                                     )
                                 }
                             )
+                            // The two voice tiles are a pair sharing one slot
+                            // and one icon. Whichever owns the slot, both are
+                            // one hold away, so the switch only decides what a
+                            // tap does and what the eyes-free surfaces bind.
+                            "VOICE_LISTEN" -> ActionTile(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Default.Mic,
+                                label = stringResource(R.string.action_chip_voice_listen),
+                                onClick = { viewModel.onVoiceListen() },
+                                active = voiceCommandState !is
+                                    com.eried.eucplanet.voice.VoiceCommandController.UiState.Idle,
+                                aspectRatio = actionAspect, heightDp = actionHeight,
+                                menu = { dismiss ->
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.action_chip_voice_listen)) },
+                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.action_voice)) },
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_switch_to_voice_report)) },
+                                        onClick = {
+                                            dismiss()
+                                            viewModel.switchVoiceTile("VOICE_LISTEN", "VOICE_ANNOUNCE")
+                                        }
+                                    )
+                                }
+                            )
                             "VOICE_ANNOUNCE" -> ActionTile(
                                 modifier = Modifier.weight(1f),
                                 icon = Icons.Default.RecordVoiceOver,
@@ -2415,6 +2469,24 @@ fun DashboardScreen(
                                 onClick = { viewModel.onVoiceAnnounce() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.action_chip_voice_listen)) },
+                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.action_voice)) },
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_switch_to_voice_command)) },
+                                        onClick = {
+                                            dismiss()
+                                            viewModel.switchVoiceTile("VOICE_ANNOUNCE", "VOICE_LISTEN")
+                                        }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.tab_voice)) },
                                         onClick = { dismiss(); onNavigateToSettings(3) }

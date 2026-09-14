@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Röst</string>
     <string name="action_chip_voice_listen">Lyssna</string>
     <string name="voice_split_term">Senaste split</string>
+    <string name="menu_switch_to_voice_command">Byt till röstkommando</string>
+    <string name="menu_switch_to_voice_report">Byt till röstrapport</string>
     <string name="voice_commands_title">Röstkommandon</string>
     <string name="voice_commands_enable">Lyssna efter frågor</string>
     <string name="voice_commands_enable_desc">Fråga efter ett värde högt och hör svaret.</string>

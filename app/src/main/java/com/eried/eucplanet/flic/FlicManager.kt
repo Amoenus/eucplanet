@@ -39,7 +39,8 @@ class FlicManager @Inject constructor(
     private val voiceService: VoiceService,
     private val automationManager: AutomationManager,
     private val appNotifier: com.eried.eucplanet.util.AppNotifier,
-    private val legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController
+    private val legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController,
+    private val voiceCommands: com.eried.eucplanet.voice.VoiceCommandController
 ) {
     companion object {
         private const val TAG = "FlicManager"
@@ -383,6 +384,18 @@ class FlicManager @Inject constructor(
             "SAFETY_TOGGLE" -> wheelRepository.toggleSafetySpeed()
             "SAFETY_ON" -> wheelRepository.enableSafetySpeed()
             "SAFETY_OFF" -> wheelRepository.disableSafetySpeed()
+            "VOICE_LISTEN" -> {
+                // Legal Mode already refused above, for every surface at once.
+                // What is left is the microphone: without it there is nothing
+                // to listen with, and a rider pressing a button deserves to be
+                // told that rather than to hear silence.
+                if (!voiceCommands.hasMicPermission()) {
+                    appNotifier.post(context.getString(R.string.voice_answer_setup,
+                        context.getString(R.string.voice_commands_title)))
+                } else {
+                    voiceCommands.listen()
+                }
+            }
             "VOICE_ANNOUNCE" -> {
                 voiceService.announceTrigger(
                     wheelRepository.wheelData.value, settings,

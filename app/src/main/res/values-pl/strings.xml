@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Głos</string>
     <string name="action_chip_voice_listen">Słuchaj</string>
     <string name="voice_split_term">Ostatni pomiar</string>
+    <string name="menu_switch_to_voice_command">Przełącz na polecenie głosowe</string>
+    <string name="menu_switch_to_voice_report">Przełącz na raport głosowy</string>
     <string name="voice_commands_title">Polecenia głosowe</string>
     <string name="voice_commands_enable">Nasłuchuj pytań</string>
     <string name="voice_commands_enable_desc">Zapytaj o wartość na głos i usłysz odpowiedź.</string>

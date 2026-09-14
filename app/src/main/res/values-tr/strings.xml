@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Ses</string>
     <string name="action_chip_voice_listen">Dinle</string>
     <string name="voice_split_term">Son ölçüm</string>
+    <string name="menu_switch_to_voice_command">Sesli komuta geç</string>
+    <string name="menu_switch_to_voice_report">Sesli rapora geç</string>
     <string name="voice_commands_title">Sesli komutlar</string>
     <string name="voice_commands_enable">Soruları dinle</string>
     <string name="voice_commands_enable_desc">Bir değeri sesli sor ve cevabı duy.</string>

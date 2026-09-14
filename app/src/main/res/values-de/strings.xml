@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Stimme</string>
     <string name="action_chip_voice_listen">Zuhören</string>
     <string name="voice_split_term">Letzter Split</string>
+    <string name="menu_switch_to_voice_command">Auf Sprachbefehl umschalten</string>
+    <string name="menu_switch_to_voice_report">Auf Sprachbericht umschalten</string>
     <string name="voice_commands_title">Sprachbefehle</string>
     <string name="voice_commands_enable">Auf Fragen hören</string>
     <string name="voice_commands_enable_desc">Einen Wert laut abfragen und die Antwort hören.</string>

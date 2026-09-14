@@ -323,6 +323,8 @@
     <string name="action_chip_voice">音声</string>
     <string name="action_chip_voice_listen">聞く</string>
     <string name="voice_split_term">最後の加速測定</string>
+    <string name="menu_switch_to_voice_command">音声コマンドに切り替え</string>
+    <string name="menu_switch_to_voice_report">音声レポートに切り替え</string>
     <string name="voice_commands_title">音声コマンド</string>
     <string name="voice_commands_enable">質問を聞き取る</string>
     <string name="voice_commands_enable_desc">数値を声で聞くと答えます。</string>

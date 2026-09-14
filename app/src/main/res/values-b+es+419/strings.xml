@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Voz</string>
     <string name="action_chip_voice_listen">Escuchar</string>
     <string name="voice_split_term">Último tramo</string>
+    <string name="menu_switch_to_voice_command">Cambiar a comando de voz</string>
+    <string name="menu_switch_to_voice_report">Cambiar a informe de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
     <string name="voice_commands_enable">Escuchar preguntas</string>
     <string name="voice_commands_enable_desc">Preguntá un dato en voz alta y escuchá la respuesta.</string>

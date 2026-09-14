@@ -323,6 +323,8 @@
     <string name="action_chip_voice">음성</string>
     <string name="action_chip_voice_listen">듣기</string>
     <string name="voice_split_term">마지막 구간</string>
+    <string name="menu_switch_to_voice_command">음성 명령으로 전환</string>
+    <string name="menu_switch_to_voice_report">음성 보고로 전환</string>
     <string name="voice_commands_title">음성 명령</string>
     <string name="voice_commands_enable">질문 듣기</string>
     <string name="voice_commands_enable_desc">수치를 소리 내어 묻고 답을 들으세요.</string>

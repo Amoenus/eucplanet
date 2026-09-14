@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Stem</string>
     <string name="action_chip_voice_listen">Luisteren</string>
     <string name="voice_split_term">Laatste split</string>
+    <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
+    <string name="menu_switch_to_voice_report">Naar spraakrapport wisselen</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
     <string name="voice_commands_enable">Luisteren naar vragen</string>
     <string name="voice_commands_enable_desc">Vraag een waarde hardop en hoor het antwoord.</string>

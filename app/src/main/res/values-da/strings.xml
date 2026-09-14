@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Tale</string>
     <string name="action_chip_voice_listen">Lyt</string>
     <string name="voice_split_term">Sidste split</string>
+    <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
+    <string name="menu_switch_to_voice_report">Skift til stemmerapport</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
     <string name="voice_commands_enable">Lyt efter spørgsmål</string>
     <string name="voice_commands_enable_desc">Spørg højt om en værdi og hør svaret.</string>

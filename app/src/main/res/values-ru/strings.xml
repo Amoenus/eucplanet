@@ -323,6 +323,8 @@
     <string name="action_chip_voice">Голос</string>
     <string name="action_chip_voice_listen">Слушать</string>
     <string name="voice_split_term">Последний замер</string>
+    <string name="menu_switch_to_voice_command">Перейти к голосовой команде</string>
+    <string name="menu_switch_to_voice_report">Перейти к голосовому отчёту</string>
     <string name="voice_commands_title">Голосовые команды</string>
     <string name="voice_commands_enable">Слушать вопросы</string>
     <string name="voice_commands_enable_desc">Спросите показатель вслух и услышьте ответ.</string>

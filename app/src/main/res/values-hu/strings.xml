@@ -291,8 +291,7 @@
     <string name="menu_switch_to_voice_command">Váltás hangparancsra</string>
     <string name="menu_switch_to_voice_report">Váltás hangbemondásra</string>
     <string name="voice_commands_title">Hangparancsok</string>
-    <string name="voice_commands_enable_desc">Használd a hangod az alkalmazásban. Tartsd nyomva a Hang gombot a műszerfalon, és válaszd a Hangparancs figyelése lehetőséget.</string>
-    <string name="voice_command_window">Figyelés ideje</string>
+    <string name="voice_commands_enable_desc">Használd a hangod az alkalmazásban. Semmi nem figyel, amíg meg nem nyomsz valamit: tartsd nyomva a Hang gombot a műszerfalon, és válaszd a Hangparancs figyelése lehetőséget, vagy állítsd át azt a csempét Zuhören módra egy koppintáshoz. A figyelés hozzárendelhető Flichez, a hangerőgombokhoz, az órádhoz vagy a HUD-hoz. Kérdezz egy értéket, vagy mondj parancsot, például lámpa be.</string>
     <string name="voice_command_vocabulary">Mit mondhatok</string>
     <string name="voice_command_vocabulary_tap">Mondd a nevet önmagában vagy egy kérdésben.</string>
     <string name="voice_listening">Hallgatom</string>
@@ -556,6 +555,8 @@
     <string name="adv_weather_breezy_desc">Itt kezd a szél zavarni.</string>
     <string name="adv_weather_windy_desc">Ezen túl a haladás tényleg nehezebb.</string>
     <string name="adv_lock_max_speed">Zárolás maximális sebessége</string>
+    <string name="adv_voice_listen_window">Figyelési ablak</string>
+    <string name="adv_voice_listen_window_desc">Meddig marad nyitva a mikrofon a jelzés után, ha nem hall semmit.</string>
     <string name="adv_lock_max_speed_desc">Befolyásolja azt a sebességet, amely felett az egykerekű zárolása megtagadásra kerül. Veszély: a túl magas érték engedi a zárolást gurulás közben.</string>
     <string name="adv_compact_max_screen">Kompakt képernyő határa</string>
     <string name="adv_compact_max_screen_desc">Az ennél kisebb mindkét oldalú képernyők a kompakt műszerfalra váltanak, ha a Kompakt műszerfal Kis képernyőkre van állítva.</string>

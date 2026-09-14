@@ -58,11 +58,6 @@ class SettingsRepository @Inject constructor(
 
     private fun AppSettings.sanitized(): AppSettings = copy(
         autoRecordStopIdleSeconds = autoRecordStopIdleSeconds.coerceAtLeast(30),
-        voiceCommands = voiceCommands.copy(
-            // Shorter than a couple of seconds cannot hold a question; longer
-            // than half a minute is a microphone left open.
-            windowSeconds = voiceCommands.windowSeconds.coerceIn(3, 30),
-        ),
         // Weather comfort thresholds from a synced or hand-edited file: keep
         // the window one of the offered four, the bands ordered and sane.
         weather = weather.copy(

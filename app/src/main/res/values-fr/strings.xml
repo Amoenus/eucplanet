@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Passer à la commande vocale</string>
     <string name="menu_switch_to_voice_report">Basculer vers annonce vocale</string>
     <string name="voice_commands_title">Commandes vocales</string>
-    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application. Maintenez le bouton Voix du tableau de bord et choisissez Écouter une commande vocale.</string>
-    <string name="voice_command_window">Écouter pendant</string>
+    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application. Rien n écoute tant que vous n appuyez pas : maintenez le bouton Voix du tableau de bord et choisissez Écouter une commande vocale, ou basculez cette tuile sur Écouter pour un seul appui. L écoute peut aussi être liée à un Flic, aux touches de volume, à votre montre ou au HUD. Demandez une valeur, ou dites une commande comme lumière allumée.</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
     <string name="voice_command_vocabulary_tap">Dites un nom seul ou dans une question.</string>
     <string name="voice_listening">J\'écoute</string>
@@ -2111,6 +2110,8 @@
     <string name="adv_weather_breezy_desc">Le vent commence à gêner ici.</string>
     <string name="adv_weather_windy_desc">Au-delà, rouler devient vraiment dur.</string>
     <string name="adv_lock_max_speed">Vitesse max de verrouillage</string>
+    <string name="adv_voice_listen_window">Fenêtre d écoute</string>
+    <string name="adv_voice_listen_window_desc">Durée pendant laquelle le microphone reste ouvert après le signal, sans rien entendre.</string>
     <string name="adv_lock_max_speed_desc">Détermine la vitesse au-dessus de laquelle le verrouillage de la roue est refusé. Danger : trop haut laisse un verrouillage se déclencher en roulant encore.</string>
     <string name="adv_hud_backoff_max">Délai de reconnexion (max)</string>
     <string name="adv_hud_backoff_max_desc">Détermine l\'attente maximale entre les tentatives de reconnexion HUD. Danger : trop élevé est lent à récupérer.</string>

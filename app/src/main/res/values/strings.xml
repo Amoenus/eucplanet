@@ -333,8 +333,7 @@
     <string name="menu_switch_to_voice_command">Switch to voice command</string>
     <string name="menu_switch_to_voice_report">Switch to voice announcement</string>
     <string name="voice_commands_title">Voice commands</string>
-    <string name="voice_commands_enable_desc">Use your voice with the app. Hold the Voice button on the dashboard and pick Listen for voice command.</string>
-    <string name="voice_command_window">Listen for</string>
+    <string name="voice_commands_enable_desc">Use your voice with the app. Nothing listens until you press something: hold the Voice button on the dashboard and pick Listen for voice command, or switch that tile to Listen to start it with one tap. Listening can also be bound to a Flic, the volume keys, your watch or the HUD. Ask for a value, or say a command like lights on.</string>
     <string name="voice_command_vocabulary">What can I say</string>
     <string name="voice_command_vocabulary_tap">Say a name on its own or inside a question.</string>
     <string name="voice_listening">Listening</string>
@@ -627,6 +626,8 @@
     <string name="adv_weather_breezy_desc">Wind starts to bite here.</string>
     <string name="adv_weather_windy_desc">Riding gets genuinely harder past this.</string>
     <string name="adv_lock_max_speed">Lock max speed</string>
+    <string name="adv_voice_listen_window">Listen window</string>
+    <string name="adv_voice_listen_window_desc">How long the microphone stays open after the cue, having heard nothing.</string>
     <string name="adv_lock_max_speed_desc">Affects the speed above which locking the wheel is refused. Danger: too high lets a lock fire while still rolling.</string>
     <string name="adv_compact_max_screen">Compact screen limit</string>
     <string name="adv_compact_max_screen_desc">Screens with both sides under this switch to the compact dashboard when Compact dashboard is on Small screens.</string>

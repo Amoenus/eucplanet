@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Mudar para comando de voz</string>
     <string name="menu_switch_to_voice_report">Mudar para aviso de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
-    <string name="voice_commands_enable_desc">Use sua voz com o app. Segure o botão Voz no painel e escolha Ouvir comando de voz.</string>
-    <string name="voice_command_window">Ouvir por</string>
+    <string name="voice_commands_enable_desc">Use sua voz com o app. Nada escuta até você pressionar algo: segure o botão Voz no painel e escolha Ouvir comando de voz, ou troque esse bloco para Ouvir e faça com um toque. Ouvir também pode ser vinculado a um Flic, às teclas de volume, ao seu relógio ou ao HUD. Peça um valor, ou diga um comando como luzes ligadas.</string>
     <string name="voice_command_vocabulary">O que posso dizer</string>
     <string name="voice_command_vocabulary_tap">Diga um nome sozinho ou dentro de uma pergunta.</string>
     <string name="voice_listening">Ouvindo</string>
@@ -2107,6 +2106,8 @@
     <string name="adv_weather_breezy_desc">Aqui o vento começa a incomodar.</string>
     <string name="adv_weather_windy_desc">Além disso, pilotar fica bem difícil.</string>
     <string name="adv_lock_max_speed">Velocidade máx. de travamento</string>
+    <string name="adv_voice_listen_window">Janela de escuta</string>
+    <string name="adv_voice_listen_window_desc">Por quanto tempo o microfone fica aberto após o aviso, sem ouvir nada.</string>
     <string name="adv_lock_max_speed_desc">Afeta a velocidade acima da qual travar a roda é recusado. Perigo: alto demais deixa um travamento disparar ainda em movimento.</string>
     <string name="adv_hud_backoff_max">Espera de reconexão (máx)</string>
     <string name="adv_hud_backoff_max_desc">Afeta a maior espera entre tentativas de reconexão do HUD. Perigo: alta demais demora a recuperar.</string>

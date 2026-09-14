@@ -291,8 +291,7 @@
     <string name="menu_switch_to_voice_command">Vaihda puhekomentoon</string>
     <string name="menu_switch_to_voice_report">Vaihda ääni-ilmoitukseen</string>
     <string name="voice_commands_title">Puhekomennot</string>
-    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa. Pidä kojelaudan Ääni-painiketta pohjassa ja valitse Kuuntele äänikomentoa.</string>
-    <string name="voice_command_window">Kuuntele</string>
+    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa. Mikään ei kuuntele ennen kuin painat jotain: pidä kojelaudan Ääni-painiketta pohjassa ja valitse Kuuntele äänikomentoa, tai vaihda ruutu Kuunteluun yhden napautuksen takia. Kuuntelun voi liittää myös Flic-painikkeeseen, äänenvoimakkuusnäppäimiin, kelloosi tai HUD-näyttöön. Kysy arvoa tai sano komento kuten valot päälle.</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>
     <string name="voice_listening">Kuuntelen</string>
@@ -556,6 +555,8 @@
     <string name="adv_weather_breezy_desc">Tästä tuuli alkaa haitata.</string>
     <string name="adv_weather_windy_desc">Tämän yli ajaminen on aidosti vaikeampaa.</string>
     <string name="adv_lock_max_speed">Lukituksen enimmäisnopeus</string>
+    <string name="adv_voice_listen_window">Kuunteluikkuna</string>
+    <string name="adv_voice_listen_window_desc">Kuinka kauan mikrofoni pysyy auki merkin jälkeen, jos mitään ei kuulu.</string>
     <string name="adv_lock_max_speed_desc">Vaikuttaa nopeuteen, jonka yli yksipyöräisen lukitus estetään. Vaara: liian suuri sallii lukituksen vielä liikkeessä.</string>
     <string name="adv_compact_max_screen">Kompaktin näytön raja</string>
     <string name="adv_compact_max_screen_desc">Näytöt, joiden molemmat sivut alittavat tämän, vaihtavat kompaktiin mittaristoon, kun Kompakti mittaristo on asetettu Pienille näytöille.</string>

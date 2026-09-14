@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
     <string name="menu_switch_to_voice_report">Skift til stemmebesked</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
-    <string name="voice_commands_enable_desc">Brug din stemme i appen. Hold Stemme-knappen på dashboardet nede, og vælg Lyt efter stemmekommando.</string>
-    <string name="voice_command_window">Lyt i</string>
+    <string name="voice_commands_enable_desc">Brug din stemme i appen. Intet lytter, før du trykker på noget: hold Stemme-knappen på dashboardet nede og vælg Lyt efter stemmekommando, eller skift feltet til Lyt for ét tryk. Lytning kan også tildeles en Flic, lydstyrketasterne, dit ur eller HUD. Spørg om en værdi, eller sig en kommando som lys tændt.</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
     <string name="voice_command_vocabulary_tap">Sig et navn alene eller i et spørgsmål.</string>
     <string name="voice_listening">Lytter</string>
@@ -2122,6 +2121,8 @@
     <string name="adv_weather_breezy_desc">Her begynder vinden at bide.</string>
     <string name="adv_weather_windy_desc">Forbi dette bliver kørslen svær.</string>
     <string name="adv_lock_max_speed">Maks. låsehastighed</string>
+    <string name="adv_voice_listen_window">Lyttevindue</string>
+    <string name="adv_voice_listen_window_desc">Hvor længe mikrofonen er åben efter signalet, uden at høre noget.</string>
     <string name="adv_lock_max_speed_desc">Påvirker den hastighed, over hvilken låsning af hjulet afvises. Fare: for højt lader en låsning udløse, mens du stadig ruller.</string>
     <string name="adv_hud_backoff_max">Genforbindelsespause (maks)</string>
     <string name="adv_hud_backoff_max_desc">Påvirker den længste ventetid mellem forsøg på at genforbinde HUD. Fare: for højt er langsomt at komme sig.</string>

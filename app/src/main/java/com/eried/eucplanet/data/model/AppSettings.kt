@@ -108,7 +108,6 @@ data class AppSettings(
     /** Voice commands, nested rather than three more slots. See rule 8: this
      *  class is one field away from the 255-argument limit where copy() stops
      *  verifying and the app dies at runtime. */
-    val voiceCommands: VoiceCommandSettings = VoiceCommandSettings(),
     // Periodic and on-trigger voice report toggles, NESTED. These used to be 18
     // top-level flags, which had AppSettings' copy$default sitting right on the
     // JVM's 255-parameter-slot limit with no room for another report type. Read
@@ -991,6 +990,7 @@ data class AppSettings(
     val pendingUploadIntervalMin: Int get() = advanced.pendingUploadIntervalMin
     val tripFinalizeGraceMs: Int get() = advanced.tripFinalizeGraceMs
     val lockMaxSpeedKmh: Int get() = advanced.lockMaxSpeedKmh
+    val voiceListenWindowSec: Int get() = advanced.voiceListenWindowSec
     val phoneGpsIntervalMs: Int get() = advanced.phoneGpsIntervalMs
     val phoneGpsIdleIntervalMs: Int get() = advanced.phoneGpsIdleIntervalMs
     val gpsIdleOffDelaySec: Int get() = advanced.gpsIdleOffDelaySec
@@ -1207,12 +1207,6 @@ data class ShareSettings(
  * one field short of the 255-argument JVM limit: past it, `copy()` fails
  * verification and the app dies at runtime rather than at build time (rule 8).
  */
-data class VoiceCommandSettings(
-
-    /** Seconds the microphone stays open having heard nothing. */
-    val windowSeconds: Int = 6,
-)
-
 data class BatteryPercentSettings(
     /**
      * Where the percentage on screen comes from. One answer to one question,
@@ -1459,6 +1453,14 @@ data class AdvancedSettings(
     val tripFinalizeGraceMs: Int = 15000,
     // Speed (km/h) above which a lock command is refused, for safety.
     val lockMaxSpeedKmh: Int = 5,
+    /**
+     * Seconds the microphone stays open having heard nothing.
+     *
+     * Rule 1: a global tunable belongs here rather than in its own section.
+     * It lived in the voice section while that section was being designed,
+     * and every other number in the app that behaves like this one is here.
+     */
+    val voiceListenWindowSec: Int = 6,
     val phoneGpsIntervalMs: Int = 1000,
     // Slow "keep-warm" GPS interval used when nothing needs the 1 Hz active
     // stream (idle balanced / low-power tiers). See GpsPowerPolicy.

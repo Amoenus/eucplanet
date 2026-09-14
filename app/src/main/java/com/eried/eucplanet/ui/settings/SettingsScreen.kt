@@ -698,7 +698,6 @@ fun SettingsScreen(
         stringResource(R.string.announce_legal_mode),
         stringResource(R.string.announce_welcome),
         stringResource(R.string.voice_commands_title),
-        stringResource(R.string.voice_command_window),
         stringResource(R.string.voice_command_vocabulary),
         stringResource(R.string.section_report_status),
         stringResource(R.string.report_speed),
@@ -7266,23 +7265,6 @@ private fun VoiceTab(
             // and adding eight more put this row seventeen pixels down while
             // every other row in Settings sits at nine.
             Spacer(Modifier.height(8.dp))
-            // "Listen for 6 s" says the whole thing, so the sentence that used
-            // to explain it underneath is gone.
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                NumberFieldWithDefault(
-                    value = settings.voiceCommands.windowSeconds,
-                    onValueChange = { viewModel.updateVoiceCommandWindowSeconds(it) },
-                    range = 3..30,
-                    default = SETTINGS_DEFAULTS.voiceCommands.windowSeconds,
-                    suffix = "s",
-                    label = stringResource(R.string.voice_command_window),
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(Modifier.weight(1f))
-            }
         }
 
         // Report status: the periodic-report enable + when/interval, then the

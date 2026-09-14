@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Cambiar a comando de voz</string>
     <string name="menu_switch_to_voice_report">Cambiar a anuncio de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
-    <string name="voice_commands_enable_desc">Usa tu voz con la app. Mantén pulsado el botón Voz en el panel y elige Escuchar comando de voz.</string>
-    <string name="voice_command_window">Escuchar durante</string>
+    <string name="voice_commands_enable_desc">Usa tu voz con la app. Nada escucha hasta que pulsas algo: mantén pulsado el botón Voz en el panel y elige Escuchar comando de voz, o cambia ese botón a Escuchar para hacerlo con un toque. Escuchar también se puede asignar a un Flic, las teclas de volumen, tu reloj o el HUD. Pide un dato o di una orden como luces encendidas.</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>
     <string name="voice_listening">Escuchando</string>
@@ -2104,6 +2103,8 @@
     <string name="adv_weather_breezy_desc">Aquí el viento empieza a molestar.</string>
     <string name="adv_weather_windy_desc">Más allá, conducir se vuelve difícil.</string>
     <string name="adv_lock_max_speed">Velocidad máx. de bloqueo</string>
+    <string name="adv_voice_listen_window">Ventana de escucha</string>
+    <string name="adv_voice_listen_window_desc">Cuánto sigue abierto el micrófono tras el aviso si no oye nada.</string>
     <string name="adv_lock_max_speed_desc">Afecta la velocidad por encima de la cual se rechaza bloquear la rueda. Peligro: muy alto deja que un bloqueo se active aún en movimiento.</string>
     <string name="adv_hud_backoff_max">Espera de reconexión (máx.)</string>
     <string name="adv_hud_backoff_max_desc">Afecta la mayor espera entre intentos de reconexión del HUD. Peligro: muy alta tarda en recuperarse.</string>

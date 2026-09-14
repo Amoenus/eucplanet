@@ -99,7 +99,13 @@ class AppSettingsArgLimitTest {
         // flat first and took the class to exactly 255, which this tripwire
         // caught: past that, copy() stops verifying and the app dies at
         // runtime. Two slots left before 255, so nest the next addition too.
-        val expectedSlots = 253
+        // 252: and back down, because the group emptied. The enable went (a
+        // button is the only way in, so there was nothing to enable), the
+        // prompt style went (of three choices only the tone worked), and the
+        // window moved to Advanced where rule 1 says a global tunable lives.
+        // The whole nested class went with them. A feature that grew for a
+        // day and cost a net zero slots.
+        val expectedSlots = 252
         assertEquals(
             "AppSettings slot usage changed. Prefer nesting a group of fields over " +
                 "spending headroom, and update this number deliberately.",

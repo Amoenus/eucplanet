@@ -1323,8 +1323,7 @@
     <string name="menu_switch_to_voice_command">切换到语音命令</string>
     <string name="menu_switch_to_voice_report">切换到语音播报</string>
     <string name="voice_commands_title">语音命令</string>
-    <string name="voice_commands_enable_desc">用语音使用这个应用。长按仪表板上的语音按钮，选择聆听语音指令。</string>
-    <string name="voice_command_window">聆听时长</string>
+    <string name="voice_commands_enable_desc">用语音使用这个应用。在你按下之前什么都不会聆听：长按仪表板上的语音按钮并选择聆听语音指令，或把该磁贴切换为聆听，一按即可开始。聆听也可以绑定到 Flic、音量键、手表或 HUD。可以询问数值，也可以说开灯这样的指令。</string>
     <string name="voice_command_vocabulary">我可以说什么</string>
     <string name="voice_command_vocabulary_tap">可以只说名称，也可以放在问题里。</string>
     <string name="voice_listening">聆听中</string>
@@ -1974,6 +1973,8 @@
     <string name="adv_weather_breezy_desc">从这里开始风有影响。</string>
     <string name="adv_weather_windy_desc">超过后骑行明显更难。</string>
     <string name="adv_lock_max_speed">锁定最高速度</string>
+    <string name="adv_voice_listen_window">聆听时长</string>
+    <string name="adv_voice_listen_window_desc">提示音后若没有听到声音，麦克风保持开启的时长。</string>
     <string name="adv_lock_max_speed_desc">影响高于该速度时拒绝锁定独轮车。危险:过高会让锁定在仍在行驶时触发。</string>
     <string name="adv_hud_backoff_max">重连退避(最大)</string>
     <string name="adv_hud_backoff_max_desc">影响 HUD 重连尝试之间的最长等待时间。危险:过高会恢复缓慢。</string>

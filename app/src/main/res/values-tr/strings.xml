@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Sesli komuta geç</string>
     <string name="menu_switch_to_voice_report">Sesli anonsa geç</string>
     <string name="voice_commands_title">Sesli komutlar</string>
-    <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan. Panodaki Ses düğmesini basılı tut ve Sesli komut dinle seçeneğini seç.</string>
-    <string name="voice_command_window">Dinleme süresi</string>
+    <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan. Sen bir şeye basana kadar hiçbir şey dinlemez: panodaki Ses düğmesini basılı tut ve Sesli komut dinle seçeneğini seç, ya da o kutucuğu Dinle olarak değiştirip tek dokunuşla başlat. Dinleme bir Flic, ses tuşları, saatin veya HUD için de atanabilir. Bir değer sor ya da ışıklar açık gibi bir komut söyle.</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>
     <string name="voice_listening">Dinliyorum</string>
@@ -2104,6 +2103,8 @@
     <string name="adv_weather_breezy_desc">Rüzgar burada rahatsız etmeye başlar.</string>
     <string name="adv_weather_windy_desc">Bunu aşınca sürüş cidden zorlaşır.</string>
     <string name="adv_lock_max_speed">Maks. kilitleme hızı</string>
+    <string name="adv_voice_listen_window">Dinleme penceresi</string>
+    <string name="adv_voice_listen_window_desc">Sesli uyarıdan sonra hiçbir şey duyulmazsa mikrofonun ne kadar açık kalacağı.</string>
     <string name="adv_lock_max_speed_desc">Üzerinde tekeri kilitlemenin reddedildiği hızı etkiler. Dikkat: çok yüksek olursa hâlâ hareket hâlindeyken bir kilidin devreye girmesine izin verir.</string>
     <string name="adv_hud_backoff_max">Yeniden bağlanma beklemesi (maks)</string>
     <string name="adv_hud_backoff_max_desc">HUD yeniden bağlanma denemeleri arasındaki en uzun beklemeyi etkiler. Dikkat: çok yüksek olursa toparlanma yavaşlar.</string>

@@ -291,8 +291,7 @@
     <string name="menu_switch_to_voice_command">Přepnout na hlasový příkaz</string>
     <string name="menu_switch_to_voice_report">Přepnout na hlasové hlášení</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
-    <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem. Podrž tlačítko Hlas na palubní desce a vyber Poslouchat hlasový příkaz.</string>
-    <string name="voice_command_window">Poslouchat po dobu</string>
+    <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem. Nic neposlouchá, dokud něco nestiskneš: podrž tlačítko Hlas na palubní desce a vyber Poslouchat hlasový příkaz, nebo tu dlaždici přepni na Poslouchat a zvládneš to jedním klepnutím. Poslech lze přiřadit i Flicu, tlačítkům hlasitosti, hodinkám nebo HUD. Zeptej se na hodnotu nebo řekni příkaz, třeba světlo zapnout.</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
     <string name="voice_command_vocabulary_tap">Řekni název samostatně nebo v otázce.</string>
     <string name="voice_listening">Poslouchám</string>
@@ -556,6 +555,8 @@
     <string name="adv_weather_breezy_desc">Tady začíná vítr vadit.</string>
     <string name="adv_weather_windy_desc">Za tímto je ježdění opravdu těžší.</string>
     <string name="adv_lock_max_speed">Maximální rychlost pro zámek</string>
+    <string name="adv_voice_listen_window">Okno poslechu</string>
+    <string name="adv_voice_listen_window_desc">Jak dlouho zůstane mikrofon otevřený po signálu, když nic neslyší.</string>
     <string name="adv_lock_max_speed_desc">Ovlivňuje rychlost, nad kterou je zamknutí monokola odmítnuto. Nebezpečí: příliš vysoká hodnota umožní zamknutí za jízdy.</string>
     <string name="adv_compact_max_screen">Limit kompaktní obrazovky</string>
     <string name="adv_compact_max_screen_desc">Obrazovky s oběma stranami pod touto hodnotou přepnou na kompaktní palubní desku, když je Kompaktní palubní deska nastavena na Malé obrazovky.</string>

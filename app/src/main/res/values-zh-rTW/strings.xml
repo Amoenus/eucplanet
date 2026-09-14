@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">切換到語音指令</string>
     <string name="menu_switch_to_voice_report">切換到語音播報</string>
     <string name="voice_commands_title">語音指令</string>
-    <string name="voice_commands_enable_desc">用語音使用這個應用程式。長按儀表板上的語音按鈕，選擇聆聽語音指令。</string>
-    <string name="voice_command_window">聆聽時長</string>
+    <string name="voice_commands_enable_desc">用語音使用這個應用程式。在你按下之前什麼都不會聆聽：長按儀表板上的語音按鈕並選擇聆聽語音指令，或把該磁貼切換為聆聽，一按即可開始。聆聽也可以綁定到 Flic、音量鍵、手錶或 HUD。可以詢問數值，也可以說開燈這樣的指令。</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
     <string name="voice_command_vocabulary_tap">可以只說名稱，也可以放在問題裡。</string>
     <string name="voice_listening">聆聽中</string>
@@ -2106,6 +2105,8 @@
     <string name="adv_weather_breezy_desc">從這裡開始風有影響。</string>
     <string name="adv_weather_windy_desc">超過後騎行明顯更難。</string>
     <string name="adv_lock_max_speed">鎖定最高速度</string>
+    <string name="adv_voice_listen_window">聆聽時長</string>
+    <string name="adv_voice_listen_window_desc">提示音後若沒有聽到聲音，麥克風保持開啟的時長。</string>
     <string name="adv_lock_max_speed_desc">影響高於該速度時拒絕鎖定車輪。危險：太高會讓鎖定在仍行駛時觸發。</string>
     <string name="adv_hud_backoff_max">重連退避（最大）</string>
     <string name="adv_hud_backoff_max_desc">影響 HUD 重連嘗試之間的最長等待時間。危險：太高會使恢復緩慢。</string>

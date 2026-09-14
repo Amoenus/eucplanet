@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Naar spraakopdracht wisselen</string>
     <string name="menu_switch_to_voice_report">Wisselen naar spraakmelding</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
-    <string name="voice_commands_enable_desc">Gebruik je stem in de app. Houd de knop Stem op het dashboard ingedrukt en kies Luisteren naar spraakopdracht.</string>
-    <string name="voice_command_window">Luisteren gedurende</string>
+    <string name="voice_commands_enable_desc">Gebruik je stem in de app. Er luistert niets tot je iets indrukt: houd de knop Stem op het dashboard ingedrukt en kies Luisteren naar spraakopdracht, of zet die tegel op Luisteren voor één tik. Luisteren kan ook aan een Flic, de volumeknoppen, je horloge of de HUD gekoppeld worden. Vraag een waarde, of zeg een opdracht zoals licht aan.</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
     <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag.</string>
     <string name="voice_listening">Luisteren</string>
@@ -2107,6 +2106,8 @@
     <string name="adv_weather_breezy_desc">Hier begint de wind te storen.</string>
     <string name="adv_weather_windy_desc">Voorbij dit wordt rijden echt lastig.</string>
     <string name="adv_lock_max_speed">Max. vergrendelsnelheid</string>
+    <string name="adv_voice_listen_window">Luistervenster</string>
+    <string name="adv_voice_listen_window_desc">Hoe lang de microfoon open blijft na het signaal als er niets te horen is.</string>
     <string name="adv_lock_max_speed_desc">Bepaalt de snelheid waarboven het vergrendelen van het wiel wordt geweigerd. Let op: te hoog laat een vergrendeling activeren terwijl je nog rijdt.</string>
     <string name="adv_hud_backoff_max">Herverbind-backoff (max)</string>
     <string name="adv_hud_backoff_max_desc">Bepaalt de langste wachttijd tussen HUD-herverbindpogingen. Let op: te hoog herstelt traag.</string>

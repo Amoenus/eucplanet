@@ -104,9 +104,6 @@ object SettingsJson {
         put("voiceLocaleOverridden", s.voiceLocaleOverridden)
         put("voiceAudioFocus", s.voiceAudioFocus)
         put("voiceOutputChannel", s.voiceOutputChannel)
-        put("voiceCommands", JSONObject().apply {
-            put("windowSeconds", s.voiceCommands.windowSeconds)
-        })
         put("voiceReportSpeed", s.voiceReportSpeed)
         put("voiceReportBattery", s.voiceReportBattery)
         put("voiceReportTemp", s.voiceReportTemp)
@@ -445,11 +442,6 @@ object SettingsJson {
         voiceLocaleOverridden = j.optBoolean("voiceLocaleOverridden", base.voiceLocaleOverridden),
         voiceAudioFocus = j.optString("voiceAudioFocus", base.voiceAudioFocus),
         voiceOutputChannel = j.optString("voiceOutputChannel", base.voiceOutputChannel),
-        voiceCommands = j.optJSONObject("voiceCommands")?.let { v ->
-            com.eried.eucplanet.data.model.VoiceCommandSettings(
-                windowSeconds = v.optInt("windowSeconds", base.voiceCommands.windowSeconds),
-            )
-        } ?: base.voiceCommands,
         // Flat JSON keys preserved for back-compat; the fields now live nested.
         weather = com.eried.eucplanet.data.model.WeatherSettings(
             enabled = j.optBoolean("weatherEnabled", base.weather.enabled),

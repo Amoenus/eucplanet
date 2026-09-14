@@ -291,8 +291,7 @@
     <string name="menu_switch_to_voice_command">Comută la comanda vocală</string>
     <string name="menu_switch_to_voice_report">Comută la anunț vocal</string>
     <string name="voice_commands_title">Comenzi vocale</string>
-    <string name="voice_commands_enable_desc">Folosește-ți vocea în aplicație. Ține apăsat butonul Voce de pe tabloul de bord și alege Ascultă o comandă vocală.</string>
-    <string name="voice_command_window">Ascultă timp de</string>
+    <string name="voice_commands_enable_desc">Folosește-ți vocea în aplicație. Nimic nu ascultă până nu apeși ceva: ține apăsat butonul Voce de pe tabloul de bord și alege Ascultă o comandă vocală, sau schimbă acel card în Ascultă pentru o singură apăsare. Ascultarea poate fi atribuită și unui Flic, tastelor de volum, ceasului tău sau HUD. Cere o valoare sau spune o comandă, de exemplu lumini pornite.</string>
     <string name="voice_command_vocabulary">Ce pot să spun</string>
     <string name="voice_command_vocabulary_tap">Spune un nume singur sau într-o întrebare.</string>
     <string name="voice_listening">Ascult</string>
@@ -556,6 +555,8 @@
     <string name="adv_weather_breezy_desc">De aici vântul începe să deranjeze.</string>
     <string name="adv_weather_windy_desc">Dincolo de asta, mersul devine greu.</string>
     <string name="adv_lock_max_speed">Viteza maximă pentru blocare</string>
+    <string name="adv_voice_listen_window">Fereastră de ascultare</string>
+    <string name="adv_voice_listen_window_desc">Cât rămâne microfonul deschis după semnal, fără să audă nimic.</string>
     <string name="adv_lock_max_speed_desc">Influențează viteza peste care blocarea monociclului este refuzată. Pericol: o valoare prea mare permite blocarea în timp ce încă rulează.</string>
     <string name="adv_compact_max_screen">Limita ecranului compact</string>
     <string name="adv_compact_max_screen_desc">Ecranele cu ambele laturi sub această valoare trec la tabloul de bord compact când Tablou de bord compact este setat pe Ecrane mici.</string>

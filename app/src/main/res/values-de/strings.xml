@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">Auf Sprachbefehl umschalten</string>
     <string name="menu_switch_to_voice_report">Zu Sprachansage wechseln</string>
     <string name="voice_commands_title">Sprachbefehle</string>
-    <string name="voice_commands_enable_desc">Nutze deine Stimme in der App. Halte die Sprachtaste im Dashboard gedrückt und wähle Auf Sprachbefehl hören.</string>
-    <string name="voice_command_window">Zuhören für</string>
+    <string name="voice_commands_enable_desc">Nutze deine Stimme in der App. Nichts hört zu, bis du etwas drückst: Halte die Sprachtaste im Dashboard gedrückt und wähle Auf Sprachbefehl hören, oder stelle diese Kachel auf Zuhören um, für einen Tipp. Zuhören lässt sich auch auf einen Flic, die Lautstärketasten, deine Uhr oder das HUD legen. Frage einen Wert ab oder sage einen Befehl wie Licht an.</string>
     <string name="voice_command_vocabulary">Was kann ich sagen</string>
     <string name="voice_command_vocabulary_tap">Sag einen Namen allein oder in einer Frage.</string>
     <string name="voice_listening">Ich höre</string>
@@ -2127,6 +2126,8 @@
     <string name="adv_weather_breezy_desc">Ab hier stört der Wind.</string>
     <string name="adv_weather_windy_desc">Darüber wird das Fahren richtig schwer.</string>
     <string name="adv_lock_max_speed">Max. Sperrgeschwindigkeit</string>
+    <string name="adv_voice_listen_window">Hörfenster</string>
+    <string name="adv_voice_listen_window_desc">Wie lange das Mikrofon nach dem Signal offen bleibt, wenn nichts zu hören ist.</string>
     <string name="adv_lock_max_speed_desc">Beeinflusst die Geschwindigkeit, oberhalb der das Sperren des Wheels verweigert wird. Achtung: zu hoch lässt eine Sperre auslösen, während du noch rollst.</string>
     <string name="adv_hud_backoff_max">Reconnect-Wartezeit (max.)</string>
     <string name="adv_hud_backoff_max_desc">Beeinflusst die längste Wartezeit zwischen HUD-Reconnect-Versuchen. Achtung: zu hoch erholt sich langsam.</string>

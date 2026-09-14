@@ -328,8 +328,7 @@
     <string name="menu_switch_to_voice_command">音声コマンドに切り替え</string>
     <string name="menu_switch_to_voice_report">音声アナウンスに切り替え</string>
     <string name="voice_commands_title">音声コマンド</string>
-    <string name="voice_commands_enable_desc">音声でアプリを使えます。ダッシュボードの音声ボタンを長押しして、音声コマンドを聞くを選びます。</string>
-    <string name="voice_command_window">聞く時間</string>
+    <string name="voice_commands_enable_desc">音声でアプリを使えます。何かを押すまで待ち受けはしません。ダッシュボードの音声ボタンを長押しして音声コマンドを聞くを選ぶか、そのタイルを聞くに切り替えれば一度のタップで始まります。待ち受けは Flic、音量キー、時計、HUD にも割り当てられます。値を尋ねるか、ライトオンのようなコマンドを言ってください。</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>
     <string name="voice_listening">聞き取り中</string>
@@ -2106,6 +2105,8 @@
     <string name="adv_weather_breezy_desc">ここから風が影響し始める。</string>
     <string name="adv_weather_windy_desc">これを超えると走行が本当に難しくなる。</string>
     <string name="adv_lock_max_speed">ロック最高速度</string>
+    <string name="adv_voice_listen_window">聞く時間</string>
+    <string name="adv_voice_listen_window_desc">合図のあと、何も聞こえない場合にマイクを開いておく長さ。</string>
     <string name="adv_lock_max_speed_desc">ホイールのロックを拒否する速度に影響します。危険: 高すぎると走行中でもロックが作動します。</string>
     <string name="adv_hud_backoff_max">再接続バックオフ（最大）</string>
     <string name="adv_hud_backoff_max_desc">HUD 再接続の試行間隔の最大待機時間に影響します。危険: 高すぎると復帰が遅くなります。</string>

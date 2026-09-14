@@ -797,9 +797,6 @@ class SettingsViewModel @Inject constructor(
     // SettingsRepository.sanitized(), so a synced file cannot leave the
     // segmented row with nothing selected.
 
-    fun updateVoiceCommandWindowSeconds(v: Int) =
-        update { copy(voiceCommands = voiceCommands.copy(windowSeconds = v.coerceIn(3, 30))) }
-
     // Measurement units: speed, distance and temperature are independently
     // selectable. Metric/Imperial/Custom is a derived label (see Units.unitSystemOf).
     fun setUnitSpeed(v: String) = update { copy(unitSpeed = v) }

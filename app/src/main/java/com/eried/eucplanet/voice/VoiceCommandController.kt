@@ -249,7 +249,7 @@ class VoiceCommandController @Inject constructor(
             // The window starts now, not at the press: the seconds a rider
             // sets are seconds they get to speak.
             val deadline = System.currentTimeMillis() +
-                settings.voiceCommands.windowSeconds * 1000L
+                settings.advanced.voiceListenWindowSec * 1000L
             var heard: String? = null
             var micBusy = false
             // Partials arrive a word at a time. Showing each one made the

@@ -95,6 +95,9 @@ class AndroidVoiceListener(
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
         }
         _state.value = ListenState.Listening
+        com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+            "Voice: listening via ${if (useOnDevice) "on-device" else "network"} recogniser, $languageTag"
+        )
         try {
             r.startListening(intent)
         } catch (e: Exception) {
@@ -139,6 +142,9 @@ class AndroidVoiceListener(
                 ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 ?.firstOrNull()
                 .orEmpty()
+            com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                if (text.isBlank()) "Voice: heard nothing" else "Voice: heard \"$text\""
+            )
             _state.value =
                 if (text.isBlank()) ListenState.Failed("heard nothing")
                 else ListenState.Final(text)
@@ -151,6 +157,9 @@ class AndroidVoiceListener(
             // Remember that and take the networked route from here, which is
             // what a rider who has never downloaded a pack will always hit.
             if (!onDeviceFailed && isOnDevice && isLanguageUnavailable(error)) {
+                com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                    "Voice: no on-device language pack (${errorName(error)}), trying the network one"
+                )
                 onDeviceFailed = true
                 release()
                 start()
@@ -159,6 +168,9 @@ class AndroidVoiceListener(
             // The rider never sees this string; it is for the diagnostics log.
             // What they hear is the spoken "I did not catch that", which the
             // controller says for every failure so silence is never the answer.
+            com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                "Voice: gave up, ${errorName(error)}"
+            )
             _state.value = ListenState.Failed(errorName(error))
             release()
         }

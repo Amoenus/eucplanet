@@ -139,4 +139,37 @@ class VoicePreviewTest {
         )
         assertTrue(answer is Answer.Unavailable)
     }
+
+    @Test
+    fun `the list offers the specials and actions too, one name each`() {
+        // The dialog used to build only metrics, reports and the split, so the
+        // page that explains the feature omitted every special and action.
+        // Several phrasings share a key; the list shows the first, and the
+        // matcher still accepts the rest whether or not they are written down.
+        val full = VoiceVocabulary.build(
+            metricNames = metrics,
+            reportNames = reports,
+            splitName = "last split",
+            helpPhrases = "help,what can I say",
+            specialPhrases = mapOf("SP_WEATHER" to "weather,good day to ride"),
+            actionPhrases = mapOf("HORN" to "horn,beep"),
+        )
+        assertEquals(2, full.count { it.key == "SP_WEATHER" })
+        assertEquals(2, full.count { it.key == "HORN" })
+
+        // What the dialog renders: one row per key for these kinds.
+        val shown = full
+            .groupBy {
+                if (it.kind == VoiceVocabulary.Kind.METRIC ||
+                    it.kind == VoiceVocabulary.Kind.REPORT ||
+                    it.kind == VoiceVocabulary.Kind.SPLIT
+                ) it.name else it.key
+            }
+            .map { (_, g) -> g.first().name }
+        assertTrue("weather missing from the list", "weather" in shown)
+        assertTrue("horn missing from the list", "horn" in shown)
+        assertTrue("help missing from the list", "help" in shown)
+        assertEquals(1, shown.count { it == "weather" })
+        assertTrue("a second phrasing leaked in", "good day to ride" !in shown)
+    }
 }

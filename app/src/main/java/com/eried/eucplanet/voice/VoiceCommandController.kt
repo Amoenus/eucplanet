@@ -126,7 +126,12 @@ class VoiceCommandController @Inject constructor(
      *   press is noise.
      */
     fun listen(listener: VoiceListener? = null, notify: Boolean = true) {
-        if (session?.isActive == true) return
+        // Pressing again means "forget that, listen to this". It used to mean
+        // nothing at all: the second press was swallowed while the first
+        // session ran out its window, so a rider who fumbled the first
+        // question had to wait for the app to finish not understanding it.
+        session?.cancel()
+        _state.value = UiState.Idle
         session = scope.launch {
             val settings = settingsRepository.get()
             // Every surface that can start listening goes through here, so the

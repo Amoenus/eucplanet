@@ -53,14 +53,49 @@ fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
         "Time" to stringResource(R.string.report_time),
         "Navigation" to stringResource(R.string.report_navigation),
     )
+    // The same phrase lists the matcher listens against, so the list cannot
+    // promise something that will not work or omit something that will. It
+    // used to build only metrics, reports and the split, which left every
+    // special and action off the one page that explains them.
     val terms = VoiceVocabulary.build(
         metricNames = metricNames,
         reportNames = reportNames,
         splitName = stringResource(R.string.voice_split_term),
+        helpPhrases = stringResource(R.string.voice_help_terms),
+        specialPhrases = mapOf(
+            VoiceVocabulary.Special.WEATHER to stringResource(R.string.voice_sp_weather_terms),
+            VoiceVocabulary.Special.DAYLIGHT to stringResource(R.string.voice_sp_daylight_terms),
+            VoiceVocabulary.Special.CONNECTED to stringResource(R.string.voice_sp_connected_terms),
+            VoiceVocabulary.Special.UPTIME to stringResource(R.string.voice_sp_uptime_terms),
+            VoiceVocabulary.Special.NAV_NEXT to stringResource(R.string.voice_sp_nav_terms),
+            VoiceVocabulary.Special.LAST_TRIP to stringResource(R.string.voice_sp_last_trip_terms),
+            VoiceVocabulary.Special.REPORT to stringResource(R.string.voice_sp_report_terms),
+        ),
+        actionPhrases = mapOf(
+            "V_LIGHT_ON" to stringResource(R.string.voice_act_light_on_terms),
+            "V_LIGHT_OFF" to stringResource(R.string.voice_act_light_off_terms),
+            "V_LOCK" to stringResource(R.string.voice_act_lock_terms),
+            "V_UNLOCK" to stringResource(R.string.voice_act_unlock_terms),
+            "HORN" to stringResource(R.string.voice_act_horn_terms),
+            "RECORD_START" to stringResource(R.string.voice_act_record_start_terms),
+            "RECORD_STOP" to stringResource(R.string.voice_act_record_stop_terms),
+            "RESET_TRIP" to stringResource(R.string.voice_act_reset_trip_terms),
+        ),
     )
     // Metric and report names overlap by design (Speed is both), so the list a
-    // rider reads is the set of distinct things they can say.
-    val names = terms.map { it.name }.distinct().sorted()
+    // rider reads is the set of distinct things they can say. Specials and
+    // actions carry several phrasings per key, and listing every one of them
+    // would bury the metrics: the first is the canonical one, and the matcher
+    // accepts the rest whether or not they are written down.
+    val names = terms
+        .groupBy { if (it.kind == VoiceVocabulary.Kind.METRIC ||
+                it.kind == VoiceVocabulary.Kind.REPORT ||
+                it.kind == VoiceVocabulary.Kind.SPLIT
+            ) it.name else it.key
+        }
+        .map { (_, group) -> group.first().name }
+        .distinct()
+        .sorted()
 
     AlertDialog(
         onDismissRequest = onDismiss,

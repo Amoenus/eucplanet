@@ -7239,7 +7239,29 @@ private fun VoiceTab(
         // so a toggle only added a second thing to find and a way for that
         // press to do nothing. A rider who does not want it simply does not
         // put the action on a surface.
-        HintText(stringResource(R.string.voice_commands_enable_desc))
+        // The list used to be a button of its own under a gap, which put a
+        // lot of empty space between the section and the only thing in it that
+        // is not a control. It reads better as a link on the sentence that
+        // already explains the feature.
+        var vocabularyOpen by remember { mutableStateOf(false) }
+        Text(
+            buildAnnotatedString {
+                append(stringResource(R.string.voice_commands_enable_desc))
+                append("  ")
+                withStyle(SpanStyle(color = MaterialTheme.appColors.primary)) {
+                    append(stringResource(R.string.voice_command_vocabulary))
+                }
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.appColors.textSecondary,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { vocabularyOpen = true }
+                .padding(vertical = 2.dp),
+        )
+        if (vocabularyOpen) {
+            VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
+        }
         run {
             Spacer(Modifier.height(8.dp))
             // The label belongs to the control, not above it: SegmentedChoice
@@ -7271,16 +7293,6 @@ private fun VoiceTab(
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(Modifier.weight(1f))
-            }
-            Spacer(Modifier.height(8.dp))
-            // Generated from the same catalogs the matcher listens against, so
-            // it cannot promise a rider something that will not work (rule 10).
-            var vocabularyOpen by remember { mutableStateOf(false) }
-            TextButton(onClick = { vocabularyOpen = true }) {
-                Text(stringResource(R.string.voice_command_vocabulary))
-            }
-            if (vocabularyOpen) {
-                VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
             }
         }
 

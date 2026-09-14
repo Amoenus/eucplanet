@@ -291,7 +291,7 @@
     <string name="menu_switch_to_voice_command">Vaihda puhekomentoon</string>
     <string name="menu_switch_to_voice_report">Vaihda ääni-ilmoitukseen</string>
     <string name="voice_commands_title">Puhekomennot</string>
-    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa.</string>
+    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa. Pidä kojelaudan Ääni-painiketta pohjassa ja valitse Kuuntele äänikomentoa.</string>
     <string name="voice_command_window">Kuuntele</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>

@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Перейти до голосової команди</string>
     <string name="menu_switch_to_voice_report">Перемкнути на голосове повідомлення</string>
     <string name="voice_commands_title">Голосові команди</string>
-    <string name="voice_commands_enable_desc">Керуйте застосунком голосом.</string>
+    <string name="voice_commands_enable_desc">Керуйте застосунком голосом. Утримуйте кнопку Голос на панелі та виберіть Слухати голосову команду.</string>
     <string name="voice_command_window">Слухати</string>
     <string name="voice_command_vocabulary">Що можна сказати</string>
     <string name="voice_command_vocabulary_tap">Назвіть пункт окремо або у запитанні.</string>

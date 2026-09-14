@@ -1340,7 +1340,7 @@
     <string name="menu_switch_to_voice_command">Bytt til talekommando</string>
     <string name="menu_switch_to_voice_report">Bytt til talemelding</string>
     <string name="voice_commands_title">Talekommandoer</string>
-    <string name="voice_commands_enable_desc">Bruk stemmen din i appen.</string>
+    <string name="voice_commands_enable_desc">Bruk stemmen din i appen. Hold inne Stemme-knappen på dashbordet og velg Lytt etter talekommando.</string>
     <string name="voice_command_window">Lytt i</string>
     <string name="voice_command_vocabulary">Hva kan jeg si</string>
     <string name="voice_command_vocabulary_tap">Si et navn alene eller i et spørsmål.</string>

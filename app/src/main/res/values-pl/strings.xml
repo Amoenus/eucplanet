@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Przełącz na polecenie głosowe</string>
     <string name="menu_switch_to_voice_report">Przełącz na komunikat głosowy</string>
     <string name="voice_commands_title">Polecenia głosowe</string>
-    <string name="voice_commands_enable_desc">Używaj głosu w aplikacji.</string>
+    <string name="voice_commands_enable_desc">Używaj głosu w aplikacji. Przytrzymaj przycisk Głos na pulpicie i wybierz Słuchaj polecenia głosowego.</string>
     <string name="voice_command_window">Słuchaj przez</string>
     <string name="voice_command_vocabulary">Co mogę powiedzieć</string>
     <string name="voice_command_vocabulary_tap">Powiedz nazwę samodzielnie lub w pytaniu.</string>

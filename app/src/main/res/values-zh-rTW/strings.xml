@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">切換到語音指令</string>
     <string name="menu_switch_to_voice_report">切換到語音播報</string>
     <string name="voice_commands_title">語音指令</string>
-    <string name="voice_commands_enable_desc">用語音使用這個應用程式。</string>
+    <string name="voice_commands_enable_desc">用語音使用這個應用程式。長按儀表板上的語音按鈕，選擇聆聽語音指令。</string>
     <string name="voice_command_window">聆聽時長</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
     <string name="voice_command_vocabulary_tap">可以只說名稱，也可以放在問題裡。</string>

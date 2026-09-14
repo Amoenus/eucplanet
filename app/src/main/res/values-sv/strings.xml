@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Byt till röstkommando</string>
     <string name="menu_switch_to_voice_report">Byt till röstmeddelande</string>
     <string name="voice_commands_title">Röstkommandon</string>
-    <string name="voice_commands_enable_desc">Använd rösten i appen.</string>
+    <string name="voice_commands_enable_desc">Använd rösten i appen. Håll in Röst-knappen på instrumentpanelen och välj Lyssna efter röstkommando.</string>
     <string name="voice_command_window">Lyssna i</string>
     <string name="voice_command_vocabulary">Vad kan jag säga</string>
     <string name="voice_command_vocabulary_tap">Säg ett namn ensamt eller i en fråga.</string>

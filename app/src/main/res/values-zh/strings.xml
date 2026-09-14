@@ -1323,7 +1323,7 @@
     <string name="menu_switch_to_voice_command">切换到语音命令</string>
     <string name="menu_switch_to_voice_report">切换到语音播报</string>
     <string name="voice_commands_title">语音命令</string>
-    <string name="voice_commands_enable_desc">用语音使用这个应用。</string>
+    <string name="voice_commands_enable_desc">用语音使用这个应用。长按仪表板上的语音按钮，选择聆听语音指令。</string>
     <string name="voice_command_window">聆听时长</string>
     <string name="voice_command_vocabulary">我可以说什么</string>
     <string name="voice_command_vocabulary_tap">可以只说名称，也可以放在问题里。</string>

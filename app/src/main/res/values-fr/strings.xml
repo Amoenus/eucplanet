@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Passer à la commande vocale</string>
     <string name="menu_switch_to_voice_report">Basculer vers annonce vocale</string>
     <string name="voice_commands_title">Commandes vocales</string>
-    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application.</string>
+    <string name="voice_commands_enable_desc">Utilisez votre voix avec l application. Maintenez le bouton Voix du tableau de bord et choisissez Écouter une commande vocale.</string>
     <string name="voice_command_window">Écouter pendant</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
     <string name="voice_command_vocabulary_tap">Dites un nom seul ou dans une question.</string>

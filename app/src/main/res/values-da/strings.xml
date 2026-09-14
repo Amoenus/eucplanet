@@ -328,7 +328,7 @@
     <string name="menu_switch_to_voice_command">Skift til stemmekommando</string>
     <string name="menu_switch_to_voice_report">Skift til stemmebesked</string>
     <string name="voice_commands_title">Stemmekommandoer</string>
-    <string name="voice_commands_enable_desc">Brug din stemme i appen.</string>
+    <string name="voice_commands_enable_desc">Brug din stemme i appen. Hold Stemme-knappen på dashboardet nede, og vælg Lyt efter stemmekommando.</string>
     <string name="voice_command_window">Lyt i</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
     <string name="voice_command_vocabulary_tap">Sig et navn alene eller i et spørgsmål.</string>

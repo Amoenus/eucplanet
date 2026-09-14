@@ -45,6 +45,19 @@ class AndroidVoiceListener(
 
     private var recognizer: SpeechRecognizer? = null
 
+    /**
+     * True once the on-device recogniser has been tried and turned out to have
+     * no language pack for this rider's language.
+     *
+     * The device says it has an on-device recogniser and then fails the moment
+     * it is asked, because the pack is a separate download the rider may never
+     * have made. Nothing in the API distinguishes "installed" from "available
+     * to install", so the only way to find out is to ask, and the only sensible
+     * answer to the failure is to try the networked one rather than tell a
+     * rider their wheel went quiet.
+     */
+    private var onDeviceFailed = false
+
     /** True when this device has an on-device recogniser at all. */
     val isOnDevice: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -56,8 +69,9 @@ class AndroidVoiceListener(
             _state.value = ListenState.Failed("no recogniser on this device")
             return
         }
+        val useOnDevice = isOnDevice && !onDeviceFailed
         val r = try {
-            if (isOnDevice) SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
+            if (useOnDevice) SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
             else SpeechRecognizer.createSpeechRecognizer(context)
         } catch (e: Exception) {
             // A device can advertise a recogniser and still refuse to build one.
@@ -132,6 +146,16 @@ class AndroidVoiceListener(
         }
 
         override fun onError(error: Int) {
+            // A missing language pack is the on-device recogniser saying it
+            // cannot help with this language, not the rider saying nothing.
+            // Remember that and take the networked route from here, which is
+            // what a rider who has never downloaded a pack will always hit.
+            if (!onDeviceFailed && isOnDevice && isLanguageUnavailable(error)) {
+                onDeviceFailed = true
+                release()
+                start()
+                return
+            }
             // The rider never sees this string; it is for the diagnostics log.
             // What they hear is the spoken "I did not catch that", which the
             // controller says for every failure so silence is never the answer.
@@ -145,6 +169,14 @@ class AndroidVoiceListener(
         override fun onBufferReceived(buffer: ByteArray?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
+
+    /** Errors that mean "not in this language", rather than "heard nothing". */
+    private fun isLanguageUnavailable(error: Int): Boolean =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && (
+            error == SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED ||
+                error == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE ||
+                error == SpeechRecognizer.ERROR_CANNOT_CHECK_SUPPORT
+            )
 
     private fun errorName(error: Int): String = when (error) {
         SpeechRecognizer.ERROR_AUDIO -> "audio"

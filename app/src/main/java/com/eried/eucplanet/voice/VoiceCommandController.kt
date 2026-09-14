@@ -124,7 +124,7 @@ class VoiceCommandController @Inject constructor(
         }
         _state.value = UiState.Heard(heard)
         val answer = VoiceCommandSession.answer(heard, vocabulary, onDashboard) { term ->
-            reading(term)
+            reading(term, settings)
         }
         speak(answer, settings)
     }
@@ -137,14 +137,35 @@ class VoiceCommandController @Inject constructor(
      * reports take the same route, which is why Speed and Battery sound like
      * the announcement a rider already knows rather than a bare number.
      */
-    private fun reading(term: SpokenTerm): VoiceCommandSession.Reading? {
+    private fun reading(
+        term: SpokenTerm,
+        settings: com.eried.eucplanet.data.model.AppSettings,
+    ): VoiceCommandSession.Reading? {
         if (term.kind == Kind.REPORT || term.key in REPORT_FOR_METRIC) return null
         val data = wheelRepository.wheelData.value
         val value = EXTRACTORS[term.key]?.invoke(data)
         return when {
             value == null -> VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
             value.isNaN() -> VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
-            else -> VoiceCommandSession.Reading(formatNumber(value), null)
+            // The dashboard's own formatter, so a spoken value carries the same
+            // unit in the same rider's units as the tile they would have read.
+            else -> VoiceCommandSession.Reading(
+                com.eried.eucplanet.data.model.MetricValueFormat.format(
+                    key = term.key,
+                    raw = value,
+                    speedUnit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings),
+                    speedUnitLabel = com.eried.eucplanet.util.Units.speedUnit(
+                        context, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
+                    ),
+                    tempUnit = com.eried.eucplanet.util.Units.effectiveTempUnit(settings),
+                    tempUnitLabel = com.eried.eucplanet.util.Units.tempUnit(
+                        com.eried.eucplanet.util.Units.effectiveTempUnit(settings)
+                    ),
+                    distanceUnit = com.eried.eucplanet.util.Units.effectiveDistanceUnit(settings),
+                    pressureUnit = com.eried.eucplanet.util.Units.effectivePressureUnit(settings),
+                ),
+                null,
+            )
         }
     }
 

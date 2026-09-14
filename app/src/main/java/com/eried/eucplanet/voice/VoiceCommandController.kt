@@ -82,6 +82,26 @@ class VoiceCommandController @Inject constructor(
         session = scope.launch {
             val settings = settingsRepository.get()
             if (!settings.voiceCommands.enabled) return@launch
+            // Every surface that can start listening goes through here, so the
+            // check belongs here rather than in each of them. A rider pressing
+            // a watch stem or a HUD button with the permission never granted
+            // was getting the microphone opened and then a recogniser error
+            // dressed up as something else holding it.
+            if (listener == null && !hasMicPermission()) {
+                val text = context.getString(
+                    R.string.voice_answer_setup,
+                    context.getString(R.string.voice_commands_title),
+                )
+                _state.value = UiState.Spoke(text)
+                voiceService.speak(text)
+                Log.i(TAG, "refused, no microphone permission")
+                com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                    "Voice: refused, no microphone permission"
+                )
+                delay(4000)
+                _state.value = UiState.Idle
+                return@launch
+            }
             val mic = listener ?: AndroidVoiceListener(
                 context = context,
                 languageTag = VoiceLocaleTag.tag(settings.voiceLocale),

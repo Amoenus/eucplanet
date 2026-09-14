@@ -202,8 +202,11 @@ class AndroidVoiceListener(
      */
     private fun micUnavailable(error: Int): Boolean =
         error == SpeechRecognizer.ERROR_AUDIO ||
-            error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ||
-            error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS
+            error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY
+    // Not the missing permission: that is the rider having never granted it,
+    // which wants "this needs setting up" and a way to fix it, not "something
+    // else is using the microphone". The controller refuses before opening
+    // anything, so it does not reach here.
 
     /** Errors that mean "not in this language", rather than "heard nothing". */
     private fun isLanguageUnavailable(error: Int): Boolean =

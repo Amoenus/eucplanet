@@ -328,7 +328,8 @@
     <string name="menu_switch_to_voice_command">음성 명령으로 전환</string>
     <string name="menu_switch_to_voice_report">음성 안내로 전환</string>
     <string name="voice_commands_title">음성 명령</string>
-    <string name="voice_commands_enable_desc">음성으로 앱을 사용하세요. 무언가를 누르기 전에는 아무것도 듣지 않습니다. 대시보드의 음성 버튼을 길게 눌러 음성 명령 듣기를 선택하거나, 해당 타일을 듣기로 바꾸면 한 번만 눌러도 됩니다. 듣기는 Flic, 볼륨 키, 시계, HUD에도 연결할 수 있습니다. 값을 묻거나 라이트 켜기 같은 명령을 말하세요.</string>
+    <string name="voice_commands_enable_desc">음성으로 앱을 사용하세요. 무언가를 누르기 전에는 아무것도 듣지 않습니다. 대시보드의 음성 버튼을 길게 눌러 음성 명령 듣기를 선택하세요. 듣기는 Flic, 볼륨 키, 시계, HUD에도 연결할 수 있습니다.</string>
+    <string name="voice_commands_ask_desc">배터리나 속도 같은 값을 묻거나, 날씨나 내비게이션을 묻거나, 라이트 켜기 같은 명령을 말하세요.</string>
     <string name="voice_command_vocabulary">무엇을 말할 수 있나요</string>
     <string name="voice_command_vocabulary_tap">이름만 말해도 되고 질문에 넣어도 됩니다.</string>
     <string name="voice_listening">듣는 중</string>

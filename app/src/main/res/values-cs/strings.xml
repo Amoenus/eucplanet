@@ -291,7 +291,8 @@
     <string name="menu_switch_to_voice_command">Přepnout na hlasový příkaz</string>
     <string name="menu_switch_to_voice_report">Přepnout na hlasové hlášení</string>
     <string name="voice_commands_title">Hlasové příkazy</string>
-    <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem. Nic neposlouchá, dokud něco nestiskneš: podrž tlačítko Hlas na palubní desce a vyber Poslouchat hlasový příkaz, nebo tu dlaždici přepni na Poslouchat a zvládneš to jedním klepnutím. Poslech lze přiřadit i Flicu, tlačítkům hlasitosti, hodinkám nebo HUD. Zeptej se na hodnotu nebo řekni příkaz, třeba světlo zapnout.</string>
+    <string name="voice_commands_enable_desc">Ovládej aplikaci hlasem. Nic neposlouchá, dokud něco nestiskneš: podrž tlačítko Hlas na palubní desce a vyber Poslouchat hlasový příkaz. Poslech lze přiřadit i Flicu, tlačítkům hlasitosti, hodinkám nebo HUD.</string>
+    <string name="voice_commands_ask_desc">Zeptej se na hodnotu jako baterie nebo rychlost, na počasí nebo navigaci, nebo řekni příkaz jako světlo zapnout.</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
     <string name="voice_command_vocabulary_tap">Řekni název samostatně nebo v otázce.</string>
     <string name="voice_listening">Poslouchám</string>

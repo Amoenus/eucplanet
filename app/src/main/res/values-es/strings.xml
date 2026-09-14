@@ -328,7 +328,8 @@
     <string name="menu_switch_to_voice_command">Cambiar a comando de voz</string>
     <string name="menu_switch_to_voice_report">Cambiar a anuncio de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
-    <string name="voice_commands_enable_desc">Usa tu voz con la app. Nada escucha hasta que pulsas algo: mantén pulsado el botón Voz en el panel y elige Escuchar comando de voz, o cambia ese botón a Escuchar para hacerlo con un toque. Escuchar también se puede asignar a un Flic, las teclas de volumen, tu reloj o el HUD. Pide un dato o di una orden como luces encendidas.</string>
+    <string name="voice_commands_enable_desc">Usa tu voz con la app. Nada escucha hasta que pulsas algo: mantén pulsado el botón Voz en el panel y elige Escuchar comando de voz. Escuchar también se puede asignar a un Flic, las teclas de volumen, tu reloj o el HUD.</string>
+    <string name="voice_commands_ask_desc">Pide un dato como batería o velocidad, pregunta por el tiempo o la navegación, o di una orden como luces encendidas.</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>
     <string name="voice_listening">Escuchando</string>

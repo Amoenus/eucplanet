@@ -291,7 +291,8 @@
     <string name="menu_switch_to_voice_command">Váltás hangparancsra</string>
     <string name="menu_switch_to_voice_report">Váltás hangbemondásra</string>
     <string name="voice_commands_title">Hangparancsok</string>
-    <string name="voice_commands_enable_desc">Használd a hangod az alkalmazásban. Semmi nem figyel, amíg meg nem nyomsz valamit: tartsd nyomva a Hang gombot a műszerfalon, és válaszd a Hangparancs figyelése lehetőséget, vagy állítsd át azt a csempét Zuhören módra egy koppintáshoz. A figyelés hozzárendelhető Flichez, a hangerőgombokhoz, az órádhoz vagy a HUD-hoz. Kérdezz egy értéket, vagy mondj parancsot, például lámpa be.</string>
+    <string name="voice_commands_enable_desc">Használd a hangod az alkalmazásban. Semmi nem figyel, amíg meg nem nyomsz valamit: tartsd nyomva a Hang gombot a műszerfalon, és válaszd a Hangparancs figyelése lehetőséget. A figyelés hozzárendelhető Flichez, a hangerőgombokhoz, az órádhoz vagy a HUD-hoz.</string>
+    <string name="voice_commands_ask_desc">Kérdezz értéket, például akkumulátor vagy sebesség, kérdezz az időjárásról vagy a navigációról, vagy mondj parancsot, például lámpa be.</string>
     <string name="voice_command_vocabulary">Mit mondhatok</string>
     <string name="voice_command_vocabulary_tap">Mondd a nevet önmagában vagy egy kérdésben.</string>
     <string name="voice_listening">Hallgatom</string>

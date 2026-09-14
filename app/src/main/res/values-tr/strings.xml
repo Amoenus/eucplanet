@@ -328,7 +328,8 @@
     <string name="menu_switch_to_voice_command">Sesli komuta geç</string>
     <string name="menu_switch_to_voice_report">Sesli anonsa geç</string>
     <string name="voice_commands_title">Sesli komutlar</string>
-    <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan. Sen bir şeye basana kadar hiçbir şey dinlemez: panodaki Ses düğmesini basılı tut ve Sesli komut dinle seçeneğini seç, ya da o kutucuğu Dinle olarak değiştirip tek dokunuşla başlat. Dinleme bir Flic, ses tuşları, saatin veya HUD için de atanabilir. Bir değer sor ya da ışıklar açık gibi bir komut söyle.</string>
+    <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan. Sen bir şeye basana kadar hiçbir şey dinlemez: panodaki Ses düğmesini basılı tut ve Sesli komut dinle seçeneğini seç. Dinleme bir Flic, ses tuşları, saatin veya HUD için de atanabilir.</string>
+    <string name="voice_commands_ask_desc">Batarya ya da hız gibi bir değer sor, hava durumunu veya navigasyonu sor, ya da ışıklar açık gibi bir komut söyle.</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>
     <string name="voice_listening">Dinliyorum</string>

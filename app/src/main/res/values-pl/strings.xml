@@ -328,7 +328,8 @@
     <string name="menu_switch_to_voice_command">Przełącz na polecenie głosowe</string>
     <string name="menu_switch_to_voice_report">Przełącz na komunikat głosowy</string>
     <string name="voice_commands_title">Polecenia głosowe</string>
-    <string name="voice_commands_enable_desc">Używaj głosu w aplikacji. Nic nie słucha, dopóki czegoś nie naciśniesz: przytrzymaj przycisk Głos na pulpicie i wybierz Słuchaj polecenia głosowego, albo zmień ten kafelek na Słuchaj, aby zrobić to jednym dotknięciem. Słuchanie można też przypisać do Flica, przycisków głośności, zegarka lub HUD. Zapytaj o wartość albo powiedz polecenie, na przykład światła włącz.</string>
+    <string name="voice_commands_enable_desc">Używaj głosu w aplikacji. Nic nie słucha, dopóki czegoś nie naciśniesz: przytrzymaj przycisk Głos na pulpicie i wybierz Słuchaj polecenia głosowego. Słuchanie można też przypisać do Flica, przycisków głośności, zegarka lub HUD.</string>
+    <string name="voice_commands_ask_desc">Zapytaj o wartość, na przykład akumulator albo prędkość, o pogodę lub nawigację, albo powiedz polecenie jak światła włącz.</string>
     <string name="voice_command_vocabulary">Co mogę powiedzieć</string>
     <string name="voice_command_vocabulary_tap">Powiedz nazwę samodzielnie lub w pytaniu.</string>
     <string name="voice_listening">Słucham</string>

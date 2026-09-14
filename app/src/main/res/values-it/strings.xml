@@ -1359,7 +1359,8 @@
     <string name="menu_switch_to_voice_command">Passa al comando vocale</string>
     <string name="menu_switch_to_voice_report">Passa ad annuncio vocale</string>
     <string name="voice_commands_title">Comandi vocali</string>
-    <string name="voice_commands_enable_desc">Usa la voce con la app. Niente ascolta finché non premi qualcosa: tieni premuto il pulsante Voce nella dashboard e scegli Ascolta un comando vocale, oppure cambia quel riquadro in Ascolta per farlo con un tocco. L ascolto si può assegnare anche a un Flic, ai tasti volume, al tuo orologio o allo HUD. Chiedi un valore, o di un comando come luci accese.</string>
+    <string name="voice_commands_enable_desc">Usa la voce con la app. Niente ascolta finché non premi qualcosa: tieni premuto il pulsante Voce nella dashboard e scegli Ascolta un comando vocale. L ascolto si può assegnare anche a un Flic, ai tasti volume, al tuo orologio o allo HUD.</string>
+    <string name="voice_commands_ask_desc">Chiedi un valore come batteria o velocità, chiedi del meteo o della navigazione, o di un comando come luci accese.</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
     <string name="voice_command_vocabulary_tap">Pronuncia un nome da solo o in una domanda.</string>
     <string name="voice_listening">In ascolto</string>

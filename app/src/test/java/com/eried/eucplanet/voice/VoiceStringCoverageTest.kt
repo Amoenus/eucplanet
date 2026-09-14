@@ -22,6 +22,7 @@ class VoiceStringCoverageTest {
         "action_chip_voice_listen",
         "voice_commands_title",
         "voice_commands_enable_desc",
+        "voice_commands_ask_desc",
         "voice_command_vocabulary",
         "voice_listening",
         "voice_answer_off",

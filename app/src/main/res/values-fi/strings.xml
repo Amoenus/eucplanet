@@ -291,7 +291,8 @@
     <string name="menu_switch_to_voice_command">Vaihda puhekomentoon</string>
     <string name="menu_switch_to_voice_report">Vaihda ääni-ilmoitukseen</string>
     <string name="voice_commands_title">Puhekomennot</string>
-    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa. Mikään ei kuuntele ennen kuin painat jotain: pidä kojelaudan Ääni-painiketta pohjassa ja valitse Kuuntele äänikomentoa, tai vaihda ruutu Kuunteluun yhden napautuksen takia. Kuuntelun voi liittää myös Flic-painikkeeseen, äänenvoimakkuusnäppäimiin, kelloosi tai HUD-näyttöön. Kysy arvoa tai sano komento kuten valot päälle.</string>
+    <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa. Mikään ei kuuntele ennen kuin painat jotain: pidä kojelaudan Ääni-painiketta pohjassa ja valitse Kuuntele äänikomentoa. Kuuntelun voi liittää myös Flic-painikkeeseen, äänenvoimakkuusnäppäimiin, kelloosi tai HUD-näyttöön.</string>
+    <string name="voice_commands_ask_desc">Kysy arvoa kuten akku tai nopeus, kysy säästä tai navigoinnista, tai sano komento kuten valot päälle.</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>
     <string name="voice_listening">Kuuntelen</string>

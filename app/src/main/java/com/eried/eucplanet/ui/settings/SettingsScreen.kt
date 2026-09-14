@@ -7242,9 +7242,16 @@ private fun VoiceTab(
         // is not a control. It reads better as a link on the sentence that
         // already explains the feature.
         var vocabularyOpen by remember { mutableStateOf(false) }
+        // Two paragraphs, because they answer two different questions: how do
+        // I start it, and what do I say once it is listening. One block ran
+        // them together and the second half was read as more of the first.
+        HintText(stringResource(R.string.voice_commands_enable_desc))
+        Spacer(Modifier.height(6.dp))
+        // Only this one is a tap target. Making the whole block clickable
+        // meant a paragraph about pressing buttons was itself a button.
         Text(
             buildAnnotatedString {
-                append(stringResource(R.string.voice_commands_enable_desc))
+                append(stringResource(R.string.voice_commands_ask_desc))
                 append("  ")
                 withStyle(SpanStyle(color = MaterialTheme.appColors.primary)) {
                     append(stringResource(R.string.voice_command_vocabulary))

@@ -334,6 +334,7 @@
     <string name="voice_prompt_none">Нет</string>
     <string name="voice_command_window">Окно прослушивания</string>
     <string name="voice_command_vocabulary">Что можно сказать</string>
+    <string name="voice_command_vocabulary_tap">Нажмите название, чтобы услышать ответ.</string>
     <string name="voice_listening">Слушаю</string>
     <string name="voice_answer_off">%1$s выключено. Включить можно в настройках.</string>
     <string name="voice_answer_unsupported">Ваше колесо не сообщает %1$s.</string>

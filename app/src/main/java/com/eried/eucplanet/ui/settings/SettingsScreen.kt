@@ -7165,7 +7165,10 @@ private fun VoiceTab(
                 Text(stringResource(R.string.voice_command_vocabulary))
             }
             if (vocabularyOpen) {
-                VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
+                VoiceVocabularyDialog(
+                    onDismiss = { vocabularyOpen = false },
+                    onPreview = { viewModel.previewVoiceAnswer(it) },
+                )
             }
         }
 

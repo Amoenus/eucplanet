@@ -1365,6 +1365,7 @@
     <string name="voice_prompt_none">Nessuno</string>
     <string name="voice_command_window">Finestra di ascolto</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
+    <string name="voice_command_vocabulary_tap">Tocca un nome per sentire la risposta.</string>
     <string name="voice_listening">In ascolto</string>
     <string name="voice_answer_off">%1$s è disattivato. Puoi attivarlo nelle impostazioni.</string>
     <string name="voice_answer_unsupported">La tua ruota non riporta %1$s.</string>

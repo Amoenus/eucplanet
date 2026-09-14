@@ -297,6 +297,7 @@
     <string name="voice_prompt_none">Ei mitään</string>
     <string name="voice_command_window">Kuunteluikkuna</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
+    <string name="voice_command_vocabulary_tap">Napauta nimeä kuullaksesi vastauksen.</string>
     <string name="voice_listening">Kuuntelen</string>
     <string name="voice_answer_off">%1$s on pois käytöstä. Voit ottaa sen käyttöön asetuksista.</string>
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>

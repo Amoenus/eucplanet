@@ -297,6 +297,7 @@
     <string name="voice_prompt_none">Žádný</string>
     <string name="voice_command_window">Okno naslouchání</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
+    <string name="voice_command_vocabulary_tap">Klepnutím na název uslyšíte odpověď.</string>
     <string name="voice_listening">Poslouchám</string>
     <string name="voice_answer_off">%1$s je vypnuto. Můžeš to zapnout v nastavení.</string>
     <string name="voice_answer_unsupported">Tvoje kolo nehlásí %1$s.</string>

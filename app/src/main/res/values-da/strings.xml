@@ -334,6 +334,7 @@
     <string name="voice_prompt_none">Ingen</string>
     <string name="voice_command_window">Lyttevindue</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
+    <string name="voice_command_vocabulary_tap">Tryk på et navn for at høre svaret.</string>
     <string name="voice_listening">Lytter</string>
     <string name="voice_answer_off">%1$s er slået fra. Du kan slå det til i indstillingerne.</string>
     <string name="voice_answer_unsupported">Dit hjul rapporterer ikke %1$s.</string>

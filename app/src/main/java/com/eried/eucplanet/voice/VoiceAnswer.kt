@@ -37,6 +37,17 @@ object VoiceAnswer {
         /** Speak this. */
         data class Say(val name: String, val value: String) : Answer
 
+        /**
+         * Speak this sentence as it stands.
+         *
+         * The periodic reports already phrase Speed, Battery, Amps and the
+         * rest in the rider's language and units, so a question about one
+         * borrows that sentence whole rather than re-deriving it. It carries
+         * its own name, which is why it is not a [Say]: prefixing it would
+         * say "Battery, battery 45 percent".
+         */
+        data class SayReport(val name: String, val text: String) : Answer
+
         /** Explain why not, and what would fix it. */
         data class Unavailable(val name: String, val reason: Reason) : Answer
 
@@ -51,12 +62,20 @@ object VoiceAnswer {
      * @param term         what the matcher decided was asked for
      * @param value        the formatted value, or null when there is none
      * @param unavailable  why there is no value, when [value] is null
+     * @param reportText   the sentence a spoken report already built for this
+     *                     term, when it has one
      */
-    fun answerFor(term: SpokenTerm, value: String?, unavailable: Reason?): Answer {
+    fun answerFor(
+        term: SpokenTerm,
+        value: String?,
+        unavailable: Reason?,
+        reportText: String? = null,
+    ): Answer {
         // A reason always wins over a value. A metric can hold a stale reading
         // from before the sensor dropped out, and reading that back as current
         // is worse than saying the sensor is gone.
         if (unavailable != null) return Answer.Unavailable(term.name, unavailable)
+        if (!reportText.isNullOrBlank()) return Answer.SayReport(term.name, reportText)
         if (value.isNullOrBlank()) return Answer.Unavailable(term.name, Reason.NO_DATA_YET)
         return Answer.Say(term.name, value)
     }

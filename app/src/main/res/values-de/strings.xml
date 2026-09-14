@@ -334,6 +334,7 @@
     <string name="voice_prompt_none">Keins</string>
     <string name="voice_command_window">Hörfenster</string>
     <string name="voice_command_vocabulary">Was kann ich sagen</string>
+    <string name="voice_command_vocabulary_tap">Tippe auf einen Namen, um die Antwort zu hören.</string>
     <string name="voice_listening">Ich höre</string>
     <string name="voice_answer_off">%1$s ist aus. Du kannst es in den Einstellungen aktivieren.</string>
     <string name="voice_answer_unsupported">Dein Wheel meldet %1$s nicht.</string>

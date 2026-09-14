@@ -334,6 +334,7 @@
     <string name="voice_prompt_none">無</string>
     <string name="voice_command_window">聆聽時長</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
+    <string name="voice_command_vocabulary_tap">點按名稱即可聽到答案。</string>
     <string name="voice_listening">聆聽中</string>
     <string name="voice_answer_off">%1$s已關閉。可在設定中開啟。</string>
     <string name="voice_answer_unsupported">你的輪子不提供%1$s。</string>

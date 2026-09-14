@@ -1346,6 +1346,7 @@
     <string name="voice_prompt_none">Ingen</string>
     <string name="voice_command_window">Lyttevindu</string>
     <string name="voice_command_vocabulary">Hva kan jeg si</string>
+    <string name="voice_command_vocabulary_tap">Trykk på et navn for å høre svaret.</string>
     <string name="voice_listening">Lytter</string>
     <string name="voice_answer_off">%1$s er av. Du kan slå det på i innstillingene.</string>
     <string name="voice_answer_unsupported">Hjulet ditt rapporterer ikke %1$s.</string>

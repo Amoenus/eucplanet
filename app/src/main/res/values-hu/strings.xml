@@ -297,6 +297,7 @@
     <string name="voice_prompt_none">Nincs</string>
     <string name="voice_command_window">Hallgatási ablak</string>
     <string name="voice_command_vocabulary">Mit mondhatok</string>
+    <string name="voice_command_vocabulary_tap">Koppints egy névre a válasz meghallgatásához.</string>
     <string name="voice_listening">Hallgatom</string>
     <string name="voice_answer_off">%1$s ki van kapcsolva. A beállításokban bekapcsolhatod.</string>
     <string name="voice_answer_unsupported">A kerekedet nem jelenti a(z) %1$s értéket.</string>

@@ -1,6 +1,7 @@
 package com.eried.eucplanet.voice
 
 import android.content.Context
+import android.util.Log
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.eried.eucplanet.R
@@ -46,6 +47,7 @@ class VoiceCommandController @Inject constructor(
 ) {
 
     private companion object {
+        const val TAG = "VoiceCommand"
         /** Short and high, so it carries over wind and is over before the
          *  rider starts speaking. */
         const val PROMPT_HZ = 1320
@@ -112,6 +114,29 @@ class VoiceCommandController @Inject constructor(
         }
     }
 
+    /**
+     * Answer a phrase without opening the microphone.
+     *
+     * Backs the tappable What can I say list: a rider picks a name and hears
+     * exactly what asking for it would say, with their own wheel's values,
+     * their own units and their own language. Rule 10 asks a preview to show
+     * the real configuration, and this is the real path, with only the
+     * acoustics left out.
+     *
+     * It is also the only way to exercise the whole chain on a device where
+     * nobody can speak: an emulator, or a bench.
+     */
+    fun answerPhrase(phrase: String) {
+        if (session?.isActive == true) return
+        session = scope.launch {
+            val settings = settingsRepository.get()
+            _state.value = UiState.Heard(phrase)
+            answer(phrase, settings)
+            delay(4000)
+            _state.value = UiState.Idle
+        }
+    }
+
     /** Work out the reply and speak it. Never returns without saying something. */
     private fun answer(heard: String?, settings: com.eried.eucplanet.data.model.AppSettings) {
         val vocabulary = vocabulary()
@@ -141,8 +166,22 @@ class VoiceCommandController @Inject constructor(
         term: SpokenTerm,
         settings: com.eried.eucplanet.data.model.AppSettings,
     ): VoiceCommandSession.Reading? {
-        if (term.kind == Kind.REPORT || term.key in REPORT_FOR_METRIC) return null
         val data = wheelRepository.wheelData.value
+        // Anything with a spoken report of its own borrows that sentence: it is
+        // already in the rider's language and units, and it is the same wording
+        // the periodic announcement uses, so asking for Battery sounds like the
+        // app rather than like a different feature.
+        val report = if (term.kind == Kind.REPORT) term.key else REPORT_FOR_METRIC[term.key]
+        if (report != null) {
+            val text = voiceService.reportText(report, data, settings)
+            // A report with nothing to say is the wheel having sent nothing
+            // yet, not a reason to stay quiet.
+            return if (text.isNullOrBlank()) {
+                VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+            } else {
+                VoiceCommandSession.Reading(null, null, reportText = text)
+            }
+        }
         val value = EXTRACTORS[term.key]?.invoke(data)
         return when {
             value == null -> VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
@@ -172,6 +211,8 @@ class VoiceCommandController @Inject constructor(
     private fun speak(answer: Answer, settings: com.eried.eucplanet.data.model.AppSettings) {
         val text = when (answer) {
             is Answer.Say -> "${answer.name}, ${answer.value}"
+            // Already a whole sentence, name included.
+            is Answer.SayReport -> answer.text
             is Answer.Unavailable -> context.getString(reasonRes(answer.reason), answer.name)
             is Answer.NotUnderstood -> context.getString(
                 R.string.voice_answer_unknown,
@@ -186,22 +227,19 @@ class VoiceCommandController @Inject constructor(
         }
         _state.value = UiState.Spoke(text)
 
-        // A report says itself, through the formatter that already knows the
-        // rider's units and language.
-        val reportKey = when (answer) {
-            is Answer.Say -> REPORT_FOR_METRIC[keyFor(answer.name)] ?: keyFor(answer.name)
-            else -> null
-        }
-        val spokenAsReport = reportKey != null && voiceService.answerReport(
-            report = reportKey,
-            data = wheelRepository.wheelData.value,
-            settings = settings,
-        )
-        if (!spokenAsReport) voiceService.speak(text)
-    }
+        // One sentence, one way out. The report route used to live here and
+        // was unreachable: it only ran for Answer.Say, and a report-backed
+        // term never produced one. Building the sentence in reading() instead
+        // means there is nothing left to choose between at this point.
+        voiceService.speak(text)
 
-    private fun keyFor(name: String): String =
-        vocabulary().firstOrNull { it.name == name }?.key ?: name
+        // The log already carries what was heard. Without what was said, a
+        // rider reporting "it answered the wrong thing" leaves us guessing
+        // whether the matcher picked the wrong term or the value was wrong.
+        val via = if (answer is Answer.SayReport) "report" else "answer"
+        Log.i(TAG, "said \"$text\" ($via)")
+        com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("Voice: said \"$text\" ($via)")
+    }
 
     /** The names a rider can say, in their language. */
     private fun vocabulary(): List<SpokenTerm> = VoiceVocabulary.build(

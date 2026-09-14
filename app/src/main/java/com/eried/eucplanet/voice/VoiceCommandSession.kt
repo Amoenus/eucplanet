@@ -23,7 +23,12 @@ object VoiceCommandSession {
      * they ask. Null [value] with null [unavailable] means nothing has arrived
      * yet, which is itself an answer.
      */
-    data class Reading(val value: String?, val unavailable: VoiceAnswer.Reason?)
+    data class Reading(
+        val value: String?,
+        val unavailable: VoiceAnswer.Reason?,
+        /** Set when a spoken report has already phrased this one. */
+        val reportText: String? = null,
+    )
 
     /**
      * @param heard       what the recogniser returned
@@ -39,7 +44,9 @@ object VoiceCommandSession {
     ): Answer = when (val m = VoiceCommandMatcher.match(heard, vocabulary, onDashboard)) {
         is VoiceMatch.Hit -> {
             val reading = read(m.term)
-            VoiceAnswer.answerFor(m.term, reading?.value, reading?.unavailable)
+            VoiceAnswer.answerFor(
+                m.term, reading?.value, reading?.unavailable, reading?.reportText,
+            )
         }
         // Two names, not five: the rider is moving, and a spoken list is no
         // help at speed.

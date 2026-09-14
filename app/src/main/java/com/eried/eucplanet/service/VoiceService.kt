@@ -548,17 +548,37 @@ class VoiceService @Inject constructor(
      * Returns false when there is nothing to say, so the caller can fall back
      * to explaining why rather than going silent.
      */
+    /**
+     * What a report would say right now, or null when it has nothing to say.
+     *
+     * Split out of [answerReport] because a spoken answer needs the sentence,
+     * not just the fact that one was spoken: the rider sees it in the
+     * transcript, and the controller has to be able to tell "the wheel has no
+     * reading for this" from "the report said it" before it decides what to
+     * speak. Returning a Boolean made those two indistinguishable, and every
+     * report-backed question answered "no data yet" with the value on screen.
+     */
+    fun reportText(
+        report: String,
+        data: WheelData,
+        settings: AppSettings,
+        isRecording: Boolean = false,
+    ): String? {
+        if (legalLockdown.isEngaged()) return null
+        val parts = buildReportParts(data, settings, isRecording, periodic = false, only = report)
+        if (parts.isEmpty()) return null
+        return parts.joinToString(", ")
+    }
+
     fun answerReport(
         report: String,
         data: WheelData,
         settings: AppSettings,
         isRecording: Boolean = false,
     ): Boolean {
-        if (legalLockdown.isEngaged()) return false
-        val parts = buildReportParts(data, settings, isRecording, periodic = false, only = report)
-        if (parts.isEmpty()) return false
+        val text = reportText(report, data, settings, isRecording) ?: return false
         speakInternal(
-            parts.joinToString(", "), isTrigger = true,
+            text, isTrigger = true,
             rate = settings.voiceSpeechRate, localeTag = settings.voiceLocale,
             voiceName = settings.voiceName,
         )

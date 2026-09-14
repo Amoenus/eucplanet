@@ -334,6 +334,7 @@
     <string name="voice_prompt_none">Aucun</string>
     <string name="voice_command_window">Fenêtre d\'écoute</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
+    <string name="voice_command_vocabulary_tap">Touchez un nom pour entendre la réponse.</string>
     <string name="voice_listening">J\'écoute</string>
     <string name="voice_answer_off">%1$s est désactivé. Vous pouvez l\'activer dans les réglages.</string>
     <string name="voice_answer_unsupported">Votre roue ne communique pas %1$s.</string>

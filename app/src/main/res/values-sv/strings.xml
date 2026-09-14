@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Byt till röstmeddelande</string>
     <string name="voice_commands_title">Röstkommandon</string>
     <string name="voice_commands_enable_desc">Använd rösten i appen.</string>
-    <string name="voice_command_prompt">Lyssningssignal</string>
-    <string name="voice_prompt_beep">Pip</string>
-    <string name="voice_prompt_voice">Röst</string>
-    <string name="voice_prompt_none">Ingen</string>
     <string name="voice_command_window">Lyssna i</string>
     <string name="voice_command_vocabulary">Vad kan jag säga</string>
     <string name="voice_command_vocabulary_tap">Säg ett namn ensamt eller i en fråga.</string>

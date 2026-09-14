@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Sesli anonsa geç</string>
     <string name="voice_commands_title">Sesli komutlar</string>
     <string name="voice_commands_enable_desc">Uygulamayı sesinle kullan.</string>
-    <string name="voice_command_prompt">Dinleme uyarısı</string>
-    <string name="voice_prompt_beep">Bip</string>
-    <string name="voice_prompt_voice">Ses</string>
-    <string name="voice_prompt_none">Yok</string>
     <string name="voice_command_window">Dinleme süresi</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>

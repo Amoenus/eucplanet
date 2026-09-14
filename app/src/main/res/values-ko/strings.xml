@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">음성 안내로 전환</string>
     <string name="voice_commands_title">음성 명령</string>
     <string name="voice_commands_enable_desc">음성으로 앱을 사용하세요.</string>
-    <string name="voice_command_prompt">듣기 알림</string>
-    <string name="voice_prompt_beep">알림음</string>
-    <string name="voice_prompt_voice">음성</string>
-    <string name="voice_prompt_none">없음</string>
     <string name="voice_command_window">듣는 시간</string>
     <string name="voice_command_vocabulary">무엇을 말할 수 있나요</string>
     <string name="voice_command_vocabulary_tap">이름만 말해도 되고 질문에 넣어도 됩니다.</string>

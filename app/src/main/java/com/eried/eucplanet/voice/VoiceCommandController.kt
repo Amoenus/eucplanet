@@ -240,11 +240,11 @@ class VoiceCommandController @Inject constructor(
             ) {
                 delay(20)
             }
-            when (settings.voiceCommands.prompt) {
-                "beep" -> tonePlayer.playPrompt()
-                "voice" -> voiceService.speak(context.getString(R.string.voice_listening))
-                // "none": the tile going into its listening state is the cue.
-            }
+            // Always the tone. A spoken prompt bled into the microphone and
+            // was heard as part of the question, and no prompt at all left a
+            // rider talking to something that might not be listening, so the
+            // choice was between one good answer and two bad ones.
+            tonePlayer.playPrompt()
 
             // The window starts now, not at the press: the seconds a rider
             // sets are seconds they get to speak.
@@ -296,11 +296,9 @@ class VoiceCommandController @Inject constructor(
             // tells us when it starts and when it stops, and both waits are
             // capped so a speech engine that never reports back cannot leave
             // the session hanging.
-            if (settings.voiceCommands.prompt == "beep") {
-                withTimeoutOrNull(SPEECH_START_WAIT_MS) { voiceService.isSpeaking.first { it } }
-                withTimeoutOrNull(SPEECH_END_WAIT_MS) { voiceService.isSpeaking.first { !it } }
-                tonePlayer.playEndPrompt()
-            }
+            withTimeoutOrNull(SPEECH_START_WAIT_MS) { voiceService.isSpeaking.first { it } }
+            withTimeoutOrNull(SPEECH_END_WAIT_MS) { voiceService.isSpeaking.first { !it } }
+            tonePlayer.playEndPrompt()
 
             // A short tail, not four seconds. That number was chosen when the
             // session ended the moment the speech started, so it was the only

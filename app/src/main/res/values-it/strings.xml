@@ -1360,10 +1360,6 @@
     <string name="menu_switch_to_voice_report">Passa ad annuncio vocale</string>
     <string name="voice_commands_title">Comandi vocali</string>
     <string name="voice_commands_enable_desc">Usa la voce con la app.</string>
-    <string name="voice_command_prompt">Segnale di ascolto</string>
-    <string name="voice_prompt_beep">Bip</string>
-    <string name="voice_prompt_voice">Voce</string>
-    <string name="voice_prompt_none">Nessuno</string>
     <string name="voice_command_window">Ascolta per</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
     <string name="voice_command_vocabulary_tap">Pronuncia un nome da solo o in una domanda.</string>

@@ -292,10 +292,6 @@
     <string name="menu_switch_to_voice_report">Vaihda ääni-ilmoitukseen</string>
     <string name="voice_commands_title">Puhekomennot</string>
     <string name="voice_commands_enable_desc">Käytä ääntäsi sovelluksessa.</string>
-    <string name="voice_command_prompt">Kuuntelumerkki</string>
-    <string name="voice_prompt_beep">Äänimerkki</string>
-    <string name="voice_prompt_voice">Puhe</string>
-    <string name="voice_prompt_none">Ei mitään</string>
     <string name="voice_command_window">Kuuntele</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>

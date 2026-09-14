@@ -1208,13 +1208,6 @@ data class ShareSettings(
  * verification and the app dies at runtime rather than at build time (rule 8).
  */
 data class VoiceCommandSettings(
-    /**
-     * How the app signals the microphone is open: "beep", "voice" or "none".
-     * A tone by default, because a spoken prompt can bleed into the microphone
-     * and be heard as part of the question, and because a tone cuts through
-     * wind and opens the microphone sooner.
-     */
-    val prompt: String = "beep",
 
     /** Seconds the microphone stays open having heard nothing. */
     val windowSeconds: Int = 6,

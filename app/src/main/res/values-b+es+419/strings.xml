@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Cambiar a anuncio de voz</string>
     <string name="voice_commands_title">Comandos de voz</string>
     <string name="voice_commands_enable_desc">Usa tu voz con la app.</string>
-    <string name="voice_command_prompt">Aviso de escucha</string>
-    <string name="voice_prompt_beep">Pitido</string>
-    <string name="voice_prompt_voice">Voz</string>
-    <string name="voice_prompt_none">Ninguno</string>
     <string name="voice_command_window">Escuchar durante</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>

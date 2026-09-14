@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Wisselen naar spraakmelding</string>
     <string name="voice_commands_title">Spraakopdrachten</string>
     <string name="voice_commands_enable_desc">Gebruik je stem in de app.</string>
-    <string name="voice_command_prompt">Luistersignaal</string>
-    <string name="voice_prompt_beep">Piep</string>
-    <string name="voice_prompt_voice">Stem</string>
-    <string name="voice_prompt_none">Geen</string>
     <string name="voice_command_window">Luisteren gedurende</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
     <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag.</string>

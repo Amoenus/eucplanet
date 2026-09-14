@@ -334,10 +334,6 @@
     <string name="menu_switch_to_voice_report">Switch to voice announcement</string>
     <string name="voice_commands_title">Voice commands</string>
     <string name="voice_commands_enable_desc">Use your voice with the app.</string>
-    <string name="voice_command_prompt">Listening prompt</string>
-    <string name="voice_prompt_beep">Beep</string>
-    <string name="voice_prompt_voice">Voice</string>
-    <string name="voice_prompt_none">None</string>
     <string name="voice_command_window">Listen for</string>
     <string name="voice_command_vocabulary">What can I say</string>
     <string name="voice_command_vocabulary_tap">Say a name on its own or inside a question.</string>

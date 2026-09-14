@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Переключить на голосовое сообщение</string>
     <string name="voice_commands_title">Голосовые команды</string>
     <string name="voice_commands_enable_desc">Управляйте приложением голосом.</string>
-    <string name="voice_command_prompt">Сигнал прослушивания</string>
-    <string name="voice_prompt_beep">Звук</string>
-    <string name="voice_prompt_voice">Голос</string>
-    <string name="voice_prompt_none">Нет</string>
     <string name="voice_command_window">Слушать</string>
     <string name="voice_command_vocabulary">Что можно сказать</string>
     <string name="voice_command_vocabulary_tap">Назовите пункт отдельно или в вопросе.</string>

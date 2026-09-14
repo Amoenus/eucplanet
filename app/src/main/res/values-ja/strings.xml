@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">音声アナウンスに切り替え</string>
     <string name="voice_commands_title">音声コマンド</string>
     <string name="voice_commands_enable_desc">音声でアプリを使えます。</string>
-    <string name="voice_command_prompt">聞き取りの合図</string>
-    <string name="voice_prompt_beep">ビープ</string>
-    <string name="voice_prompt_voice">音声</string>
-    <string name="voice_prompt_none">なし</string>
     <string name="voice_command_window">聞く時間</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>

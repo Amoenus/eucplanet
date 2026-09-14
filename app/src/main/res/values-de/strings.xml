@@ -329,10 +329,6 @@
     <string name="menu_switch_to_voice_report">Zu Sprachansage wechseln</string>
     <string name="voice_commands_title">Sprachbefehle</string>
     <string name="voice_commands_enable_desc">Nutze deine Stimme in der App.</string>
-    <string name="voice_command_prompt">Hörsignal</string>
-    <string name="voice_prompt_beep">Ton</string>
-    <string name="voice_prompt_voice">Stimme</string>
-    <string name="voice_prompt_none">Keins</string>
     <string name="voice_command_window">Zuhören für</string>
     <string name="voice_command_vocabulary">Was kann ich sagen</string>
     <string name="voice_command_vocabulary_tap">Sag einen Namen allein oder in einer Frage.</string>

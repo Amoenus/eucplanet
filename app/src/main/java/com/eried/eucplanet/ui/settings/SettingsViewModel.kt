@@ -796,9 +796,6 @@ class SettingsViewModel @Inject constructor(
     // Voice commands. The window and the prompt are clamped in
     // SettingsRepository.sanitized(), so a synced file cannot leave the
     // segmented row with nothing selected.
-    fun updateVoiceCommandPrompt(v: String) =
-        update { copy(voiceCommands = voiceCommands.copy(prompt = v)) }
-
 
     fun updateVoiceCommandWindowSeconds(v: Int) =
         update { copy(voiceCommands = voiceCommands.copy(windowSeconds = v.coerceIn(3, 30))) }

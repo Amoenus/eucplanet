@@ -1341,10 +1341,6 @@
     <string name="menu_switch_to_voice_report">Bytt til talemelding</string>
     <string name="voice_commands_title">Talekommandoer</string>
     <string name="voice_commands_enable_desc">Bruk stemmen din i appen.</string>
-    <string name="voice_command_prompt">Lyttesignal</string>
-    <string name="voice_prompt_beep">Pip</string>
-    <string name="voice_prompt_voice">Stemme</string>
-    <string name="voice_prompt_none">Ingen</string>
     <string name="voice_command_window">Lytt i</string>
     <string name="voice_command_vocabulary">Hva kan jeg si</string>
     <string name="voice_command_vocabulary_tap">Si et navn alene eller i et spørsmål.</string>

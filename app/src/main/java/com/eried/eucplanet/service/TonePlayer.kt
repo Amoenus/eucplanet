@@ -252,7 +252,14 @@ class TonePlayer @Inject constructor() {
      * single flat note does not.
      */
     suspend fun playErrorPrompt() {
-        playNotes(listOf(420 to 110, 310 to 150), gapMs = 30, leadPadMs = 30, volumePct = 85)
+        // 160ms of lead silence, the same as the opening chirp and for the
+        // same reason: the track's first samples arrive while it is still
+        // warming up and the route may still be switching, and whatever is
+        // written into that window is heard as a scratch. This one needs it
+        // more than the chirps do, not less, because 420Hz is a long
+        // wavelength and a clipped start on a low note is far more audible
+        // than on a high one.
+        playNotes(listOf(420 to 110, 310 to 150), gapMs = 30, leadPadMs = 160, volumePct = 85)
     }
 
     suspend fun playBeep(

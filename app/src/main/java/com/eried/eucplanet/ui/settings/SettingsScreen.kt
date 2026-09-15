@@ -7340,12 +7340,10 @@ private fun VoiceTab(
                 com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_NONE to stringResource(R.string.voice_cue_off),
             ),
             current = settings.voiceCommands.promptCue,
-            onChange = { viewModel.updateVoicePromptCue(it) },
-            // Rule 10: the button plays what the rider actually chose, which
-            // is why it is switched off rather than made to demonstrate a
-            // sound they asked not to hear.
-            onPreview = { viewModel.previewPromptCue(listeningWord) },
-            previewEnabled = settings.voiceCommands.promptCue != com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_NONE,
+            // Rule 10, without a button: choosing an option plays that
+            // option, so what a rider hears is always what they just picked.
+            // Tapping the one already selected plays it again.
+            onChange = { viewModel.updateVoicePromptCue(it, listeningWord) },
         )
         HintText(stringResource(R.string.voice_prompt_cue_desc))
 
@@ -7357,9 +7355,7 @@ private fun VoiceTab(
                 com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_NONE to stringResource(R.string.voice_cue_off),
             ),
             current = settings.voiceCommands.unknownCue,
-            onChange = { viewModel.updateVoiceUnknownCue(it) },
-            onPreview = { viewModel.previewUnknownCue(unknownSample) },
-            previewEnabled = settings.voiceCommands.unknownCue != com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_NONE,
+            onChange = { viewModel.updateVoiceUnknownCue(it, unknownSample) },
         )
 
         // The language the rider speaks, which is not always the language the
@@ -7780,14 +7776,22 @@ private fun VoiceTab(
             }
         }
         // What the session has recorded so far, and the way to clear it.
-        // Shown whether the splits are on or off: switching them off pauses
-        // and keeps these, so a rider can see what they are still racing.
+        //
+        // Switching the splits off from the tile is a pause, so times survive
+        // it and stay on show: a rider who paused is still racing them. The
+        // settings switch is a different kind of off, and with nothing
+        // recorded this block was telling a rider with the feature disabled
+        // to "ride through a step to record one", which is an instruction
+        // that cannot work. Times that do exist stay visible either way, so
+        // disabling never hides a real number or the Reset that clears it.
         val splitSession by viewModel.splitSession.collectAsState()
-        SplitSessionBlock(
-            session = splitSession,
-            unit = accelUnit,
-            onReset = { viewModel.resetSplits() },
-        )
+        if (accel.enabled || !splitSession.isEmpty) {
+            SplitSessionBlock(
+                session = splitSession,
+                unit = accelUnit,
+                onReset = { viewModel.resetSplits() },
+            )
+        }
     }
 }
 

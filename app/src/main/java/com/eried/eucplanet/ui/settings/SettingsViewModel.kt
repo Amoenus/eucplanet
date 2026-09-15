@@ -809,54 +809,56 @@ class SettingsViewModel @Inject constructor(
     fun updateAnnounceSafetyMode(v: Boolean) = update { copy(announceSafetyMode = v) }
     fun updateAnnounceWelcome(v: Boolean) = update { copy(announceWelcome = v) }
 
-    fun updateVoicePromptCue(v: String) =
-        update { copy(voiceCommands = voiceCommands.copy(promptCue = v)) }
-
-    fun updateVoiceUnknownCue(v: String) =
-        update { copy(voiceCommands = voiceCommands.copy(unknownCue = v)) }
-
-    fun updateVoiceRecognitionLocale(v: String) =
-        update { copy(voiceCommands = voiceCommands.copy(recognitionLocale = v)) }
-
-    fun updateVoiceHeadsetButton(v: Boolean) =
-        update { copy(voiceCommands = voiceCommands.copy(headsetButton = v)) }
-
     /**
-     * Play the opening cue exactly as the rider has it set.
+     * Pick a cue and hear it, because picking is the only reason to be here.
      *
-     * Rule 10: the preview is the real thing, including when the real thing
-     * is the spoken word rather than the chirp. It plays the closing note
-     * after the opening one because they are heard as a pair and a rider
-     * choosing between them is choosing the pair.
+     * The row used to carry a small play button beside its label. It was a
+     * second thing to find and press for something the choice itself can
+     * answer, and a rider comparing three options wants to hear each as they
+     * touch it rather than choose blind and then hunt for a button.
+     *
+     * The chosen value is played, not the stored one: the write is
+     * asynchronous, so reading the setting back here would play whatever was
+     * selected a moment ago.
      */
-    fun previewPromptCue(spokenWord: String) {
+    fun updateVoicePromptCue(v: String, spokenWord: String) {
+        update { copy(voiceCommands = voiceCommands.copy(promptCue = v)) }
         viewModelScope.launch {
-            val s = settingsRepository.get()
-            when (s.voiceCommands.promptCue) {
-                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_BEEP -> {
-                    tonePlayer.playPrompt()
-                    tonePlayer.playEndPrompt()
-                }
-                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_VOICE ->
+            when (v) {
+                // The opening note only. The falling one means "the window
+                // closed", which is a thing a session says and this is not a
+                // session: back to back here they just sound like one longer
+                // cue that is not the one being chosen.
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_BEEP -> tonePlayer.playPrompt()
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_VOICE -> {
+                    val s = settingsRepository.get()
                     voiceService.testSpeak(spokenWord, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
+                }
                 else -> {}
             }
         }
     }
 
     /** The same, for what a rider hears when nothing matched. */
-    fun previewUnknownCue(sentence: String) {
+    fun updateVoiceUnknownCue(v: String, sentence: String) {
+        update { copy(voiceCommands = voiceCommands.copy(unknownCue = v)) }
         viewModelScope.launch {
-            val s = settingsRepository.get()
-            when (s.voiceCommands.unknownCue) {
-                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_MESSAGE ->
+            when (v) {
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_MESSAGE -> {
+                    val s = settingsRepository.get()
                     voiceService.testSpeak(sentence, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
-                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_BEEP ->
-                    tonePlayer.playErrorPrompt()
+                }
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_BEEP -> tonePlayer.playErrorPrompt()
                 else -> {}
             }
         }
     }
+
+    fun updateVoiceRecognitionLocale(v: String) =
+        update { copy(voiceCommands = voiceCommands.copy(recognitionLocale = v)) }
+
+    fun updateVoiceHeadsetButton(v: Boolean) =
+        update { copy(voiceCommands = voiceCommands.copy(headsetButton = v)) }
 
     /**
      * Switch one catalog-backed report on or off.

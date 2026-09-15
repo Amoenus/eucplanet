@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">你的輪子不提供%1$s。</string>
     <string name="voice_answer_nodata">暫無%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先設定。</string>
+    <string name="voice_answer_no_mic_permission">我需要麥克風權限。</string>
+    <string name="voice_mic_permission_desc">語音指令需要麥克風。</string>
+    <string name="voice_mic_grant">允許麥克風</string>
+    <string name="warnings_perm_mic_title">未允許麥克風</string>
+    <string name="warnings_perm_mic_body">在應用程式取得麥克風權限之前，語音指令無法聆聽。</string>
     <string name="voice_answer_unknown">沒有聽清楚。說 %1$s 取得說明。</string>
     <string name="voice_help_terms">我能說什麼,幫助,我能問什麼</string>
     <string name="voice_answer_examples">這是可以說的內容清單。</string>

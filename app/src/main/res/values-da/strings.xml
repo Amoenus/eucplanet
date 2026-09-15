@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Dit hjul rapporterer ikke %1$s.</string>
     <string name="voice_answer_nodata">Ingen %1$s endnu.</string>
     <string name="voice_answer_setup">%1$s skal sættes op først.</string>
+    <string name="voice_answer_no_mic_permission">Jeg har brug for tilladelse til mikrofonen.</string>
+    <string name="voice_mic_permission_desc">Stemmekommandoer kræver mikrofonen.</string>
+    <string name="voice_mic_grant">Tillad mikrofon</string>
+    <string name="warnings_perm_mic_title">Mikrofon ikke tilladt</string>
+    <string name="warnings_perm_mic_body">Stemmekommandoer kan ikke lytte, før appen må bruge mikrofonen.</string>
     <string name="voice_answer_unknown">Det fangede jeg ikke. Sig %1$s for hjælp.</string>
     <string name="voice_help_terms">hvad kan jeg sige,hjælp,hvad kan jeg spørge om</string>
     <string name="voice_answer_examples">Her er listen over, hvad du kan sige.</string>

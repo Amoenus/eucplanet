@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Ваше колесо не повідомляє %1$s.</string>
     <string name="voice_answer_nodata">Поки немає %1$s.</string>
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
+    <string name="voice_answer_no_mic_permission">Потрібен дозвіл на мікрофон.</string>
+    <string name="voice_mic_permission_desc">Голосовим командам потрібен мікрофон.</string>
+    <string name="voice_mic_grant">Дозволити мікрофон</string>
+    <string name="warnings_perm_mic_title">Мікрофон заборонено</string>
+    <string name="warnings_perm_mic_body">Голосові команди не можуть слухати, доки застосунку не дозволено мікрофон.</string>
     <string name="voice_answer_unknown">Не розчув. Скажіть %1$s для підказки.</string>
     <string name="voice_help_terms">що можна сказати,допомога,що можна запитати</string>
     <string name="voice_answer_examples">Ось список того, що можна сказати.</string>

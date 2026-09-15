@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">이 휠은 %1$s을(를) 보고하지 않습니다.</string>
     <string name="voice_answer_nodata">아직 %1$s이(가) 없습니다.</string>
     <string name="voice_answer_setup">%1$s은(는) 먼저 설정해야 합니다.</string>
+    <string name="voice_answer_no_mic_permission">마이크 권한이 필요합니다.</string>
+    <string name="voice_mic_permission_desc">음성 명령에는 마이크가 필요합니다.</string>
+    <string name="voice_mic_grant">마이크 허용</string>
+    <string name="warnings_perm_mic_title">마이크가 허용되지 않음</string>
+    <string name="warnings_perm_mic_body">앱이 마이크를 사용할 수 있게 될 때까지 음성 명령은 들을 수 없습니다.</string>
     <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 라고 말해 보세요.</string>
     <string name="voice_help_terms">뭐라고 말하면 돼,도움말,뭘 물어볼 수 있어</string>
     <string name="voice_answer_examples">말할 수 있는 항목 목록입니다.</string>

@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Je wiel rapporteert %1$s niet.</string>
     <string name="voice_answer_nodata">Nog geen %1$s.</string>
     <string name="voice_answer_setup">%1$s moet eerst worden ingesteld.</string>
+    <string name="voice_answer_no_mic_permission">Ik heb toestemming nodig voor de microfoon.</string>
+    <string name="voice_mic_permission_desc">Spraakopdrachten hebben de microfoon nodig.</string>
+    <string name="voice_mic_grant">Microfoon toestaan</string>
+    <string name="warnings_perm_mic_title">Microfoon niet toegestaan</string>
+    <string name="warnings_perm_mic_body">Spraakopdrachten kunnen niet luisteren zolang de app de microfoon niet mag gebruiken.</string>
     <string name="voice_answer_unknown">Ik heb dat niet verstaan. Zeg %1$s voor hulp.</string>
     <string name="voice_help_terms">wat kan ik zeggen,help,wat kan ik vragen</string>
     <string name="voice_answer_examples">Dit is de lijst met wat je kunt zeggen.</string>

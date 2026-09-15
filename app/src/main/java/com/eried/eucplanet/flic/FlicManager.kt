@@ -402,8 +402,7 @@ class FlicManager @Inject constructor(
                 // to listen with, and a rider pressing a button deserves to be
                 // told that rather than to hear silence.
                 if (!voiceCommands.hasMicPermission()) {
-                    appNotifier.post(context.getString(R.string.voice_answer_setup,
-                        context.getString(R.string.voice_commands_title)))
+                    appNotifier.post(context.getString(R.string.voice_answer_no_mic_permission))
                 } else {
                     voiceCommands.listen()
                 }

@@ -7277,6 +7277,41 @@ private fun VoiceTab(
             modifier = Modifier.fillMaxWidth(),
         )
         HintText(stringResource(R.string.voice_commands_bind_desc))
+
+        // The permission, offered here rather than only discovered by pressing
+        // a button and being turned down. Re-read on resume: the rider grants
+        // it outside the app and comes back, so a value captured once would be
+        // stale exactly when it matters. Same shape as the phone HUD section.
+        val micCtx = androidx.compose.ui.platform.LocalContext.current
+        var micGranted by remember {
+            mutableStateOf(
+                androidx.core.content.ContextCompat.checkSelfPermission(
+                    micCtx, android.Manifest.permission.RECORD_AUDIO
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            )
+        }
+        val micLifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current
+        androidx.compose.runtime.DisposableEffect(micLifecycle) {
+            val obs = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                    micGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+                        micCtx, android.Manifest.permission.RECORD_AUDIO
+                    ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                }
+            }
+            micLifecycle.lifecycle.addObserver(obs)
+            onDispose { micLifecycle.lifecycle.removeObserver(obs) }
+        }
+        val micLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+            androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+        ) { granted -> micGranted = granted }
+        if (!micGranted) {
+            HintText(stringResource(R.string.voice_mic_permission_desc))
+            com.eried.eucplanet.ui.common.FixButton(
+                text = stringResource(R.string.voice_mic_grant),
+                onClick = { micLauncher.launch(android.Manifest.permission.RECORD_AUDIO) },
+            )
+        }
         if (vocabularyOpen) {
             VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
         }

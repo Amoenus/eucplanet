@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Dein Wheel meldet %1$s nicht.</string>
     <string name="voice_answer_nodata">Noch kein %1$s.</string>
     <string name="voice_answer_setup">%1$s muss zuerst eingerichtet werden.</string>
+    <string name="voice_answer_no_mic_permission">Ich brauche die Erlaubnis für das Mikrofon.</string>
+    <string name="voice_mic_permission_desc">Sprachbefehle brauchen das Mikrofon.</string>
+    <string name="voice_mic_grant">Mikrofon erlauben</string>
+    <string name="warnings_perm_mic_title">Mikrofon nicht erlaubt</string>
+    <string name="warnings_perm_mic_body">Sprachbefehle können nicht zuhören, solange die App das Mikrofon nicht nutzen darf.</string>
     <string name="voice_answer_unknown">Das habe ich nicht verstanden. Sag %1$s für Hilfe.</string>
     <string name="voice_help_terms">was kann ich sagen,hilfe,was kann ich fragen</string>
     <string name="voice_answer_examples">Hier ist die Liste dessen, was du sagen kannst.</string>

@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Twoje koło nie podaje %1$s.</string>
     <string name="voice_answer_nodata">Brak jeszcze %1$s.</string>
     <string name="voice_answer_setup">%1$s wymaga najpierw konfiguracji.</string>
+    <string name="voice_answer_no_mic_permission">Potrzebuję zgody na mikrofon.</string>
+    <string name="voice_mic_permission_desc">Polecenia głosowe wymagają mikrofonu.</string>
+    <string name="voice_mic_grant">Zezwól na mikrofon</string>
+    <string name="warnings_perm_mic_title">Mikrofon niedozwolony</string>
+    <string name="warnings_perm_mic_body">Polecenia głosowe nie mogą słuchać, dopóki aplikacja nie ma dostępu do mikrofonu.</string>
     <string name="voice_answer_unknown">Nie zrozumiałem. Powiedz %1$s, aby uzyskać pomoc.</string>
     <string name="voice_help_terms">co mogę powiedzieć,pomoc,o co mogę zapytać</string>
     <string name="voice_answer_examples">Oto lista tego, co możesz powiedzieć.</string>

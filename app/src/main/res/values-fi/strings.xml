@@ -300,6 +300,11 @@
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>
     <string name="voice_answer_nodata">Ei vielä %1$s.</string>
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
+    <string name="voice_answer_no_mic_permission">Tarvitsen luvan mikrofoniin.</string>
+    <string name="voice_mic_permission_desc">Äänikomennot tarvitsevat mikrofonin.</string>
+    <string name="voice_mic_grant">Salli mikrofoni</string>
+    <string name="warnings_perm_mic_title">Mikrofonia ei sallittu</string>
+    <string name="warnings_perm_mic_body">Äänikomennot eivät voi kuunnella ennen kuin sovellus saa käyttää mikrofonia.</string>
     <string name="voice_answer_unknown">En saanut selvää. Sano %1$s saadaksesi apua.</string>
     <string name="voice_help_terms">mitä voin sanoa,apua,mitä voin kysyä</string>
     <string name="voice_answer_examples">Tässä on lista siitä, mitä voit sanoa.</string>

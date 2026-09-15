@@ -50,6 +50,7 @@ class VoiceCommandController @Inject constructor(
     private val voiceService: VoiceService,
     private val tonePlayer: TonePlayer,
     private val appNotifier: com.eried.eucplanet.util.AppNotifier,
+    private val appHealth: com.eried.eucplanet.data.repository.AppHealthRepository,
     private val weatherRepository: com.eried.eucplanet.weather.WeatherRepository,
     private val navigationEngine: com.eried.eucplanet.nav.NavigationEngine,
     private val tripRepository: com.eried.eucplanet.data.repository.TripRepository,
@@ -203,10 +204,11 @@ class VoiceCommandController @Inject constructor(
             // was getting the microphone opened and then a recogniser error
             // dressed up as something else holding it.
             if (listener == null && !hasMicPermission()) {
-                val text = context.getString(
-                    R.string.voice_answer_setup,
-                    context.getString(R.string.voice_commands_title),
-                )
+                // Name the thing that is missing. "Voice commands needs
+                // setting up first" described a setup step that does not
+                // exist, and left a rider with nothing to act on.
+                appHealth.noteMicrophoneNeeded()
+                val text = context.getString(R.string.voice_answer_no_mic_permission)
                 _state.value = UiState.Spoke(text)
                 voiceService.speak(text)
                 Log.i(TAG, "refused, no microphone permission")

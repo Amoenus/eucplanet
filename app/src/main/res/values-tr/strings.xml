@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Tekerleğin %1$s bildirmiyor.</string>
     <string name="voice_answer_nodata">Henüz %1$s yok.</string>
     <string name="voice_answer_setup">%1$s önce ayarlanmalı.</string>
+    <string name="voice_answer_no_mic_permission">Mikrofon için izne ihtiyacım var.</string>
+    <string name="voice_mic_permission_desc">Sesli komutlar mikrofona ihtiyaç duyar.</string>
+    <string name="voice_mic_grant">Mikrofona izin ver</string>
+    <string name="warnings_perm_mic_title">Mikrofona izin verilmedi</string>
+    <string name="warnings_perm_mic_body">Uygulamanın mikrofonu kullanmasına izin verilene kadar sesli komutlar dinleyemez.</string>
     <string name="voice_answer_unknown">Anlayamadım. Yardım için %1$s de.</string>
     <string name="voice_help_terms">ne diyebilirim,yardım,ne sorabilirim</string>
     <string name="voice_answer_examples">Söyleyebileceklerinin listesi burada.</string>

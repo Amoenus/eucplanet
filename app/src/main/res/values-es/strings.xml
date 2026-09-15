@@ -337,6 +337,11 @@
     <string name="voice_answer_unsupported">Tu rueda no informa de %1$s.</string>
     <string name="voice_answer_nodata">Aún no hay %1$s.</string>
     <string name="voice_answer_setup">%1$s necesita configurarse primero.</string>
+    <string name="voice_answer_no_mic_permission">Necesito permiso para usar el micrófono.</string>
+    <string name="voice_mic_permission_desc">Los comandos de voz necesitan el micrófono.</string>
+    <string name="voice_mic_grant">Permitir micrófono</string>
+    <string name="warnings_perm_mic_title">Micrófono no permitido</string>
+    <string name="warnings_perm_mic_body">Los comandos de voz no pueden escuchar hasta que la app tenga permiso para usar el micrófono.</string>
     <string name="voice_answer_unknown">No te entendí. Di %1$s para ayuda.</string>
     <string name="voice_help_terms">qué puedo decir,ayuda,qué puedo pedir</string>
     <string name="voice_answer_examples">Esta es la lista de lo que puedes decir.</string>

@@ -1332,6 +1332,11 @@
     <string name="voice_answer_unsupported">你的轮子不提供%1$s。</string>
     <string name="voice_answer_nodata">暂无%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先设置。</string>
+    <string name="voice_answer_no_mic_permission">我需要麦克风权限。</string>
+    <string name="voice_mic_permission_desc">语音指令需要麦克风。</string>
+    <string name="voice_mic_grant">允许麦克风</string>
+    <string name="warnings_perm_mic_title">未允许麦克风</string>
+    <string name="warnings_perm_mic_body">在应用获得麦克风权限之前，语音指令无法聆听。</string>
     <string name="voice_answer_unknown">没有听清。说 %1$s 获取帮助。</string>
     <string name="voice_help_terms">我能说什么,帮助,我能问什么</string>
     <string name="voice_answer_examples">这是可以说的内容列表。</string>

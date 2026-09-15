@@ -7436,7 +7436,7 @@ private fun VoiceTab(
         val metricCtx = androidx.compose.ui.platform.LocalContext.current
         fun extraSample(spec: com.eried.eucplanet.service.VoiceReportPlan.MetricReport): String? {
             val raw = spec.read(liveData)
-            if (raw.isNaN() || raw == 0f) return null
+            if (raw.isNaN() || (spec.blankAtZero && raw == 0f)) return null
             val metric = com.eried.eucplanet.data.model.MetricCatalog.all
                 .first { it.key == spec.metricKey }
             val value = com.eried.eucplanet.data.model.MetricValueFormat.format(
@@ -9497,7 +9497,18 @@ private fun ReportRow(
         )
         Spacer(Modifier.width(6.dp))
         Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, style = MaterialTheme.typography.bodyLarge)
+            // The label yields, the play button does not. Without the weight
+            // the text took its full intrinsic width and left the button the
+            // remainder: "Estimated battery" squeezed it from 126px to 69 and
+            // the glyph inside it from 37 to 12, which is a preview a rider
+            // cannot see, let alone hit.
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f, fill = false),
+            )
             Spacer(Modifier.width(6.dp))
             PlayButton(onClick = onTest)
         }

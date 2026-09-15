@@ -36,6 +36,17 @@ object VoiceReportPlan {
         val key: String,
         val metricKey: String,
         val read: (com.eried.eucplanet.data.model.WheelData) -> Float,
+        /**
+         * Whether zero means "nothing sent yet" for this field.
+         *
+         * WheelData is split on this and the split is not cosmetic. Voltage
+         * and the odometer default to 0f, so a zero there is a wheel that has
+         * said nothing. Estimated battery, range and consumption default to
+         * NaN, so a zero there is a real reading, and it is the one a rider
+         * most needs to hear: "range, 0 miles" is the announcement that ends
+         * a ride early on purpose rather than at the roadside.
+         */
+        val blankAtZero: Boolean,
         val get: (VoiceReportSettings, Boolean) -> Boolean,
         val set: (VoiceReportSettings, Boolean, Boolean) -> VoiceReportSettings,
     )
@@ -51,27 +62,27 @@ object VoiceReportPlan {
      */
     val EXTRA: List<MetricReport> = listOf(
         MetricReport(
-            "BatteryEst", "BATTERY_ENVELOPE", { it.batteryEnvelope },
+            "BatteryEst", "BATTERY_ENVELOPE", { it.batteryEnvelope }, blankAtZero = false,
             { v, p -> if (p) v.periodicBatteryEst else v.triggerBatteryEst },
             { v, p, on -> if (p) v.copy(periodicBatteryEst = on) else v.copy(triggerBatteryEst = on) },
         ),
         MetricReport(
-            "Range", "RANGE_ESTIMATE", { it.rangeKmEstimate },
+            "Range", "RANGE_ESTIMATE", { it.rangeKmEstimate }, blankAtZero = false,
             { v, p -> if (p) v.periodicRange else v.triggerRange },
             { v, p, on -> if (p) v.copy(periodicRange = on) else v.copy(triggerRange = on) },
         ),
         MetricReport(
-            "Voltage", "VOLTAGE", { it.voltage },
+            "Voltage", "VOLTAGE", { it.voltage }, blankAtZero = true,
             { v, p -> if (p) v.periodicVoltage else v.triggerVoltage },
             { v, p, on -> if (p) v.copy(periodicVoltage = on) else v.copy(triggerVoltage = on) },
         ),
         MetricReport(
-            "Odometer", "ODOMETER", { it.totalDistance },
+            "Odometer", "ODOMETER", { it.totalDistance }, blankAtZero = true,
             { v, p -> if (p) v.periodicOdometer else v.triggerOdometer },
             { v, p, on -> if (p) v.copy(periodicOdometer = on) else v.copy(triggerOdometer = on) },
         ),
         MetricReport(
-            "Consumption", "WH_PER_KM", { it.whPerKmRecent },
+            "Consumption", "WH_PER_KM", { it.whPerKmRecent }, blankAtZero = false,
             { v, p -> if (p) v.periodicConsumption else v.triggerConsumption },
             { v, p, on -> if (p) v.copy(periodicConsumption = on) else v.copy(triggerConsumption = on) },
         ),

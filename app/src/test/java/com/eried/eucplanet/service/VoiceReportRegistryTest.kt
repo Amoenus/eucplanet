@@ -104,6 +104,24 @@ class VoiceReportRegistryTest {
         assertTrue("BatteryEst" in VoiceReportPlan.items(s, periodic = true))
     }
 
+    @Test fun `zero is nothing only where the packet uses it as its unset value`() {
+        // WheelData is split: voltage and totalDistance default to 0f, so a
+        // zero there is silence from the wheel. The other three default to
+        // NaN, so a zero is a real reading, and "range, 0 miles" is the one a
+        // rider most needs to hear. A blanket zero-is-missing rule swallowed
+        // it, which is the bug this flag exists to have fixed.
+        val expected = mapOf(
+            "BatteryEst" to false, "Range" to false, "Consumption" to false,
+            "Voltage" to true, "Odometer" to true,
+        )
+        for (spec in VoiceReportPlan.EXTRA) {
+            assertEquals(
+                "${spec.key} treats zero the wrong way",
+                expected[spec.key], spec.blankAtZero,
+            )
+        }
+    }
+
     @Test fun `the reader pulls a real field off the packet`() {
         // Each spec reads the wheel directly rather than going through a
         // second extractor map. A reader wired to the wrong field would report

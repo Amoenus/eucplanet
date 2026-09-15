@@ -521,6 +521,11 @@ class VoiceService @Inject constructor(
         if (legalLockdown.isEngaged()) return
         val parts = buildReportParts(data, settings, isRecording, periodic = true)
         if (parts.isEmpty()) return
+        // What the announcement actually said. The spoken-question path has
+        // logged this all along and this one never did, so "it announced the
+        // wrong thing" left us guessing between a report being off, a value
+        // being wrong and a sentence being built wrong.
+        announced(parts, periodic = true)
         speakInternal(parts.joinToString(", "), isTrigger = false,
             rate = settings.voiceSpeechRate, localeTag = settings.voiceLocale, voiceName = settings.voiceName)
     }
@@ -535,8 +540,17 @@ class VoiceService @Inject constructor(
         if (triggerInFlight) return
         val parts = buildReportParts(data, settings, isRecording, periodic = false)
         if (parts.isEmpty()) return
+        announced(parts, periodic = false)
         speakInternal(parts.joinToString(", "), isTrigger = true,
             rate = settings.voiceSpeechRate, localeTag = settings.voiceLocale, voiceName = settings.voiceName)
+    }
+
+    /** One line per announcement, for the log and the diagnostics panel. */
+    private fun announced(parts: List<String>, periodic: Boolean) {
+        val what = parts.joinToString(", ")
+        val kind = if (periodic) "periodic" else "trigger"
+        Log.i(TAG, "announced ($kind): \"$what\"")
+        com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("Voice: announced ($kind) \"$what\"")
     }
 
     private fun streamTypeFor(channel: String): Int = when (channel) {
@@ -623,7 +637,10 @@ class VoiceService @Inject constructor(
         settings: AppSettings,
     ): String? {
         val raw = report.read(data)
-        if (raw.isNaN() || raw == 0f) return null
+        // NaN is always nothing. Zero is nothing only for the fields that use
+        // it as their unset value: treating every zero as missing would
+        // swallow a real 0% battery, which is the reading that matters most.
+        if (raw.isNaN() || (report.blankAtZero && raw == 0f)) return null
         val spec = com.eried.eucplanet.data.model.MetricCatalog.all
             .firstOrNull { it.key == report.metricKey } ?: return null
         val name = context.getString(spec.spokenLabelRes ?: spec.labelRes)

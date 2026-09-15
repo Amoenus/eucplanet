@@ -338,7 +338,6 @@
     <string name="voice_answer_nodata">Brak jeszcze %1$s.</string>
     <string name="voice_answer_setup">%1$s wymaga najpierw konfiguracji.</string>
     <string name="voice_answer_no_mic_permission">Potrzebuję zgody na mikrofon.</string>
-    <string name="voice_mic_permission_desc">Polecenia głosowe wymagają mikrofonu.</string>
     <string name="voice_mic_grant">Zezwól na mikrofon</string>
     <string name="warnings_perm_mic_title">Mikrofon niedozwolony</string>
     <string name="warnings_perm_mic_body">Polecenia głosowe nie mogą słuchać, dopóki aplikacja nie ma dostępu do mikrofonu.</string>

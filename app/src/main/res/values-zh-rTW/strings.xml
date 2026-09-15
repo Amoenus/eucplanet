@@ -338,7 +338,6 @@
     <string name="voice_answer_nodata">暫無%1$s。</string>
     <string name="voice_answer_setup">%1$s需要先設定。</string>
     <string name="voice_answer_no_mic_permission">我需要麥克風權限。</string>
-    <string name="voice_mic_permission_desc">語音指令需要麥克風。</string>
     <string name="voice_mic_grant">允許麥克風</string>
     <string name="warnings_perm_mic_title">未允許麥克風</string>
     <string name="warnings_perm_mic_body">在應用程式取得麥克風權限之前，語音指令無法聆聽。</string>

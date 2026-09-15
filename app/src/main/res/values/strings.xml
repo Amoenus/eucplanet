@@ -343,7 +343,6 @@
     <string name="voice_answer_nodata">No %1$s yet.</string>
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
     <string name="voice_answer_no_mic_permission">I need permission to use the microphone.</string>
-    <string name="voice_mic_permission_desc">Voice commands need the microphone.</string>
     <string name="voice_mic_grant">Allow microphone</string>
     <string name="warnings_perm_mic_title">Microphone not allowed</string>
     <string name="warnings_perm_mic_body">Voice commands cannot listen until the app is allowed to use the microphone.</string>

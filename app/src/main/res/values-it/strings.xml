@@ -1369,7 +1369,6 @@
     <string name="voice_answer_nodata">Ancora nessun %1$s.</string>
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
     <string name="voice_answer_no_mic_permission">Mi serve il permesso per il microfono.</string>
-    <string name="voice_mic_permission_desc">I comandi vocali hanno bisogno del microfono.</string>
     <string name="voice_mic_grant">Consenti microfono</string>
     <string name="warnings_perm_mic_title">Microfono non consentito</string>
     <string name="warnings_perm_mic_body">I comandi vocali non possono ascoltare finché la app non può usare il microfono.</string>

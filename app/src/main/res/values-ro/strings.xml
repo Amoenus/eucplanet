@@ -301,7 +301,6 @@
     <string name="voice_answer_nodata">Încă nu există %1$s.</string>
     <string name="voice_answer_setup">%1$s trebuie configurat mai întâi.</string>
     <string name="voice_answer_no_mic_permission">Am nevoie de permisiune pentru microfon.</string>
-    <string name="voice_mic_permission_desc">Comenzile vocale au nevoie de microfon.</string>
     <string name="voice_mic_grant">Permite microfonul</string>
     <string name="warnings_perm_mic_title">Microfon nepermis</string>
     <string name="warnings_perm_mic_body">Comenzile vocale nu pot asculta până când aplicația nu are acces la microfon.</string>

@@ -338,7 +338,6 @@
     <string name="voice_answer_nodata">Inget %1$s än.</string>
     <string name="voice_answer_setup">%1$s måste ställas in först.</string>
     <string name="voice_answer_no_mic_permission">Jag behöver tillstånd till mikrofonen.</string>
-    <string name="voice_mic_permission_desc">Röstkommandon behöver mikrofonen.</string>
     <string name="voice_mic_grant">Tillåt mikrofon</string>
     <string name="warnings_perm_mic_title">Mikrofonen är inte tillåten</string>
     <string name="warnings_perm_mic_body">Röstkommandon kan inte lyssna förrän appen får använda mikrofonen.</string>

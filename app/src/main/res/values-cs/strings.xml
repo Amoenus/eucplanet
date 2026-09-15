@@ -301,7 +301,6 @@
     <string name="voice_answer_nodata">Zatím žádné %1$s.</string>
     <string name="voice_answer_setup">%1$s je potřeba nejdřív nastavit.</string>
     <string name="voice_answer_no_mic_permission">Potřebuji povolení k mikrofonu.</string>
-    <string name="voice_mic_permission_desc">Hlasové příkazy potřebují mikrofon.</string>
     <string name="voice_mic_grant">Povolit mikrofon</string>
     <string name="warnings_perm_mic_title">Mikrofon není povolen</string>
     <string name="warnings_perm_mic_body">Hlasové příkazy nemohou poslouchat, dokud aplikace nesmí používat mikrofon.</string>

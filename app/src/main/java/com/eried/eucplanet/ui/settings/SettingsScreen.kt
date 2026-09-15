@@ -7306,7 +7306,9 @@ private fun VoiceTab(
             androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
         ) { granted -> micGranted = granted }
         if (!micGranted) {
-            HintText(stringResource(R.string.voice_mic_permission_desc))
+            // No line of explanation above it: the button says what it does,
+            // and the paragraph above already says the feature needs a
+            // microphone.
             com.eried.eucplanet.ui.common.FixButton(
                 text = stringResource(R.string.voice_mic_grant),
                 onClick = { micLauncher.launch(android.Manifest.permission.RECORD_AUDIO) },

@@ -338,7 +338,6 @@
     <string name="voice_answer_nodata">%1$sはまだありません。</string>
     <string name="voice_answer_setup">%1$sは先に設定が必要です。</string>
     <string name="voice_answer_no_mic_permission">マイクの許可が必要です。</string>
-    <string name="voice_mic_permission_desc">音声コマンドにはマイクが必要です。</string>
     <string name="voice_mic_grant">マイクを許可</string>
     <string name="warnings_perm_mic_title">マイクが許可されていません</string>
     <string name="warnings_perm_mic_body">アプリがマイクを使えるようになるまで、音声コマンドは待ち受けできません。</string>

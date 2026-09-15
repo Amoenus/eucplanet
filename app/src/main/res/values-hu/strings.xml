@@ -301,7 +301,6 @@
     <string name="voice_answer_nodata">Még nincs %1$s.</string>
     <string name="voice_answer_setup">%1$s előbb beállítást igényel.</string>
     <string name="voice_answer_no_mic_permission">Engedély kell a mikrofonhoz.</string>
-    <string name="voice_mic_permission_desc">A hangparancsokhoz mikrofon kell.</string>
     <string name="voice_mic_grant">Mikrofon engedélyezése</string>
     <string name="warnings_perm_mic_title">A mikrofon nincs engedélyezve</string>
     <string name="warnings_perm_mic_body">A hangparancsok nem tudnak figyelni, amíg az alkalmazás nem használhatja a mikrofont.</string>

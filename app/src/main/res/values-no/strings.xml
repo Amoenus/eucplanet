@@ -1350,7 +1350,6 @@
     <string name="voice_answer_nodata">Ingen %1$s ennå.</string>
     <string name="voice_answer_setup">%1$s må settes opp først.</string>
     <string name="voice_answer_no_mic_permission">Jeg trenger tillatelse til mikrofonen.</string>
-    <string name="voice_mic_permission_desc">Talekommandoer trenger mikrofonen.</string>
     <string name="voice_mic_grant">Tillat mikrofon</string>
     <string name="warnings_perm_mic_title">Mikrofon ikke tillatt</string>
     <string name="warnings_perm_mic_body">Talekommandoer kan ikke lytte før appen får bruke mikrofonen.</string>

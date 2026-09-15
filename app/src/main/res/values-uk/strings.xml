@@ -338,7 +338,6 @@
     <string name="voice_answer_nodata">Поки немає %1$s.</string>
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
     <string name="voice_answer_no_mic_permission">Потрібен дозвіл на мікрофон.</string>
-    <string name="voice_mic_permission_desc">Голосовим командам потрібен мікрофон.</string>
     <string name="voice_mic_grant">Дозволити мікрофон</string>
     <string name="warnings_perm_mic_title">Мікрофон заборонено</string>
     <string name="warnings_perm_mic_body">Голосові команди не можуть слухати, доки застосунку не дозволено мікрофон.</string>

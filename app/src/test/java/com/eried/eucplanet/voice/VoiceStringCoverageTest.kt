@@ -30,7 +30,6 @@ class VoiceStringCoverageTest {
         "voice_answer_nodata",
         "voice_answer_setup",
         "voice_answer_no_mic_permission",
-        "voice_mic_permission_desc",
         "voice_mic_grant",
         "voice_answer_unknown",
         "voice_help_terms",

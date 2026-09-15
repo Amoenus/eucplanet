@@ -828,6 +828,13 @@ class MainActivity : AppCompatActivity() {
                                                     settingsRepository.update(c.copy(alarmsMuted = !c.alarmsMuted))
                                                 }
                                             }
+                                            override fun cycleSpeedSplits() {
+                                                overlayScope.launch {
+                                                    val c = settingsRepository.get()
+                                                    val next = com.eried.eucplanet.data.model.AccelSplitMode.of(c.accelSplit).next()
+                                                    settingsRepository.update(c.copy(accelSplit = next.applyTo(c.accelSplit)))
+                                                }
+                                            }
                                             override fun resetMetrics() {
                                                 // Was sending only the wheel command and
                                                 // dropping the answer, so on a family without
@@ -966,6 +973,7 @@ class MainActivity : AppCompatActivity() {
             imperialUnits = s?.imperialUnits ?: false,
             safetyActive = wheelRepository.safetySpeedActive.value,
             alarmsMuted = s?.alarmsMuted ?: false,
+            speedSplitsOn = s?.accelSplit?.enabled ?: false,
             connections = buildServiceConnections(s)
         )
     }

@@ -11,18 +11,34 @@ package com.eried.eucplanet.util
  * liar: set it tight and it fires on a hill, set it loose and it fires too
  * late.
  *
- * This is the batch code's fallback model, which is the half that works
- * without knowing the future: half-minute buckets, walked with hysteresis.
- * It steps DOWN freely, because a pack that has really dropped does not come
- * back, and it only steps UP when two consecutive buckets agree the rise is
- * real, which is what separates a regen descent from a sag recovering.
+ * Three rules, and the shape they give the line is the whole point:
+ *
+ *  - **Each half minute is read at its lightest load.** Load moves a battery
+ *    reading one way only, down, so the lightest-loaded moment in a bucket is
+ *    the closest look at the resting level anyone gets without stopping. That
+ *    is a high percentile of the bucket, not its middle. A median is a sagging
+ *    number whenever the rider spent most of the half minute on the throttle,
+ *    and reading it made the line dive on every launch.
+ *  - **Down takes two half minutes that agree, and moves to the higher.** Once
+ *    a drop is in, nothing takes it back (see the next rule), so a single
+ *    bucket that happened to be all climb must not be allowed to write it.
+ *    Two consecutive buckets both below the line is a resting level that
+ *    really fell. The line moves to the higher of the two, the less sagged one,
+ *    so an over-drop is the one mistake this never makes. The cost is a minute
+ *    of lag on a real discharge, and a minute is nothing against a percentage
+ *    that moves one point in that time.
+ *  - **Never up while riding.** Regen on a descent and a sag letting go look
+ *    the same from here, and the raw percentage already shows the rider
+ *    whichever it was. This is the number that only goes one way, which is
+ *    what lets an alarm on it fire once and stay fired. The one exception is
+ *    a wheel on the charger, where the level genuinely rises and following it
+ *    is the only honest thing to do.
  *
  * Pure and tickless: it is fed samples and asked for a value, so a test can
  * run a whole ride through it in a millisecond.
  */
 class LiveBatteryEnvelope(
     private val bucketMs: Long = (BatteryEnvelope.BUCKET_S * 1000).toLong(),
-    private val riseHysteresis: Float = 1.5f,
 ) {
 
     private var bucketStartMs = 0L
@@ -36,8 +52,11 @@ class LiveBatteryEnvelope(
      */
     private var started = false
     private val bucket = ArrayList<Float>()
+    private var bucketCharging = false
     private var running = Float.NaN
-    private var pendingRise = Float.NaN
+
+    /** The previous bucket's level if it sat below the line, else NaN. */
+    private var pendingDrop = Float.NaN
 
     /** The envelope now, or NaN before the first bucket has closed. */
     var value: Float = Float.NaN
@@ -47,17 +66,22 @@ class LiveBatteryEnvelope(
      * Feed one battery reading. Returns the current envelope, NaN until the
      * first half minute of the ride has gone by.
      *
+     * [charging] is whether the wheel says it is on the charger. A charging
+     * pack is the one case where the resting level really rises, so while it
+     * is set the line simply follows.
+     *
      * A percentage of zero is dropped: every family leaves the field at zero
-     * before the first real frame, and letting that into the median would
+     * before the first real frame, and letting that into the bucket would
      * start every ride with an envelope at the bottom of the pack.
      */
-    fun sample(nowMs: Long, batteryPercent: Float): Float {
+    fun sample(nowMs: Long, batteryPercent: Float, charging: Boolean = false): Float {
         if (batteryPercent <= 0f || batteryPercent > 100f) return value
         if (!started) { bucketStartMs = nowMs; started = true }
         // A clock that jumped backwards (or a fresh connection) starts over
         // rather than holding a bucket open forever.
         if (nowMs < bucketStartMs) reset()
         bucket += batteryPercent
+        bucketCharging = bucketCharging || charging
         if (nowMs - bucketStartMs < bucketMs) return value
         closeBucket()
         bucketStartMs = nowMs
@@ -69,30 +93,51 @@ class LiveBatteryEnvelope(
         bucketStartMs = 0L
         started = false
         bucket.clear()
+        bucketCharging = false
         running = Float.NaN
-        pendingRise = Float.NaN
+        pendingDrop = Float.NaN
         value = Float.NaN
     }
 
     private fun closeBucket() {
         if (bucket.isEmpty()) return
-        val median = bucket.sorted()[bucket.size / 2]
+        val level = lightestLoad(bucket)
+        val charging = bucketCharging
         bucket.clear()
+        bucketCharging = false
         when {
-            running.isNaN() -> running = median
-            // Down is always believed. A pack that really fell does not
-            // recover, so waiting for confirmation would only make the alarm
-            // late, and late is the one thing a low-battery warning cannot be.
-            median <= running -> { running = median; pendingRise = Float.NaN }
-            // Up needs two buckets that agree, which is what tells a genuine
-            // regen descent from a sag letting go.
-            !pendingRise.isNaN() && median >= running + riseHysteresis -> {
-                running = minOf(median, pendingRise)
-                pendingRise = Float.NaN
+            running.isNaN() -> running = level
+            // On the charger the level really does rise. Follow it, both
+            // ways, and forget any drop that was waiting: the pack it was
+            // measured on is being refilled.
+            charging -> { running = level; pendingDrop = Float.NaN }
+            // Never up while riding. Whatever pushed a bucket above the line,
+            // regen or a sag letting go, the raw percentage already shows it.
+            level >= running -> pendingDrop = Float.NaN
+            // Below the line twice in a row is a resting level that fell. Move
+            // to the higher of the two: the less sagged reading, so the one
+            // move this cannot undo is never an over-drop.
+            !pendingDrop.isNaN() -> {
+                running = maxOf(level, pendingDrop)
+                pendingDrop = Float.NaN
             }
-            median >= running + riseHysteresis -> pendingRise = median
-            else -> pendingRise = Float.NaN
+            // Below the line once. Could be a climb with no let-up; wait for
+            // the next half minute to say.
+            else -> pendingDrop = level
         }
         value = (running * 10f).toInt() / 10f
+    }
+
+    /**
+     * The bucket's reading at its lightest load: the 90th percentile.
+     *
+     * Not the maximum, so one spurious frame cannot set the level for a whole
+     * half minute, and not the middle, which is a sagging number whenever the
+     * rider spent that half minute working the wheel.
+     */
+    private fun lightestLoad(samples: List<Float>): Float {
+        val sorted = samples.sorted()
+        val i = ((sorted.size - 1) * 9) / 10
+        return sorted[i]
     }
 }

@@ -228,6 +228,7 @@ class WheelRepository @Inject constructor(
     private val legalLockdown: LegalLockdownController,
     /** So the wheel's own relayed tyre pressure competes with a paired cap. */
     private val tpmsRepository: com.eried.eucplanet.tpms.TpmsRepository,
+    private val accelSplitRepository: AccelSplitRepository,
     // Lazy breaks the Hilt dependency cycle: TripRepository injects this
     // repository, so a direct TripRepository here would be circular. Only
     // read on the history tick to sample GPS_SPEED / GPS_ALTITUDE /
@@ -1403,9 +1404,16 @@ class WheelRepository @Inject constructor(
     }
 
     fun connect(address: String, name: String? = null, isAuto: Boolean = false) {
+        // A connection is a ride boundary, whichever wheel it is. The envelope
+        // never rises while riding, so a line carried across connections stays
+        // pinned at the last ride's level: a rider who charged between two
+        // rides came back to a Battery (est) still reading where they parked,
+        // and an alarm that would not stop. Not every family reports charging,
+        // so the charger cannot be relied on to lift it. Half a minute of
+        // "not yet" after connecting is the honest price.
+        batteryEnvelope.reset()
         if (lastConnectedAddress != null && lastConnectedAddress != address) {
             // Different wheel, clear history
-            batteryEnvelope.reset()
             battHist.clear(); tempHist.clear(); voltHist.clear()
             ampsHist.clear(); loadHist.clear(); speedHist.clear()
             extrasHist.values.forEach { it.clear() }
@@ -1413,6 +1421,9 @@ class WheelRepository @Inject constructor(
             // Same rule for the Battery screen's charging session: a new wheel starts
             // fresh so its charge curve / packs / cells don't inherit the last wheel's.
             resetChargingSession()
+            // And for the speed splits: another wheel is another motor, so its
+            // times are not this one's to beat.
+            accelSplitRepository.reset()
         }
         lastConnectedAddress = address
         bleManager.connect(address, name, isAuto)
@@ -2052,9 +2063,12 @@ class WheelRepository @Inject constructor(
                 // believe it, and an alarm set on the envelope has to be about
                 // the charge they are being shown. The raw frame put the alarm
                 // on the number the override exists to replace.
+                // Charging is the one state where the line is allowed to
+                // rise, so the wheel's own flag goes in beside the reading.
                 val envelope = batteryEnvelope.sample(
                     System.currentTimeMillis(),
                     shownBatteryPercent.toFloat(),
+                    result.data.charging,
                 )
                 // A paired tyre cap outranks the wheel's own relay, and the
                 // policy that decides between them needs to be told the wheel

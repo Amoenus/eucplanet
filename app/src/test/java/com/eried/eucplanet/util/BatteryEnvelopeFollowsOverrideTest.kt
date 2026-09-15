@@ -80,6 +80,25 @@ class BatteryEnvelopeFollowsOverrideTest {
         assertEquals("the override off must change nothing", 95, shown)
     }
 
+    @Test fun `every connection starts the envelope over, not only a new wheel`() {
+        // Found on the emulator: reconnect the same simulated wheel after a
+        // ride and Battery (est) sat at the old ride's 16 % while the pack
+        // read 36 %, because the line never rises and was only reset when a
+        // DIFFERENT wheel connected. A rider who charges between rides hits
+        // exactly this, and not every family reports charging.
+        val source = File("src/main/java/com/eried/eucplanet/data/repository/WheelRepository.kt")
+        val body = source.readText()
+            .substringAfter("fun connect(address: String")
+            .substringBefore("bleManager.connect(")
+        val reset = body.indexOf("batteryEnvelope.reset()")
+        val sameWheelGuard = body.indexOf("lastConnectedAddress != address")
+        assertTrue("connect() must reset the envelope", reset >= 0)
+        assertTrue(
+            "the reset must run before, not inside, the different-wheel branch",
+            sameWheelGuard < 0 || reset < sameWheelGuard,
+        )
+    }
+
     @Test fun `the frame handler samples the shown percentage, not the raw frame`() {
         val source = File("src/main/java/com/eried/eucplanet/data/repository/WheelRepository.kt")
         assertTrue("WheelRepository.kt not found at ${source.absolutePath}", source.exists())

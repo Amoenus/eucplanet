@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">voix désactivée,annonces désactivées,couper la voix</string>
     <string name="voice_command_vocabulary">Que puis-je dire</string>
     <string name="voice_command_vocabulary_tap">Dites un nom seul ou dans une question.</string>
+    <string name="voice_command_vocabulary_legend">* n\'est pas une mesure de la roue : cela fait quelque chose ou répond sur autre chose.</string>
     <string name="voice_listening">J\'écoute</string>
     <string name="voice_answer_off">%1$s est désactivé. Vous pouvez l\'activer dans les réglages.</string>
     <string name="voice_answer_unsupported">Votre roue ne communique pas %1$s.</string>

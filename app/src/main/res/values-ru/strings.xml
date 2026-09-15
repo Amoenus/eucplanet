@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">голос выключить,объявления выключить,выключи голос</string>
     <string name="voice_command_vocabulary">Что можно сказать</string>
     <string name="voice_command_vocabulary_tap">Назовите пункт отдельно или в вопросе.</string>
+    <string name="voice_command_vocabulary_legend">* это не показание колеса: команда что-то делает или отвечает о другом.</string>
     <string name="voice_listening">Слушаю</string>
     <string name="voice_answer_off">%1$s выключено. Включить можно в настройках.</string>
     <string name="voice_answer_unsupported">Ваше колесо не сообщает %1$s.</string>

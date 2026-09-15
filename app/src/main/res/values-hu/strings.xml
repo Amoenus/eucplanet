@@ -316,6 +316,7 @@
     <string name="voice_act_announce_off_terms">hang ki,bemondások ki,kapcsold ki a hangot</string>
     <string name="voice_command_vocabulary">Mit mondhatok</string>
     <string name="voice_command_vocabulary_tap">Mondd a nevet önmagában vagy egy kérdésben.</string>
+    <string name="voice_command_vocabulary_legend">* nem a kerék adata: csinál valamit, vagy másról válaszol.</string>
     <string name="voice_listening">Hallgatom</string>
     <string name="voice_answer_off">%1$s ki van kapcsolva. A beállításokban bekapcsolhatod.</string>
     <string name="voice_answer_unsupported">A kerekedet nem jelenti a(z) %1$s értéket.</string>

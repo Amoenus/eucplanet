@@ -316,6 +316,7 @@
     <string name="voice_act_announce_off_terms">ääni pois,kuulutukset pois,puhe pois</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>
+    <string name="voice_command_vocabulary_legend">* ei ole pyörän lukema: se tekee jotain tai vastaa muusta.</string>
     <string name="voice_listening">Kuuntelen</string>
     <string name="voice_answer_off">%1$s on pois käytöstä. Voit ottaa sen käyttöön asetuksista.</string>
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>

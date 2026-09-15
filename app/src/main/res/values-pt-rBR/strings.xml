@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">voz desligada,anúncios desligados,desligar a voz</string>
     <string name="voice_command_vocabulary">O que posso dizer</string>
     <string name="voice_command_vocabulary_tap">Diga um nome sozinho ou dentro de uma pergunta.</string>
+    <string name="voice_command_vocabulary_legend">* não é uma leitura da roda: faz algo ou responde sobre outra coisa.</string>
     <string name="voice_listening">Ouvindo</string>
     <string name="voice_answer_off">%1$s está desativado. Você pode ativar nas configurações.</string>
     <string name="voice_answer_unsupported">Sua roda não informa %1$s.</string>

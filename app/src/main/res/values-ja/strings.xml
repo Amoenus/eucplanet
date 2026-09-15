@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">音声オフ,アナウンスオフ,音声をオフ</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>
+    <string name="voice_command_vocabulary_legend">* はホイールの計測値ではありません。何かを実行するか、別のことに答えます。</string>
     <string name="voice_listening">聞き取り中</string>
     <string name="voice_answer_off">%1$sはオフです。設定でオンにできます。</string>
     <string name="voice_answer_unsupported">このホイールは%1$sを報告しません。</string>

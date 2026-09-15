@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">głos wyłączony,komunikaty wyłączone,wyłącz głos</string>
     <string name="voice_command_vocabulary">Co mogę powiedzieć</string>
     <string name="voice_command_vocabulary_tap">Powiedz nazwę samodzielnie lub w pytaniu.</string>
+    <string name="voice_command_vocabulary_legend">* to nie odczyt koła: coś robi albo odpowiada o czymś innym.</string>
     <string name="voice_listening">Słucham</string>
     <string name="voice_answer_off">%1$s jest wyłączone. Możesz to włączyć w ustawieniach.</string>
     <string name="voice_answer_unsupported">Twoje koło nie podaje %1$s.</string>

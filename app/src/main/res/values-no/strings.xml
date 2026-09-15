@@ -1359,6 +1359,7 @@
     <string name="voice_act_announce_off_terms">stemme av,meldinger av,tale av</string>
     <string name="voice_command_vocabulary">Hva kan jeg si</string>
     <string name="voice_command_vocabulary_tap">Si et navn alene eller i et spørsmål.</string>
+    <string name="voice_command_vocabulary_legend">* er ikke en måling fra hjulet: det gjør noe eller svarer om noe annet.</string>
     <string name="voice_listening">Lytter</string>
     <string name="voice_answer_off">%1$s er av. Du kan slå det på i innstillingene.</string>
     <string name="voice_answer_unsupported">Hjulet ditt rapporterer ikke %1$s.</string>

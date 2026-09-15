@@ -1378,6 +1378,7 @@
     <string name="voice_act_announce_off_terms">voce disattivata,annunci disattivati,disattiva la voce</string>
     <string name="voice_command_vocabulary">Cosa posso dire</string>
     <string name="voice_command_vocabulary_tap">Pronuncia un nome da solo o in una domanda.</string>
+    <string name="voice_command_vocabulary_legend">* non è una lettura della ruota: fa qualcosa o risponde su altro.</string>
     <string name="voice_listening">In ascolto</string>
     <string name="voice_answer_off">%1$s è disattivato. Puoi attivarlo nelle impostazioni.</string>
     <string name="voice_answer_unsupported">La tua ruota non riporta %1$s.</string>

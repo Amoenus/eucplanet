@@ -358,6 +358,7 @@
     <string name="voice_act_announce_off_terms">voice off,announcements off,turn off voice,mute voice</string>
     <string name="voice_command_vocabulary">What can I say</string>
     <string name="voice_command_vocabulary_tap">Say a name on its own or inside a question.</string>
+    <string name="voice_command_vocabulary_legend">* is not a wheel reading: it does something, or answers about something else.</string>
     <string name="voice_listening">Listening</string>
     <string name="voice_answer_off">%1$s is off. You can turn it on in settings.</string>
     <string name="voice_answer_unsupported">Your wheel does not report %1$s.</string>

@@ -353,6 +353,7 @@
     <string name="voice_act_announce_off_terms">röst av,meddelanden av,tal av</string>
     <string name="voice_command_vocabulary">Vad kan jag säga</string>
     <string name="voice_command_vocabulary_tap">Säg ett namn ensamt eller i en fråga.</string>
+    <string name="voice_command_vocabulary_legend">* är inte en mätning från hjulet: det gör något eller svarar om något annat.</string>
     <string name="voice_listening">Lyssnar</string>
     <string name="voice_answer_off">%1$s är avstängt. Du kan slå på det i inställningarna.</string>
     <string name="voice_answer_unsupported">Ditt hjul rapporterar inte %1$s.</string>

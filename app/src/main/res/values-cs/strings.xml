@@ -316,6 +316,7 @@
     <string name="voice_act_announce_off_terms">hlas vypnut,hlášení vypnuta,vypni hlas</string>
     <string name="voice_command_vocabulary">Co mohu říct</string>
     <string name="voice_command_vocabulary_tap">Řekni název samostatně nebo v otázce.</string>
+    <string name="voice_command_vocabulary_legend">* není údaj z kola: něco udělá nebo odpoví na něco jiného.</string>
     <string name="voice_listening">Poslouchám</string>
     <string name="voice_answer_off">%1$s je vypnuto. Můžeš to zapnout v nastavení.</string>
     <string name="voice_answer_unsupported">Tvoje kolo nehlásí %1$s.</string>

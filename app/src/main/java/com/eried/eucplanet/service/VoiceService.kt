@@ -545,6 +545,22 @@ class VoiceService @Inject constructor(
             rate = settings.voiceSpeechRate, localeTag = settings.voiceLocale, voiceName = settings.voiceName)
     }
 
+    /**
+     * Strings in the language the voice speaks, whatever the app is set to.
+     *
+     * Blank or matching the interface language costs nothing: the same
+     * Context comes straight back, so the common case allocates nothing.
+     */
+    private fun spokenContext(settings: AppSettings): Context {
+        val tag = settings.voiceLocale
+        if (tag.isBlank()) return context
+        val locale = Locale.forLanguageTag(tag.replace("_", "-"))
+        if (locale.language == context.resources.configuration.locales[0].language) return context
+        val cfg = android.content.res.Configuration(context.resources.configuration)
+            .apply { setLocale(locale) }
+        return context.createConfigurationContext(cfg)
+    }
+
     /** One line per announcement, for the log and the diagnostics panel. */
     private fun announced(parts: List<String>, periodic: Boolean) {
         val what = parts.joinToString(", ")
@@ -635,6 +651,7 @@ class VoiceService @Inject constructor(
         report: VoiceReportPlan.MetricReport,
         data: WheelData,
         settings: AppSettings,
+        vctx: Context,
     ): String? {
         val raw = report.read(data)
         // NaN is always nothing. Zero is nothing only for the fields that use
@@ -643,13 +660,15 @@ class VoiceService @Inject constructor(
         if (raw.isNaN() || (report.blankAtZero && raw == 0f)) return null
         val spec = com.eried.eucplanet.data.model.MetricCatalog.all
             .firstOrNull { it.key == report.metricKey } ?: return null
-        val name = context.getString(spec.spokenLabelRes ?: spec.labelRes)
+        // The spoken name here, not the tile's: this one is said out loud,
+        // and "Battery (est)" read aloud is "battery est".
+        val name = vctx.getString(spec.spokenLabelRes ?: spec.labelRes)
         val value = com.eried.eucplanet.data.model.MetricValueFormat.format(
             key = report.metricKey,
             raw = raw,
             speedUnit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings),
             speedUnitLabel = com.eried.eucplanet.util.Units.speedUnit(
-                context, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
+                vctx, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
             ),
             tempUnit = com.eried.eucplanet.util.Units.effectiveTempUnit(settings),
             tempUnitLabel = com.eried.eucplanet.util.Units.tempUnit(
@@ -672,6 +691,13 @@ class VoiceService @Inject constructor(
         // samples for the ~1 Hz trip graphs, which makes it seconds here.
         val loadWindowMs = settings.smoothingWindowSamples.coerceAtLeast(1) * 1000L
         val parts = mutableListOf<String>()
+        // The announcement is read out by a voice the rider picked, which is
+        // not always the language the app is in. Resolving these against the
+        // interface language meant an English sentence read aloud by a Russian
+        // voice: the same mismatch a tester reported for spoken questions,
+        // living here too and never noticed because both settings usually
+        // agree.
+        val vctx = spokenContext(settings)
         // A direct question names its own report and bypasses the plan, which
         // is about what an unprompted announcement contains.
         val planned = if (only != null) listOf(only) else VoiceReportPlan.items(settings, periodic)
@@ -694,14 +720,14 @@ class VoiceService @Inject constructor(
                 // and a rider hearing both should hear one voice.
                 val extra = com.eried.eucplanet.service.VoiceReportPlan.extra(item)
                 if (extra != null) {
-                    metricSentence(extra, data, settings)?.let { parts.add(it) }
+                    metricSentence(extra, data, settings, vctx)?.let { parts.add(it) }
                     return@run
                 }
                 when (item) {
-                    "Speed" -> parts.add(context.getString(R.string.voice_speed_fmt, "%.0f".format(displaySpeed)))
-                    "Battery" -> parts.add(context.getString(R.string.voice_battery_fmt, data.batteryPercent))
-                    "PhoneBattery" -> parts.add(context.getString(R.string.voice_phone_battery_fmt, readPhoneBatteryPercent()))
-                    "Temp" -> parts.add(context.getString(R.string.voice_temp_fmt, "%.0f".format(displayTemp)))
+                    "Speed" -> parts.add(vctx.getString(R.string.voice_speed_fmt, "%.0f".format(displaySpeed)))
+                    "Battery" -> parts.add(vctx.getString(R.string.voice_battery_fmt, data.batteryPercent))
+                    "PhoneBattery" -> parts.add(vctx.getString(R.string.voice_phone_battery_fmt, readPhoneBatteryPercent()))
+                    "Temp" -> parts.add(vctx.getString(R.string.voice_temp_fmt, "%.0f".format(displayTemp)))
                     // Load-style reports speak the recent average, not the
                     // instant reading. Falling back to the live value keeps the
                     // report working before any history has built up. A row is
@@ -709,17 +735,17 @@ class VoiceService @Inject constructor(
                     // rather than announcing a confident zero.
                     "PWM" -> {
                         val v = smoothed(loadWindowMs) { it.pwm } ?: data.pwm
-                        if (!v.isNaN()) parts.add(context.getString(R.string.voice_load_fmt, "%.0f".format(v)))
+                        if (!v.isNaN()) parts.add(vctx.getString(R.string.voice_load_fmt, "%.0f".format(v)))
                     }
                     "Current" -> {
                         val v = smoothed(loadWindowMs) { it.current } ?: data.current
-                        if (!v.isNaN()) parts.add(context.getString(R.string.voice_current_fmt, "%.0f".format(abs(v))))
+                        if (!v.isNaN()) parts.add(vctx.getString(R.string.voice_current_fmt, "%.0f".format(abs(v))))
                     }
                     "Power" -> {
                         val v = smoothed(loadWindowMs) { it.powerW } ?: (data.voltage * data.current)
-                        if (!v.isNaN()) parts.add(context.getString(R.string.voice_power_fmt, "%.0f".format(abs(v))))
+                        if (!v.isNaN()) parts.add(vctx.getString(R.string.voice_power_fmt, "%.0f".format(abs(v))))
                     }
-                    "Distance" -> parts.add(context.getString(
+                    "Distance" -> parts.add(vctx.getString(
                         when (distanceUnit) {
                             "mi" -> R.string.voice_trip_miles_fmt
                             "m" -> R.string.voice_trip_meters_fmt
@@ -728,9 +754,9 @@ class VoiceService @Inject constructor(
                         if (distanceUnit == "m") "%.0f".format(displayTrip)
                         else String.format(Locale.US, "%.1f", displayTrip)
                     ))
-                    "Recording" -> parts.add(context.getString(if (isRecording) R.string.voice_recording_on else R.string.voice_recording_off))
-                    "Time" -> parts.add(context.getString(R.string.voice_time_fmt,
-                        android.text.format.DateFormat.getTimeFormat(context).format(java.util.Date())))
+                    "Recording" -> parts.add(vctx.getString(if (isRecording) R.string.voice_recording_on else R.string.voice_recording_off))
+                    "Time" -> parts.add(vctx.getString(R.string.voice_time_fmt,
+                        android.text.format.DateFormat.getTimeFormat(vctx).format(java.util.Date())))
                     // The cue is pushed in by NavigationEngine when nav is live;
                     // null when there is nothing to say, in which case the row
                     // is silently skipped.

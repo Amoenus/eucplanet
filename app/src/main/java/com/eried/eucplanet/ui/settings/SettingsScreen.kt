@@ -703,7 +703,6 @@ fun SettingsScreen(
         stringResource(R.string.voice_prompt_cue),
         stringResource(R.string.voice_prompt_cue_desc),
         stringResource(R.string.voice_unknown_cue),
-        stringResource(R.string.voice_unknown_cue_desc),
         stringResource(R.string.voice_recognition_language),
         stringResource(R.string.voice_recognition_desc),
         stringResource(R.string.voice_headset_button),
@@ -7362,7 +7361,6 @@ private fun VoiceTab(
             onPreview = { viewModel.previewUnknownCue(unknownSample) },
             previewEnabled = settings.voiceCommands.unknownCue != com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_NONE,
         )
-        HintText(stringResource(R.string.voice_unknown_cue_desc))
 
         // The language the rider speaks, which is not always the language the
         // app is in and not always the one it answers in. Blank follows the
@@ -7646,7 +7644,12 @@ private fun VoiceTab(
                 .first { it.key == spec.metricKey }
             spec.key to ReportItemConfig(
                 key = spec.key,
-                label = stringResource(metric.spokenLabelRes ?: metric.labelRes),
+                // The tile's name, not the spoken one. "Battery (est)" is
+                // what the rider reads on the dashboard and what they are
+                // looking for in this list; "Estimated battery" exists so the
+                // voice does not have to say "est" out loud, which is a
+                // different job and a longer word.
+                label = stringResource(metric.labelRes),
                 periodicChecked = spec.get(settings.voiceReports, true),
                 onPeriodicChange = { viewModel.updateVoiceReportExtra(spec.key, true, it) },
                 triggerChecked = spec.get(settings.voiceReports, false),

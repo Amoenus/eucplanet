@@ -319,6 +319,12 @@
     <string name="voice_answer_off">%1$s ki van kapcsolva. A beállításokban bekapcsolhatod.</string>
     <string name="voice_answer_unsupported">A kerekedet nem jelenti a(z) %1$s értéket.</string>
     <string name="voice_answer_nodata">Még nincs %1$s.</string>
+    <string name="voice_state_on">be</string>
+    <string name="voice_state_off">ki</string>
+    <string name="voice_mode_lock">zárva</string>
+    <string name="voice_mode_drive">menet</string>
+    <string name="voice_mode_shutdown">ki</string>
+    <string name="voice_mode_idle">üresjárat</string>
     <string name="voice_answer_setup">%1$s előbb beállítást igényel.</string>
     <string name="voice_answer_no_mic_permission">Engedély kell a mikrofonhoz.</string>
     <string name="voice_mic_grant">Mikrofon engedélyezése</string>

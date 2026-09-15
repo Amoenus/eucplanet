@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s est désactivé. Vous pouvez l\'activer dans les réglages.</string>
     <string name="voice_answer_unsupported">Votre roue ne communique pas %1$s.</string>
     <string name="voice_answer_nodata">Pas encore de %1$s.</string>
+    <string name="voice_state_on">allumée</string>
+    <string name="voice_state_off">éteinte</string>
+    <string name="voice_mode_lock">verrouillée</string>
+    <string name="voice_mode_drive">conduite</string>
+    <string name="voice_mode_shutdown">éteinte</string>
+    <string name="voice_mode_idle">au repos</string>
     <string name="voice_answer_setup">%1$s doit d\'abord être configuré.</string>
     <string name="voice_answer_no_mic_permission">J ai besoin de la permission du microphone.</string>
     <string name="voice_mic_grant">Autoriser le microphone</string>

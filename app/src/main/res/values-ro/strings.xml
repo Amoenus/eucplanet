@@ -319,6 +319,12 @@
     <string name="voice_answer_off">%1$s este dezactivat. Îl poți activa din setări.</string>
     <string name="voice_answer_unsupported">Roata ta nu raportează %1$s.</string>
     <string name="voice_answer_nodata">Încă nu există %1$s.</string>
+    <string name="voice_state_on">aprinsă</string>
+    <string name="voice_state_off">stinsă</string>
+    <string name="voice_mode_lock">blocată</string>
+    <string name="voice_mode_drive">mers</string>
+    <string name="voice_mode_shutdown">stinsă</string>
+    <string name="voice_mode_idle">inactiv</string>
     <string name="voice_answer_setup">%1$s trebuie configurat mai întâi.</string>
     <string name="voice_answer_no_mic_permission">Am nevoie de permisiune pentru microfon.</string>
     <string name="voice_mic_grant">Permite microfonul</string>

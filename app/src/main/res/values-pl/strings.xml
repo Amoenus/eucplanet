@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s jest wyłączone. Możesz to włączyć w ustawieniach.</string>
     <string name="voice_answer_unsupported">Twoje koło nie podaje %1$s.</string>
     <string name="voice_answer_nodata">Brak jeszcze %1$s.</string>
+    <string name="voice_state_on">włączone</string>
+    <string name="voice_state_off">wyłączone</string>
+    <string name="voice_mode_lock">zablokowane</string>
+    <string name="voice_mode_drive">jazda</string>
+    <string name="voice_mode_shutdown">wyłączone</string>
+    <string name="voice_mode_idle">bezczynne</string>
     <string name="voice_answer_setup">%1$s wymaga najpierw konfiguracji.</string>
     <string name="voice_answer_no_mic_permission">Potrzebuję zgody na mikrofon.</string>
     <string name="voice_mic_grant">Zezwól na mikrofon</string>

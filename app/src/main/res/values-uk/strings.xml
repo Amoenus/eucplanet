@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s вимкнено. Увімкнути можна в налаштуваннях.</string>
     <string name="voice_answer_unsupported">Ваше колесо не повідомляє %1$s.</string>
     <string name="voice_answer_nodata">Поки немає %1$s.</string>
+    <string name="voice_state_on">увімкнено</string>
+    <string name="voice_state_off">вимкнено</string>
+    <string name="voice_mode_lock">заблоковано</string>
+    <string name="voice_mode_drive">рух</string>
+    <string name="voice_mode_shutdown">вимкнено</string>
+    <string name="voice_mode_idle">очікування</string>
     <string name="voice_answer_setup">%1$s спершу потрібно налаштувати.</string>
     <string name="voice_answer_no_mic_permission">Потрібен дозвіл на мікрофон.</string>
     <string name="voice_mic_grant">Дозволити мікрофон</string>

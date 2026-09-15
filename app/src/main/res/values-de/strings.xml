@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s ist aus. Du kannst es in den Einstellungen aktivieren.</string>
     <string name="voice_answer_unsupported">Dein Wheel meldet %1$s nicht.</string>
     <string name="voice_answer_nodata">Noch kein %1$s.</string>
+    <string name="voice_state_on">an</string>
+    <string name="voice_state_off">aus</string>
+    <string name="voice_mode_lock">gesperrt</string>
+    <string name="voice_mode_drive">Fahrt</string>
+    <string name="voice_mode_shutdown">aus</string>
+    <string name="voice_mode_idle">Leerlauf</string>
     <string name="voice_answer_setup">%1$s muss zuerst eingerichtet werden.</string>
     <string name="voice_answer_no_mic_permission">Ich brauche die Erlaubnis für das Mikrofon.</string>
     <string name="voice_mic_grant">Mikrofon erlauben</string>

@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s이(가) 꺼져 있습니다. 설정에서 켤 수 있습니다.</string>
     <string name="voice_answer_unsupported">이 휠은 %1$s을(를) 보고하지 않습니다.</string>
     <string name="voice_answer_nodata">아직 %1$s이(가) 없습니다.</string>
+    <string name="voice_state_on">켜짐</string>
+    <string name="voice_state_off">꺼짐</string>
+    <string name="voice_mode_lock">잠김</string>
+    <string name="voice_mode_drive">주행</string>
+    <string name="voice_mode_shutdown">꺼짐</string>
+    <string name="voice_mode_idle">대기</string>
     <string name="voice_answer_setup">%1$s은(는) 먼저 설정해야 합니다.</string>
     <string name="voice_answer_no_mic_permission">마이크 권한이 필요합니다.</string>
     <string name="voice_mic_grant">마이크 허용</string>

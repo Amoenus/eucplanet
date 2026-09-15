@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s er slået fra. Du kan slå det til i indstillingerne.</string>
     <string name="voice_answer_unsupported">Dit hjul rapporterer ikke %1$s.</string>
     <string name="voice_answer_nodata">Ingen %1$s endnu.</string>
+    <string name="voice_state_on">tændt</string>
+    <string name="voice_state_off">slukket</string>
+    <string name="voice_mode_lock">låst</string>
+    <string name="voice_mode_drive">kørsel</string>
+    <string name="voice_mode_shutdown">slukket</string>
+    <string name="voice_mode_idle">tomgang</string>
     <string name="voice_answer_setup">%1$s skal sættes op først.</string>
     <string name="voice_answer_no_mic_permission">Jeg har brug for tilladelse til mikrofonen.</string>
     <string name="voice_mic_grant">Tillad mikrofon</string>

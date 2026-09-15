@@ -361,6 +361,12 @@
     <string name="voice_answer_off">%1$s is off. You can turn it on in settings.</string>
     <string name="voice_answer_unsupported">Your wheel does not report %1$s.</string>
     <string name="voice_answer_nodata">No %1$s yet.</string>
+    <string name="voice_state_on">on</string>
+    <string name="voice_state_off">off</string>
+    <string name="voice_mode_lock">locked</string>
+    <string name="voice_mode_drive">drive</string>
+    <string name="voice_mode_shutdown">off</string>
+    <string name="voice_mode_idle">idle</string>
     <string name="voice_answer_setup">%1$s needs setting up first.</string>
     <string name="voice_answer_no_mic_permission">I need permission to use the microphone.</string>
     <string name="voice_mic_grant">Allow microphone</string>

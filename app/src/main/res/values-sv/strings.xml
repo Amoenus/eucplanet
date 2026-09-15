@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s är avstängt. Du kan slå på det i inställningarna.</string>
     <string name="voice_answer_unsupported">Ditt hjul rapporterar inte %1$s.</string>
     <string name="voice_answer_nodata">Inget %1$s än.</string>
+    <string name="voice_state_on">på</string>
+    <string name="voice_state_off">av</string>
+    <string name="voice_mode_lock">låst</string>
+    <string name="voice_mode_drive">körning</string>
+    <string name="voice_mode_shutdown">av</string>
+    <string name="voice_mode_idle">vila</string>
     <string name="voice_answer_setup">%1$s måste ställas in först.</string>
     <string name="voice_answer_no_mic_permission">Jag behöver tillstånd till mikrofonen.</string>
     <string name="voice_mic_grant">Tillåt mikrofon</string>

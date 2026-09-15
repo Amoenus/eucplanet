@@ -1382,6 +1382,12 @@
     <string name="voice_answer_off">%1$s è disattivato. Puoi attivarlo nelle impostazioni.</string>
     <string name="voice_answer_unsupported">La tua ruota non riporta %1$s.</string>
     <string name="voice_answer_nodata">Ancora nessun %1$s.</string>
+    <string name="voice_state_on">accesa</string>
+    <string name="voice_state_off">spenta</string>
+    <string name="voice_mode_lock">bloccata</string>
+    <string name="voice_mode_drive">guida</string>
+    <string name="voice_mode_shutdown">spenta</string>
+    <string name="voice_mode_idle">in attesa</string>
     <string name="voice_answer_setup">%1$s deve prima essere configurato.</string>
     <string name="voice_answer_no_mic_permission">Mi serve il permesso per il microfono.</string>
     <string name="voice_mic_grant">Consenti microfono</string>

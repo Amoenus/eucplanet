@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s kapalı. Ayarlardan açabilirsin.</string>
     <string name="voice_answer_unsupported">Tekerleğin %1$s bildirmiyor.</string>
     <string name="voice_answer_nodata">Henüz %1$s yok.</string>
+    <string name="voice_state_on">açık</string>
+    <string name="voice_state_off">kapalı</string>
+    <string name="voice_mode_lock">kilitli</string>
+    <string name="voice_mode_drive">sürüş</string>
+    <string name="voice_mode_shutdown">kapalı</string>
+    <string name="voice_mode_idle">boşta</string>
     <string name="voice_answer_setup">%1$s önce ayarlanmalı.</string>
     <string name="voice_answer_no_mic_permission">Mikrofon için izne ihtiyacım var.</string>
     <string name="voice_mic_grant">Mikrofona izin ver</string>

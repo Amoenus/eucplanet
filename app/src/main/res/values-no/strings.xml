@@ -1363,6 +1363,12 @@
     <string name="voice_answer_off">%1$s er av. Du kan slå det på i innstillingene.</string>
     <string name="voice_answer_unsupported">Hjulet ditt rapporterer ikke %1$s.</string>
     <string name="voice_answer_nodata">Ingen %1$s ennå.</string>
+    <string name="voice_state_on">på</string>
+    <string name="voice_state_off">av</string>
+    <string name="voice_mode_lock">låst</string>
+    <string name="voice_mode_drive">kjøring</string>
+    <string name="voice_mode_shutdown">av</string>
+    <string name="voice_mode_idle">hvile</string>
     <string name="voice_answer_setup">%1$s må settes opp først.</string>
     <string name="voice_answer_no_mic_permission">Jeg trenger tillatelse til mikrofonen.</string>
     <string name="voice_mic_grant">Tillat mikrofon</string>

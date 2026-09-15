@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$sはオフです。設定でオンにできます。</string>
     <string name="voice_answer_unsupported">このホイールは%1$sを報告しません。</string>
     <string name="voice_answer_nodata">%1$sはまだありません。</string>
+    <string name="voice_state_on">点灯</string>
+    <string name="voice_state_off">消灯</string>
+    <string name="voice_mode_lock">ロック</string>
+    <string name="voice_mode_drive">走行</string>
+    <string name="voice_mode_shutdown">オフ</string>
+    <string name="voice_mode_idle">アイドル</string>
     <string name="voice_answer_setup">%1$sは先に設定が必要です。</string>
     <string name="voice_answer_no_mic_permission">マイクの許可が必要です。</string>
     <string name="voice_mic_grant">マイクを許可</string>

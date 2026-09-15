@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s выключено. Включить можно в настройках.</string>
     <string name="voice_answer_unsupported">Ваше колесо не сообщает %1$s.</string>
     <string name="voice_answer_nodata">Пока нет %1$s.</string>
+    <string name="voice_state_on">включён</string>
+    <string name="voice_state_off">выключен</string>
+    <string name="voice_mode_lock">заблокирован</string>
+    <string name="voice_mode_drive">движение</string>
+    <string name="voice_mode_shutdown">выключен</string>
+    <string name="voice_mode_idle">ожидание</string>
     <string name="voice_answer_setup">%1$s сначала нужно настроить.</string>
     <string name="voice_answer_no_mic_permission">Нужно разрешение на микрофон.</string>
     <string name="voice_mic_grant">Разрешить микрофон</string>

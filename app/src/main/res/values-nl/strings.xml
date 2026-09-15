@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s staat uit. Je kunt het aanzetten in de instellingen.</string>
     <string name="voice_answer_unsupported">Je wiel rapporteert %1$s niet.</string>
     <string name="voice_answer_nodata">Nog geen %1$s.</string>
+    <string name="voice_state_on">aan</string>
+    <string name="voice_state_off">uit</string>
+    <string name="voice_mode_lock">vergrendeld</string>
+    <string name="voice_mode_drive">rijden</string>
+    <string name="voice_mode_shutdown">uit</string>
+    <string name="voice_mode_idle">inactief</string>
     <string name="voice_answer_setup">%1$s moet eerst worden ingesteld.</string>
     <string name="voice_answer_no_mic_permission">Ik heb toestemming nodig voor de microfoon.</string>
     <string name="voice_mic_grant">Microfoon toestaan</string>

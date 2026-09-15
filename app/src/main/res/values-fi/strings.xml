@@ -319,6 +319,12 @@
     <string name="voice_answer_off">%1$s on pois käytöstä. Voit ottaa sen käyttöön asetuksista.</string>
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>
     <string name="voice_answer_nodata">Ei vielä %1$s.</string>
+    <string name="voice_state_on">päällä</string>
+    <string name="voice_state_off">pois</string>
+    <string name="voice_mode_lock">lukittu</string>
+    <string name="voice_mode_drive">ajo</string>
+    <string name="voice_mode_shutdown">pois</string>
+    <string name="voice_mode_idle">joutokäynti</string>
     <string name="voice_answer_setup">%1$s pitää ensin määrittää.</string>
     <string name="voice_answer_no_mic_permission">Tarvitsen luvan mikrofoniin.</string>
     <string name="voice_mic_grant">Salli mikrofoni</string>

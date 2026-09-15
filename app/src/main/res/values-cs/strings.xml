@@ -319,6 +319,12 @@
     <string name="voice_answer_off">%1$s je vypnuto. Můžeš to zapnout v nastavení.</string>
     <string name="voice_answer_unsupported">Tvoje kolo nehlásí %1$s.</string>
     <string name="voice_answer_nodata">Zatím žádné %1$s.</string>
+    <string name="voice_state_on">zapnuto</string>
+    <string name="voice_state_off">vypnuto</string>
+    <string name="voice_mode_lock">zamčeno</string>
+    <string name="voice_mode_drive">jízda</string>
+    <string name="voice_mode_shutdown">vypnuto</string>
+    <string name="voice_mode_idle">nečinné</string>
     <string name="voice_answer_setup">%1$s je potřeba nejdřív nastavit.</string>
     <string name="voice_answer_no_mic_permission">Potřebuji povolení k mikrofonu.</string>
     <string name="voice_mic_grant">Povolit mikrofon</string>

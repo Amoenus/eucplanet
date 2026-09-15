@@ -736,6 +736,19 @@ class VoiceCommandController @Inject constructor(
                 VoiceCommandSession.Reading(null, null, reportText = text)
             }
         }
+        // A state before a number. The light is on or off, not 1.0, and
+        // asking for it used to fall through the numeric extractors to "No
+        // Light yet" forever: the metric was in the vocabulary and in the
+        // "what can I say" list, so the app offered it and then never
+        // answered it.
+        STATE_READINGS[term.key]?.let { read ->
+            val said = read(data, voiceCtx)
+            return if (said == null) {
+                VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+            } else {
+                VoiceCommandSession.Reading(said, null)
+            }
+        }
         val value = EXTRACTORS[term.key]?.invoke(data)
         return when {
             value == null -> VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
@@ -1032,7 +1045,7 @@ private val UNSUPPORTED: Map<String, (com.eried.eucplanet.data.model.WheelData) 
  * and in their language, exactly as the periodic announcement says them,
  * rather than as a bare number with no unit.
  */
-private val REPORT_FOR_METRIC = mapOf(
+internal val REPORT_FOR_METRIC = mapOf(
     "SPEED" to "Speed",
     "BATTERY" to "Battery",
     "PHONE_BATTERY" to "PhoneBattery",
@@ -1045,11 +1058,64 @@ private val REPORT_FOR_METRIC = mapOf(
 )
 
 /**
+ * Readings whose value is a word.
+ *
+ * The dashboard renders these with their own branch and a bare literal, "ON"
+ * or "DRIVE", which is right for a tile and wrong for a voice: a tile is read
+ * by someone looking at it and this is read out to someone who is not, so the
+ * words are translated.
+ *
+ * Null means the wheel has not said yet, which is distinct from "off": a mode
+ * of -1 is no telemetry, and answering "ride mode, lock" to that would be
+ * inventing a state the wheel never reported.
+ */
+private val STATE_READINGS:
+    Map<String, (com.eried.eucplanet.data.model.WheelData, Context) -> String?> = mapOf(
+    "LIGHT_ON" to { d, c ->
+        c.getString(if (d.lightOn) R.string.voice_state_on else R.string.voice_state_off)
+    },
+    "PC_MODE" to { d, c ->
+        when (d.pcMode) {
+            0 -> c.getString(R.string.voice_mode_lock)
+            1 -> c.getString(R.string.voice_mode_drive)
+            2 -> c.getString(R.string.voice_mode_shutdown)
+            3 -> c.getString(R.string.voice_mode_idle)
+            else -> null
+        }
+    },
+)
+
+/**
+ * Catalog metrics the voice layer cannot read, and why.
+ *
+ * Not a wish list: every one of these needs a source this layer does not
+ * have. The trip three live in the trip recorder, the GPS pair in a location
+ * fix, and the rest are computed for the graphs rather than published on the
+ * packet. They stay in the vocabulary because a rider who asks gets "no X
+ * yet", which is true, rather than "I did not catch that", which is not.
+ *
+ * VoiceMetricCoverageTest holds this against the catalog, so a metric added
+ * tomorrow is either readable or listed here on purpose.
+ */
+internal val VOICE_CANNOT_READ = setOf(
+    // The trip recorder owns these, not the wheel packet.
+    "TRIP_TIME", "TRIP_MAX_SPEED", "AVG_TRIP_SPEED",
+    // A location fix owns these.
+    "GPS_HEADING", "GPS_ACCURACY", "LAT_LONG",
+    // Derived for the graphs, never published on WheelData.
+    "HEADROOM", "SLOPE", "ASCENT", "DESCENT", "MOTOR_RPM",
+)
+
+/** Whether a spoken question about [key] can produce a value at all. */
+internal fun voiceCanRead(key: String): Boolean =
+    key in EXTRACTORS || key in STATE_READINGS || key in REPORT_FOR_METRIC
+
+/**
  * Live values for the metrics with no spoken report of their own. Numbers
  * without units for now: the units live in the dashboard's per-key formatter,
  * and lifting them out is its own change.
  */
-private val EXTRACTORS: Map<String, (com.eried.eucplanet.data.model.WheelData) -> Float?> = mapOf(
+internal val EXTRACTORS: Map<String, (com.eried.eucplanet.data.model.WheelData) -> Float?> = mapOf(
     "VOLTAGE" to { it.voltage },
     "MOTOR_TEMP" to { it.temperatures.firstOrNull() },
     "CONTROLLER_TEMP" to { it.temperatures.getOrNull(1) },

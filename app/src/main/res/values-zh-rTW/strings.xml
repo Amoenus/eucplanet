@@ -356,6 +356,12 @@
     <string name="voice_answer_off">%1$s已關閉。可在設定中開啟。</string>
     <string name="voice_answer_unsupported">你的輪子不提供%1$s。</string>
     <string name="voice_answer_nodata">暫無%1$s。</string>
+    <string name="voice_state_on">已開啟</string>
+    <string name="voice_state_off">已關閉</string>
+    <string name="voice_mode_lock">已鎖定</string>
+    <string name="voice_mode_drive">行駛</string>
+    <string name="voice_mode_shutdown">已關閉</string>
+    <string name="voice_mode_idle">閒置</string>
     <string name="voice_answer_setup">%1$s需要先設定。</string>
     <string name="voice_answer_no_mic_permission">我需要麥克風權限。</string>
     <string name="voice_mic_grant">允許麥克風</string>

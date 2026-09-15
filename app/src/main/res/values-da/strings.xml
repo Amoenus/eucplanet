@@ -2546,4 +2546,12 @@
     <string name="tpms_state_inflating">Pumper op</string>
     <string name="alarm_metric_battery_envelope">Batteri (est)</string>
     <string name="alarm_metric_battery_envelope_long">Batterikurve (skøn uden belastning)</string>
+
+    <string name="headlight_state_off">Lys: slukket</string>
+    <string name="headlight_state_low">Lys: lavt</string>
+    <string name="headlight_state_medium">Lys: mellem</string>
+    <string name="headlight_state_high">Lys: højt</string>
+    <string name="headlight_state_unknown">Lys: ?</string>
+    <string name="adv_headlight_readback_age">Lysstatus gyldighed</string>
+    <string name="adv_headlight_readback_age_desc">Hvor længe et rapporteret lysniveau er aktuelt. For lang tid kan vise et forældet niveau.</string>
 </resources>

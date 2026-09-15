@@ -2549,4 +2549,12 @@
     <string name="tpms_state_inflating">Inflando</string>
     <string name="alarm_metric_battery_envelope">Batería (est)</string>
     <string name="alarm_metric_battery_envelope_long">Envolvente de batería (estimación sin carga)</string>
+
+    <string name="headlight_state_off">Luz: apagada</string>
+    <string name="headlight_state_low">Luz: baja</string>
+    <string name="headlight_state_medium">Luz: media</string>
+    <string name="headlight_state_high">Luz: alta</string>
+    <string name="headlight_state_unknown">Luz: ?</string>
+    <string name="adv_headlight_readback_age">Vigencia del estado de luz</string>
+    <string name="adv_headlight_readback_age_desc">Tiempo durante el cual el nivel de luz informado sigue vigente. Un tiempo excesivo puede mostrar un nivel desactualizado.</string>
 </resources>

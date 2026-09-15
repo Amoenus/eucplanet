@@ -2334,4 +2334,12 @@
     <string name="tpms_state_inflating">Täytetään</string>
     <string name="alarm_metric_battery_envelope">Akku (arvio)</string>
     <string name="alarm_metric_battery_envelope_long">Akun verhokäyrä (arvio ilman kuormaa)</string>
+
+    <string name="headlight_state_off">Valo: pois</string>
+    <string name="headlight_state_low">Valo: himmeä</string>
+    <string name="headlight_state_medium">Valo: keskitaso</string>
+    <string name="headlight_state_high">Valo: kirkas</string>
+    <string name="headlight_state_unknown">Valo: ?</string>
+    <string name="adv_headlight_readback_age">Valotiedon voimassaolo</string>
+    <string name="adv_headlight_readback_age_desc">Kuinka kauan ilmoitettu valotaso on ajantasainen. Liian pitkä aika voi näyttää vanhentuneen tason.</string>
 </resources>

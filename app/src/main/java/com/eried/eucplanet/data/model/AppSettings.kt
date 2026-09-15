@@ -1442,6 +1442,7 @@ data class AdvancedSettings(
     val tripFinalizeGraceMs: Int = 15000,
     // Speed (km/h) above which a lock command is refused, for safety.
     val lockMaxSpeedKmh: Int = 5,
+    val headlightReadbackMaxAgeMs: Int = 8000,
     val phoneGpsIntervalMs: Int = 1000,
     // Slow "keep-warm" GPS interval used when nothing needs the 1 Hz active
     // stream (idle balanced / low-power tiers). See GpsPowerPolicy.

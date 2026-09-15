@@ -945,6 +945,13 @@ class WheelRepository @Inject constructor(
                     }
                     ConnectionState.DISCONNECTED -> {
                         pollingActive = false
+                        // Do not briefly revive the previous session's level on reconnect.
+                        val previous = _wheelData.value
+                        if (previous.headlightReadback != null) {
+                            _wheelData.value = previous.copy(
+                                headlightReadback = com.eried.eucplanet.data.model.HeadlightReadback(),
+                            )
+                        }
                         // Cut any constant alarm tone immediately (telemetry stops now,
                         // so the engine won't get another tick to clear it itself).
                         alarmEngine.stopConstantTone()
@@ -1580,7 +1587,10 @@ class WheelRepository @Inject constructor(
         // frame; queued as a second write so it lands in order. Null for the
         // ASCII low beam and every other family (single-frame headlight).
         wheelAdapter.setLightFollowup(next)?.let { bleManager.writeCommand(it) }
-        _wheelData.value = _wheelData.value.copy(lightOn = next)
+        // A level-reporting wheel confirms its own state; command intent is not a measurement.
+        if (_wheelData.value.headlightReadback == null) {
+            _wheelData.value = _wheelData.value.copy(lightOn = next)
+        }
         startCooldown(_lightBusy, LIGHT_COOLDOWN_MS) { lightCooldownUntilMs = it }
     }
 
@@ -2026,11 +2036,15 @@ class WheelRepository @Inject constructor(
                 // value triggers a stray TTS "lights on/off" transition in
                 // WheelService.checkLightTransition (race seen ~3-4 times
                 // per 20 taps in tester reports). Preserve the optimistic
-                // value during the cooldown for every family, same defensive
+                // value during the cooldown for command-tracked families, the same defensive
                 // pattern P6 already uses unconditionally because its parser
                 // can't recover lightOn from telemetry at all.
-                val lightOn = if (realtimeLacksLight || _lightBusy.value) previous.lightOn
-                              else result.data.lightOn
+                // Level-reporting wheels use measurements even during the command cooldown.
+                val lightOn = when {
+                    result.data.headlightReadback != null -> result.data.lightOn
+                    realtimeLacksLight || _lightBusy.value -> previous.lightOn
+                    else -> result.data.lightOn
+                }
                 // Motor temperature never legitimately drops to 0 mid-ride, but
                 // the P6 emits the odd frame whose temp byte reads
                 // "uninitialized" (parsed as 0), which would blank the dashboard

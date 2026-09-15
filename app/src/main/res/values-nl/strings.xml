@@ -2533,4 +2533,12 @@
     <string name="tpms_state_inflating">Oppompen</string>
     <string name="alarm_metric_battery_envelope">Accu (schat)</string>
     <string name="alarm_metric_battery_envelope_long">Accu-omhullende (schatting zonder belasting)</string>
+
+    <string name="headlight_state_off">Licht: uit</string>
+    <string name="headlight_state_low">Licht: laag</string>
+    <string name="headlight_state_medium">Licht: midden</string>
+    <string name="headlight_state_high">Licht: hoog</string>
+    <string name="headlight_state_unknown">Licht: ?</string>
+    <string name="adv_headlight_readback_age">Geldigheid lichtstatus</string>
+    <string name="adv_headlight_readback_age_desc">Hoelang een gemelde lichtstand actueel blijft. Een te lange tijd kan een verouderde stand tonen.</string>
 </resources>

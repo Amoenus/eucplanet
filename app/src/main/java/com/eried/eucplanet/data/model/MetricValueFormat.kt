@@ -58,6 +58,13 @@ object MetricValueFormat {
     else
         "%.0fm".format(raw)
     "BT_RSSI" -> "%.0f dBm".format(raw)
+    // Distances stored raw in km. Without this they fell to the bare "%.1f"
+    // below: a spoken odometer was a naked number, and an imperial rider was
+    // read kilometres with nothing to say so.
+    "ODOMETER", "TRIP", "TRIP_METER" -> "%.1f %s".format(
+        com.eried.eucplanet.util.Units.distance(raw, distanceUnit),
+        com.eried.eucplanet.util.Units.distanceUnit(distanceUnit),
+    )
     "WH_PER_KM" -> formatWhPerDistance(raw, distanceUnit) ?: "-"
     "RANGE_ESTIMATE" -> "%.0f %s".format(
         com.eried.eucplanet.util.Units.distance(raw, distanceUnit),

@@ -608,6 +608,42 @@ class VoiceService @Inject constructor(
         return true
     }
 
+    /**
+     * "Estimated battery, 43%" for a report the metric catalog already knows.
+     *
+     * Name, value and units all come from the catalog, so the sentence needs
+     * no format string of its own in twenty-three languages and cannot drift
+     * from the tile. Null when the wheel has sent nothing usable: a row is
+     * skipped rather than announcing a confident zero, the same rule the
+     * hand-written load reports follow.
+     */
+    private fun metricSentence(
+        report: VoiceReportPlan.MetricReport,
+        data: WheelData,
+        settings: AppSettings,
+    ): String? {
+        val raw = report.read(data)
+        if (raw.isNaN() || raw == 0f) return null
+        val spec = com.eried.eucplanet.data.model.MetricCatalog.all
+            .firstOrNull { it.key == report.metricKey } ?: return null
+        val name = context.getString(spec.spokenLabelRes ?: spec.labelRes)
+        val value = com.eried.eucplanet.data.model.MetricValueFormat.format(
+            key = report.metricKey,
+            raw = raw,
+            speedUnit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings),
+            speedUnitLabel = com.eried.eucplanet.util.Units.speedUnit(
+                context, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
+            ),
+            tempUnit = com.eried.eucplanet.util.Units.effectiveTempUnit(settings),
+            tempUnitLabel = com.eried.eucplanet.util.Units.tempUnit(
+                com.eried.eucplanet.util.Units.effectiveTempUnit(settings)
+            ),
+            distanceUnit = com.eried.eucplanet.util.Units.effectiveDistanceUnit(settings),
+            pressureUnit = com.eried.eucplanet.util.Units.effectivePressureUnit(settings),
+        )
+        return "$name, $value"
+    }
+
     private fun buildReportParts(
         data: WheelData, settings: AppSettings, isRecording: Boolean, periodic: Boolean,
         /** One report only, for a spoken question. Null keeps the planned set. */
@@ -634,6 +670,16 @@ class VoiceService @Inject constructor(
                 val displaySpeed = com.eried.eucplanet.util.Units.speed(data.speed, speedUnit)
                 val displayTemp = com.eried.eucplanet.util.Units.temperature(data.maxTemperature, tempUnit)
                 val displayTrip = com.eried.eucplanet.util.Units.distance(data.tripDistance, distanceUnit)
+                // The catalog-backed reports: name and value both come from
+                // the same place the tile reads, so a spoken odometer cannot
+                // disagree with the one on screen. Said as "name, value"
+                // because that is how a spoken question is already answered,
+                // and a rider hearing both should hear one voice.
+                val extra = com.eried.eucplanet.service.VoiceReportPlan.extra(item)
+                if (extra != null) {
+                    metricSentence(extra, data, settings)?.let { parts.add(it) }
+                    return@run
+                }
                 when (item) {
                     "Speed" -> parts.add(context.getString(R.string.voice_speed_fmt, "%.0f".format(displaySpeed)))
                     "Battery" -> parts.add(context.getString(R.string.voice_battery_fmt, data.batteryPercent))

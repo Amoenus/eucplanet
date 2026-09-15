@@ -700,6 +700,14 @@ fun SettingsScreen(
         stringResource(R.string.announce_welcome),
         stringResource(R.string.voice_commands_title),
         stringResource(R.string.voice_command_vocabulary),
+        stringResource(R.string.voice_prompt_cue),
+        stringResource(R.string.voice_prompt_cue_desc),
+        stringResource(R.string.voice_unknown_cue),
+        stringResource(R.string.voice_unknown_cue_desc),
+        stringResource(R.string.voice_recognition_language),
+        stringResource(R.string.voice_recognition_desc),
+        stringResource(R.string.voice_headset_button),
+        stringResource(R.string.voice_headset_button_desc),
         stringResource(R.string.section_report_status),
         stringResource(R.string.report_speed),
         stringResource(R.string.report_battery),
@@ -7253,6 +7261,14 @@ private fun VoiceTab(
         // was a paragraph earning nothing.
         val linkColor = MaterialTheme.appColors.primary
         val vocabularyLabel = stringResource(R.string.voice_command_vocabulary)
+        // Resolved here rather than inside the preview lambdas: a lambda that
+        // runs on a click is not a composition, so stringResource cannot be
+        // called from one.
+        val listeningWord = stringResource(R.string.voice_cue_listening)
+        val unknownSample = stringResource(
+            R.string.voice_answer_unknown,
+            stringResource(R.string.voice_command_vocabulary),
+        )
         val introText = stringResource(R.string.voice_commands_enable_desc)
         Text(
             buildAnnotatedString {
@@ -7314,8 +7330,63 @@ private fun VoiceTab(
                 onClick = { micLauncher.launch(android.Manifest.permission.RECORD_AUDIO) },
             )
         }
+        // The cue, and the way out of it. A rider on a headset that plays its
+        // own tone when it opens the microphone has been hearing two of them,
+        // and the only way to stop ours was to stop using the feature.
+        SegmentedChoice(
+            label = stringResource(R.string.voice_prompt_cue),
+            options = listOf(
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_BEEP to stringResource(R.string.voice_cue_beep),
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_VOICE to stringResource(R.string.voice_cue_spoken),
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_NONE to stringResource(R.string.voice_cue_off),
+            ),
+            current = settings.voiceCommands.promptCue,
+            onChange = { viewModel.updateVoicePromptCue(it) },
+            // Rule 10: the button plays what the rider actually chose, which
+            // is why it is switched off rather than made to demonstrate a
+            // sound they asked not to hear.
+            onPreview = { viewModel.previewPromptCue(listeningWord) },
+            previewEnabled = settings.voiceCommands.promptCue != com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_NONE,
+        )
+        HintText(stringResource(R.string.voice_prompt_cue_desc))
+
+        SegmentedChoice(
+            label = stringResource(R.string.voice_unknown_cue),
+            options = listOf(
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_MESSAGE to stringResource(R.string.voice_unknown_message),
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_BEEP to stringResource(R.string.voice_cue_beep),
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_NONE to stringResource(R.string.voice_cue_off),
+            ),
+            current = settings.voiceCommands.unknownCue,
+            onChange = { viewModel.updateVoiceUnknownCue(it) },
+            onPreview = { viewModel.previewUnknownCue(unknownSample) },
+            previewEnabled = settings.voiceCommands.unknownCue != com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_NONE,
+        )
+        HintText(stringResource(R.string.voice_unknown_cue_desc))
+
+        // The language the rider speaks, which is not always the language the
+        // app is in and not always the one it answers in. Blank follows the
+        // speaking voice, which is what almost everyone wants and what the
+        // feature used to assume without saying so.
+        VoiceCommandLanguagePicker(
+            current = settings.voiceCommands.recognitionLocale,
+            onSelected = { viewModel.updateVoiceRecognitionLocale(it) },
+        )
+        HintText(stringResource(R.string.voice_recognition_desc))
+
+        SwitchSettingWithDesc(
+            label = stringResource(R.string.voice_headset_button),
+            description = stringResource(R.string.voice_headset_button_desc),
+            checked = settings.voiceCommands.headsetButton,
+            onCheckedChange = { viewModel.updateVoiceHeadsetButton(it) },
+        )
+
         if (vocabularyOpen) {
-            VoiceVocabularyDialog(onDismiss = { vocabularyOpen = false })
+            VoiceVocabularyDialog(
+                onDismiss = { vocabularyOpen = false },
+                languageTag = settings.voiceCommands.recognitionLocale
+                    .ifBlank { settings.voiceLocale },
+            )
         }
         run {
             // No spacer: SegmentedChoice already pads itself top and bottom,
@@ -7352,11 +7423,34 @@ private fun VoiceTab(
             android.text.format.DateFormat.getTimeFormat(ctx).format(java.util.Date())
         )
 
-        val reportKeys = listOf("Speed", "Battery", "PhoneBattery", "Temp", "PWM", "Distance", "Recording", "Time", "Navigation")
+        // The plan's own list, so a report added to the registry appears here
+        // without a second list to remember. It used to be written out again
+        // by hand and was already two items short of the truth.
+        val reportKeys = com.eried.eucplanet.service.VoiceReportPlan.KNOWN
         val savedReportOrder = settings.voiceReportOrder.split(",").map { it.trim() }
         // Append known items missing from the saved order (e.g. PhoneBattery) so they
         // show in the list and preview even before the rider reorders.
         val reportOrder = savedReportOrder + reportKeys.filter { it !in savedReportOrder }
+
+        val liveData by viewModel.wheelData.collectAsState()
+        val metricCtx = androidx.compose.ui.platform.LocalContext.current
+        fun extraSample(spec: com.eried.eucplanet.service.VoiceReportPlan.MetricReport): String? {
+            val raw = spec.read(liveData)
+            if (raw.isNaN() || raw == 0f) return null
+            val metric = com.eried.eucplanet.data.model.MetricCatalog.all
+                .first { it.key == spec.metricKey }
+            val value = com.eried.eucplanet.data.model.MetricValueFormat.format(
+                key = spec.metricKey,
+                raw = raw,
+                speedUnit = Units.effectiveSpeedUnit(settings),
+                speedUnitLabel = Units.speedUnit(metricCtx, Units.effectiveSpeedUnit(settings)),
+                tempUnit = Units.effectiveTempUnit(settings),
+                tempUnitLabel = Units.tempUnit(Units.effectiveTempUnit(settings)),
+                distanceUnit = Units.effectiveDistanceUnit(settings),
+                pressureUnit = Units.effectivePressureUnit(settings),
+            )
+            return metricCtx.getString(metric.spokenLabelRes ?: metric.labelRes) + ", " + value
+        }
 
         fun exampleFor(key: String): String? = when (key) {
             "Speed" -> sSpeedEx
@@ -7375,6 +7469,11 @@ private fun VoiceTab(
 
         fun buildPreview(periodic: Boolean): String {
             val parts = reportOrder.mapNotNull { key ->
+                com.eried.eucplanet.service.VoiceReportPlan.extra(key)?.let { spec ->
+                    return@mapNotNull if (spec.get(settings.voiceReports, periodic)) {
+                        extraSample(spec)
+                    } else null
+                }
                 val enabled = if (periodic) when (key) {
                     "Speed" -> settings.voiceReportSpeed
                     "Battery" -> settings.voiceReportBattery
@@ -7539,10 +7638,36 @@ private fun VoiceTab(
                 navSample)
         )
 
+        // The catalog-backed reports, built rather than written out: name from
+        // the metric catalog (already translated), value through the same
+        // formatter the tile uses, both toggles through one view-model method.
+        val extraItems = com.eried.eucplanet.service.VoiceReportPlan.EXTRA.associate { spec ->
+            val metric = com.eried.eucplanet.data.model.MetricCatalog.all
+                .first { it.key == spec.metricKey }
+            spec.key to ReportItemConfig(
+                key = spec.key,
+                label = stringResource(metric.spokenLabelRes ?: metric.labelRes),
+                periodicChecked = spec.get(settings.voiceReports, true),
+                onPeriodicChange = { viewModel.updateVoiceReportExtra(spec.key, true, it) },
+                triggerChecked = spec.get(settings.voiceReports, false),
+                onTriggerChange = { viewModel.updateVoiceReportExtra(spec.key, false, it) },
+                // Rule 10: the preview speaks the rider's own wheel, and says
+                // so honestly when it has nothing to read yet.
+                // Nothing from the wheel yet is itself the honest preview:
+                // "No estimated battery yet" is what a rider asking right now
+                // would actually hear.
+                testText = extraSample(spec) ?: metricCtx.getString(
+                    R.string.voice_answer_nodata,
+                    stringResource(metric.spokenLabelRes ?: metric.labelRes),
+                ),
+            )
+        }
+        val everyItem = allItems + extraItems
+
         // Existing users may have a saved order that predates new report items (e.g. "Time").
         // Append any known items missing from the saved order so they still appear.
-        val orderedItems = (reportOrder.mapNotNull { allItems[it] } +
-            allItems.filterKeys { it !in reportOrder }.values).toList()
+        val orderedItems = (reportOrder.mapNotNull { everyItem[it] } +
+            everyItem.filterKeys { it !in reportOrder }.values).toList()
 
         val haptic = LocalHapticFeedback.current
         ReorderableColumn(
@@ -10223,6 +10348,65 @@ private fun EngineTypePicker(
                         }
                     )
                 }
+            }
+        }
+    }
+}
+
+/**
+ * The language a rider speaks commands in.
+ *
+ * Only the shipped languages, not everything the recogniser can transcribe.
+ * The command words are themselves translated strings, so offering a language
+ * with no translation would leave the recogniser listening in Greek for words
+ * that only exist in English: the same mismatch this setting exists to end,
+ * moved somewhere new rather than fixed.
+ *
+ * Blank is the first entry and the default: follow the speaking voice, so a
+ * rider who never opens this is understood and answered in one language.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun VoiceCommandLanguagePicker(
+    current: String,
+    onSelected: (String) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val followLabel = stringResource(R.string.voice_recognition_follow)
+    val normalized = current.replace('-', '_')
+    val displayText = com.eried.eucplanet.util.LocaleHelper.SUPPORTED
+        .firstOrNull { it.tag.replace('-', '_') == normalized }?.nativeName ?: followLabel
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = displayText,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.voice_recognition_language)) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+            colors = themedFieldColors(),
+            shape = RoundedCornerShape(12.dp),
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = MaterialTheme.appColors.menuBackground
+        ) {
+            DropdownMenuItem(
+                text = { Text(followLabel) },
+                onClick = { onSelected(""); expanded = false }
+            )
+            com.eried.eucplanet.util.LocaleHelper.SUPPORTED.forEach { lang ->
+                DropdownMenuItem(
+                    text = { Text(lang.nativeName) },
+                    onClick = { onSelected(lang.tag); expanded = false }
+                )
             }
         }
     }

@@ -2346,8 +2346,10 @@ fun DashboardScreen(
                 viewModel.showVocabulary.collect { vocabularyOpen = true }
             }
             if (vocabularyOpen) {
+                val commandLanguage by viewModel.voiceCommandLanguage.collectAsState()
                 com.eried.eucplanet.ui.settings.VoiceVocabularyDialog(
                     onDismiss = { vocabularyOpen = false },
+                    languageTag = commandLanguage,
                 )
             }
             val lockAtAnySpeed by viewModel.cheatState.lockAtAnySpeed.collectAsState()

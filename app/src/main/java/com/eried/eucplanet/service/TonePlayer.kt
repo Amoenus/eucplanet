@@ -242,6 +242,19 @@ class TonePlayer @Inject constructor() {
         playNotes(listOf(1040 to 70, 780 to 80), gapMs = 45, leadPadMs = 20, volumePct = 75)
     }
 
+    /**
+     * The cue that nothing matched: two low notes, the second lower still.
+     *
+     * Deliberately below both the opening and closing chirps and slower than
+     * either. A rider learns three sounds here at most, so they have to be
+     * told apart at speed with wind noise over them, and pitch carries
+     * further than rhythm. Down-and-down reads as a refusal in a way that a
+     * single flat note does not.
+     */
+    suspend fun playErrorPrompt() {
+        playNotes(listOf(420 to 110, 310 to 150), gapMs = 30, leadPadMs = 30, volumePct = 85)
+    }
+
     suspend fun playBeep(
         frequencyHz: Int,
         durationMs: Int,

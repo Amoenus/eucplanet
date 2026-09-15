@@ -531,6 +531,22 @@ class DashboardViewModel @Inject constructor(
         .map { it.voiceEnabled }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialSettings.voiceEnabled)
 
+    /**
+     * The language the spoken-command list should be written in.
+     *
+     * The rider's own choice, or the speaking voice when they have not made
+     * one. Needed here because "what can I say" opens the same list from the
+     * dashboard as the settings screen does, and a list of words in the wrong
+     * language is a list of words that will not work.
+     */
+    val voiceCommandLanguage: StateFlow<String> = settingsRepository.settings
+        .map { it.voiceCommands.recognitionLocale.ifBlank { it.voiceLocale } }
+        .stateIn(
+            viewModelScope, SharingStarted.Eagerly,
+            initialSettings.voiceCommands.recognitionLocale
+                .ifBlank { initialSettings.voiceLocale },
+        )
+
     /** Whether the dashboard top-bar Battery-monitor (spark) icon renders at all. */
     val chargingDashboardIcon: StateFlow<Boolean> = settingsRepository.settings
         .map { it.chargingDashboardIcon }

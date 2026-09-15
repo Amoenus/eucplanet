@@ -34,25 +34,41 @@ import com.eried.eucplanet.voice.VoiceVocabulary
  * The names are the catalog's own localised labels, which is also what a rider
  * reads on a tile, so the list doubles as the answer to "what do I call this".
  */
+/**
+ * @param languageTag the language the rider speaks commands in. Blank keeps
+ *   the interface language, which is right only while the two agree. A list
+ *   of English words shown to a rider whose commands are matched in Russian
+ *   is worse than no list: every phrase on it is one the app will not answer
+ *   to.
+ */
 @Composable
-fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
+fun VoiceVocabularyDialog(onDismiss: () -> Unit, languageTag: String = "") {
+    val base = androidx.compose.ui.platform.LocalContext.current
+    val localized = androidx.compose.runtime.remember(languageTag, base) {
+        if (languageTag.isBlank()) {
+            base
+        } else {
+            val locale = java.util.Locale.forLanguageTag(languageTag.replace('_', '-'))
+            val cfg = android.content.res.Configuration(base.resources.configuration)
+                .apply { setLocale(locale) }
+            base.createConfigurationContext(cfg)
+        }
+    }
+    // Every stringResource below reads through LocalContext, so swapping it
+    // here translates the whole page at once rather than at fifty call sites.
+    androidx.compose.runtime.CompositionLocalProvider(
+        androidx.compose.ui.platform.LocalContext provides localized
+    ) {
+        VoiceVocabularyDialogContent(onDismiss)
+    }
+}
+
+@Composable
+private fun VoiceVocabularyDialogContent(onDismiss: () -> Unit) {
     val metricNames = MetricCatalog.all.associate { it.key to stringResource(it.spokenLabelRes ?: it.labelRes) }
-    // The report keys are English identifiers; their names have been
-    // translated all along under report_*. Using the keys put "Battery" and
-    // "Distance" into a German rider's list beside Akku and Energie.
-    val reportNames = mapOf(
-        "Speed" to stringResource(R.string.report_speed),
-        "Battery" to stringResource(R.string.report_battery),
-        "PhoneBattery" to stringResource(R.string.report_phone_battery),
-        "Temp" to stringResource(R.string.report_temp),
-        "PWM" to stringResource(R.string.report_pwm),
-        "Current" to stringResource(R.string.report_current),
-        "Power" to stringResource(R.string.report_power),
-        "Distance" to stringResource(R.string.report_distance),
-        "Recording" to stringResource(R.string.report_recording),
-        "Time" to stringResource(R.string.report_time),
-        "Navigation" to stringResource(R.string.report_navigation),
-    )
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val reportNames = com.eried.eucplanet.voice.VoicePhrases
+        .resolve(com.eried.eucplanet.voice.VoicePhrases.REPORTS) { ctx.getString(it) }
     // The same phrase lists the matcher listens against, so the list cannot
     // promise something that will not work or omit something that will. It
     // used to build only metrics, reports and the split, which left every
@@ -62,25 +78,10 @@ fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
         reportNames = reportNames,
         splitName = stringResource(R.string.voice_split_term),
         helpPhrases = stringResource(R.string.voice_help_terms),
-        specialPhrases = mapOf(
-            VoiceVocabulary.Special.WEATHER to stringResource(R.string.voice_sp_weather_terms),
-            VoiceVocabulary.Special.DAYLIGHT to stringResource(R.string.voice_sp_daylight_terms),
-            VoiceVocabulary.Special.CONNECTED to stringResource(R.string.voice_sp_connected_terms),
-            VoiceVocabulary.Special.UPTIME to stringResource(R.string.voice_sp_uptime_terms),
-            VoiceVocabulary.Special.NAV_NEXT to stringResource(R.string.voice_sp_nav_terms),
-            VoiceVocabulary.Special.LAST_TRIP to stringResource(R.string.voice_sp_last_trip_terms),
-            VoiceVocabulary.Special.REPORT to stringResource(R.string.voice_sp_report_terms),
-        ),
-        actionPhrases = mapOf(
-            "V_LIGHT_ON" to stringResource(R.string.voice_act_light_on_terms),
-            "V_LIGHT_OFF" to stringResource(R.string.voice_act_light_off_terms),
-            "V_LOCK" to stringResource(R.string.voice_act_lock_terms),
-            "V_UNLOCK" to stringResource(R.string.voice_act_unlock_terms),
-            "HORN" to stringResource(R.string.voice_act_horn_terms),
-            "RECORD_START" to stringResource(R.string.voice_act_record_start_terms),
-            "RECORD_STOP" to stringResource(R.string.voice_act_record_stop_terms),
-            "RESET_TRIP" to stringResource(R.string.voice_act_reset_trip_terms),
-        ),
+        specialPhrases = com.eried.eucplanet.voice.VoicePhrases
+            .resolve(com.eried.eucplanet.voice.VoicePhrases.SPECIALS) { ctx.getString(it) },
+        actionPhrases = com.eried.eucplanet.voice.VoicePhrases
+            .resolve(com.eried.eucplanet.voice.VoicePhrases.ACTIONS) { ctx.getString(it) },
     )
     // Metric and report names overlap by design (Speed is both), so the list a
     // rider reads is the set of distinct things they can say. Specials and

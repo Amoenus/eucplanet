@@ -249,6 +249,17 @@ class SettingsViewModel @Inject constructor(
     val wheelHasLock: StateFlow<Boolean> = wheelRepository.wheelHasLock
 
     /**
+     * The live packet, for the report previews.
+     *
+     * Rule 10: the play button beside a report row speaks the rider's own
+     * wheel, not an invented number. The catalog-backed reports have no
+     * hand-written example sentence to fall back on, so they read the same
+     * values the tiles do.
+     */
+    val wheelData: StateFlow<com.eried.eucplanet.data.model.WheelData> =
+        wheelRepository.wheelData
+
+    /**
      * Unified view of every paired companion device — Wear OS + Garmin —
      * for the Settings "Device" region. Bridges expose raw name lists and
      * delivery-rate flows; we combine, tag with [PairedSurface.Kind], and
@@ -790,6 +801,67 @@ class SettingsViewModel @Inject constructor(
     fun updateAnnounceGps(v: Boolean) = update { copy(announceGps = v) }
     fun updateAnnounceSafetyMode(v: Boolean) = update { copy(announceSafetyMode = v) }
     fun updateAnnounceWelcome(v: Boolean) = update { copy(announceWelcome = v) }
+
+    fun updateVoicePromptCue(v: String) =
+        update { copy(voiceCommands = voiceCommands.copy(promptCue = v)) }
+
+    fun updateVoiceUnknownCue(v: String) =
+        update { copy(voiceCommands = voiceCommands.copy(unknownCue = v)) }
+
+    fun updateVoiceRecognitionLocale(v: String) =
+        update { copy(voiceCommands = voiceCommands.copy(recognitionLocale = v)) }
+
+    fun updateVoiceHeadsetButton(v: Boolean) =
+        update { copy(voiceCommands = voiceCommands.copy(headsetButton = v)) }
+
+    /**
+     * Play the opening cue exactly as the rider has it set.
+     *
+     * Rule 10: the preview is the real thing, including when the real thing
+     * is the spoken word rather than the chirp. It plays the closing note
+     * after the opening one because they are heard as a pair and a rider
+     * choosing between them is choosing the pair.
+     */
+    fun previewPromptCue(spokenWord: String) {
+        viewModelScope.launch {
+            val s = settingsRepository.get()
+            when (s.voiceCommands.promptCue) {
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_BEEP -> {
+                    tonePlayer.playPrompt()
+                    tonePlayer.playEndPrompt()
+                }
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_VOICE ->
+                    voiceService.testSpeak(spokenWord, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
+                else -> {}
+            }
+        }
+    }
+
+    /** The same, for what a rider hears when nothing matched. */
+    fun previewUnknownCue(sentence: String) {
+        viewModelScope.launch {
+            val s = settingsRepository.get()
+            when (s.voiceCommands.unknownCue) {
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_MESSAGE ->
+                    voiceService.testSpeak(sentence, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_BEEP ->
+                    tonePlayer.playErrorPrompt()
+                else -> {}
+            }
+        }
+    }
+
+    /**
+     * Switch one catalog-backed report on or off.
+     *
+     * One method for all of them, rather than the two-per-report pattern the
+     * hand-written eleven use. Twenty-two more named methods to add five
+     * reports is the boilerplate the registry exists to stop.
+     */
+    fun updateVoiceReportExtra(key: String, periodic: Boolean, on: Boolean) {
+        val spec = com.eried.eucplanet.service.VoiceReportPlan.extra(key) ?: return
+        update { copy(voiceReports = spec.set(voiceReports, periodic, on)) }
+    }
 
     fun updateVoiceReportOrder(order: String) = update { copy(voiceReportOrder = order) }
 

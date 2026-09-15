@@ -105,7 +105,14 @@ class AppSettingsArgLimitTest {
         // window moved to Advanced where rule 1 says a global tunable lives.
         // The whole nested class went with them. A feature that grew for a
         // day and cost a net zero slots.
-        val expectedSlots = 252
+        // 253: and the class came back, for four fields this time. Riders on a
+        // headset that plays its own tone needed a way to silence ours, a
+        // tester needed the unrecognised-phrase sentence to stop scolding him,
+        // the spoken language had to come apart from the interface language,
+        // and the headset button needed a switch because claiming a
+        // device-wide gesture is not something to ship switched on. Nested
+        // from the start this time, so four fields cost one slot.
+        val expectedSlots = 253
         assertEquals(
             "AppSettings slot usage changed. Prefer nesting a group of fields over " +
                 "spending headroom, and update this number deliberately.",

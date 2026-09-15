@@ -36,7 +36,7 @@ import com.eried.eucplanet.voice.VoiceVocabulary
  */
 @Composable
 fun VoiceVocabularyDialog(onDismiss: () -> Unit) {
-    val metricNames = MetricCatalog.all.associate { it.key to stringResource(it.labelRes) }
+    val metricNames = MetricCatalog.all.associate { it.key to stringResource(it.spokenLabelRes ?: it.labelRes) }
     // The report keys are English identifiers; their names have been
     // translated all along under report_*. Using the keys put "Battery" and
     // "Distance" into a German rider's list beside Akku and Energie.

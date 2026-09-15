@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">前方向 G</string>
     <string name="metric_chip_torque">トルク</string>
     <string name="metric_chip_phase_current">相電流</string>
+    <string name="metric_spoken_phase_current">相電流</string>
+    <string name="metric_spoken_battery_envelope">推定バッテリー</string>
+    <string name="metric_spoken_bt_rssi">ブルートゥース信号</string>
+    <string name="metric_spoken_avg_trip_speed">平均速度</string>
+    <string name="metric_spoken_lat_long">位置</string>
     <string name="metric_chip_dyn_speed_limit">動的速度制限</string>
     <string name="metric_chip_dyn_current_limit">動的電流制限</string>
     <string name="metric_chip_motor_temp">モーター温度</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">アプリがマイクを使えるようになるまで、音声コマンドは待ち受けできません。</string>
     <string name="voice_answer_unknown">聞き取れませんでした。%1$s と言ってください。</string>
     <string name="voice_help_terms">何と言えばいい,ヘルプ,何を聞ける</string>
+    <string name="voice_stat_max_terms">最大,マックス</string>
+    <string name="voice_stat_min_terms">最小,ミニマム</string>
+    <string name="voice_stat_avg_terms">平均,アベレージ</string>
+    <string name="voice_stat_peak_terms">ピーク,持続</string>
+    <string name="voice_stat_answer">%2$s の%1$s、%3$s</string>
     <string name="voice_answer_examples">言えることの一覧です。</string>
     <string name="voice_special_connected">%1$s に接続中。</string>
     <string name="voice_special_not_connected">ホイール未接続。</string>

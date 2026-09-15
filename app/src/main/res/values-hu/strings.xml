@@ -212,6 +212,11 @@
     <string name="metric_chip_forward_g">Hosszirányú g</string>
     <string name="metric_chip_torque">Nyomaték</string>
     <string name="metric_chip_phase_current">A fázis</string>
+    <string name="metric_spoken_phase_current">Fázisáram</string>
+    <string name="metric_spoken_battery_envelope">Becsült akkumulátor</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth jel</string>
+    <string name="metric_spoken_avg_trip_speed">Átlagsebesség</string>
+    <string name="metric_spoken_lat_long">Pozíció</string>
     <string name="metric_chip_dyn_speed_limit">Dinamikus sebességkorlát</string>
     <string name="metric_chip_dyn_current_limit">Dinamikus áramkorlát</string>
     <string name="metric_chip_motor_temp">Motor hőmérséklete</string>
@@ -306,6 +311,11 @@
     <string name="warnings_perm_mic_body">A hangparancsok nem tudnak figyelni, amíg az alkalmazás nem használhatja a mikrofont.</string>
     <string name="voice_answer_unknown">Nem értettem. Mondd: %1$s segítségért.</string>
     <string name="voice_help_terms">mit mondhatok,segítség,mit kérdezhetek</string>
+    <string name="voice_stat_max_terms">maximum,max,legmagasabb</string>
+    <string name="voice_stat_min_terms">minimum,min,legalacsonyabb</string>
+    <string name="voice_stat_avg_terms">átlag,átlagos</string>
+    <string name="voice_stat_peak_terms">csúcs,tartós</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Itt a lista arról, mit mondhatsz.</string>
     <string name="voice_special_connected">Csatlakoztatva: %1$s.</string>
     <string name="voice_special_not_connected">Nincs csatlakoztatott kerék.</string>

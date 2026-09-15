@@ -212,6 +212,11 @@
     <string name="metric_chip_forward_g">G longitudinal</string>
     <string name="metric_chip_torque">Cuplu</string>
     <string name="metric_chip_phase_current">Faza A</string>
+    <string name="metric_spoken_phase_current">Curent de fază</string>
+    <string name="metric_spoken_battery_envelope">Baterie estimată</string>
+    <string name="metric_spoken_bt_rssi">Semnal Bluetooth</string>
+    <string name="metric_spoken_avg_trip_speed">Viteză medie</string>
+    <string name="metric_spoken_lat_long">Poziție</string>
     <string name="metric_chip_dyn_speed_limit">Limită dinamică de viteză</string>
     <string name="metric_chip_dyn_current_limit">Limită dinamică de curent</string>
     <string name="metric_chip_motor_temp">Temperatura motorului</string>
@@ -306,6 +311,11 @@
     <string name="warnings_perm_mic_body">Comenzile vocale nu pot asculta până când aplicația nu are acces la microfon.</string>
     <string name="voice_answer_unknown">Nu am înțeles. Spune %1$s pentru ajutor.</string>
     <string name="voice_help_terms">ce pot spune,ajutor,ce pot cere</string>
+    <string name="voice_stat_max_terms">maxim,max,cel mai mare</string>
+    <string name="voice_stat_min_terms">minim,min,cel mai mic</string>
+    <string name="voice_stat_avg_terms">medie,mediu</string>
+    <string name="voice_stat_peak_terms">vârf,susținut</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Aceasta este lista cu ce poți spune.</string>
     <string name="voice_special_connected">Conectat la %1$s.</string>
     <string name="voice_special_not_connected">Nicio roată conectată.</string>

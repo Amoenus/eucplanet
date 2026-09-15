@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">g вперёд</string>
     <string name="metric_chip_torque">Крутящий мом.</string>
     <string name="metric_chip_phase_current">Фаза A</string>
+    <string name="metric_spoken_phase_current">Фазный ток</string>
+    <string name="metric_spoken_battery_envelope">Расчётный заряд</string>
+    <string name="metric_spoken_bt_rssi">Сигнал Bluetooth</string>
+    <string name="metric_spoken_avg_trip_speed">Средняя скорость</string>
+    <string name="metric_spoken_lat_long">Положение</string>
     <string name="metric_chip_dyn_speed_limit">Динамический лимит скорости</string>
     <string name="metric_chip_dyn_current_limit">Динамический лимит тока</string>
     <string name="metric_chip_motor_temp">Температура мотора</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">Голосовые команды не могут слушать, пока приложению не разрешён микрофон.</string>
     <string name="voice_answer_unknown">Не расслышал. Скажите %1$s для подсказки.</string>
     <string name="voice_help_terms">что можно сказать,помощь,что можно спросить</string>
+    <string name="voice_stat_max_terms">максимум,макс,наибольший</string>
+    <string name="voice_stat_min_terms">минимум,мин,наименьший</string>
+    <string name="voice_stat_avg_terms">среднее,средний</string>
+    <string name="voice_stat_peak_terms">пик,устойчивый</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Вот список того, что можно сказать.</string>
     <string name="voice_special_connected">Подключено к %1$s.</string>
     <string name="voice_special_not_connected">Колесо не подключено.</string>

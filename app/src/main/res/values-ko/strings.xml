@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">전방 G</string>
     <string name="metric_chip_torque">토크</string>
     <string name="metric_chip_phase_current">상전류</string>
+    <string name="metric_spoken_phase_current">상 전류</string>
+    <string name="metric_spoken_battery_envelope">예상 배터리</string>
+    <string name="metric_spoken_bt_rssi">블루투스 신호</string>
+    <string name="metric_spoken_avg_trip_speed">평균 속도</string>
+    <string name="metric_spoken_lat_long">위치</string>
     <string name="metric_chip_dyn_speed_limit">동적 속도 제한</string>
     <string name="metric_chip_dyn_current_limit">동적 전류 제한</string>
     <string name="metric_chip_motor_temp">모터 온도</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">앱이 마이크를 사용할 수 있게 될 때까지 음성 명령은 들을 수 없습니다.</string>
     <string name="voice_answer_unknown">잘 못 들었습니다. %1$s 라고 말해 보세요.</string>
     <string name="voice_help_terms">뭐라고 말하면 돼,도움말,뭘 물어볼 수 있어</string>
+    <string name="voice_stat_max_terms">최대,맥스</string>
+    <string name="voice_stat_min_terms">최소,미니멈</string>
+    <string name="voice_stat_avg_terms">평균,애버리지</string>
+    <string name="voice_stat_peak_terms">피크,지속</string>
+    <string name="voice_stat_answer">%2$s %1$s, %3$s</string>
     <string name="voice_answer_examples">말할 수 있는 항목 목록입니다.</string>
     <string name="voice_special_connected">%1$s 에 연결됨.</string>
     <string name="voice_special_not_connected">연결된 휠 없음.</string>

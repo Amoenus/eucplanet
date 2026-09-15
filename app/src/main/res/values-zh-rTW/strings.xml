@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">前向 G</string>
     <string name="metric_chip_torque">扭矩</string>
     <string name="metric_chip_phase_current">相電流</string>
+    <string name="metric_spoken_phase_current">相電流</string>
+    <string name="metric_spoken_battery_envelope">預估電量</string>
+    <string name="metric_spoken_bt_rssi">藍牙訊號</string>
+    <string name="metric_spoken_avg_trip_speed">平均速度</string>
+    <string name="metric_spoken_lat_long">位置</string>
     <string name="metric_chip_dyn_speed_limit">動態速度限制</string>
     <string name="metric_chip_dyn_current_limit">動態電流限制</string>
     <string name="metric_chip_motor_temp">馬達溫度</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">在應用程式取得麥克風權限之前，語音指令無法聆聽。</string>
     <string name="voice_answer_unknown">沒有聽清楚。說 %1$s 取得說明。</string>
     <string name="voice_help_terms">我能說什麼,幫助,我能問什麼</string>
+    <string name="voice_stat_max_terms">最大,最高</string>
+    <string name="voice_stat_min_terms">最小,最低</string>
+    <string name="voice_stat_avg_terms">平均</string>
+    <string name="voice_stat_peak_terms">峰值,持續</string>
+    <string name="voice_stat_answer">%2$s%1$s，%3$s</string>
     <string name="voice_answer_examples">這是可以說的內容清單。</string>
     <string name="voice_special_connected">已連接 %1$s。</string>
     <string name="voice_special_not_connected">未連接輪子。</string>

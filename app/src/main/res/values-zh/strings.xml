@@ -1338,6 +1338,11 @@
     <string name="warnings_perm_mic_body">在应用获得麦克风权限之前，语音指令无法聆听。</string>
     <string name="voice_answer_unknown">没有听清。说 %1$s 获取帮助。</string>
     <string name="voice_help_terms">我能说什么,帮助,我能问什么</string>
+    <string name="voice_stat_max_terms">最大,最高</string>
+    <string name="voice_stat_min_terms">最小,最低</string>
+    <string name="voice_stat_avg_terms">平均</string>
+    <string name="voice_stat_peak_terms">峰值,持续</string>
+    <string name="voice_stat_answer">%2$s%1$s，%3$s</string>
     <string name="voice_answer_examples">这是可以说的内容列表。</string>
     <string name="voice_special_connected">已连接 %1$s。</string>
     <string name="voice_special_not_connected">未连接轮子。</string>
@@ -1505,6 +1510,11 @@
     <string name="metric_chip_temperature">温度</string>
     <string name="metric_chip_torque">扭矩</string>
     <string name="metric_chip_phase_current">相电流</string>
+    <string name="metric_spoken_phase_current">相电流</string>
+    <string name="metric_spoken_battery_envelope">预估电量</string>
+    <string name="metric_spoken_bt_rssi">蓝牙信号</string>
+    <string name="metric_spoken_avg_trip_speed">平均速度</string>
+    <string name="metric_spoken_lat_long">位置</string>
     <string name="metric_chip_trip">行程</string>
     <string name="metric_chip_trip_max_speed">行程峰值</string>
     <string name="metric_chip_trip_time">行程时间</string>

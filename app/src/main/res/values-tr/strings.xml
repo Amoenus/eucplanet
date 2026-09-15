@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">İleri g</string>
     <string name="metric_chip_torque">Tork</string>
     <string name="metric_chip_phase_current">Faz A</string>
+    <string name="metric_spoken_phase_current">Faz akımı</string>
+    <string name="metric_spoken_battery_envelope">Tahmini batarya</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth sinyali</string>
+    <string name="metric_spoken_avg_trip_speed">Ortalama hız</string>
+    <string name="metric_spoken_lat_long">Konum</string>
     <string name="metric_chip_dyn_speed_limit">Dinamik hız sınırı</string>
     <string name="metric_chip_dyn_current_limit">Dinamik akım sınırı</string>
     <string name="metric_chip_motor_temp">Motor sıcaklığı</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">Uygulamanın mikrofonu kullanmasına izin verilene kadar sesli komutlar dinleyemez.</string>
     <string name="voice_answer_unknown">Anlayamadım. Yardım için %1$s de.</string>
     <string name="voice_help_terms">ne diyebilirim,yardım,ne sorabilirim</string>
+    <string name="voice_stat_max_terms">maksimum,maks,en yüksek</string>
+    <string name="voice_stat_min_terms">minimum,min,en düşük</string>
+    <string name="voice_stat_avg_terms">ortalama,ort</string>
+    <string name="voice_stat_peak_terms">tepe,sürekli</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Söyleyebileceklerinin listesi burada.</string>
     <string name="voice_special_connected">%1$s bağlandı.</string>
     <string name="voice_special_not_connected">Bağlı teker yok.</string>

@@ -1355,6 +1355,11 @@
     <string name="warnings_perm_mic_body">Talekommandoer kan ikke lytte før appen får bruke mikrofonen.</string>
     <string name="voice_answer_unknown">Det fikk jeg ikke med meg. Si %1$s for hjelp.</string>
     <string name="voice_help_terms">hva kan jeg si,hjelp,hva kan jeg spørre om</string>
+    <string name="voice_stat_max_terms">maksimum,maks,høyeste</string>
+    <string name="voice_stat_min_terms">minimum,min,laveste</string>
+    <string name="voice_stat_avg_terms">gjennomsnitt,snitt</string>
+    <string name="voice_stat_peak_terms">topp,vedvarende</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Her er listen over hva du kan si.</string>
     <string name="voice_special_connected">Koblet til %1$s.</string>
     <string name="voice_special_not_connected">Ingen wheel tilkoblet.</string>
@@ -1522,6 +1527,11 @@
     <string name="metric_chip_temperature">Temperatur</string>
     <string name="metric_chip_torque">Moment</string>
     <string name="metric_chip_phase_current">Fase A</string>
+    <string name="metric_spoken_phase_current">Fasestrøm</string>
+    <string name="metric_spoken_battery_envelope">Anslått batteri</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth-signal</string>
+    <string name="metric_spoken_avg_trip_speed">Gjennomsnittsfart</string>
+    <string name="metric_spoken_lat_long">Posisjon</string>
     <string name="metric_chip_trip">Tur</string>
     <string name="metric_chip_trip_max_speed">Tur-topp</string>
     <string name="metric_chip_trip_time">Tur-tid</string>

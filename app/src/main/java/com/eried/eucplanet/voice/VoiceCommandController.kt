@@ -543,16 +543,20 @@ class VoiceCommandController @Inject constructor(
             return
         }
         _state.value = UiState.Heard(heard)
+        // Peel off "max" or "average" before matching, so the metric behind it
+        // is found by its own name.
+        val parsed = VoiceStatModifier.parse(heard, statPhrases())
+        val phrase = if (parsed.stat != null && parsed.rest.isNotBlank()) parsed.rest else heard
         // The matcher picks one term, but `read` cannot suspend, so the two
         // readings that need I/O are fetched before the match rather than
         // inside it. Both are a single value from a flow already in memory.
         lastTripSnapshot = runCatching { tripRepository.allTrips.first() }
             .getOrNull()?.filter { it.endTime != null }?.maxByOrNull { it.startTime }
         val answer = VoiceCommandSession.answer(
-            heard = heard,
+            heard = phrase,
             vocabulary = vocabulary,
             onDashboard = onDashboard,
-            read = { term -> readingBlocking(term, settings) },
+            read = { term -> readingBlocking(term, settings, parsed.stat) },
             needsConfirm = { key -> key in CONFIRMED_ACTIONS },
         )
         speak(answer, settings)
@@ -570,7 +574,83 @@ class VoiceCommandController @Inject constructor(
     private fun readingBlocking(
         term: SpokenTerm,
         settings: com.eried.eucplanet.data.model.AppSettings,
-    ): VoiceCommandSession.Reading? = readingOf(term, settings)
+        stat: VoiceStatModifier.Stat? = null,
+    ): VoiceCommandSession.Reading? {
+        // A statistic only means something for a live metric with history
+        // behind it. Asked of a report or a special it is ignored, which is
+        // kinder than refusing: "max weather" is a slip, not a request.
+        if (stat != null && term.kind == Kind.METRIC) {
+            statReading(term, settings, stat)?.let { return it }
+        }
+        return readingOf(term, settings)
+    }
+
+    /**
+     * A metric over its rolling history, rather than right now.
+     *
+     * The window, the sampling and the arithmetic already exist and are
+     * already shared: this is the same computeDashboardStatValue the tiles
+     * and the slot sheet use, over the same buffer, so a spoken max cannot
+     * disagree with the corner readout on the tile beside it.
+     */
+    private fun statReading(
+        term: SpokenTerm,
+        settings: com.eried.eucplanet.data.model.AppSettings,
+        stat: VoiceStatModifier.Stat,
+    ): VoiceCommandSession.Reading? {
+        val samples = historyFor(term.key) ?: return null
+        if (samples.isEmpty()) {
+            return VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+        }
+        val dashStat = when (stat) {
+            VoiceStatModifier.Stat.MAX -> com.eried.eucplanet.ui.settings.DashboardStat.MAX
+            VoiceStatModifier.Stat.MIN -> com.eried.eucplanet.ui.settings.DashboardStat.MIN
+            VoiceStatModifier.Stat.AVG -> com.eried.eucplanet.ui.settings.DashboardStat.AVG
+            // Highest level held for two seconds, not the highest sample. A
+            // rider asking for peak PWM means what the wheel sustained, not a
+            // spike the sparkline barely drew.
+            VoiceStatModifier.Stat.PEAK ->
+                com.eried.eucplanet.ui.settings.DashboardStat.SUSTAINED_PEAK
+        }
+        val raw = com.eried.eucplanet.ui.settings.computeDashboardStatValue(
+            dashStat, samples, Float.NaN,
+        ) ?: return VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+        if (raw.isNaN()) return VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
+        val value = formatMetric(term.key, raw, settings)
+        // The statistic is said, not implied: "max speed, 42 km/h" and
+        // "speed, 42 km/h" are different answers to different questions.
+        return VoiceCommandSession.Reading(
+            null, null,
+            reportText = context.getString(
+                R.string.voice_stat_answer, statLabel(stat), term.name, value,
+            ),
+        )
+    }
+
+    /** The rolling buffer for a metric key, legacy six or the keyed extras. */
+    private fun historyFor(key: String): List<com.eried.eucplanet.data.repository.MetricSample>? {
+        val h = wheelRepository.fullHistory.value
+        return when (key) {
+            "BATTERY" -> h.battery
+            "TEMPERATURE" -> h.temperature
+            "VOLTAGE" -> h.voltage
+            "CURRENT" -> h.current
+            "LOAD" -> h.load
+            "SPEED" -> h.speed
+            else -> h.extras[key]
+        }
+    }
+
+    /** The word to say for a statistic: the first phrasing its locale lists. */
+    private fun statLabel(stat: VoiceStatModifier.Stat): String =
+        statPhrases()[stat]?.split(",")?.firstOrNull()?.trim().orEmpty()
+
+    private fun statPhrases(): Map<VoiceStatModifier.Stat, String> = mapOf(
+        VoiceStatModifier.Stat.MAX to context.getString(R.string.voice_stat_max_terms),
+        VoiceStatModifier.Stat.MIN to context.getString(R.string.voice_stat_min_terms),
+        VoiceStatModifier.Stat.AVG to context.getString(R.string.voice_stat_avg_terms),
+        VoiceStatModifier.Stat.PEAK to context.getString(R.string.voice_stat_peak_terms),
+    )
 
     private fun readingOf(
         term: SpokenTerm,
@@ -627,25 +707,35 @@ class VoiceCommandController @Inject constructor(
             value.isNaN() -> VoiceCommandSession.Reading(null, VoiceAnswer.Reason.NO_DATA_YET)
             // The dashboard's own formatter, so a spoken value carries the same
             // unit in the same rider's units as the tile they would have read.
-            else -> VoiceCommandSession.Reading(
-                com.eried.eucplanet.data.model.MetricValueFormat.format(
-                    key = term.key,
-                    raw = value,
-                    speedUnit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings),
-                    speedUnitLabel = com.eried.eucplanet.util.Units.speedUnit(
-                        context, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
-                    ),
-                    tempUnit = com.eried.eucplanet.util.Units.effectiveTempUnit(settings),
-                    tempUnitLabel = com.eried.eucplanet.util.Units.tempUnit(
-                        com.eried.eucplanet.util.Units.effectiveTempUnit(settings)
-                    ),
-                    distanceUnit = com.eried.eucplanet.util.Units.effectiveDistanceUnit(settings),
-                    pressureUnit = com.eried.eucplanet.util.Units.effectivePressureUnit(settings),
-                ),
-                null,
-            )
+            else -> VoiceCommandSession.Reading(formatMetric(term.key, value, settings), null)
         }
     }
+
+    /**
+     * One value, in the rider's units, formatted the way the tile formats it.
+     *
+     * Lifted out because the statistic path needs exactly the same treatment:
+     * a max speed that arrived in km/h while the tile said mph would be the
+     * unit bug this feature has already had once.
+     */
+    private fun formatMetric(
+        key: String,
+        raw: Float,
+        settings: com.eried.eucplanet.data.model.AppSettings,
+    ): String = com.eried.eucplanet.data.model.MetricValueFormat.format(
+        key = key,
+        raw = raw,
+        speedUnit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings),
+        speedUnitLabel = com.eried.eucplanet.util.Units.speedUnit(
+            context, com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
+        ),
+        tempUnit = com.eried.eucplanet.util.Units.effectiveTempUnit(settings),
+        tempUnitLabel = com.eried.eucplanet.util.Units.tempUnit(
+            com.eried.eucplanet.util.Units.effectiveTempUnit(settings)
+        ),
+        distanceUnit = com.eried.eucplanet.util.Units.effectiveDistanceUnit(settings),
+        pressureUnit = com.eried.eucplanet.util.Units.effectivePressureUnit(settings),
+    )
 
     private fun speak(answer: Answer, settings: com.eried.eucplanet.data.model.AppSettings) {
         val text = when (answer) {
@@ -702,7 +792,7 @@ class VoiceCommandController @Inject constructor(
 
     /** The names a rider can say, in their language. */
     private fun vocabulary(): List<SpokenTerm> = VoiceVocabulary.build(
-        metricNames = MetricCatalog.all.associate { it.key to context.getString(it.labelRes) },
+        metricNames = MetricCatalog.all.associate { it.key to context.getString(it.spokenLabelRes ?: it.labelRes) },
         reportNames = REPORT_NAMES.mapValues { context.getString(it.value) },
         splitName = context.getString(R.string.voice_split_term),
         helpPhrases = context.getString(R.string.voice_help_terms),

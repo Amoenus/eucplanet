@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">Voorwaartse g</string>
     <string name="metric_chip_torque">Koppel</string>
     <string name="metric_chip_phase_current">Fase A</string>
+    <string name="metric_spoken_phase_current">Fasestroom</string>
+    <string name="metric_spoken_battery_envelope">Geschatte accu</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth-signaal</string>
+    <string name="metric_spoken_avg_trip_speed">Gemiddelde snelheid</string>
+    <string name="metric_spoken_lat_long">Positie</string>
     <string name="metric_chip_dyn_speed_limit">Dynamische snelheidslimiet</string>
     <string name="metric_chip_dyn_current_limit">Dynamische stroomlimiet</string>
     <string name="metric_chip_motor_temp">Motortemperatuur</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">Spraakopdrachten kunnen niet luisteren zolang de app de microfoon niet mag gebruiken.</string>
     <string name="voice_answer_unknown">Ik heb dat niet verstaan. Zeg %1$s voor hulp.</string>
     <string name="voice_help_terms">wat kan ik zeggen,help,wat kan ik vragen</string>
+    <string name="voice_stat_max_terms">maximum,max,hoogste</string>
+    <string name="voice_stat_min_terms">minimum,min,laagste</string>
+    <string name="voice_stat_avg_terms">gemiddelde,gemiddeld</string>
+    <string name="voice_stat_peak_terms">piek,aanhoudend</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Dit is de lijst met wat je kunt zeggen.</string>
     <string name="voice_special_connected">Verbonden met %1$s.</string>
     <string name="voice_special_not_connected">Geen wheel verbonden.</string>

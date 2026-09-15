@@ -242,6 +242,11 @@
     <string name="metric_chip_forward_g">Forward g</string>
     <string name="metric_chip_torque">Torque</string>
     <string name="metric_chip_phase_current">Phase A</string>
+    <string name="metric_spoken_phase_current">Phase amps</string>
+    <string name="metric_spoken_battery_envelope">Estimated battery</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth signal</string>
+    <string name="metric_spoken_avg_trip_speed">Average speed</string>
+    <string name="metric_spoken_lat_long">Position</string>
     <string name="metric_chip_dyn_speed_limit">Dynamic speed limit</string>
     <string name="metric_chip_dyn_current_limit">Dynamic current limit</string>
     <string name="metric_chip_motor_temp">Motor temperature</string>
@@ -348,6 +353,11 @@
     <string name="warnings_perm_mic_body">Voice commands cannot listen until the app is allowed to use the microphone.</string>
     <string name="voice_answer_unknown">I did not catch that. Say %1$s for help.</string>
     <string name="voice_help_terms">what can I say,help,what can I do</string>
+    <string name="voice_stat_max_terms">max,maximum,highest</string>
+    <string name="voice_stat_min_terms">min,minimum,lowest</string>
+    <string name="voice_stat_avg_terms">average,avg,mean</string>
+    <string name="voice_stat_peak_terms">peak,sustained</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Here is the list of what you can say.</string>
     <string name="voice_special_connected">Connected to %1$s.</string>
     <string name="voice_special_not_connected">No wheel connected.</string>

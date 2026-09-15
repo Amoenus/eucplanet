@@ -1374,6 +1374,11 @@
     <string name="warnings_perm_mic_body">I comandi vocali non possono ascoltare finché la app non può usare il microfono.</string>
     <string name="voice_answer_unknown">Non ho capito. Di %1$s per aiuto.</string>
     <string name="voice_help_terms">cosa posso dire,aiuto,cosa posso chiedere</string>
+    <string name="voice_stat_max_terms">massimo,max</string>
+    <string name="voice_stat_min_terms">minimo,min</string>
+    <string name="voice_stat_avg_terms">media,medio</string>
+    <string name="voice_stat_peak_terms">picco,sostenuto</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Ecco la lista di quello che puoi dire.</string>
     <string name="voice_special_connected">Collegato a %1$s.</string>
     <string name="voice_special_not_connected">Nessun monoruota collegato.</string>
@@ -1541,6 +1546,11 @@
     <string name="metric_chip_temperature">Temperatura</string>
     <string name="metric_chip_torque">Coppia</string>
     <string name="metric_chip_phase_current">Fase A</string>
+    <string name="metric_spoken_phase_current">Ampere di fase</string>
+    <string name="metric_spoken_battery_envelope">Batteria stimata</string>
+    <string name="metric_spoken_bt_rssi">Segnale Bluetooth</string>
+    <string name="metric_spoken_avg_trip_speed">Velocità media</string>
+    <string name="metric_spoken_lat_long">Posizione</string>
     <string name="metric_chip_trip">Tragitto</string>
     <string name="metric_chip_trip_max_speed">Picco tragitto</string>
     <string name="metric_chip_trip_time">Tempo tragitto</string>

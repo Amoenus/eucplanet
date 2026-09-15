@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">Vorwärts-g</string>
     <string name="metric_chip_torque">Drehmoment</string>
     <string name="metric_chip_phase_current">Phase A</string>
+    <string name="metric_spoken_phase_current">Phasenstrom</string>
+    <string name="metric_spoken_battery_envelope">Geschätzter Akku</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth-Signal</string>
+    <string name="metric_spoken_avg_trip_speed">Durchschnittsgeschwindigkeit</string>
+    <string name="metric_spoken_lat_long">Position</string>
     <string name="metric_chip_dyn_speed_limit">Dyn. Speedlimit</string>
     <string name="metric_chip_dyn_current_limit">Dyn. Stromlimit</string>
     <string name="metric_chip_motor_temp">Motortemperatur</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">Sprachbefehle können nicht zuhören, solange die App das Mikrofon nicht nutzen darf.</string>
     <string name="voice_answer_unknown">Das habe ich nicht verstanden. Sag %1$s für Hilfe.</string>
     <string name="voice_help_terms">was kann ich sagen,hilfe,was kann ich fragen</string>
+    <string name="voice_stat_max_terms">maximum,max,höchste</string>
+    <string name="voice_stat_min_terms">minimum,min,niedrigste</string>
+    <string name="voice_stat_avg_terms">durchschnitt,mittel</string>
+    <string name="voice_stat_peak_terms">spitze,dauerhaft</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Hier ist die Liste dessen, was du sagen kannst.</string>
     <string name="voice_special_connected">Verbunden mit %1$s.</string>
     <string name="voice_special_not_connected">Kein Wheel verbunden.</string>

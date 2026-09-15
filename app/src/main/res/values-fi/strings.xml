@@ -212,6 +212,11 @@
     <string name="metric_chip_forward_g">Pituussuuntainen g</string>
     <string name="metric_chip_torque">Vääntömomentti</string>
     <string name="metric_chip_phase_current">Vaihe A</string>
+    <string name="metric_spoken_phase_current">Vaihevirta</string>
+    <string name="metric_spoken_battery_envelope">Arvioitu akku</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth-signaali</string>
+    <string name="metric_spoken_avg_trip_speed">Keskinopeus</string>
+    <string name="metric_spoken_lat_long">Sijainti</string>
     <string name="metric_chip_dyn_speed_limit">Dynaaminen nopeusrajoitus</string>
     <string name="metric_chip_dyn_current_limit">Dynaaminen virtaraja</string>
     <string name="metric_chip_motor_temp">Moottorin lämpötila</string>
@@ -306,6 +311,11 @@
     <string name="warnings_perm_mic_body">Äänikomennot eivät voi kuunnella ennen kuin sovellus saa käyttää mikrofonia.</string>
     <string name="voice_answer_unknown">En saanut selvää. Sano %1$s saadaksesi apua.</string>
     <string name="voice_help_terms">mitä voin sanoa,apua,mitä voin kysyä</string>
+    <string name="voice_stat_max_terms">maksimi,max,suurin</string>
+    <string name="voice_stat_min_terms">minimi,min,pienin</string>
+    <string name="voice_stat_avg_terms">keskiarvo,keski</string>
+    <string name="voice_stat_peak_terms">huippu,jatkuva</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Tässä on lista siitä, mitä voit sanoa.</string>
     <string name="voice_special_connected">Yhdistetty: %1$s.</string>
     <string name="voice_special_not_connected">Ei yhdistettyä pyörää.</string>

@@ -236,6 +236,11 @@
     <string name="metric_chip_forward_g">Frem-g</string>
     <string name="metric_chip_torque">Moment</string>
     <string name="metric_chip_phase_current">Fase A</string>
+    <string name="metric_spoken_phase_current">Fasestrøm</string>
+    <string name="metric_spoken_battery_envelope">Anslået batteri</string>
+    <string name="metric_spoken_bt_rssi">Bluetooth-signal</string>
+    <string name="metric_spoken_avg_trip_speed">Gennemsnitsfart</string>
+    <string name="metric_spoken_lat_long">Position</string>
     <string name="metric_chip_dyn_speed_limit">Dynamisk fartgrænse</string>
     <string name="metric_chip_dyn_current_limit">Dynamisk strømgrænse</string>
     <string name="metric_chip_motor_temp">Motortemperatur</string>
@@ -343,6 +348,11 @@
     <string name="warnings_perm_mic_body">Stemmekommandoer kan ikke lytte, før appen må bruge mikrofonen.</string>
     <string name="voice_answer_unknown">Det fangede jeg ikke. Sig %1$s for hjælp.</string>
     <string name="voice_help_terms">hvad kan jeg sige,hjælp,hvad kan jeg spørge om</string>
+    <string name="voice_stat_max_terms">maksimum,maks,højeste</string>
+    <string name="voice_stat_min_terms">minimum,min,laveste</string>
+    <string name="voice_stat_avg_terms">gennemsnit,gennemsnitlig</string>
+    <string name="voice_stat_peak_terms">top,vedvarende</string>
+    <string name="voice_stat_answer">%1$s %2$s, %3$s</string>
     <string name="voice_answer_examples">Her er listen over, hvad du kan sige.</string>
     <string name="voice_special_connected">Forbundet til %1$s.</string>
     <string name="voice_special_not_connected">Intet wheel forbundet.</string>

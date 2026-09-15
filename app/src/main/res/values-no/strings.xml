@@ -1418,6 +1418,7 @@
     <string name="voice_yes_terms">ja,bekreft,gjør det</string>
     <string name="voice_act_light_on_terms">lys på,slå på lyset</string>
     <string name="voice_act_light_off_terms">lys av,slå av lyset</string>
+    <string name="voice_act_light_toggle_terms">lys,lykt,bytt lys</string>
     <string name="voice_act_lock_terms">lås,lås wheelet</string>
     <string name="voice_act_unlock_terms">lås opp,lås opp wheelet</string>
     <string name="voice_act_horn_terms">horn,pip</string>
@@ -1532,6 +1533,7 @@
     <string name="metric_chip_lat_long">Lat, Long</string>
     <string name="metric_chip_lateral_g">Side-g</string>
     <string name="metric_chip_light_on">Lys</string>
+    <string name="metric_spoken_light_on">lysstatus</string>
     <string name="metric_chip_load">PWM</string>
     <string name="metric_chip_motor_power">Motoreffekt</string>
     <string name="metric_chip_motor_rpm">o/min</string>

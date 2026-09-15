@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Wielalarm</string>
     <string name="metric_chip_pc_mode">Rijmodus</string>
     <string name="metric_chip_light_on">Licht</string>
+    <string name="metric_spoken_light_on">lichtstatus</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">ja,bevestigen,doe maar</string>
     <string name="voice_act_light_on_terms">licht aan,lichten aan</string>
     <string name="voice_act_light_off_terms">licht uit,lichten uit</string>
+    <string name="voice_act_light_toggle_terms">licht,lichten,licht wisselen</string>
     <string name="voice_act_lock_terms">vergrendel,vergrendel het wheel</string>
     <string name="voice_act_unlock_terms">ontgrendel,ontgrendel het wheel</string>
     <string name="voice_act_horn_terms">claxon,toeter</string>

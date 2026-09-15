@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Teker alarm</string>
     <string name="metric_chip_pc_mode">Sürüş modu</string>
     <string name="metric_chip_light_on">Işık</string>
+    <string name="metric_spoken_light_on">ışık durumu</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">evet,onayla,hadi</string>
     <string name="voice_act_light_on_terms">ışıklar açık,ışıkları aç</string>
     <string name="voice_act_light_off_terms">ışıklar kapalı,ışıkları kapat</string>
+    <string name="voice_act_light_toggle_terms">ışık,ışıklar,ışığı değiştir</string>
     <string name="voice_act_lock_terms">kilitle,tekeri kilitle</string>
     <string name="voice_act_unlock_terms">kilidi aç,tekerin kilidini aç</string>
     <string name="voice_act_horn_terms">korna,bip</string>

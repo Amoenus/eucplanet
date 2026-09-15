@@ -249,6 +249,7 @@
     <string name="metric_chip_wheel_alarm_speed">Alarm monokola</string>
     <string name="metric_chip_pc_mode">Režim jízdy</string>
     <string name="metric_chip_light_on">Světlo</string>
+    <string name="metric_spoken_light_on">stav světla</string>
     <string name="metric_chip_temperature_tile">Tepl</string>
     <string name="metric_chip_battery_power_tile">Bat W</string>
     <string name="metric_chip_motor_power_tile">Mot W</string>
@@ -374,6 +375,7 @@
     <string name="voice_yes_terms">ano,potvrdit,udělej to</string>
     <string name="voice_act_light_on_terms">světlo zapnout,zapni světla</string>
     <string name="voice_act_light_off_terms">světlo vypnout,vypni světla</string>
+    <string name="voice_act_light_toggle_terms">světlo,světla,přepni světlo</string>
     <string name="voice_act_lock_terms">zamkni,zamkni kolo</string>
     <string name="voice_act_unlock_terms">odemkni,odemkni kolo</string>
     <string name="voice_act_horn_terms">klakson,pípni</string>

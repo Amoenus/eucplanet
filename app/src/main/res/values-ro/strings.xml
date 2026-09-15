@@ -249,6 +249,7 @@
     <string name="metric_chip_wheel_alarm_speed">Alarma monociclului</string>
     <string name="metric_chip_pc_mode">Mod de mers</string>
     <string name="metric_chip_light_on">Lumină</string>
+    <string name="metric_spoken_light_on">starea luminii</string>
     <string name="metric_chip_temperature_tile">Temp</string>
     <string name="metric_chip_battery_power_tile">Bat W</string>
     <string name="metric_chip_motor_power_tile">Mot W</string>
@@ -374,6 +375,7 @@
     <string name="voice_yes_terms">da,confirm,dă-i drumul</string>
     <string name="voice_act_light_on_terms">lumini pornite,aprinde luminile</string>
     <string name="voice_act_light_off_terms">lumini stinse,stinge luminile</string>
+    <string name="voice_act_light_toggle_terms">lumină,lumini,comută lumina</string>
     <string name="voice_act_lock_terms">blochează,blochează roata</string>
     <string name="voice_act_unlock_terms">deblochează,deblochează roata</string>
     <string name="voice_act_horn_terms">claxon,bip</string>

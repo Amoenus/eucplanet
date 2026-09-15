@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">휠 알람 속도</string>
     <string name="metric_chip_pc_mode">주행 모드</string>
     <string name="metric_chip_light_on">라이트</string>
+    <string name="metric_spoken_light_on">조명 상태</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">예,확인,진행</string>
     <string name="voice_act_light_on_terms">라이트 켜기,불 켜</string>
     <string name="voice_act_light_off_terms">라이트 끄기,불 꺼</string>
+    <string name="voice_act_light_toggle_terms">조명,라이트,조명 전환</string>
     <string name="voice_act_lock_terms">잠금,휠 잠금</string>
     <string name="voice_act_unlock_terms">잠금 해제,휠 잠금 해제</string>
     <string name="voice_act_horn_terms">경적,삑</string>

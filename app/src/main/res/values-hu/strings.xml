@@ -249,6 +249,7 @@
     <string name="metric_chip_wheel_alarm_speed">Egykerekű riasztása</string>
     <string name="metric_chip_pc_mode">Menetmód</string>
     <string name="metric_chip_light_on">Világítás</string>
+    <string name="metric_spoken_light_on">lámpa állapota</string>
     <string name="metric_chip_temperature_tile">Hőm</string>
     <string name="metric_chip_battery_power_tile">Akku W</string>
     <string name="metric_chip_motor_power_tile">Mot W</string>
@@ -374,6 +375,7 @@
     <string name="voice_yes_terms">igen,megerősítem,csináld</string>
     <string name="voice_act_light_on_terms">lámpa be,kapcsold be a lámpát</string>
     <string name="voice_act_light_off_terms">lámpa ki,kapcsold ki a lámpát</string>
+    <string name="voice_act_light_toggle_terms">lámpa,lámpák,kapcsold a lámpát</string>
     <string name="voice_act_lock_terms">zárás,zárd le a kereket</string>
     <string name="voice_act_unlock_terms">feloldás,oldd fel a kereket</string>
     <string name="voice_act_horn_terms">duda,síp</string>

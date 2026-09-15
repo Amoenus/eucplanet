@@ -623,6 +623,29 @@ class VoiceService @Inject constructor(
         return parts.joinToString(", ")
     }
 
+    /**
+     * The whole on-demand report as one sentence, for a rider who asked.
+     *
+     * The trigger set, not the periodic one. Those are configured separately
+     * on purpose: a periodic announcement says only what matters while moving
+     * and a triggered one tends to say everything, and a rider who asks out
+     * loud has asked, the same as pressing the dashboard button.
+     *
+     * Returns the text rather than speaking it, so the spoken-question path
+     * can put it on the tile and log it the way it does every other answer,
+     * instead of a second voice starting underneath the first.
+     */
+    fun triggerReportText(
+        data: WheelData,
+        settings: AppSettings,
+        isRecording: Boolean = false,
+    ): String? {
+        if (legalLockdown.isEngaged()) return null
+        val parts = buildReportParts(data, settings, isRecording, periodic = false)
+        if (parts.isEmpty()) return null
+        return parts.joinToString(", ")
+    }
+
     fun answerReport(
         report: String,
         data: WheelData,

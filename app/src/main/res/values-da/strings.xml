@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Hjul-alarm</string>
     <string name="metric_chip_pc_mode">Køremodus</string>
     <string name="metric_chip_light_on">Lys</string>
+    <string name="metric_spoken_light_on">lysstatus</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">ja,bekræft,gør det</string>
     <string name="voice_act_light_on_terms">lys tændt,tænd lyset</string>
     <string name="voice_act_light_off_terms">lys slukket,sluk lyset</string>
+    <string name="voice_act_light_toggle_terms">lys,lygte,skift lys</string>
     <string name="voice_act_lock_terms">lås,lås wheelet</string>
     <string name="voice_act_unlock_terms">lås op,lås wheelet op</string>
     <string name="voice_act_horn_terms">horn,bip</string>

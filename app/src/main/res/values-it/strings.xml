@@ -1437,6 +1437,7 @@
     <string name="voice_yes_terms">sì,conferma,procedi</string>
     <string name="voice_act_light_on_terms">luci accese,accendi le luci</string>
     <string name="voice_act_light_off_terms">luci spente,spegni le luci</string>
+    <string name="voice_act_light_toggle_terms">luce,luci,cambia la luce</string>
     <string name="voice_act_lock_terms">blocca,blocca il monoruota</string>
     <string name="voice_act_unlock_terms">sblocca,sblocca il monoruota</string>
     <string name="voice_act_horn_terms">clacson,bip</string>
@@ -1551,6 +1552,7 @@
     <string name="metric_chip_lat_long">Lat, Long</string>
     <string name="metric_chip_lateral_g">G laterale</string>
     <string name="metric_chip_light_on">Luce</string>
+    <string name="metric_spoken_light_on">stato della luce</string>
     <string name="metric_chip_load">PWM</string>
     <string name="metric_chip_motor_power">Pot. motore</string>
     <string name="metric_chip_motor_rpm">giri/min</string>

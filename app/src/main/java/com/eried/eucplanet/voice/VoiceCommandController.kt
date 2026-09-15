@@ -367,8 +367,17 @@ class VoiceCommandController @Inject constructor(
 
         VoiceVocabulary.Special.LAST_TRIP -> lastTrip(settings)
 
-        // Handled before it gets here: this one speaks itself.
-        VoiceVocabulary.Special.REPORT -> null
+        // The on-demand report, the same one the dashboard's Voice button
+        // speaks and configured by the Trigger column, not the Periodic one.
+        //
+        // This used to return null under a comment saying it was handled
+        // earlier. It was not handled anywhere, so every "report", "status"
+        // and "voice report" answered "No report yet" and did nothing at all.
+        VoiceVocabulary.Special.REPORT -> voiceService.triggerReportText(
+            wheelRepository.wheelData.value,
+            settings,
+            isRecording = tripRepository.recording.value,
+        )
 
         else -> null
     }

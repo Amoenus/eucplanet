@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Alarme roue</string>
     <string name="metric_chip_pc_mode">Mode</string>
     <string name="metric_chip_light_on">Phare</string>
+    <string name="metric_spoken_light_on">état de la lumière</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">oui,confirmer,vas-y</string>
     <string name="voice_act_light_on_terms">lumière allumée,allume les lumières</string>
     <string name="voice_act_light_off_terms">lumière éteinte,éteins les lumières</string>
+    <string name="voice_act_light_toggle_terms">lumière,phare,bascule la lumière</string>
     <string name="voice_act_lock_terms">verrouiller,verrouille la roue</string>
     <string name="voice_act_unlock_terms">déverrouiller,déverrouille la roue</string>
     <string name="voice_act_horn_terms">klaxon,bip</string>

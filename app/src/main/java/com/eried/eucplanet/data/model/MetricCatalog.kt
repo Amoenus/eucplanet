@@ -488,6 +488,13 @@ object MetricCatalog {
         MetricSpec(
             key = "LIGHT_ON",
             labelRes = R.string.metric_chip_light_on,
+            // The tile says "Light" because it sits under a number that is
+            // the answer. Spoken, the bare word is what a rider says when
+            // they want the light switched, so the reading has to ask for
+            // itself by a longer name. The matcher prefers the longest match,
+            // which is what keeps "light status" off the toggle and off the
+            // "status" report.
+            spokenLabelRes = R.string.metric_spoken_light_on,
             accent = AccentGreen,
             sparkline = SparklineStyle.NONE,
             supportsStats = false

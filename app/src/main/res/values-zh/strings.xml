@@ -1401,6 +1401,7 @@
     <string name="voice_yes_terms">是,确认,继续</string>
     <string name="voice_act_light_on_terms">开灯,打开灯</string>
     <string name="voice_act_light_off_terms">关灯,关闭灯</string>
+    <string name="voice_act_light_toggle_terms">车灯,灯,切换车灯</string>
     <string name="voice_act_lock_terms">锁定,锁车</string>
     <string name="voice_act_unlock_terms">解锁,解锁车</string>
     <string name="voice_act_horn_terms">喇叭,鸣笛</string>
@@ -1515,6 +1516,7 @@
     <string name="metric_chip_lat_long">经纬度</string>
     <string name="metric_chip_lateral_g">横向 g</string>
     <string name="metric_chip_light_on">车灯</string>
+    <string name="metric_spoken_light_on">车灯状态</string>
     <string name="metric_chip_load">PWM</string>
     <string name="metric_chip_motor_power">电机功率</string>
     <string name="metric_chip_motor_rpm">转速</string>

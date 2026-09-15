@@ -279,6 +279,7 @@
     <string name="metric_chip_wheel_alarm_speed">Wheel alarm</string>
     <string name="metric_chip_pc_mode">Ride mode</string>
     <string name="metric_chip_light_on">Light</string>
+    <string name="metric_spoken_light_on">light status</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -416,6 +417,7 @@
     <string name="voice_yes_terms">yes,confirm,do it,go ahead</string>
     <string name="voice_act_light_on_terms">lights on,light on,turn on the lights</string>
     <string name="voice_act_light_off_terms">lights off,light off,turn off the lights</string>
+    <string name="voice_act_light_toggle_terms">light,lights,toggle the light</string>
     <string name="voice_act_lock_terms">lock,lock the wheel</string>
     <string name="voice_act_unlock_terms">unlock,unlock the wheel</string>
     <string name="voice_act_horn_terms">horn,beep</string>

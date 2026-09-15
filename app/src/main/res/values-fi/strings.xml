@@ -249,6 +249,7 @@
     <string name="metric_chip_wheel_alarm_speed">Yksipyöräisen hälytys</string>
     <string name="metric_chip_pc_mode">Ajotila</string>
     <string name="metric_chip_light_on">Valo</string>
+    <string name="metric_spoken_light_on">valon tila</string>
     <string name="metric_chip_temperature_tile">Lämpö</string>
     <string name="metric_chip_battery_power_tile">Akku W</string>
     <string name="metric_chip_motor_power_tile">Moot W</string>
@@ -374,6 +375,7 @@
     <string name="voice_yes_terms">kyllä,vahvista,tee se</string>
     <string name="voice_act_light_on_terms">valot päälle,sytytä valot</string>
     <string name="voice_act_light_off_terms">valot pois,sammuta valot</string>
+    <string name="voice_act_light_toggle_terms">valo,valot,vaihda valo</string>
     <string name="voice_act_lock_terms">lukitse,lukitse pyörä</string>
     <string name="voice_act_unlock_terms">avaa lukitus,avaa pyörän lukitus</string>
     <string name="voice_act_horn_terms">äänimerkki,torvi</string>

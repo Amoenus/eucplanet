@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Alerta rueda</string>
     <string name="metric_chip_pc_mode">Modo</string>
     <string name="metric_chip_light_on">Luz</string>
+    <string name="metric_spoken_light_on">estado de la luz</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">sí,confirmar,adelante,hazlo</string>
     <string name="voice_act_light_on_terms">luces encendidas,enciende las luces</string>
     <string name="voice_act_light_off_terms">luces apagadas,apaga las luces</string>
+    <string name="voice_act_light_toggle_terms">luz,luces,cambia la luz</string>
     <string name="voice_act_lock_terms">bloquear,bloquea la rueda</string>
     <string name="voice_act_unlock_terms">desbloquear,desbloquea la rueda</string>
     <string name="voice_act_horn_terms">bocina,pito</string>

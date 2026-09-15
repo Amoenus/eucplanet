@@ -21,6 +21,10 @@ object VoicePhrases {
         "V_LIGHT_OFF" to R.string.voice_act_light_off_terms,
         "V_LOCK" to R.string.voice_act_lock_terms,
         "V_UNLOCK" to R.string.voice_act_unlock_terms,
+        // The catalog's own toggle, reached by the bare word. The on and off
+        // pair above still exist for a rider who knows which way they want
+        // it; this is for the one who just wants it flipped.
+        "LIGHT_TOGGLE" to R.string.voice_act_light_toggle_terms,
         "V_ANNOUNCE_ON" to R.string.voice_act_announce_on_terms,
         "V_ANNOUNCE_OFF" to R.string.voice_act_announce_off_terms,
         "HORN" to R.string.voice_act_horn_terms,

@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">車輪警報速度</string>
     <string name="metric_chip_pc_mode">騎行模式</string>
     <string name="metric_chip_light_on">燈光</string>
+    <string name="metric_spoken_light_on">車燈狀態</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">是,確認,繼續</string>
     <string name="voice_act_light_on_terms">開燈,打開燈</string>
     <string name="voice_act_light_off_terms">關燈,關閉燈</string>
+    <string name="voice_act_light_toggle_terms">車燈,燈,切換車燈</string>
     <string name="voice_act_lock_terms">鎖定,鎖車</string>
     <string name="voice_act_unlock_terms">解鎖,解鎖車</string>
     <string name="voice_act_horn_terms">喇叭,鳴笛</string>

@@ -274,6 +274,7 @@
     <string name="metric_chip_wheel_alarm_speed">Сигнал колеса</string>
     <string name="metric_chip_pc_mode">Режим їзди</string>
     <string name="metric_chip_light_on">Світло</string>
+    <string name="metric_spoken_light_on">стан світла</string>
 
     <!-- Short variants for the dashboard tile face. When present, the tile
          shows this; the slot editor sheet keeps showing the full
@@ -411,6 +412,7 @@
     <string name="voice_yes_terms">так,підтверджую,давай</string>
     <string name="voice_act_light_on_terms">світло увімкнути,увімкни світло</string>
     <string name="voice_act_light_off_terms">світло вимкнути,вимкни світло</string>
+    <string name="voice_act_light_toggle_terms">світло,фара,перемкни світло</string>
     <string name="voice_act_lock_terms">заблокувати,заблокуй колесо</string>
     <string name="voice_act_unlock_terms">розблокувати,розблокуй колесо</string>
     <string name="voice_act_horn_terms">сигнал,гудок</string>

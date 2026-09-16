@@ -1406,6 +1406,15 @@
     <string name="voice_special_not_connected">Nessun monoruota collegato.</string>
     <string name="voice_special_uptime">Collegato da %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, punteggio %2$s. %3$s gradi, vento %4$s, umidità %5$s per cento</string>
+    <string name="voice_weather_checking">Controllo il meteo.</string>
+    <string name="voice_sp_air_temp_terms">temperatura esterna,temperatura dell\'aria,quanto fa freddo</string>
+    <string name="voice_sp_wind_terms">vento,velocità del vento,quanto vento</string>
+    <string name="voice_sp_humidity_terms">umidità,quanta umidità</string>
+    <string name="voice_sp_air_temp_answer">%1$s gradi fuori.</string>
+    <string name="voice_sp_wind_answer">Vento %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vento %1$s, raffiche a %2$s.</string>
+    <string name="voice_sp_humidity_answer">Umidità %1$s per cento.</string>
     <string name="voice_weather_great">Ottimo tempo per uscire</string>
     <string name="voice_weather_good">Buon tempo per uscire</string>
     <string name="voice_weather_ok">Si può uscire</string>

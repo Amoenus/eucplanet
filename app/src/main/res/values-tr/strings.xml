@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Bağlı teker yok.</string>
     <string name="voice_special_uptime">%1$s bağlı.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, puan %2$s. %3$s derece, rüzgar %4$s, nem %5$s yüzde</string>
+    <string name="voice_weather_checking">Havayı kontrol ediyorum.</string>
+    <string name="voice_sp_air_temp_terms">dış sıcaklık,hava sıcaklığı,ne kadar soğuk</string>
+    <string name="voice_sp_wind_terms">rüzgar,rüzgar hızı,ne kadar rüzgarlı</string>
+    <string name="voice_sp_humidity_terms">nem,ne kadar nemli</string>
+    <string name="voice_sp_air_temp_answer">Dışarısı %1$s derece.</string>
+    <string name="voice_sp_wind_answer">Rüzgar %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Rüzgar %1$s, %2$s hamleli.</string>
+    <string name="voice_sp_humidity_answer">Nem yüzde %1$s.</string>
     <string name="voice_weather_great">Sürüş için harika hava</string>
     <string name="voice_weather_good">Sürüş için iyi hava</string>
     <string name="voice_weather_ok">Sürülebilir</string>

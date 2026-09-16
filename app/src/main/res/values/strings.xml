@@ -386,6 +386,15 @@
     <string name="voice_special_not_connected">No wheel connected.</string>
     <string name="voice_special_uptime">Connected for %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, score %2$s. %3$s degrees, wind %4$s, humidity %5$s percent</string>
+    <string name="voice_weather_checking">Checking the weather.</string>
+    <string name="voice_sp_air_temp_terms">air temperature,outside temperature,how cold is it</string>
+    <string name="voice_sp_wind_terms">wind,wind speed,how windy</string>
+    <string name="voice_sp_humidity_terms">humidity,how humid</string>
+    <string name="voice_sp_air_temp_answer">%1$s degrees outside.</string>
+    <string name="voice_sp_wind_answer">Wind %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Wind %1$s, gusting %2$s.</string>
+    <string name="voice_sp_humidity_answer">Humidity %1$s percent.</string>
     <string name="voice_weather_great">Great riding weather</string>
     <string name="voice_weather_good">Good riding weather</string>
     <string name="voice_weather_ok">Rideable</string>

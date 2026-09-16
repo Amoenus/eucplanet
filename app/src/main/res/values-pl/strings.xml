@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Brak połączonego koła.</string>
     <string name="voice_special_uptime">Połączono od %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, wynik %2$s. %3$s stopni, wiatr %4$s, wilgotność %5$s procent</string>
+    <string name="voice_weather_checking">Sprawdzam pogodę.</string>
+    <string name="voice_sp_air_temp_terms">temperatura powietrza,temperatura na zewnątrz,jak zimno</string>
+    <string name="voice_sp_wind_terms">wiatr,prędkość wiatru,jak wietrznie</string>
+    <string name="voice_sp_humidity_terms">wilgotność,jak wilgotno</string>
+    <string name="voice_sp_air_temp_answer">%1$s stopni na zewnątrz.</string>
+    <string name="voice_sp_wind_answer">Wiatr %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Wiatr %1$s, w porywach %2$s.</string>
+    <string name="voice_sp_humidity_answer">Wilgotność %1$s procent.</string>
     <string name="voice_weather_great">Świetna pogoda na jazdę</string>
     <string name="voice_weather_good">Dobra pogoda na jazdę</string>
     <string name="voice_weather_ok">Da się jechać</string>

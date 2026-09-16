@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">연결된 휠 없음.</string>
     <string name="voice_special_uptime">%1$s 동안 연결됨.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, 점수 %2$s. 기온 %3$s 도, 바람 %4$s, 습도 %5$s 퍼센트</string>
+    <string name="voice_weather_checking">날씨를 확인합니다.</string>
+    <string name="voice_sp_air_temp_terms">외부 기온,바깥 온도,얼마나 추운지</string>
+    <string name="voice_sp_wind_terms">바람,풍속,바람이 얼마나</string>
+    <string name="voice_sp_humidity_terms">습도,얼마나 습한지</string>
+    <string name="voice_sp_air_temp_answer">바깥은 %1$s 도입니다.</string>
+    <string name="voice_sp_wind_answer">바람 %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">바람 %1$s, 순간 %2$s.</string>
+    <string name="voice_sp_humidity_answer">습도 %1$s 퍼센트.</string>
     <string name="voice_weather_great">타기 아주 좋은 날씨</string>
     <string name="voice_weather_good">타기 좋은 날씨</string>
     <string name="voice_weather_ok">탈 만합니다</string>

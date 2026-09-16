@@ -1370,6 +1370,15 @@
     <string name="voice_special_not_connected">未连接轮子。</string>
     <string name="voice_special_uptime">已连接 %1$s。</string>
     <string name="voice_special_weather">%1$s。%2$s。</string>
+    <string name="voice_special_weather_full">%1$s，评分 %2$s。气温 %3$s 度，风速 %4$s，湿度 %5$s%%</string>
+    <string name="voice_weather_checking">正在查看天气。</string>
+    <string name="voice_sp_air_temp_terms">气温,室外温度,有多冷</string>
+    <string name="voice_sp_wind_terms">风,风速,风有多大</string>
+    <string name="voice_sp_humidity_terms">湿度,有多潮湿</string>
+    <string name="voice_sp_air_temp_answer">外面 %1$s 度。</string>
+    <string name="voice_sp_wind_answer">风速 %1$s。</string>
+    <string name="voice_sp_wind_gust_answer">风速 %1$s，阵风 %2$s。</string>
+    <string name="voice_sp_humidity_answer">湿度 %1$s%%。</string>
     <string name="voice_weather_great">非常适合骑行</string>
     <string name="voice_weather_good">适合骑行</string>
     <string name="voice_weather_ok">可以骑</string>

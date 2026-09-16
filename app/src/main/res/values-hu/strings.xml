@@ -344,6 +344,15 @@
     <string name="voice_special_not_connected">Nincs csatlakoztatott kerék.</string>
     <string name="voice_special_uptime">%1$s óta csatlakozva.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, pontszám %2$s. %3$s fok, szél %4$s, páratartalom %5$s százalék</string>
+    <string name="voice_weather_checking">Megnézem az időjárást.</string>
+    <string name="voice_sp_air_temp_terms">külső hőmérséklet,levegő hőmérséklete,mennyire hideg</string>
+    <string name="voice_sp_wind_terms">szél,szélsebesség,mennyire szeles</string>
+    <string name="voice_sp_humidity_terms">páratartalom,mennyire párás</string>
+    <string name="voice_sp_air_temp_answer">%1$s fok van kint.</string>
+    <string name="voice_sp_wind_answer">Szél %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Szél %1$s, lökésekben %2$s.</string>
+    <string name="voice_sp_humidity_answer">Páratartalom %1$s százalék.</string>
     <string name="voice_weather_great">Kiváló idő a tekeréshez</string>
     <string name="voice_weather_good">Jó idő a tekeréshez</string>
     <string name="voice_weather_ok">Tekerhető</string>

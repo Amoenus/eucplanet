@@ -344,6 +344,15 @@
     <string name="voice_special_not_connected">Nicio roată conectată.</string>
     <string name="voice_special_uptime">Conectat de %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, scor %2$s. %3$s grade, vânt %4$s, umiditate %5$s la sută</string>
+    <string name="voice_weather_checking">Verific vremea.</string>
+    <string name="voice_sp_air_temp_terms">temperatura exterioară,temperatura aerului,cât de frig este</string>
+    <string name="voice_sp_wind_terms">vânt,viteza vântului,cât de vânt</string>
+    <string name="voice_sp_humidity_terms">umiditate,cât de umed</string>
+    <string name="voice_sp_air_temp_answer">%1$s grade afară.</string>
+    <string name="voice_sp_wind_answer">Vânt %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vânt %1$s, cu rafale de %2$s.</string>
+    <string name="voice_sp_humidity_answer">Umiditate %1$s la sută.</string>
     <string name="voice_weather_great">Vreme excelentă de mers</string>
     <string name="voice_weather_good">Vreme bună de mers</string>
     <string name="voice_weather_ok">Se poate merge</string>

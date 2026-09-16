@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Nenhuma roda conectada.</string>
     <string name="voice_special_uptime">Conectado há %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, pontuação %2$s. %3$s graus, vento %4$s, umidade %5$s por cento</string>
+    <string name="voice_weather_checking">Verificando o tempo.</string>
+    <string name="voice_sp_air_temp_terms">temperatura externa,temperatura do ar,que frio faz</string>
+    <string name="voice_sp_wind_terms">vento,velocidade do vento,quanto vento</string>
+    <string name="voice_sp_humidity_terms">umidade,quanta umidade</string>
+    <string name="voice_sp_air_temp_answer">%1$s graus lá fora.</string>
+    <string name="voice_sp_wind_answer">Vento %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vento %1$s, com rajadas de %2$s.</string>
+    <string name="voice_sp_humidity_answer">Umidade %1$s por cento.</string>
     <string name="voice_weather_great">Ótimo tempo para andar</string>
     <string name="voice_weather_good">Bom tempo para andar</string>
     <string name="voice_weather_ok">Dá para andar</string>

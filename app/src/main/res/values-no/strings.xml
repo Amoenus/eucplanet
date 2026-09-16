@@ -1387,6 +1387,15 @@
     <string name="voice_special_not_connected">Ingen wheel tilkoblet.</string>
     <string name="voice_special_uptime">Tilkoblet i %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, score %2$s. %3$s grader, vind %4$s, luftfuktighet %5$s prosent</string>
+    <string name="voice_weather_checking">Jeg sjekker været.</string>
+    <string name="voice_sp_air_temp_terms">utetemperatur,lufttemperatur,hvor kaldt er det</string>
+    <string name="voice_sp_wind_terms">vind,vindhastighet,hvor mye vind</string>
+    <string name="voice_sp_humidity_terms">luftfuktighet,hvor fuktig</string>
+    <string name="voice_sp_air_temp_answer">%1$s grader ute.</string>
+    <string name="voice_sp_wind_answer">Vind %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vind %1$s, kast %2$s.</string>
+    <string name="voice_sp_humidity_answer">Luftfuktighet %1$s prosent.</string>
     <string name="voice_weather_great">Utmerket kjørevær</string>
     <string name="voice_weather_good">Godt kjørevær</string>
     <string name="voice_weather_ok">Kjørbart</string>

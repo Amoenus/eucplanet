@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Колесо не подключено.</string>
     <string name="voice_special_uptime">Подключено %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, оценка %2$s. %3$s градусов, ветер %4$s, влажность %5$s процентов</string>
+    <string name="voice_weather_checking">Проверяю погоду.</string>
+    <string name="voice_sp_air_temp_terms">температура воздуха,температура на улице,насколько холодно</string>
+    <string name="voice_sp_wind_terms">ветер,скорость ветра,насколько ветрено</string>
+    <string name="voice_sp_humidity_terms">влажность,насколько влажно</string>
+    <string name="voice_sp_air_temp_answer">%1$s градусов на улице.</string>
+    <string name="voice_sp_wind_answer">Ветер %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Ветер %1$s, порывы до %2$s.</string>
+    <string name="voice_sp_humidity_answer">Влажность %1$s процентов.</string>
     <string name="voice_weather_great">Отличная погода для поездки</string>
     <string name="voice_weather_good">Хорошая погода для поездки</string>
     <string name="voice_weather_ok">Ехать можно</string>

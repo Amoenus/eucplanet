@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Inget wheel anslutet.</string>
     <string name="voice_special_uptime">Ansluten i %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, poäng %2$s. %3$s grader, vind %4$s, luftfuktighet %5$s procent</string>
+    <string name="voice_weather_checking">Jag kollar vädret.</string>
+    <string name="voice_sp_air_temp_terms">utetemperatur,lufttemperatur,hur kallt är det</string>
+    <string name="voice_sp_wind_terms">vind,vindhastighet,hur blåsigt</string>
+    <string name="voice_sp_humidity_terms">luftfuktighet,hur fuktigt</string>
+    <string name="voice_sp_air_temp_answer">%1$s grader ute.</string>
+    <string name="voice_sp_wind_answer">Vind %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vind %1$s, byar %2$s.</string>
+    <string name="voice_sp_humidity_answer">Luftfuktighet %1$s procent.</string>
     <string name="voice_weather_great">Utmärkt åkväder</string>
     <string name="voice_weather_good">Bra åkväder</string>
     <string name="voice_weather_ok">Åkbart</string>

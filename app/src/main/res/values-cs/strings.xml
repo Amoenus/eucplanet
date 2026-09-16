@@ -344,6 +344,15 @@
     <string name="voice_special_not_connected">Není připojeno žádné kolo.</string>
     <string name="voice_special_uptime">Připojeno %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, skóre %2$s. %3$s stupňů, vítr %4$s, vlhkost %5$s procent</string>
+    <string name="voice_weather_checking">Kontroluji počasí.</string>
+    <string name="voice_sp_air_temp_terms">venkovní teplota,teplota vzduchu,jaká je zima</string>
+    <string name="voice_sp_wind_terms">vítr,rychlost větru,jak větrno</string>
+    <string name="voice_sp_humidity_terms">vlhkost,jak vlhko</string>
+    <string name="voice_sp_air_temp_answer">%1$s stupňů venku.</string>
+    <string name="voice_sp_wind_answer">Vítr %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Vítr %1$s, v nárazech %2$s.</string>
+    <string name="voice_sp_humidity_answer">Vlhkost %1$s procent.</string>
     <string name="voice_weather_great">Skvělé počasí na jízdu</string>
     <string name="voice_weather_good">Dobré počasí na jízdu</string>
     <string name="voice_weather_ok">Dá se jet</string>

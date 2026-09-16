@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Kein Wheel verbunden.</string>
     <string name="voice_special_uptime">Seit %1$s verbunden.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, Bewertung %2$s. %3$s Grad, Wind %4$s, Luftfeuchtigkeit %5$s Prozent</string>
+    <string name="voice_weather_checking">Ich prüfe das Wetter.</string>
+    <string name="voice_sp_air_temp_terms">Außentemperatur,Lufttemperatur,wie kalt ist es</string>
+    <string name="voice_sp_wind_terms">Wind,Windgeschwindigkeit,wie windig</string>
+    <string name="voice_sp_humidity_terms">Luftfeuchtigkeit,wie feucht</string>
+    <string name="voice_sp_air_temp_answer">%1$s Grad draußen.</string>
+    <string name="voice_sp_wind_answer">Wind %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Wind %1$s, Böen %2$s.</string>
+    <string name="voice_sp_humidity_answer">Luftfeuchtigkeit %1$s Prozent.</string>
     <string name="voice_weather_great">Super Fahrwetter</string>
     <string name="voice_weather_good">Gutes Fahrwetter</string>
     <string name="voice_weather_ok">Fahrbar</string>

@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">Ninguna rueda conectada.</string>
     <string name="voice_special_uptime">Conectado desde hace %1$s.</string>
     <string name="voice_special_weather">%1$s. %2$s.</string>
+    <string name="voice_special_weather_full">%1$s, puntuación %2$s. %3$s grados, viento %4$s, humedad %5$s por ciento</string>
+    <string name="voice_weather_checking">Consultando el tiempo.</string>
+    <string name="voice_sp_air_temp_terms">temperatura del aire,temperatura exterior,qué frío hace</string>
+    <string name="voice_sp_wind_terms">viento,velocidad del viento,cuánto viento</string>
+    <string name="voice_sp_humidity_terms">humedad,cuánta humedad</string>
+    <string name="voice_sp_air_temp_answer">%1$s grados fuera.</string>
+    <string name="voice_sp_wind_answer">Viento %1$s.</string>
+    <string name="voice_sp_wind_gust_answer">Viento %1$s, con rachas de %2$s.</string>
+    <string name="voice_sp_humidity_answer">Humedad %1$s por ciento.</string>
     <string name="voice_weather_great">Excelente para rodar</string>
     <string name="voice_weather_good">Buen tiempo para rodar</string>
     <string name="voice_weather_ok">Se puede rodar</string>

@@ -381,6 +381,15 @@
     <string name="voice_special_not_connected">ホイール未接続。</string>
     <string name="voice_special_uptime">接続してから %1$s。</string>
     <string name="voice_special_weather">%1$s。%2$s。</string>
+    <string name="voice_special_weather_full">%1$s、スコア %2$s。気温 %3$s 度、風 %4$s、湿度 %5$s パーセント</string>
+    <string name="voice_weather_checking">天気を確認します。</string>
+    <string name="voice_sp_air_temp_terms">外気温,気温,どのくらい寒い</string>
+    <string name="voice_sp_wind_terms">風,風速,どのくらい風が強い</string>
+    <string name="voice_sp_humidity_terms">湿度,どのくらい湿っている</string>
+    <string name="voice_sp_air_temp_answer">外は %1$s 度です。</string>
+    <string name="voice_sp_wind_answer">風 %1$s。</string>
+    <string name="voice_sp_wind_gust_answer">風 %1$s、最大 %2$s。</string>
+    <string name="voice_sp_humidity_answer">湿度 %1$s パーセント。</string>
     <string name="voice_weather_great">絶好の走行日和</string>
     <string name="voice_weather_good">走りやすい天気</string>
     <string name="voice_weather_ok">走れます</string>

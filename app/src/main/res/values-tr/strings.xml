@@ -2631,4 +2631,12 @@
     <string name="tpms_state_inflating">Şişiriliyor</string>
     <string name="alarm_metric_battery_envelope">Batarya (tah)</string>
     <string name="alarm_metric_battery_envelope_long">Batarya zarfı (yüksüz tahmin)</string>
+
+    <string name="headlight_state_off">Far: kapalı</string>
+    <string name="headlight_state_low">Far: düşük</string>
+    <string name="headlight_state_medium">Far: orta</string>
+    <string name="headlight_state_high">Far: yüksek</string>
+    <string name="headlight_state_unknown">Far: ?</string>
+    <string name="adv_headlight_readback_age">Işık durumu geçerliliği</string>
+    <string name="adv_headlight_readback_age_desc">Bildirilen ışık seviyesinin güncel kaldığı süre. Çok uzun bir süre eski bir seviyeyi gösterebilir.</string>
 </resources>

@@ -2631,4 +2631,12 @@
     <string name="tpms_state_inflating">Накачується</string>
     <string name="alarm_metric_battery_envelope">Батарея (оц)</string>
     <string name="alarm_metric_battery_envelope_long">Огинальна заряду (оцінка без навантаження)</string>
+
+    <string name="headlight_state_off">Світло: вимк.</string>
+    <string name="headlight_state_low">Світло: слабке</string>
+    <string name="headlight_state_medium">Світло: середнє</string>
+    <string name="headlight_state_high">Світло: яскраве</string>
+    <string name="headlight_state_unknown">Світло: ?</string>
+    <string name="adv_headlight_readback_age">Термін актуальності світла</string>
+    <string name="adv_headlight_readback_age_desc">Як довго отриманий рівень світла вважається актуальним. Надто великий термін може показувати застарілий рівень.</string>
 </resources>

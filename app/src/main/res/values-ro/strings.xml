@@ -2437,4 +2437,12 @@
     <string name="tpms_state_inflating">Se umflă</string>
     <string name="alarm_metric_battery_envelope">Baterie (est)</string>
     <string name="alarm_metric_battery_envelope_long">Anvelopă baterie (estimare fără sarcină)</string>
+
+    <string name="headlight_state_off">Far: oprit</string>
+    <string name="headlight_state_low">Far: slab</string>
+    <string name="headlight_state_medium">Far: mediu</string>
+    <string name="headlight_state_high">Far: puternic</string>
+    <string name="headlight_state_unknown">Far: ?</string>
+    <string name="adv_headlight_readback_age">Valabilitatea stării luminii</string>
+    <string name="adv_headlight_readback_age_desc">Cât timp nivelul de lumină raportat rămâne actual. O durată prea mare poate afișa un nivel învechit.</string>
 </resources>

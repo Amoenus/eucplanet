@@ -2634,4 +2634,12 @@
     <string name="tpms_state_inflating">Накачивается</string>
     <string name="alarm_metric_battery_envelope">Батарея (оц)</string>
     <string name="alarm_metric_battery_envelope_long">Огибающая заряда (оценка без нагрузки)</string>
+
+    <string name="headlight_state_off">Свет: выкл.</string>
+    <string name="headlight_state_low">Свет: слабый</string>
+    <string name="headlight_state_medium">Свет: средний</string>
+    <string name="headlight_state_high">Свет: яркий</string>
+    <string name="headlight_state_unknown">Свет: ?</string>
+    <string name="adv_headlight_readback_age">Срок актуальности света</string>
+    <string name="adv_headlight_readback_age_desc">Как долго полученный уровень света считается актуальным. Слишком большой срок может показывать устаревший уровень.</string>
 </resources>

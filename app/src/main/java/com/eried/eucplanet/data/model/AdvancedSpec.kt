@@ -98,6 +98,11 @@ val ADVANCED_SPECS: List<AdvancedSpec> = listOf(
     AdvancedSpec("garminReportIntervalMs", AdvGroup.RATES, R.string.adv_garmin_report_interval, R.string.adv_garmin_report_interval_desc,
         100..2000, 25, get = { it.garminReportIntervalMs }, set = { s, v -> s.copy(garminReportIntervalMs = v) }),
 
+    AdvancedSpec("headlightReadbackMaxAgeMs", AdvGroup.CONTROLS,
+        R.string.adv_headlight_readback_age, R.string.adv_headlight_readback_age_desc,
+        1000..30000, 1000, get = { it.headlightReadbackMaxAgeMs },
+        set = { s, v -> s.copy(headlightReadbackMaxAgeMs = v) }),
+
     // --- Navigation timing ---
     AdvancedSpec("navOffRouteGraceMs", AdvGroup.NAV_TIMING, R.string.adv_nav_offroute_grace, R.string.adv_nav_offroute_grace_desc,
         500..60000, 500, get = { it.navOffRouteGraceMs }, set = { s, v -> s.copy(navOffRouteGraceMs = v) }),

@@ -2634,4 +2634,12 @@
     <string name="tpms_state_inflating">Pumpar</string>
     <string name="alarm_metric_battery_envelope">Batteri (est)</string>
     <string name="alarm_metric_battery_envelope_long">Batterikurva (uppskattning utan last)</string>
+
+    <string name="headlight_state_off">Ljus: av</string>
+    <string name="headlight_state_low">Ljus: lågt</string>
+    <string name="headlight_state_medium">Ljus: medel</string>
+    <string name="headlight_state_high">Ljus: högt</string>
+    <string name="headlight_state_unknown">Ljus: ?</string>
+    <string name="adv_headlight_readback_age">Ljusstatusens giltighet</string>
+    <string name="adv_headlight_readback_age_desc">Hur länge en rapporterad ljusnivå är aktuell. För lång tid kan visa en inaktuell nivå.</string>
 </resources>

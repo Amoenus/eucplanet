@@ -2658,4 +2658,12 @@
     <string name="tpms_state_inflating">Inflating</string>
     <string name="alarm_metric_battery_envelope">Battery (est)</string>
     <string name="alarm_metric_battery_envelope_long">Battery envelope (load-free estimate)</string>
+
+    <string name="headlight_state_off">Light: Off</string>
+    <string name="headlight_state_low">Light: Low</string>
+    <string name="headlight_state_medium">Light: Medium</string>
+    <string name="headlight_state_high">Light: High</string>
+    <string name="headlight_state_unknown">Light: ?</string>
+    <string name="adv_headlight_readback_age">Light readback timeout</string>
+    <string name="adv_headlight_readback_age_desc">How long a reported light level stays current. Too long can show an outdated level.</string>
 </resources>

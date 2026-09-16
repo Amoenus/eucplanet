@@ -2638,4 +2638,12 @@
     <string name="tpms_state_inflating">Gonflage</string>
     <string name="alarm_metric_battery_envelope">Batterie (est)</string>
     <string name="alarm_metric_battery_envelope_long">Enveloppe batterie (estimation hors charge)</string>
+
+    <string name="headlight_state_off">Phare : éteint</string>
+    <string name="headlight_state_low">Phare : faible</string>
+    <string name="headlight_state_medium">Phare : moyen</string>
+    <string name="headlight_state_high">Phare : fort</string>
+    <string name="headlight_state_unknown">Phare : ?</string>
+    <string name="adv_headlight_readback_age">Validité du niveau du phare</string>
+    <string name="adv_headlight_readback_age_desc">Durée de validité du niveau de phare reçu. Une durée trop longue peut afficher un niveau périmé.</string>
 </resources>

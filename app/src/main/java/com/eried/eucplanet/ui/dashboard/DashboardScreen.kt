@@ -356,6 +356,9 @@ fun DashboardScreen(
     val landscapeSpeedoStyle by viewModel.landscapeSpeedoStyle.collectAsState()
     val landscapeMirrored by viewModel.landscapeMirrored.collectAsState()
     val advancedVars by viewModel.advanced.collectAsState()
+    val headlightButton = rememberHeadlightButtonState(
+        wheelData, connectionState == ConnectionState.CONNECTED, advancedVars.headlightReadbackMaxAgeMs,
+    )
     val dashboardCustomBleJson by viewModel.dashboardCustomBle.collectAsState()
     // Phone-battery and GPS feeds for the catalog metrics that aren't
     // sourced from WheelData. Both update lazily; the value pipeline
@@ -2399,8 +2402,8 @@ fun DashboardScreen(
                             "LIGHT_TOGGLE" -> ActionTile(
                                 modifier = Modifier.weight(1f),
                                 icon = Icons.Default.FlashlightOn,
-                                label = stringResource(R.string.action_light),
-                                active = wheelData.lightOn,
+                                label = stringResource(headlightButton.labelRes),
+                                active = headlightButton.active,
                                 activeColor = if (useAccent) primary else MaterialTheme.appColors.gaugeWarn,
                                 enabled = connectionState == ConnectionState.CONNECTED && !lightBusy,
                                 onClick = { viewModel.onLightToggle() },

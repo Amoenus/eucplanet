@@ -107,17 +107,17 @@ class SettingsRepository @Inject constructor(
         // An imported or Dropbox-synced file can carry an unlockWhen this build
         // does not know. Fall back to never rather than letting an unrecognised
         // value decide when a wheel unlocks itself.
-        proximityLock = if (proximityLock.unlockWhen in ProximityLockSettings.UNLOCK_WHEN_VALUES) {
+        // The wheel code is six digits at most; anything else is a typo the
+        // wheel would refuse.
+        proximityLock = (if (proximityLock.unlockWhen in ProximityLockSettings.UNLOCK_WHEN_VALUES) {
             proximityLock
         } else {
             proximityLock.copy(unlockWhen = ProximityLockSettings.UNLOCK_WHEN_NEVER)
-        },
+        }).let { it.copy(wheelCode = it.wheelCode.filter { c -> c.isDigit() }.take(6)) },
         // A pressure unit this build cannot convert would fall through the
         // formatter to kPa, changing every pressure in the app by a factor of
         // a hundred without saying so. Blank is the documented "follow the
         // unit system" value, so an unrecognised one lands there.
-        // Six digits at most; anything else is a typo the wheel would refuse.
-        wheelLock = wheelLock.copy(code = wheelLock.code.filter { it.isDigit() }.take(6)),
         tpms = tpms.copy(
             pressureUnit = tpms.pressureUnit.takeIf {
                 it in TpmsSettings.PRESSURE_UNIT_VALUES

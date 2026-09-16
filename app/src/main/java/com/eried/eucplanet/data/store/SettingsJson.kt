@@ -165,6 +165,7 @@ object SettingsJson {
         })
         put("proximityLock", JSONObject().apply {
             put("lockEnabled", s.proximityLock.lockEnabled)
+            put("wheelCode", s.proximityLock.wheelCode)
             put("lockBelowDbm", s.proximityLock.lockBelowDbm)
             put("unlockAboveDbm", s.proximityLock.unlockAboveDbm)
             put("unlockWhen", s.proximityLock.unlockWhen)
@@ -197,7 +198,6 @@ object SettingsJson {
         put("flic4DoubleClick", s.flic4DoubleClick)
         put("flic4Hold", s.flic4Hold)
         put("flicShowOnDashboard", s.flicShowOnDashboard)
-        put("wheelLock", JSONObject().apply { put("code", s.wheelLock.code) })
         put("lights", JSONObject().apply {
             put("applyWhen", s.lights.applyWhen)
             put("onMinutesBefore", s.lights.onMinutesBefore)
@@ -587,6 +587,7 @@ object SettingsJson {
         proximityLock = j.optJSONObject("proximityLock")?.let { p ->
             base.proximityLock.copy(
                 lockEnabled = p.optBoolean("lockEnabled", base.proximityLock.lockEnabled),
+                wheelCode = p.optString("wheelCode", base.proximityLock.wheelCode),
                 lockBelowDbm = p.optInt("lockBelowDbm", base.proximityLock.lockBelowDbm),
                 unlockAboveDbm = p.optInt("unlockAboveDbm", base.proximityLock.unlockAboveDbm),
                 // Settings written before the unlock became a three-way carry
@@ -638,9 +639,6 @@ object SettingsJson {
         // Read the group when it is there, else fold the old keys in: the
         // enable switch decides off or on, and on means Connected, which is
         // what it always was (the light lives on the wheel).
-        wheelLock = j.optJSONObject("wheelLock")?.let { w ->
-            base.wheelLock.copy(code = w.optString("code", base.wheelLock.code))
-        } ?: base.wheelLock,
         lights = j.optJSONObject("lights")?.let { l ->
             base.lights.copy(
                 applyWhen = l.optString("applyWhen", base.lights.applyWhen),

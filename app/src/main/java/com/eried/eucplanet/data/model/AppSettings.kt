@@ -197,7 +197,6 @@ data class AppSettings(
 
     // Auto-lights (sunset/sunrise based, uses live GPS from trip repository)
     val lights: LightsSettings = LightsSettings(),
-    val wheelLock: WheelLockSettings = WheelLockSettings(),
 
     // Speed-based volume boost. Multiplier curve maps speed to 1×–2× of the user's baseline volume.
     // 1× = no boost (baseline), 2× = double the baseline (capped at 100% by the system).
@@ -1267,6 +1266,16 @@ data class BatteryPercentSettings(
 }
 
 data class ProximityLockSettings(
+    /**
+     * The code the wheel's unlock wants, or "" when none. Only KingSong today:
+     * the rider sets six digits in the KingSong app, the wheel locks on a plain
+     * command and unlocks only when those digits come along (KS-18XL capture,
+     * issue #19, 2026-09-16). The lock tile and the proximity unlock both send
+     * it. Mirrored into the wheel's profile, so it follows the wheel, like the
+     * pack size does. Lives here rather than in a group of its own because
+     * AppSettings sits two slots from the JVM's copy() limit.
+     */
+    val wheelCode: String = "",
     val lockEnabled: Boolean = false,
     // Lock when the signal is at or below this (dBm) - the rider is walking away.
     // Default tuned to a real reading (near ~-59, 4 steps ~-65, 9 steps ~-79):

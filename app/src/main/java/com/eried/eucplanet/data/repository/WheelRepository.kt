@@ -872,7 +872,7 @@ class WheelRepository @Inject constructor(
         // wheel restores everything (tiltback, alarm, safety, calibration).
         scope.launch {
             settingsRepository.settings.collect { s ->
-                lockCodeCache = s.wheelLock.code
+                lockCodeCache = s.proximityLock.wheelCode
                 val clamped = s.speedCalibrationOffsetPct.coerceIn(-15f, 15f)
                 speedCalibrationMultiplier = 1f + clamped / 100f
                 // Wheel poll + chart sampling are independent rider settings now,
@@ -1365,7 +1365,7 @@ class WheelRepository @Inject constructor(
                         capacityWh = existing.batteryCapacityWh,
                     ),
                     // The lock code is the wheel's too.
-                    wheelLock = s.wheelLock.copy(code = existing.lockCode),
+                    proximityLock = s.proximityLock.copy(wheelCode = existing.lockCode),
                 )
             )
         } else {
@@ -1380,7 +1380,7 @@ class WheelRepository @Inject constructor(
                         capacityWh = 0,
                     ),
                     // A wheel we have never seen has no code on file.
-                    wheelLock = com.eried.eucplanet.data.model.WheelLockSettings(),
+                    proximityLock = s.proximityLock.copy(wheelCode = ""),
                 )
             )
             persistWheelProfile(name, settingsRepository.get())
@@ -1403,7 +1403,7 @@ class WheelRepository @Inject constructor(
                     seriesCells = s.batteryPercent.seriesCells,
                     batteryMode = s.batteryPercent.mode,
                     batteryCapacityWh = s.batteryPercent.capacityWh,
-                    lockCode = s.wheelLock.code,
+                    lockCode = s.proximityLock.wheelCode,
                     lastConnectedAt = System.currentTimeMillis()
                 )
             )

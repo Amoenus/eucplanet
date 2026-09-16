@@ -674,6 +674,9 @@ fun SettingsScreen(
         stringResource(R.string.speed_legal_tiltback),
         stringResource(R.string.speed_legal_alarm),
         stringResource(R.string.section_speed_calibration),
+        stringResource(R.string.section_wheel_lock),
+        stringResource(R.string.lock_code_label),
+        stringResource(R.string.lock_code_hint),
         stringResource(R.string.section_battery_percent),
         stringResource(R.string.battery_override_label),
         stringResource(R.string.battery_percent_min_cell),
@@ -6847,7 +6850,7 @@ private fun SpeedTab(
         if (isConnected && viewModel.connectedFamilyId == "kingsong") {
             SectionHeader(stringResource(R.string.section_wheel_lock))
             HintText(stringResource(R.string.lock_code_hint), small = true)
-            var lockCodeText by remember { mutableStateOf(settings.wheelLock.code) }
+            var lockCodeText by remember { mutableStateOf(settings.proximityLock.wheelCode) }
             // Half width, left side, like the calibration pill above it.
             Row(
                 modifier = Modifier.fillMaxWidth(),

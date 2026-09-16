@@ -799,7 +799,7 @@
     <string name="units_label">Unități</string>
     <string name="units_metric">Metrice</string>
     <string name="units_imperial">Imperiale</string>
-    <string name="units_custom">Personalizate</string>
+    <string name="units_custom">Proprii</string>
     <string name="units_temperature">Temperatură</string>
     <string name="units_speed">Viteză</string>
     <string name="tpms_forget">Uită</string>

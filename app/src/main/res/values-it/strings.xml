@@ -251,7 +251,7 @@
     <string name="units_label">Unità</string>
     <string name="units_metric">Metrico</string>
     <string name="units_imperial">Imperiale</string>
-    <string name="units_custom">Personalizzato</string>
+    <string name="units_custom">Su misura</string>
     <string name="units_temperature">Temperatura</string>
     <string name="units_speed">Velocità</string>
     <string name="tpms_forget">Dimentica</string>

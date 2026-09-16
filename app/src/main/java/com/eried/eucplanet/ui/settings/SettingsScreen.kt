@@ -10797,25 +10797,14 @@ internal fun SegmentedChoice(
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size, baseShape = RoundedCornerShape(12.dp)),
                     colors = themedSegmentedColors(),
                 ) {
-                    // Labels shrink to fit rather than break inside a word: a
-                    // segment is a third of the row, and "Benutzerdefiniert"
-                    // (German for Custom) used to wrap as "Benutzerdefini / ert".
-                    // One word stays on one line and scales down to 10 sp; a
-                    // phrase may take two lines first, then scales.
-                    val contentColor = LocalContentColor.current
-                    androidx.compose.foundation.text.BasicText(
-                        text = optLabel,
-                        style = androidx.compose.material3.LocalTextStyle.current.merge(
-                            androidx.compose.ui.text.TextStyle(textAlign = TextAlign.Center)
-                        ),
-                        color = { contentColor },
-                        maxLines = if (optLabel.contains(' ')) 2 else 1,
-                        overflow = TextOverflow.Ellipsis,
-                        autoSize = androidx.compose.foundation.text.TextAutoSize.StepBased(
-                            minFontSize = 10.sp,
-                            maxFontSize = 14.sp,
-                            stepSize = 0.5.sp,
-                        ),
+                    // Two lines, wrapped at the word. Single words that are too
+                    // long for a third of the row are shortened in strings.xml
+                    // rather than scaled: the font stays the same everywhere.
+                    Text(
+                        optLabel,
+                        textAlign = TextAlign.Center,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }

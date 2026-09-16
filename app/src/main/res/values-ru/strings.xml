@@ -2532,7 +2532,7 @@
     <string name="hud_discovery_auto">Авто</string>
     <string name="hud_discovery_both">Оба</string>
     <string name="hud_discovery_desc">Авто находит HUD сам. Фиксированный использует только адрес ниже.</string>
-    <string name="hud_discovery_fixed">Фиксированный</string>
+    <string name="hud_discovery_fixed">Вручную</string>
     <string name="hud_discovery_mode">Режим поиска</string>
     <string name="metric_chip_battery_range">Батарея начало → конец</string>
     <string name="recording_summary_battery_range">Начало→конец (-%1$d%%)</string>

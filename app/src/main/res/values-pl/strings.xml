@@ -647,7 +647,7 @@
     <string name="units_label">Jednostki</string>
     <string name="units_metric">Metryczne</string>
     <string name="units_imperial">Imperialne</string>
-    <string name="units_custom">Niestandardowe</string>
+    <string name="units_custom">Własne</string>
     <string name="units_temperature">Temperatura</string>
     <string name="units_speed">Prędkość</string>
     <string name="tpms_forget">Zapomnij</string>

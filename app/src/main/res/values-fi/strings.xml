@@ -1283,7 +1283,7 @@
     <string name="pip_desc">Kutistuu kelluvaksi ikkunaksi, kun poistut sovelluksesta.</string>
     <string name="pip_mode_label">PIP-tila</string>
     <string name="pip_mode_off">Pois</string>
-    <string name="pip_mode_simple">Yksinkertainen</string>
+    <string name="pip_mode_simple">Perus</string>
     <string name="pip_mode_dashboard">Mittaristo</string>
     <string name="phone_hud_section">Puhelimen HUD</string>
     <string name="phone_hud_desc">Piirtää Overlay Studio -asettelun muiden sovellusten päälle, joten näet yksipyöräisesi karttoja tai musiikkia käyttäessäsi.</string>

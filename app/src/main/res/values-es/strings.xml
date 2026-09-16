@@ -647,7 +647,7 @@
     <string name="units_label">Unidades</string>
     <string name="units_metric">Métrico</string>
     <string name="units_imperial">Imperial</string>
-    <string name="units_custom">Personalizado</string>
+    <string name="units_custom">Personal</string>
     <string name="units_temperature">Temperatura</string>
     <string name="units_speed">Velocidad</string>
     <string name="tpms_forget">Olvidar</string>

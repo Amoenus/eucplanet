@@ -2452,7 +2452,7 @@
     <string name="pip_mode_label">PIP-läge</string>
     <string name="pip_mode_off">Av</string>
     <string name="pip_mode_simple">Enkel</string>
-    <string name="pip_mode_dashboard">Instrumentpanel</string>
+    <string name="pip_mode_dashboard">Panel</string>
     <string name="widget_section">Widget pa hemskarmen</string>
     <string name="widget_pick_desc">Välj de %1$d mätvärden och %2$d knappar som widgeten visar.</string>
     <string name="widget_metric_slot">Mätvärde %1$d</string>

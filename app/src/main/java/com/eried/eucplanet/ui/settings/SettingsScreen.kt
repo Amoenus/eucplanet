@@ -6846,26 +6846,33 @@ private fun SpeedTab(
         // KingSong wheel is connected; saved on that wheel's profile.
         if (isConnected && viewModel.connectedFamilyId == "kingsong") {
             SectionHeader(stringResource(R.string.section_wheel_lock))
-            var lockCodeText by remember { mutableStateOf(settings.wheelLock.code) }
-            OutlinedTextField(
-                value = lockCodeText,
-                onValueChange = { new ->
-                    if (new.length <= 6 && new.all { it.isDigit() }) {
-                        lockCodeText = new
-                        viewModel.updateWheelLockCode(new)
-                    }
-                },
-                label = { Text(stringResource(R.string.lock_code_label)) },
-                singleLine = true,
-                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
-                    imeAction = androidx.compose.ui.text.input.ImeAction.Done,
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = themedFieldColors(),
-                shape = RoundedCornerShape(12.dp),
-            )
             HintText(stringResource(R.string.lock_code_hint), small = true)
+            var lockCodeText by remember { mutableStateOf(settings.wheelLock.code) }
+            // Half width, left side, like the calibration pill above it.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = lockCodeText,
+                    onValueChange = { new ->
+                        if (new.length <= 6 && new.all { it.isDigit() }) {
+                            lockCodeText = new
+                            viewModel.updateWheelLockCode(new)
+                        }
+                    },
+                    label = { Text(stringResource(R.string.lock_code_label)) },
+                    singleLine = true,
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
+                        imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+                    ),
+                    modifier = Modifier.weight(1f),
+                    colors = themedFieldColors(),
+                    shape = RoundedCornerShape(12.dp),
+                )
+                Spacer(Modifier.weight(1f))
+            }
         }
 
         // --- Battery calibration ---

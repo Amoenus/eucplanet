@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">stem uit,meldingen uit,spraak uit</string>
     <string name="voice_command_vocabulary">Wat kan ik zeggen</string>
     <string name="voice_command_vocabulary_tap">Zeg een naam los of in een vraag.</string>
-    <string name="voice_command_vocabulary_legend">* is geen meting van het wiel: het doet iets of antwoordt over iets anders.</string>
+    <string name="voice_vocab_group_wheel">Wiel</string>
+    <string name="voice_vocab_group_actions">Acties</string>
+    <string name="voice_vocab_group_around">Om je heen</string>
     <string name="voice_listening">Luisteren</string>
     <string name="voice_answer_off">%1$s staat uit. Je kunt het aanzetten in de instellingen.</string>
     <string name="voice_answer_unsupported">Je wiel rapporteert %1$s niet.</string>

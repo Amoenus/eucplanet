@@ -316,7 +316,9 @@
     <string name="voice_act_announce_off_terms">voce oprită,anunțuri oprite,oprește vocea</string>
     <string name="voice_command_vocabulary">Ce pot să spun</string>
     <string name="voice_command_vocabulary_tap">Spune un nume singur sau într-o întrebare.</string>
-    <string name="voice_command_vocabulary_legend">* nu este o citire de pe roată: face ceva sau răspunde despre altceva.</string>
+    <string name="voice_vocab_group_wheel">Monociclu</string>
+    <string name="voice_vocab_group_actions">Acțiuni</string>
+    <string name="voice_vocab_group_around">În jurul tău</string>
     <string name="voice_listening">Ascult</string>
     <string name="voice_answer_off">%1$s este dezactivat. Îl poți activa din setări.</string>
     <string name="voice_answer_unsupported">Roata ta nu raportează %1$s.</string>

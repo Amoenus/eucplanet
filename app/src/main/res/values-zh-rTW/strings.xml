@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">語音關閉,播報關閉,關閉語音</string>
     <string name="voice_command_vocabulary">我可以說什麼</string>
     <string name="voice_command_vocabulary_tap">可以只說名稱，也可以放在問題裡。</string>
-    <string name="voice_command_vocabulary_legend">* 不是車輛讀數：它會執行操作，或回答其他內容。</string>
+    <string name="voice_vocab_group_wheel">車輪</string>
+    <string name="voice_vocab_group_actions">操作</string>
+    <string name="voice_vocab_group_around">周圍</string>
     <string name="voice_listening">聆聽中</string>
     <string name="voice_answer_off">%1$s已關閉。可在設定中開啟。</string>
     <string name="voice_answer_unsupported">你的輪子不提供%1$s。</string>

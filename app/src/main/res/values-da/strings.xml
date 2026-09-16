@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">stemme fra,meddelelser fra,tale fra</string>
     <string name="voice_command_vocabulary">Hvad kan jeg sige</string>
     <string name="voice_command_vocabulary_tap">Sig et navn alene eller i et spørgsmål.</string>
-    <string name="voice_command_vocabulary_legend">* er ikke en måling fra hjulet: det gør noget eller svarer om noget andet.</string>
+    <string name="voice_vocab_group_wheel">Hjul</string>
+    <string name="voice_vocab_group_actions">Handlinger</string>
+    <string name="voice_vocab_group_around">Omkring dig</string>
     <string name="voice_listening">Lytter</string>
     <string name="voice_answer_off">%1$s er slået fra. Du kan slå det til i indstillingerne.</string>
     <string name="voice_answer_unsupported">Dit hjul rapporterer ikke %1$s.</string>

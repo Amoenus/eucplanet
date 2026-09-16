@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">stimme aus,ansagen aus,sprachausgabe aus</string>
     <string name="voice_command_vocabulary">Was kann ich sagen</string>
     <string name="voice_command_vocabulary_tap">Sag einen Namen allein oder in einer Frage.</string>
-    <string name="voice_command_vocabulary_legend">* ist keine Anzeige des Rads: es tut etwas oder antwortet über etwas anderes.</string>
+    <string name="voice_vocab_group_wheel">Wheel</string>
+    <string name="voice_vocab_group_actions">Aktionen</string>
+    <string name="voice_vocab_group_around">Um dich herum</string>
     <string name="voice_listening">Ich höre</string>
     <string name="voice_answer_off">%1$s ist aus. Du kannst es in den Einstellungen aktivieren.</string>
     <string name="voice_answer_unsupported">Dein Wheel meldet %1$s nicht.</string>

@@ -1346,7 +1346,9 @@
     <string name="voice_act_announce_off_terms">语音关闭,播报关闭,关闭语音</string>
     <string name="voice_command_vocabulary">我可以说什么</string>
     <string name="voice_command_vocabulary_tap">可以只说名称，也可以放在问题里。</string>
-    <string name="voice_command_vocabulary_legend">* 不是车辆读数：它会执行操作，或回答其他内容。</string>
+    <string name="voice_vocab_group_wheel">独轮车</string>
+    <string name="voice_vocab_group_actions">操作</string>
+    <string name="voice_vocab_group_around">周围</string>
     <string name="voice_listening">聆听中</string>
     <string name="voice_answer_off">%1$s已关闭。可在设置中开启。</string>
     <string name="voice_answer_unsupported">你的轮子不提供%1$s。</string>

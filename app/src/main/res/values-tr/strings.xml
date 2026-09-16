@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">ses kapalı,duyurular kapalı,sesi kapat</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>
-    <string name="voice_command_vocabulary_legend">* tekerlek ölçümü değil: bir şey yapar veya başka bir şeyi yanıtlar.</string>
+    <string name="voice_vocab_group_wheel">Teker</string>
+    <string name="voice_vocab_group_actions">Eylemler</string>
+    <string name="voice_vocab_group_around">Çevrende</string>
     <string name="voice_listening">Dinliyorum</string>
     <string name="voice_answer_off">%1$s kapalı. Ayarlardan açabilirsin.</string>
     <string name="voice_answer_unsupported">Tekerleğin %1$s bildirmiyor.</string>

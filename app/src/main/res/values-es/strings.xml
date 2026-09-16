@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">voz desactivada,anuncios desactivados,desactivar voz,silenciar voz</string>
     <string name="voice_command_vocabulary">Qué puedo decir</string>
     <string name="voice_command_vocabulary_tap">Di un nombre solo o dentro de una pregunta.</string>
-    <string name="voice_command_vocabulary_legend">* no es una lectura de la rueda: hace algo o responde sobre otra cosa.</string>
+    <string name="voice_vocab_group_wheel">Rueda</string>
+    <string name="voice_vocab_group_actions">Acciones</string>
+    <string name="voice_vocab_group_around">A tu alrededor</string>
     <string name="voice_listening">Escuchando</string>
     <string name="voice_answer_off">%1$s está desactivado. Puedes activarlo en los ajustes.</string>
     <string name="voice_answer_unsupported">Tu rueda no informa de %1$s.</string>
@@ -686,7 +688,7 @@
     <string name="section_wheel_lock">Bloqueo</string>
     <string name="lock_code_label">Código de bloqueo KingSong</string>
     <string name="lock_code_hint">Los seis dígitos que pusiste en la app de KingSong. Bloquear funciona sin él, desbloquear lo necesita.</string>
-    <string name="lock_code_missing">Para desbloquear hace falta el código de KingSong. Ajustes, Parámetros del wheel, Bloqueo.</string>
+    <string name="lock_code_missing">Para desbloquear hace falta el código de KingSong. Ajustes, Parámetros de la rueda, Bloqueo.</string>
     <string name="battery_override_label">Anular el porcentaje de la rueda</string>
     <string name="battery_override_hint">Calcularlo desde el voltaje del pack.</string>
     <string name="battery_percent_custom_floor">Escala lineal</string>

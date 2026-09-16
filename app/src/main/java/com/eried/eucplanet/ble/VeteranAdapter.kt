@@ -1,6 +1,5 @@
 package com.eried.eucplanet.ble
 
-import com.eried.eucplanet.data.model.HeadlightReadback
 import com.eried.eucplanet.diagnostics.DiagnosticCommand
 import com.eried.eucplanet.diagnostics.DiagnosticsLogger
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     @Volatile private var detectedModel: VeteranModel? = null
     @Volatile private var controlProfile = VeteranControlProfile.forModel(null)
     private var pendingLightProfile: VeteranControlProfile? = null
-    @Volatile private var alarmCommandModel: VeteranModel? = null
+    @Volatile private var commandModel: VeteranModel? = null
 
     override val nominalPackVoltage: Int? get() = detectedModel?.nominalVoltage
 
@@ -54,7 +53,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     override fun notifyConnectingTo(deviceName: String?): DecodeResult.ModelName? {
         detectedModel = deviceName?.let { VeteranModel.fromReportedName(it) }
         controlProfile = VeteranControlProfile.forModel(detectedModel)
-        alarmCommandModel = detectedModel
+        commandModel = detectedModel
         return null
     }
 
@@ -78,10 +77,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
      */
     override fun hornFollowup(): ByteArray = VeteranCommands.hornCompanion()
 
-    // Models without established light readback retain their last commanded Boolean.
-    // Aeon page 1 reports the physical level, including panel changes (see aeon-headlight-readback.md).
-    @Volatile private var lastLightOn: Boolean = false
-    @Volatile private var headlightReadback: HeadlightReadback? = null
+    private val headlightState = VeteranHeadlightState()
 
     // Last Oryx BMS state-of-charge read from a page-2 sub-frame (byte 50).
     // The wheel only sends page 2 ~1 frame in 9, so we cache it and stamp it
@@ -96,7 +92,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
     @Volatile private var emittedModel: Boolean = false
 
     override fun setLight(on: Boolean): ByteArray {
-        if (alarmCommandModel != VeteranModel.NOSFET_AEON) lastLightOn = on
+        headlightState.commanded(commandModel, on)
         val profile = controlProfile
         pendingLightProfile = profile
         return profile.setLight(on)
@@ -124,7 +120,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
         VeteranCommands.setTiltbackSpeed(tiltbackKmh.toInt())
 
     override fun setAlarmSpeedCommit(alarmKmh: Float): ByteArray =
-        VeteranCommands.setAlarmSpeed(alarmKmh.toInt(), alarmCommandModel)
+        VeteranCommands.setAlarmSpeed(alarmKmh.toInt(), commandModel)
 
     // No volume, no DRL on this family.
     override fun setVolume(percent: Int): ByteArray? = null
@@ -261,7 +257,7 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
             if (isStandardTelemetry) {
                 VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes))?.let {
                     controlProfile = VeteranControlProfile.forModel(it)
-                    alarmCommandModel = it
+                    commandModel = it
                 }
             }
             val telem = if (isStandardTelemetry)
@@ -281,29 +277,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
                 val battery = if (lastOryxBatterySoc in 0..100) lastOryxBatterySoc
                               else telem.batteryPercent
                 val model = VeteranModel.fromMVer(VeteranParser.mVerOf(f.bytes)) ?: detectedModel
-                if (model == VeteranModel.NOSFET_AEON) {
-                    if (headlightReadback == null) {
-                        headlightReadback = HeadlightReadback()
-                        lastLightOn = false
-                    }
-                    // Only CRC-validated, 87-byte page-1 frames establish the measured level.
-                    // Page 8 is independently timed and must not replace a newer page-1 sample.
-                    if (f.bytes.size == 87 && VeteranParser.pageId(f.bytes) == 1) {
-                        val level = when (f.bytes[49].toInt() and 0xff) {
-                            0 -> HeadlightReadback.Level.OFF
-                            1 -> HeadlightReadback.Level.LOW
-                            2 -> HeadlightReadback.Level.MEDIUM
-                            3 -> HeadlightReadback.Level.HIGH
-                            else -> null
-                        }
-                        headlightReadback = HeadlightReadback(level, System.nanoTime())
-                        if (level != null) lastLightOn = level != HeadlightReadback.Level.OFF
-                    }
-                } else {
-                    if (headlightReadback != null) lastLightOn = false
-                    headlightReadback = null
-                }
-                telem.copy(lightOn = lastLightOn, headlightReadback = headlightReadback, batteryPercent = battery)
+                headlightState.acceptFrame(f.bytes, model)
+                val headlight = headlightState.snapshot
+                telem.copy(lightOn = headlight.lightOn, headlightReadback = headlight.readback, batteryPercent = battery)
             } else null
             // Log the DECODED values (not just raw bytes) per frame so a
             // service-mode capture shows the speed/battery timeline directly -
@@ -360,13 +336,9 @@ class VeteranAdapter @Inject constructor() : WheelAdapter {
         detectedModel = null
         controlProfile = VeteranControlProfile.forModel(null)
         pendingLightProfile = null
-        alarmCommandModel = null
+        commandModel = null
         lastOryxBatterySoc = -1
-        headlightReadback = null
+        headlightState.reset()
         emittedModel = false
-        // A wheel reboot loses light state on the wheel side, so the rider's
-        // most reliable mental model after a reconnect is "light is off until
-        // I press the button again". Reset the cache to match.
-        lastLightOn = false
     }
 }

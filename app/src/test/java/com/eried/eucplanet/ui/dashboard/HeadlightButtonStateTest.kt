@@ -40,7 +40,7 @@ class HeadlightButtonStateTest {
         assertTrue(headlightButtonState(data, true, received + 2_000_000_000L, 3000).active)
     }
 
-    @Test fun `models without level readback retain the existing light tile`() {
+    @Test fun `models without level readback retain the Light label and on off highlight`() {
         for (on in listOf(false, true)) {
             for (connected in listOf(false, true)) {
                 assertEquals(HeadlightButtonState(R.string.action_light, on),

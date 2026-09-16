@@ -86,6 +86,10 @@ class AeonHeadlightReadbackTest {
             val data = telemetry(adapter, frame(0, version = version))
             assertNull(data.headlightReadback)
             assertTrue(data.lightOn)
+            adapter.setLight(false)
+            val off = telemetry(adapter, frame(3, version = version))
+            assertNull(off.headlightReadback)
+            assertFalse(off.lightOn)
         }
     }
 

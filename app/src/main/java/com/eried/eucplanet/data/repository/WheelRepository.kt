@@ -945,13 +945,7 @@ class WheelRepository @Inject constructor(
                     }
                     ConnectionState.DISCONNECTED -> {
                         pollingActive = false
-                        // Do not briefly revive the previous session's level on reconnect.
-                        val previous = _wheelData.value
-                        if (previous.headlightReadback != null) {
-                            _wheelData.value = previous.copy(
-                                headlightReadback = com.eried.eucplanet.data.model.HeadlightReadback(),
-                            )
-                        }
+                        invalidateHeadlightReadback()
                         // Cut any constant alarm tone immediately (telemetry stops now,
                         // so the engine won't get another tick to clear it itself).
                         alarmEngine.stopConstantTone()
@@ -1563,6 +1557,22 @@ class WheelRepository @Inject constructor(
         return true
     }
 
+    private fun invalidateHeadlightReadback() {
+        val previous = _wheelData.value
+        if (previous.headlightReadback == null) return
+        // Do not briefly revive the previous session's level on reconnect.
+        _wheelData.value = previous.copy(
+            headlightReadback = com.eried.eucplanet.data.model.HeadlightReadback(),
+        )
+    }
+
+    private fun updateCommandTrackedLight(on: Boolean) {
+        val previous = _wheelData.value
+        if (previous.headlightReadback != null) return
+        // A level-reporting wheel confirms its own state; command intent is not a measurement.
+        _wheelData.value = previous.copy(lightOn = on)
+    }
+
     fun toggleLight() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
         if (_lightBusy.value) return  // cooldown active, ignore the spam tap
@@ -1587,10 +1597,7 @@ class WheelRepository @Inject constructor(
         // frame; queued as a second write so it lands in order. Null for the
         // ASCII low beam and every other family (single-frame headlight).
         wheelAdapter.setLightFollowup(next)?.let { bleManager.writeCommand(it) }
-        // A level-reporting wheel confirms its own state; command intent is not a measurement.
-        if (_wheelData.value.headlightReadback == null) {
-            _wheelData.value = _wheelData.value.copy(lightOn = next)
-        }
+        updateCommandTrackedLight(next)
         startCooldown(_lightBusy, LIGHT_COOLDOWN_MS) { lightCooldownUntilMs = it }
     }
 

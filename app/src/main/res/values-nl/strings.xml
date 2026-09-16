@@ -683,6 +683,10 @@
     <string name="section_speed_limits">Snelheidslimieten</string>
     <string name="section_speed_calibration">Snelheidskalibratie</string>
     <string name="section_battery_percent">Batterijkalibratie</string>
+    <string name="section_wheel_lock">Vergrendeling</string>
+    <string name="lock_code_label">KingSong-vergrendelcode</string>
+    <string name="lock_code_hint">De zes cijfers die je in de KingSong-app instelde. Vergrendelen werkt zonder, ontgrendelen heeft hem nodig.</string>
+    <string name="lock_code_missing">Ontgrendelen vraagt de KingSong-vergrendelcode. Instellingen, Wielparameters, Vergrendeling.</string>
     <string name="battery_override_label">Percentage van het wiel overschrijven</string>
     <string name="battery_override_hint">Schat het uit de pakspanning.</string>
     <string name="battery_percent_custom_floor">Lineaire schaal</string>

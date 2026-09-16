@@ -683,6 +683,10 @@
     <string name="section_speed_limits">Ограничения скорости</string>
     <string name="section_speed_calibration">Калибровка скорости</string>
     <string name="section_battery_percent">Калибровка заряда</string>
+    <string name="section_wheel_lock">Блокировка</string>
+    <string name="lock_code_label">Код блокировки KingSong</string>
+    <string name="lock_code_hint">Шесть цифр, заданных в приложении KingSong. Заблокировать можно без него, разблокировать нельзя.</string>
+    <string name="lock_code_missing">Для разблокировки нужен код KingSong. Настройки, Параметры колеса, Блокировка.</string>
     <string name="battery_override_label">Заменить процент колеса</string>
     <string name="battery_override_hint">Оценивать по напряжению батареи.</string>
     <string name="battery_percent_custom_floor">Линейная шкала</string>

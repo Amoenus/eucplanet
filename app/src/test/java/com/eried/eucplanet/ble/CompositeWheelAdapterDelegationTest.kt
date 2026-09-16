@@ -1,6 +1,9 @@
 package com.eried.eucplanet.ble
 
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -47,6 +50,20 @@ class CompositeWheelAdapterDelegationTest {
         for ((name, cells) in expected) {
             assertEquals(name, cells, cellsAfterConnecting(name))
         }
+    }
+
+    @Test
+    fun `the KingSong lock code reaches the family adapter`() {
+        // Shipped once without these two forwards: the composite said "no code
+        // needed" from the interface default, the repository flipped the icon,
+        // and the KingSong adapter behind it built no unlock frame at all. On
+        // the emulator that read as an unlocked tile on a wheel still locked.
+        val c = composite().apply { notifyConnectingTo("KS-18XL") }
+        assertTrue("no code yet", c.lockNeedsCode())
+        c.provideLockCode("509540")
+        assertFalse(c.lockNeedsCode())
+        assertArrayEquals(KingsongCommands.unlock("509540"), c.setLock(false))
+        assertArrayEquals(KingsongCommands.lock(), c.setLock(true))
     }
 
     @Test

@@ -916,6 +916,10 @@
     <string name="section_speed_limits">Speed limits</string>
     <string name="section_speed_calibration">Speed calibration</string>
     <string name="section_battery_percent">Battery calibration</string>
+    <string name="section_wheel_lock">Wheel lock</string>
+    <string name="lock_code_label">KingSong lock code</string>
+    <string name="lock_code_hint">The six digits you set in the KingSong app. Locking works without it, unlocking needs it.</string>
+    <string name="lock_code_missing">Unlock needs the KingSong lock code. Settings, Wheel parameters, Wheel lock.</string>
     <string name="battery_override_label">Override the wheel\'s percentage</string>
     <string name="battery_override_hint">Estimate it from pack voltage.</string>
     <string name="battery_percent_custom_floor">Straight-line scale</string>

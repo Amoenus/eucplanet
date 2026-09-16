@@ -683,6 +683,10 @@
     <string name="section_speed_limits">Limites de velocidade</string>
     <string name="section_speed_calibration">Calibração de velocidade</string>
     <string name="section_battery_percent">Calibração da bateria</string>
+    <string name="section_wheel_lock">Trava</string>
+    <string name="lock_code_label">Código de trava KingSong</string>
+    <string name="lock_code_hint">Os seis dígitos definidos no app KingSong. Travar funciona sem ele, destravar precisa dele.</string>
+    <string name="lock_code_missing">Destravar precisa do código KingSong. Configurações, Parâmetros da roda, Trava.</string>
     <string name="battery_override_label">Substituir a porcentagem da roda</string>
     <string name="battery_override_hint">Estimar pela tensão do pack.</string>
     <string name="battery_percent_custom_floor">Escala linear</string>

@@ -197,6 +197,7 @@ data class AppSettings(
 
     // Auto-lights (sunset/sunrise based, uses live GPS from trip repository)
     val lights: LightsSettings = LightsSettings(),
+    val wheelLock: WheelLockSettings = WheelLockSettings(),
 
     // Speed-based volume boost. Multiplier curve maps speed to 1×–2× of the user's baseline volume.
     // 1× = no boost (baseline), 2× = double the baseline (capped at 100% by the system).

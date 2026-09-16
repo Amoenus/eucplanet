@@ -391,12 +391,12 @@ For our `WheelCapabilities` struct, KingSong (any current model) maps to:
 | --- | --- | --- |
 | `hasHorn` | true | Single beep via `0x88` |
 | `hasLight` | true | `0x73` + mode byte; off / on / auto |
-| `hasLock` | false | No documented lock command in the public protocol. Some KS firmwares expose lock through the official app's password feature, but it is not exposed over BLE in any open-source adapter. Treat as unsupported. |
+| `hasLock` | true | `0x5D` locks (byte 2 = `01`) and unlocks (the rider's six-digit KingSong app code as ASCII at bytes 10..15); `0x5E` asks; the wheel answers `0x5F` with `01` locked / `00` unlocked at byte 2. From a KS-18XL FW 2.00 capture of the official app, issue #19, 2026-09-16. The wheel pings when moved while locked. |
 | `hasMaxSpeed` | true | `0x85` byte 8 (km/h) |
 | `hasAlarmSpeed` | true | `0x85` bytes 2 / 4 / 6, three independent alarms |
 | `hasVolume` | false | Not exposed over BLE; horn volume is fixed in hardware |
 | `hasDRL` | partial | DRL behaviour rides on the headlight mode `0x73` (`mode 2` = auto). No separate DRL channel. |
-| `needsAuthForLock` | n/a | Lock not supported (see hasLock). |
+| `needsAuthForLock` | false | No handshake; the unlock frame itself carries the code. |
 
 Per task instructions: KingSong does not require auth for lock/unlock,
 which is consistent with the public protocol exposing no lock at all.

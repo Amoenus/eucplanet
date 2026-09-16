@@ -683,6 +683,10 @@
     <string name="section_speed_limits">速度制限</string>
     <string name="section_speed_calibration">速度キャリブレーション</string>
     <string name="section_battery_percent">バッテリー補正</string>
+    <string name="section_wheel_lock">ロック</string>
+    <string name="lock_code_label">KingSong ロックコード</string>
+    <string name="lock_code_hint">KingSong アプリで設定した6桁の数字です。ロックはなくてもできますが、解除には必要です。</string>
+    <string name="lock_code_missing">解除には KingSong のロックコードが必要です。設定、ホイールのパラメータ、ロック。</string>
     <string name="battery_override_label">ホイールの残量を上書き</string>
     <string name="battery_override_hint">パック電圧から推定。</string>
     <string name="battery_percent_custom_floor">直線スケール</string>

@@ -197,6 +197,7 @@ object SettingsJson {
         put("flic4DoubleClick", s.flic4DoubleClick)
         put("flic4Hold", s.flic4Hold)
         put("flicShowOnDashboard", s.flicShowOnDashboard)
+        put("wheelLock", JSONObject().apply { put("code", s.wheelLock.code) })
         put("lights", JSONObject().apply {
             put("applyWhen", s.lights.applyWhen)
             put("onMinutesBefore", s.lights.onMinutesBefore)
@@ -637,6 +638,9 @@ object SettingsJson {
         // Read the group when it is there, else fold the old keys in: the
         // enable switch decides off or on, and on means Connected, which is
         // what it always was (the light lives on the wheel).
+        wheelLock = j.optJSONObject("wheelLock")?.let { w ->
+            base.wheelLock.copy(code = w.optString("code", base.wheelLock.code))
+        } ?: base.wheelLock,
         lights = j.optJSONObject("lights")?.let { l ->
             base.lights.copy(
                 applyWhen = l.optString("applyWhen", base.lights.applyWhen),

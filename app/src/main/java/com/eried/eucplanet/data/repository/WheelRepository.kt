@@ -872,6 +872,7 @@ class WheelRepository @Inject constructor(
         // wheel restores everything (tiltback, alarm, safety, calibration).
         scope.launch {
             settingsRepository.settings.collect { s ->
+                lockCodeCache = s.wheelLock.code
                 val clamped = s.speedCalibrationOffsetPct.coerceIn(-15f, 15f)
                 speedCalibrationMultiplier = 1f + clamped / 100f
                 // Wheel poll + chart sampling are independent rider settings now,
@@ -1363,6 +1364,8 @@ class WheelRepository @Inject constructor(
                         // estimate from the right number on each wheel.
                         capacityWh = existing.batteryCapacityWh,
                     ),
+                    // The lock code is the wheel's too.
+                    wheelLock = s.wheelLock.copy(code = existing.lockCode),
                 )
             )
         } else {
@@ -1375,7 +1378,9 @@ class WheelRepository @Inject constructor(
                         // A pack we've never sized starts blank, not carrying the
                         // last wheel's capacity into this one's range estimate.
                         capacityWh = 0,
-                    )
+                    ),
+                    // A wheel we have never seen has no code on file.
+                    wheelLock = com.eried.eucplanet.data.model.WheelLockSettings(),
                 )
             )
             persistWheelProfile(name, settingsRepository.get())
@@ -1398,6 +1403,7 @@ class WheelRepository @Inject constructor(
                     seriesCells = s.batteryPercent.seriesCells,
                     batteryMode = s.batteryPercent.mode,
                     batteryCapacityWh = s.batteryPercent.capacityWh,
+                    lockCode = s.wheelLock.code,
                     lastConnectedAt = System.currentTimeMillis()
                 )
             )
@@ -1611,6 +1617,10 @@ class WheelRepository @Inject constructor(
         if (_locked.value != target) toggleLock()
     }
 
+    /** The rider's wheel lock code, mirrored from settings so [toggleLock] can
+     *  hand it to the adapter without suspending. */
+    @Volatile private var lockCodeCache: String = ""
+
     fun toggleLock() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
         if (_lockBusy.value) return  // cooldown active, ignore the spam tap
@@ -1625,6 +1635,15 @@ class WheelRepository @Inject constructor(
             return
         }
         val targetState = !_locked.value
+        // KingSong unlocks with the six digits the rider set in the KingSong
+        // app; locking needs none. Hand the saved code over first, and when the
+        // unlock cannot be built say where the code goes instead of flipping the
+        // icon on a command that was never sent.
+        wheelAdapter.provideLockCode(lockCodeCache)
+        if (!targetState && wheelAdapter.lockNeedsCode()) {
+            appNotifier.post(context.getString(com.eried.eucplanet.R.string.lock_code_missing))
+            return
+        }
         // Hard block the lock direction when the wheel is moving, any entry
         // path (Flic, watch, volume keys, dashboard) lands here. Unlock is
         // always allowed; if the wheel is already locked, speed is 0 anyway.

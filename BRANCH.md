@@ -1,14 +1,21 @@
-# next-experimental
+# kingsong-fixes
 
-Where new features are built first. Things here work on the wheels they were
-written against and may not work on yours yet, and settings can move or reset
-between builds. Fine for a ride you are happy to cut short, not for one you
-need to get home from.
-
-For riders who are happy to report what broke. Everyone else wants the Play
-Store build.
+KingSong fixes from issue #19 (KS-18XL, FW 2.00), branched from
+next-experimental so everything there is in this build too. For KingSong
+riders who can try lock and unlock and report what the wheel did.
 
 ## What to check in this build
+
+**KingSong lock.** From the tester's capture of the official app: the wheel
+locks on one command, answers with its lock state, and unlocks only when the
+six-digit code from the KingSong app comes along. So the Lock Wheel tile now
+works on KingSong. Locking needs nothing. Unlocking needs the code: Settings,
+Wheel parameters, Wheel lock, a row that appears while a KingSong wheel is
+connected, saved per wheel. Without it the app says so instead of pretending.
+Check that the lock icon follows the wheel (lock, move it, it pings; unlock,
+it stops), that a wrong code leaves it locked, and that the code survives a
+reconnect. The horn is unchanged: the capture had no horn press in it, so we
+still do not know what the official app sends for it.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

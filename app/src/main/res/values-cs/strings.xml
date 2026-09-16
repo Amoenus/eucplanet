@@ -833,6 +833,10 @@
     <string name="section_speed_limits">Rychlostní limity</string>
     <string name="section_speed_calibration">Kalibrace rychlosti</string>
     <string name="section_battery_percent">Kalibrace baterie</string>
+    <string name="section_wheel_lock">Zámek</string>
+    <string name="lock_code_label">Kód zámku KingSong</string>
+    <string name="lock_code_hint">Šest číslic, které jsi nastavil v aplikaci KingSong. Zamknout jde i bez něj, odemknout ne.</string>
+    <string name="lock_code_missing">K odemknutí je potřeba kód zámku KingSong. Nastavení, Parametry monokola, Zámek.</string>
     <string name="battery_override_label">Přepsat procenta z kola</string>
     <string name="battery_override_hint">Odhadnout je z napětí sady.</string>
     <string name="battery_percent_custom_floor">Lineární stupnice</string>

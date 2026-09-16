@@ -833,6 +833,10 @@
     <string name="section_speed_limits">Nopeusrajoitukset</string>
     <string name="section_speed_calibration">Nopeuden kalibrointi</string>
     <string name="section_battery_percent">Akun kalibrointi</string>
+    <string name="section_wheel_lock">Lukitus</string>
+    <string name="lock_code_label">KingSong-lukituskoodi</string>
+    <string name="lock_code_hint">Kuusi numeroa, jotka asetit KingSong-sovelluksessa. Lukitus toimii ilman sitä, avaus vaatii sen.</string>
+    <string name="lock_code_missing">Avaus vaatii KingSong-lukituskoodin. Asetukset, Yksipyöräisen parametrit, Lukitus.</string>
     <string name="battery_override_label">Korvaa pyörän prosentti</string>
     <string name="battery_override_hint">Arvioi se akun jännitteestä.</string>
     <string name="battery_percent_custom_floor">Suoraviivainen asteikko</string>

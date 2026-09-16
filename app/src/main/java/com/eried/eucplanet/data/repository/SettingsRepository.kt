@@ -116,6 +116,8 @@ class SettingsRepository @Inject constructor(
         // formatter to kPa, changing every pressure in the app by a factor of
         // a hundred without saying so. Blank is the documented "follow the
         // unit system" value, so an unrecognised one lands there.
+        // Six digits at most; anything else is a typo the wheel would refuse.
+        wheelLock = wheelLock.copy(code = wheelLock.code.filter { it.isDigit() }.take(6)),
         tpms = tpms.copy(
             pressureUnit = tpms.pressureUnit.takeIf {
                 it in TpmsSettings.PRESSURE_UNIT_VALUES

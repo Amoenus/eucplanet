@@ -6840,6 +6840,34 @@ private fun SpeedTab(
             Spacer(Modifier.weight(1f))
         }
 
+        // --- Wheel lock (KingSong) ---
+        // KingSong locks without a code and unlocks with the six digits the
+        // rider set in the KingSong app (issue #19 capture). Shown only while a
+        // KingSong wheel is connected; saved on that wheel's profile.
+        if (isConnected && viewModel.connectedFamilyId == "kingsong") {
+            SectionHeader(stringResource(R.string.section_wheel_lock))
+            var lockCodeText by remember { mutableStateOf(settings.wheelLock.code) }
+            OutlinedTextField(
+                value = lockCodeText,
+                onValueChange = { new ->
+                    if (new.length <= 6 && new.all { it.isDigit() }) {
+                        lockCodeText = new
+                        viewModel.updateWheelLockCode(new)
+                    }
+                },
+                label = { Text(stringResource(R.string.lock_code_label)) },
+                singleLine = true,
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
+                    imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                colors = themedFieldColors(),
+                shape = RoundedCornerShape(12.dp),
+            )
+            HintText(stringResource(R.string.lock_code_hint), small = true)
+        }
+
         // --- Battery calibration ---
         // Next to speed calibration because it is the same kind of thing: the
         // rider correcting the numbers the wheel reports, with nothing sent back

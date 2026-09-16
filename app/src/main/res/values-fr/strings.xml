@@ -683,6 +683,10 @@
     <string name="section_speed_limits">Limites de vitesse</string>
     <string name="section_speed_calibration">Calibration de vitesse</string>
     <string name="section_battery_percent">Calibration de la batterie</string>
+    <string name="section_wheel_lock">Verrouillage</string>
+    <string name="lock_code_label">Code de verrouillage KingSong</string>
+    <string name="lock_code_hint">Les six chiffres définis dans l\'app KingSong. Verrouiller marche sans, déverrouiller en a besoin.</string>
+    <string name="lock_code_missing">Le déverrouillage demande le code KingSong. Réglages, Paramètres de la roue, Verrouillage.</string>
     <string name="battery_override_label">Remplacer le pourcentage de la roue</string>
     <string name="battery_override_hint">L\'estimer depuis la tension du pack.</string>
     <string name="battery_percent_custom_floor">Échelle linéaire</string>

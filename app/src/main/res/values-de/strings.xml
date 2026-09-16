@@ -2663,4 +2663,12 @@
     <string name="tpms_state_inflating">Wird aufgepumpt</string>
     <string name="alarm_metric_battery_envelope">Akku (gesch)</string>
     <string name="alarm_metric_battery_envelope_long">Batterie-Hüllkurve (Schätzung ohne Last)</string>
+
+    <string name="headlight_state_off">Licht: aus</string>
+    <string name="headlight_state_low">Licht: niedrig</string>
+    <string name="headlight_state_medium">Licht: mittel</string>
+    <string name="headlight_state_high">Licht: hoch</string>
+    <string name="headlight_state_unknown">Licht: ?</string>
+    <string name="adv_headlight_readback_age">Gültigkeit des Lichtstatus</string>
+    <string name="adv_headlight_readback_age_desc">Wie lange eine gemeldete Lichtstufe aktuell bleibt. Ein zu langer Zeitraum kann eine veraltete Stufe anzeigen.</string>
 </resources>

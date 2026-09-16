@@ -2446,4 +2446,12 @@
     <string name="tpms_state_inflating">Hustí se</string>
     <string name="alarm_metric_battery_envelope">Baterie (odh)</string>
     <string name="alarm_metric_battery_envelope_long">Obálka baterie (odhad bez zátěže)</string>
+
+    <string name="headlight_state_off">Světlo: vyp.</string>
+    <string name="headlight_state_low">Světlo: nízké</string>
+    <string name="headlight_state_medium">Světlo: střední</string>
+    <string name="headlight_state_high">Světlo: vysoké</string>
+    <string name="headlight_state_unknown">Světlo: ?</string>
+    <string name="adv_headlight_readback_age">Platnost stavu světla</string>
+    <string name="adv_headlight_readback_age_desc">Jak dlouho je hlášená úroveň světla aktuální. Příliš dlouhá doba může zobrazit zastaralou úroveň.</string>
 </resources>

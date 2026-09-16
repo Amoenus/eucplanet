@@ -2644,4 +2644,12 @@
     <string name="tpms_state_inflating">空気充填中</string>
     <string name="alarm_metric_battery_envelope">バッテリー(推定)</string>
     <string name="alarm_metric_battery_envelope_long">バッテリー包絡線 (負荷を除いた推定)</string>
+
+    <string name="headlight_state_off">ライト: オフ</string>
+    <string name="headlight_state_low">ライト: 弱</string>
+    <string name="headlight_state_medium">ライト: 中</string>
+    <string name="headlight_state_high">ライト: 強</string>
+    <string name="headlight_state_unknown">ライト: ?</string>
+    <string name="adv_headlight_readback_age">ライト状態の有効時間</string>
+    <string name="adv_headlight_readback_age_desc">受信したライトの明るさを有効とする時間です。長すぎると古い状態が表示されます。</string>
 </resources>

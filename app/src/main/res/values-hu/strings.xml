@@ -2446,4 +2446,12 @@
     <string name="tpms_state_inflating">Felfújás</string>
     <string name="alarm_metric_battery_envelope">Akku (becs)</string>
     <string name="alarm_metric_battery_envelope_long">Akkumulátor burkológörbe (terhelés nélküli becslés)</string>
+
+    <string name="headlight_state_off">Fény: ki</string>
+    <string name="headlight_state_low">Fény: alacsony</string>
+    <string name="headlight_state_medium">Fény: közepes</string>
+    <string name="headlight_state_high">Fény: magas</string>
+    <string name="headlight_state_unknown">Fény: ?</string>
+    <string name="adv_headlight_readback_age">Lámpaállapot érvényessége</string>
+    <string name="adv_headlight_readback_age_desc">Meddig számít aktuálisnak a jelzett fényerőszint. Túl hosszú idő esetén elavult szint jelenhet meg.</string>
 </resources>

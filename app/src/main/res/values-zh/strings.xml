@@ -2510,4 +2510,12 @@
     <string name="tpms_state_inflating">充气中</string>
     <string name="alarm_metric_battery_envelope">电量(估算)</string>
     <string name="alarm_metric_battery_envelope_long">电量包络（去除负载的估算）</string>
+
+    <string name="headlight_state_off">头灯：关</string>
+    <string name="headlight_state_low">头灯：低</string>
+    <string name="headlight_state_medium">头灯：中</string>
+    <string name="headlight_state_high">头灯：高</string>
+    <string name="headlight_state_unknown">头灯：?</string>
+    <string name="adv_headlight_readback_age">灯光状态有效期</string>
+    <string name="adv_headlight_readback_age_desc">上报的灯光亮度保持有效的时间。时间过长可能显示过时的亮度。</string>
 </resources>

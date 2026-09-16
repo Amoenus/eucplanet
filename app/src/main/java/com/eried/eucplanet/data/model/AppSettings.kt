@@ -1539,6 +1539,7 @@ data class AdvancedSettings(
     val tripFinalizeGraceMs: Int = 15000,
     // Speed (km/h) above which a lock command is refused, for safety.
     val lockMaxSpeedKmh: Int = 5,
+    val headlightReadbackMaxAgeMs: Int = 8000,
     /**
      * Seconds the microphone stays open having heard nothing.
      *

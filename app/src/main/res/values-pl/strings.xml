@@ -2643,4 +2643,12 @@
     <string name="tpms_state_inflating">Pompowanie</string>
     <string name="alarm_metric_battery_envelope">Bateria (szac)</string>
     <string name="alarm_metric_battery_envelope_long">Obwiednia baterii (szacunek bez obciążenia)</string>
+
+    <string name="headlight_state_off">Światło: wył.</string>
+    <string name="headlight_state_low">Światło: niskie</string>
+    <string name="headlight_state_medium">Światło: średnie</string>
+    <string name="headlight_state_high">Światło: wysokie</string>
+    <string name="headlight_state_unknown">Światło: ?</string>
+    <string name="adv_headlight_readback_age">Ważność stanu światła</string>
+    <string name="adv_headlight_readback_age_desc">Jak długo zgłoszony poziom światła pozostaje aktualny. Zbyt długi czas może pokazywać nieaktualny poziom.</string>
 </resources>

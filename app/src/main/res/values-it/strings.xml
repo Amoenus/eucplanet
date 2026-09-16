@@ -2548,4 +2548,12 @@
     <string name="tpms_state_inflating">In gonfiaggio</string>
     <string name="alarm_metric_battery_envelope">Batteria (stim)</string>
     <string name="alarm_metric_battery_envelope_long">Inviluppo batteria (stima senza carico)</string>
+
+    <string name="headlight_state_off">Luce: spenta</string>
+    <string name="headlight_state_low">Luce: bassa</string>
+    <string name="headlight_state_medium">Luce: media</string>
+    <string name="headlight_state_high">Luce: alta</string>
+    <string name="headlight_state_unknown">Luce: ?</string>
+    <string name="adv_headlight_readback_age">Validità dello stato luce</string>
+    <string name="adv_headlight_readback_age_desc">Per quanto tempo il livello di luce ricevuto resta attuale. Un tempo eccessivo può mostrare un livello obsoleto.</string>
 </resources>

@@ -77,6 +77,7 @@ import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -218,48 +219,11 @@ private fun formatMetricStatValue(
     speedUnitLabel: String,
     tempUnit: String,
     tempUnitLabel: String,
-    distanceUnit: String
-): String = when (key) {
-    "BATTERY" -> "${raw.toInt()}%"
-    // Round to match the live LOAD tile (which uses %.0f), not truncate.
-    "LOAD" -> "%.0f%%".format(raw)
-    "BATTERY_1", "BATTERY_2", "PHONE_BATTERY", "EXTERNAL_GPS_BATTERY" -> "%.0f%%".format(raw)
-    // Temp buffers store raw °C; convert to the rider's unit like the tile.
-    // Round (not toInt) and carry the °C/°F label so it reads like the tile.
-    "TEMPERATURE", "MOTOR_TEMP", "CONTROLLER_TEMP", "BATTERY_TEMP" ->
-        "%.0f%s".format(com.eried.eucplanet.util.Units.temperature(raw, tempUnit), tempUnitLabel)
-    "VOLTAGE" -> "%.1fV".format(raw)
-    "CURRENT", "DYN_CURRENT_LIMIT" -> "%.1fA".format(raw)
-    // Speed buffers store raw km/h; convert to the rider's speed unit.
-    "SPEED", "DYN_SPEED_LIMIT" ->
-        "%.0f %s".format(com.eried.eucplanet.util.Units.speed(raw, speedUnit), speedUnitLabel)
-    // GPS speed keeps 1 decimal to match its live tile (displayValueFor).
-    "GPS_SPEED" ->
-        "%.1f %s".format(com.eried.eucplanet.util.Units.speed(raw, speedUnit), speedUnitLabel)
-    "MOTOR_POWER", "BATTERY_POWER", "POWER" -> "%.0fW".format(raw)
-    "PITCH", "ROLL" -> "%.1f°".format(raw)
-    "G_FORCE", "LATERAL_G", "FORWARD_G" -> "%.2fg".format(raw)
-    "TORQUE" -> "%.1fNm".format(raw)
-    "PHASE_CURRENT" -> "%.1fA".format(raw)
-    // Tire pressure stored raw in kPa; psi for imperial-distance, bar otherwise.
-    // psi floored to match the wheel's own display (see Units.pressurePsiFloored).
-    "TIRE_PRESSURE" -> if (distanceUnit == "mi")
-        "%.1f psi".format(com.eried.eucplanet.util.Units.pressurePsiFloored(raw))
-    else
-        "%.2f bar".format(com.eried.eucplanet.util.Units.pressure(raw, "bar"))
-    // Altitude / accuracy stored raw in metres; feet for imperial riders.
-    "GPS_ALTITUDE", "GPS_ACCURACY" -> if (distanceUnit == "mi")
-        "%.0fft".format(raw * 3.28084f)
-    else
-        "%.0fm".format(raw)
-    "BT_RSSI" -> "%.0f dBm".format(raw)
-    "WH_PER_KM" -> formatWhPerDistance(raw, distanceUnit) ?: "-"
-    "RANGE_ESTIMATE" -> "%.0f %s".format(
-        com.eried.eucplanet.util.Units.distance(raw, distanceUnit),
-        com.eried.eucplanet.util.Units.distanceUnit(distanceUnit),
-    )
-    else -> "%.1f".format(raw)
-}
+    distanceUnit: String,
+    pressureUnit: String,
+): String = com.eried.eucplanet.data.model.MetricValueFormat.format(
+    key, raw, speedUnit, speedUnitLabel, tempUnit, tempUnitLabel, distanceUnit, pressureUnit,
+)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -334,6 +298,8 @@ fun DashboardScreen(
     val speedUnit by viewModel.speedUnit.collectAsState()
     val distanceUnit by viewModel.distanceUnit.collectAsState()
     val tempUnit by viewModel.tempUnit.collectAsState()
+    val pressureUnit by viewModel.pressureUnit.collectAsState()
+    val splitMode by viewModel.accelSplitMode.collectAsState()
     val accentKey by viewModel.accentKey.collectAsState()
     val showGaugeColorBand by viewModel.showGaugeColorBand.collectAsState()
     val gaugeOrangePct by viewModel.gaugeOrangePct.collectAsState()
@@ -349,6 +315,13 @@ fun DashboardScreen(
     // this the rider could be coasting down the street and have the Battery
     // monitor steal the dashboard, which is both wrong and unsafe.
     val chargeStatusForAutoOpen by viewModel.chargeStatus.collectAsState()
+    // Drives the listening tile and the transcript pill.
+    val voiceCommandState by viewModel.voiceCommandState.collectAsState()
+    // The live transcript, and then the answer, as a snackbar rather than a
+    // dialog: fired from a Flic at speed the rider cannot look at the screen
+    // anyway, and a modal is something they could be left holding. Rule 3 makes
+    // this the transient surface.
+
     val chargingAutoOpen by viewModel.chargingAutoOpen.collectAsState()
     var lastChargeStatus by remember { mutableStateOf(chargeStatusForAutoOpen) }
     var lastNonZeroSpeedAt by remember { mutableStateOf(System.currentTimeMillis()) }
@@ -413,6 +386,8 @@ fun DashboardScreen(
     // tap opens.
     var showAboutDialog by remember { mutableStateOf(false) }
     var showDiagnosticsDialog by remember { mutableStateOf(false) }
+    var showWeatherMenu by remember { mutableStateOf(false) }
+    var showWeatherFlyout by remember { mutableStateOf(false) }
     // The service-mode overlay floats outside the dashboard, so it can't flip
     // the local dialog state above directly. Instead it posts a request to
     // DashboardDialogBus and navigates here; we honor it and clear the bus.
@@ -421,6 +396,14 @@ fun DashboardScreen(
         when (dialogRequest) {
             "about" -> { showAboutDialog = true; DashboardDialogBus.consume() }
             "service" -> { showDiagnosticsDialog = true; DashboardDialogBus.consume() }
+            // The panel is dashboard state rather than a dialog, but it
+            // arrives the same way: fired from a surface that had to navigate
+            // here first.
+            "weather" -> {
+                showWeatherFlyout = true
+                viewModel.refreshWeather()
+                DashboardDialogBus.consume()
+            }
         }
     }
     // Holds the CustomTile whose SHOW_QR action was just tapped on the
@@ -433,8 +416,6 @@ fun DashboardScreen(
     var showTextForTile by remember { mutableStateOf<com.eried.eucplanet.ui.settings.CustomTile?>(null) }
     var showDiagnosticsConfirm by remember { mutableStateOf(false) }
     var showMapMenu by remember { mutableStateOf(false) }
-    var showWeatherMenu by remember { mutableStateOf(false) }
-    var showWeatherFlyout by remember { mutableStateOf(false) }
     // Tapping a home screen weather widget lands here: open the panel and
     // refresh it, the same as tapping the dashboard's own weather icon.
     val weatherLaunchPending by WeatherPanelLaunch.pending.collectAsState()
@@ -466,6 +447,19 @@ fun DashboardScreen(
     // dashboard styles match Overlay Studio / Navigator / Settings (no system
     // icon, swipe-to-dismiss).
     val snackbar = remember { androidx.compose.material3.SnackbarHostState() }
+    // The live transcript, then the answer. A snackbar rather than a dialog:
+    // fired from a Flic at speed the rider cannot look at the screen anyway,
+    // and a modal is something they could be left holding. Rule 3 makes this
+    // the transient surface.
+    LaunchedEffect(voiceCommandState) {
+        when (val v = voiceCommandState) {
+            is com.eried.eucplanet.voice.VoiceCommandController.UiState.Heard ->
+                snackbar.showSnackbar(v.text)
+            is com.eried.eucplanet.voice.VoiceCommandController.UiState.Spoke ->
+                snackbar.showSnackbar(v.text)
+            else -> {}
+        }
+    }
     val snackbarScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.cloudToasts.collect { resId ->
@@ -1272,7 +1266,6 @@ fun DashboardScreen(
                 Box(
                     Modifier
                         .align(Alignment.BottomStart)
-                        .coachmarkTarget(coachmark, TutorialTarget.MAP_BUTTON)
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     // Weather / ridability entry, stacked over the map button
@@ -1363,6 +1356,9 @@ fun DashboardScreen(
                         contentDescription = stringResource(R.string.nav_open),
                         tint = MaterialTheme.appColors.dashIcon,
                         modifier = Modifier
+                            // The tutorial spotlights this icon alone, not the
+                            // column it shares with the weather entry above.
+                            .coachmarkTarget(coachmark, TutorialTarget.MAP_BUTTON)
                             .padding(start = 4.dp, bottom = 10.dp)
                             .size(32.dp)
                             .combinedClickable(
@@ -1626,7 +1622,8 @@ fun DashboardScreen(
                     stat, samples, fallbackCurrent = samples.last().value
                 ) ?: return placeholder
                 return formatMetricStatValue(
-                    key, raw, speedUnit, speedUnitLabel, tempUnit, tempUnitLabel, distanceUnit
+                    key, raw, speedUnit, speedUnitLabel, tempUnit, tempUnitLabel,
+                    distanceUnit, pressureUnit
                 )
             }
 
@@ -1659,6 +1656,13 @@ fun DashboardScreen(
                 if (!live) return placeholder
                 return when (metricKey) {
                     "BATTERY" -> if (wheelData.batteryPercent > 0) "${wheelData.batteryPercent}%" else placeholder
+                    // NaN for the first half minute of a ride, because the
+                    // line needs a little of the ride before it means
+                    // anything. A placeholder says so; a zero would not.
+                    "BATTERY_ENVELOPE" -> wheelData.batteryEnvelope
+                        .takeIf { !it.isNaN() }
+                        ?.let { "%.0f%%".format(it) }
+                        ?: placeholder
                     "TEMPERATURE" -> if (wheelData.maxTemperature > 0f)
                         "%.0f%s".format(tempValue, tempUnitLabel) else placeholder
                     "VOLTAGE" -> if (wheelData.voltage > 0f) "%.1fV".format(wheelData.voltage) else placeholder
@@ -1729,14 +1733,13 @@ fun DashboardScreen(
                         ?.takeIf { com.eried.eucplanet.util.MetricSanity.isPlausibleTempC(it) }
                         ?.let { "%.0f%s".format(com.eried.eucplanet.util.Units.temperature(it, tempUnit), tempUnitLabel) }
                         ?: placeholder
-                    "TIRE_PRESSURE" -> if (wheelData.tirePressureKpa > 0f) {
-                        // psi for imperial-distance riders, bar otherwise (see Units).
-                        // psi is floored to match the wheel's own display.
-                        if (distanceUnit == "mi")
-                            "%.1f psi".format(com.eried.eucplanet.util.Units.pressurePsiFloored(wheelData.tirePressureKpa))
-                        else
-                            "%.2f bar".format(com.eried.eucplanet.util.Units.pressure(wheelData.tirePressureKpa, "bar"))
-                    } else placeholder
+                    // Guarded on "is anything measuring", not on "> 0", so
+                    // a cap reporting a flat tyre shows 0.00 bar rather than a
+                    // dash that reads as "no sensor".
+                    "TIRE_PRESSURE" -> if (wheelData.hasTirePressure)
+                        com.eried.eucplanet.util.Units.formatPressure(
+                            wheelData.tirePressureKpa, pressureUnit)
+                    else placeholder
                     "PHONE_BATTERY" -> if (phoneBatteryPct in 0..100) "$phoneBatteryPct%" else placeholder
                     "EXTERNAL_GPS_BATTERY" -> externalGpsBattery?.let { "$it%" } ?: placeholder
                     "GPS_ALTITUDE" -> gpsLocation?.altitude?.let { alt ->
@@ -2132,7 +2135,8 @@ fun DashboardScreen(
                                             // composite MAX/AVG cell reads right.
                                             formatMetricStatValue(
                                                 metricKey, value, speedUnit, speedUnitLabel,
-                                                tempUnit, tempUnitLabel, distanceUnit
+                                                tempUnit, tempUnitLabel, distanceUnit,
+                                                pressureUnit
                                             )
                                         }
                                     // A composite always occupies one standard slot
@@ -2332,6 +2336,23 @@ fun DashboardScreen(
                 (parsed + defaults).distinct().take(6)
             }
             val periodicVoiceOn by viewModel.voicePeriodicEnabled.collectAsState()
+            // The vocabulary is reachable from the tile that listens, not only
+            // from Settings: a rider who has forgotten what to say is holding
+            // that button, not browsing settings.
+            var vocabularyOpen by remember { mutableStateOf(false) }
+            // Saying "what can I say" puts the list on screen as well as
+            // speaking three examples: the examples are what fits in an
+            // answer, the list is what was asked for.
+            LaunchedEffect(Unit) {
+                viewModel.showVocabulary.collect { vocabularyOpen = true }
+            }
+            if (vocabularyOpen) {
+                val commandLanguage by viewModel.voiceCommandLanguage.collectAsState()
+                com.eried.eucplanet.ui.settings.VoiceVocabularyDialog(
+                    onDismiss = { vocabularyOpen = false },
+                    languageTag = commandLanguage,
+                )
+            }
             val lockAtAnySpeed by viewModel.cheatState.lockAtAnySpeed.collectAsState()
             val lockBlockedBySpeed = !locked && kotlin.math.abs(wheelData.speed) >= 5f && !lockAtAnySpeed
             val wheelHasLock by viewModel.wheelHasLock.collectAsState()
@@ -2391,6 +2412,70 @@ fun DashboardScreen(
                                     )
                                 }
                             )
+                            // The two voice tiles are a pair sharing one slot
+                            // and one icon. Whichever owns the slot, both are
+                            // one hold away, so the switch only decides what a
+                            // tap does and what the eyes-free surfaces bind.
+                            "VOICE_LISTEN" -> ActionTile(
+                                modifier = Modifier.weight(1f),
+                                icon = Icons.Default.Mic,
+                                label = stringResource(R.string.action_chip_voice_listen),
+                                onClick = { viewModel.onVoiceListen() },
+                                active = voiceCommandState !is
+                                    com.eried.eucplanet.voice.VoiceCommandController.UiState.Idle,
+                                aspectRatio = actionAspect, heightDp = actionHeight,
+                                menu = { dismiss ->
+                                    // One menu for both voice tiles. They
+                                    // are a pair sharing a slot, so a rider
+                                    // holding either should find the same
+                                    // things in the same order; the only
+                                    // difference is which one the switch
+                                    // offers. No icons: nothing else in these
+                                    // menus has them, and two glyphs in a list
+                                    // of plain rows reads as decoration.
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
+                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_switch_to_voice_report)) },
+                                        onClick = {
+                                            dismiss()
+                                            viewModel.switchVoiceTile("VOICE_LISTEN", "VOICE_ANNOUNCE")
+                                        }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.tab_voice)) },
+                                        onClick = { dismiss(); onNavigateToSettings(3) }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.tab_alarms)) },
+                                        onClick = { dismiss(); onNavigateToSettings(5) }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(
+                                                if (periodicVoiceOn) stringResource(R.string.menu_voice_periodic_off)
+                                                else stringResource(R.string.menu_voice_periodic_on)
+                                            )
+                                        },
+                                        onClick = { dismiss(); viewModel.toggleVoicePeriodic() }
+                                    )
+                                }
+                            )
                             "VOICE_ANNOUNCE" -> ActionTile(
                                 modifier = Modifier.weight(1f),
                                 icon = Icons.Default.RecordVoiceOver,
@@ -2398,6 +2483,35 @@ fun DashboardScreen(
                                 onClick = { viewModel.onVoiceAnnounce() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->
+                                    // One menu for both voice tiles. They
+                                    // are a pair sharing a slot, so a rider
+                                    // holding either should find the same
+                                    // things in the same order; the only
+                                    // difference is which one the switch
+                                    // offers. No icons: nothing else in these
+                                    // menus has them, and two glyphs in a list
+                                    // of plain rows reads as decoration.
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_voice_ask)) },
+                                        onClick = { dismiss(); viewModel.onVoiceListen() }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_voice_speak_report)) },
+                                        onClick = { dismiss(); viewModel.onVoiceAnnounce() }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(R.string.menu_switch_to_voice_command)) },
+                                        onClick = {
+                                            dismiss()
+                                            viewModel.switchVoiceTile("VOICE_ANNOUNCE", "VOICE_LISTEN")
+                                        }
+                                    )
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = MaterialTheme.appColors.divider.copy(alpha = 0.2f)
+                                    )
                                     DropdownMenuItem(
                                         text = { Text(stringResource(R.string.tab_voice)) },
                                         onClick = { dismiss(); onNavigateToSettings(3) }
@@ -2677,7 +2791,15 @@ fun DashboardScreen(
                                     // is the same ActionUi the service-mode overlay
                                     // builds, so both surfaces fire the full catalog.
                                     val actionSpec = com.eried.eucplanet.data.model.ActionCatalog.byKey(key)
-                                    val labelText = actionSpec?.let { stringResource(it.labelRes) } ?: key
+                                    // The splits tile says which of its four states it
+                                    // is in, the way Legal ON and the recorder's trip
+                                    // count do, since a cycle with no readout is a
+                                    // guessing game.
+                                    val isSplits = key == "SPEED_SPLITS"
+                                    val labelText = when {
+                                        isSplits -> stringResource(splitMode.tileLabelRes)
+                                        else -> actionSpec?.let { stringResource(it.labelRes) } ?: key
+                                    }
                                     val tap: () -> Unit = {
                                         com.eried.eucplanet.data.model.dispatchAction(
                                             key,
@@ -2687,6 +2809,13 @@ fun DashboardScreen(
                                                 override fun openAbout() { showAboutDialog = true }
                                                 override fun openService() { showDiagnosticsDialog = true }
                                                 override fun openTrips() = onNavigateToRecording()
+                                                // Both are right here, so no
+                                                // bus hop like the overlay needs.
+                                                override fun openWeather() {
+                                                    showWeatherFlyout = true
+                                                    viewModel.refreshWeather()
+                                                }
+                                                override fun openCharging() = onNavigateToCharging()
                                                 override fun toggleUnits() {
                                                     viewModel.toggleUnits()
                                                     snackbarScope.launch {
@@ -2696,6 +2825,7 @@ fun DashboardScreen(
                                                     }
                                                 }
                                                 override fun toggleAlarmsMuted() { viewModel.toggleAlarmsMuted() }
+                                                override fun cycleSpeedSplits() { viewModel.cycleSpeedSplits() }
                                                 override fun resetMetrics() {
                                                     snackbarScope.launch {
                                                         // Always resets the app's trip meter and
@@ -2723,10 +2853,13 @@ fun DashboardScreen(
                                             // Resets the app's own counters, so it
                                             // works with no wheel in earshot.
                                             key == "RESET_TRIP" ||
+                                            // A settings write; arm it in the hall.
+                                            isSplits ||
                                             key.startsWith("MEDIA_")
                                     ActionButton(
                                         icon = actionSpec?.icon ?: Icons.Default.Campaign,
                                         label = labelText,
+                                        active = isSplits && splitMode != com.eried.eucplanet.data.model.AccelSplitMode.OFF,
                                         enabled = connectionState == ConnectionState.CONNECTED || offlineSafe,
                                         onClick = tap,
                                         modifier = Modifier.weight(1f),

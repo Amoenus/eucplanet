@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var metricsReset: com.eried.eucplanet.data.repository.MetricsReset
     @Inject lateinit var incomingShareRepository:
         com.eried.eucplanet.data.repository.IncomingShareRepository
+    @Inject lateinit var pendingShareJoin: com.eried.eucplanet.share.PendingShareJoin
     @Inject lateinit var dropboxRepository:
         com.eried.eucplanet.data.repository.DropboxRepository
     @Inject lateinit var syncManager: com.eried.eucplanet.data.sync.SyncManager
@@ -361,6 +362,22 @@ class MainActivity : AppCompatActivity() {
             }
             return true
         }
+        // A live location share link. It doubles as a web page for riders
+        // without the app, so the App Link filter is what routes it here.
+        // The room key lives in the URL fragment, which intent.data keeps.
+        // Checked before the generic handler below, which would otherwise
+        // try to geocode the link.
+        if (intent.action == Intent.ACTION_VIEW && data != null &&
+            data.toString().startsWith(com.eried.eucplanet.share.ShareLinks.BASE)
+        ) {
+            val link = com.eried.eucplanet.share.ShareLinks.parse(data.toString())
+            if (link == null) {
+                appNotifier.post(getString(R.string.share_link_invalid))
+            } else {
+                pendingShareJoin.offer(link)
+            }
+            return true
+        }
         val raw = when (intent.action) {
             Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
             Intent.ACTION_VIEW -> intent.data?.toString()
@@ -494,6 +511,14 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+                // The headset button's manifest claim, kept in step with the
+                // setting. Here rather than only in the settings row because a
+                // value can also arrive from a Dropbox restore or another
+                // device, and a claim that only ever changed when someone
+                // tapped the switch would be wrong on exactly those launches.
+                com.eried.eucplanet.voice.VoiceTriggerGate.apply(
+                    this@MainActivity, it.voiceCommands.headsetButton,
+                )
                 // Deliberately outside the `first` gate above.
                 //
                 // `first` is always false here: the synchronous seed below sets
@@ -610,6 +635,19 @@ class MainActivity : AppCompatActivity() {
                         .collectAsState()
                     androidx.compose.runtime.LaunchedEffect(pendingShare) {
                         if (pendingShare != null) {
+                            runCatching {
+                                navController.navigate("route_builder") {
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                    }
+                    // A tapped live-share link travels the same road: jump
+                    // to the navigator, which asks the rider whether to join
+                    // that group and clears the slot either way.
+                    val pendingJoinLink by pendingShareJoin.pending.collectAsState()
+                    androidx.compose.runtime.LaunchedEffect(pendingJoinLink) {
+                        if (pendingJoinLink != null) {
                             runCatching {
                                 navController.navigate("route_builder") {
                                     launchSingleTop = true
@@ -768,6 +806,17 @@ class MainActivity : AppCompatActivity() {
                                                 navController.navigate(Screen.Recording.route) { launchSingleTop = true }
                                                 ServiceOverlayState.dismiss()
                                             }
+                                            override fun openWeather() {
+                                                com.eried.eucplanet.ui.dashboard.DashboardDialogBus.open("weather")
+                                                navController.navigate(Screen.Dashboard.route) { launchSingleTop = true }
+                                                ServiceOverlayState.dismiss()
+                                            }
+                                            override fun openCharging() {
+                                                navController.navigate(
+                                                    com.eried.eucplanet.ui.navigation.Screen.ChargingMonitor.createRoute()
+                                                ) { launchSingleTop = true }
+                                                ServiceOverlayState.dismiss()
+                                            }
                                             override fun toggleUnits() {
                                                 overlayScope.launch {
                                                     settingsRepository.update(settingsRepository.get().withUnitsToggled())
@@ -777,6 +826,13 @@ class MainActivity : AppCompatActivity() {
                                                 overlayScope.launch {
                                                     val c = settingsRepository.get()
                                                     settingsRepository.update(c.copy(alarmsMuted = !c.alarmsMuted))
+                                                }
+                                            }
+                                            override fun cycleSpeedSplits() {
+                                                overlayScope.launch {
+                                                    val c = settingsRepository.get()
+                                                    val next = com.eried.eucplanet.data.model.AccelSplitMode.of(c.accelSplit).next()
+                                                    settingsRepository.update(c.copy(accelSplit = next.applyTo(c.accelSplit)))
                                                 }
                                             }
                                             override fun resetMetrics() {
@@ -917,6 +973,7 @@ class MainActivity : AppCompatActivity() {
             imperialUnits = s?.imperialUnits ?: false,
             safetyActive = wheelRepository.safetySpeedActive.value,
             alarmsMuted = s?.alarmsMuted ?: false,
+            speedSplitsOn = s?.accelSplit?.enabled ?: false,
             connections = buildServiceConnections(s)
         )
     }

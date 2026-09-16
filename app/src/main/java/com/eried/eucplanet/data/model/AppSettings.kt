@@ -105,6 +105,10 @@ data class AppSettings(
     val voiceAudioFocus: String = "DUCK",
     // Where to route the voice: "MEDIA" (music slider), "NOTIFICATION" (ring slider), "ALARM" (alarm slider, loudest)
     val voiceOutputChannel: String = "MEDIA",
+    /** Voice commands, nested rather than four more slots. See rule 8: this
+     *  class is one field away from the 255-argument limit where copy() stops
+     *  verifying and the app dies at runtime. */
+    val voiceCommands: VoiceCommandSettings = VoiceCommandSettings(),
     // Periodic and on-trigger voice report toggles, NESTED. These used to be 18
     // top-level flags, which had AppSettings' copy$default sitting right on the
     // JVM's 255-parameter-slot limit with no room for another report type. Read
@@ -123,11 +127,14 @@ data class AppSettings(
     val accelSplit: AccelSplitSettings = AccelSplitSettings(),
     // Speed-driven media (music / podcast) pause & resume - see MediaControlSettings.
     val mediaControl: MediaControlSettings = MediaControlSettings(),
+    // Live location share (navigator Share button) - see ShareSettings. Nested: one arg slot.
+    val share: ShareSettings = ShareSettings(),
     // Bluetooth-signal proximity lock / unlock - see ProximityLockSettings.
     val proximityLock: ProximityLockSettings = ProximityLockSettings(),
     /** Weather / ridability module (dashboard icon + forecast flyout). Nested
      *  so the whole feature costs one constructor slot; see rule 8. */
     val weather: WeatherSettings = WeatherSettings(),
+    val tpms: TpmsSettings = TpmsSettings(),
     val batteryPercent: BatteryPercentSettings = BatteryPercentSettings(),
 
     // Special announcements (event-driven). All silent by default; the welcome
@@ -984,6 +991,7 @@ data class AppSettings(
     val pendingUploadIntervalMin: Int get() = advanced.pendingUploadIntervalMin
     val tripFinalizeGraceMs: Int get() = advanced.tripFinalizeGraceMs
     val lockMaxSpeedKmh: Int get() = advanced.lockMaxSpeedKmh
+    val voiceListenWindowSec: Int get() = advanced.voiceListenWindowSec
     val phoneGpsIntervalMs: Int get() = advanced.phoneGpsIntervalMs
     val phoneGpsIdleIntervalMs: Int get() = advanced.phoneGpsIdleIntervalMs
     val gpsIdleOffDelaySec: Int get() = advanced.gpsIdleOffDelaySec
@@ -1142,6 +1150,31 @@ data class MediaControlSettings(
     val rateCurve: String = "0:1.0,25:1.15,50:1.30,75:1.45",
 )
 
+/** Live location share. Feature-local, nested so AppSettings.copy() stays under the dex 255-arg limit. */
+data class ShareSettings(
+    val trailMinutes: Int = 5,                // 1..30, how long a friend's fading trail is
+    val shareStatsDefault: Boolean = true,    // default for the "Share my stats" toggle
+    val lastIdentityMode: String = "ANON",    // ANON | SESSION | PROFILE, remembered per rider
+    val lastSessionName: String = "",
+    val relayUrl: String = DEFAULT_RELAY_URL,
+    /** Per-device random secret, generated on first share. The rider's sender
+     *  id in a room is HMAC(secret, roomId): stable for this phone in that room
+     *  (a rejoin replaces its own ghost instead of adding one), different in
+     *  every room (the relay cannot link rooms), and never copied to another
+     *  device (two phones with one secret would collide as one rider). */
+    val deviceSecret: String = "",
+) {
+    companion object {
+        const val DEFAULT_RELAY_URL = "wss://eucshare.ried.no"
+        /** A relay URL is opened as a WebSocket, so anything that is not a
+         *  ws / wss URL cannot work. A synced or hand-edited file carrying
+         *  something else is reset to the default rather than thrown at
+         *  OkHttp, which answers a malformed URL with an exception. */
+        fun isValidRelayUrl(url: String): Boolean =
+            url.startsWith("ws://") || url.startsWith("wss://")
+    }
+}
+
 /**
  * Bluetooth-signal proximity lock / unlock. Locks the wheel as the rider walks
  * away (the BT signal fades while still just connected) and, optionally, unlocks
@@ -1167,6 +1200,13 @@ data class MediaControlSettings(
  * which every family records; [seriesCells] is asked of the rider only when the
  * model is unrecognised, since a live pack voltage alone cannot distinguish a
  * 20S from a 30S.
+ */
+/**
+ * Everything the voice-command area configures.
+ *
+ * A group rather than three fields on [AppSettings], because that class sits
+ * one field short of the 255-argument JVM limit: past it, `copy()` fails
+ * verification and the app dies at runtime rather than at build time (rule 8).
  */
 data class BatteryPercentSettings(
     /**
@@ -1292,8 +1332,49 @@ data class ProximityLockSettings(
  * rider's, stored metric (°C and tenths of m/s so the shared NumberUpDown
  * stepper can drive them as Ints); display follows the unit settings.
  */
+/**
+ * The rider's tire-pressure sensor and how pressure is shown.
+ *
+ * [pairedAddress] is a sensor the rider adopted by scanning. One at a time: a
+ * wheel has one tyre, and two paired sensors would leave "the tire pressure"
+ * meaning whichever spoke last. Pairing another replaces it, which is also
+ * what the section has always said about replacing the wheel's own.
+ */
+data class TpmsSettings(
+    /**
+     * Kept so a rider downgrading still finds their first sensor. New code
+     * reads [pairedAddresses].
+     */
+    val pairedAddress: String? = null,
+    /**
+     * Every cap the rider has added, one per wheel.
+     *
+     * A single slot was the original rule, on the reasoning that a wheel has
+     * one tyre. It does, but a rider has more than one wheel, and the second
+     * cap was dropped before it could even be listed.
+     */
+    val pairedAddresses: List<String> = emptyList(),
+    /**
+     * "psi", "bar", "kPa", or blank to follow the unit system.
+     *
+     * Blank by default, and blank means Imperial gets psi and Metric gets bar
+     * without anyone being asked. Storing a concrete default instead was worse
+     * than deriving it: an existing rider on Imperial kept whatever the
+     * default happened to be, and nothing could tell "they chose bar" from
+     * "they never chose". A rider who picks one gets it everywhere, which is
+     * the part deriving alone could not do - psi in a tyre on a phone that
+     * measures everything else in kilometres.
+     */
+    val pressureUnit: String = "",
+) {
+    companion object {
+        /** Every unit [Units.pressure] can convert to; blank means derive. */
+        val PRESSURE_UNIT_VALUES = setOf("", "psi", "bar", "kpa", "kgf", "mpa")
+    }
+}
+
 data class WeatherSettings(
-    val enabled: Boolean = false,
+    val enabled: Boolean = true,
     /** How many hours ahead the panel shows, 2..168. Free-form rather than
      *  four presets: a rider who wants "the rest of my afternoon" was
      *  choosing between 6 and 24. The dashboard menu still offers presets,
@@ -1343,7 +1424,92 @@ data class VoiceReportSettings(
     val triggerNavigation: Boolean = false,
     val triggerPhoneBattery: Boolean = false,
     val triggerRecording: Boolean = true,
+    // The catalog-backed reports. Off on both sides: they are additions, and a
+    // rider who had their announcement the way they liked it should not find
+    // it five items longer after an update.
+    //
+    // Flat pairs rather than another level of nesting, because this class is
+    // already the nesting: it exists so AppSettings stays under the 255-slot
+    // limit, and it has the room.
+    val periodicBatteryEst: Boolean = false,
+    val triggerBatteryEst: Boolean = false,
+    val periodicRange: Boolean = false,
+    val triggerRange: Boolean = false,
+    val periodicVoltage: Boolean = false,
+    val triggerVoltage: Boolean = false,
+    val periodicOdometer: Boolean = false,
+    val triggerOdometer: Boolean = false,
+    val periodicConsumption: Boolean = false,
+    val triggerConsumption: Boolean = false,
 )
+
+/**
+ * How listening announces itself, and who is allowed to start it.
+ *
+ * Nested for rule 8: AppSettings sits one field from the 255-argument limit,
+ * and four more top-level flags would take copy() past the point where it
+ * stops verifying and every settings write crashes at runtime.
+ *
+ * These are choices about noise and language rather than tuning numbers, so
+ * they live in the Voice commands section where a rider meets the feature,
+ * not in Advanced. The one number the feature has, the listen window, is in
+ * Advanced where numbers belong.
+ */
+data class VoiceCommandSettings(
+    /**
+     * What plays when the microphone opens, and when the session closes.
+     *
+     * [CUE_BEEP] is the pair of chirps, rising to open and falling to close.
+     * [CUE_VOICE] says a word instead, for a rider who would rather be told
+     * than beeped at. [CUE_NONE] is silence at both ends, which is what a
+     * headset with its own tone needs: two devices announcing the same
+     * microphone is one announcement too many.
+     */
+    val promptCue: String = CUE_BEEP,
+    /**
+     * What happens when nothing matched.
+     *
+     * [UNKNOWN_MESSAGE] says so and points at the help phrase, which is right
+     * the first few times and tiring by the twentieth. [UNKNOWN_BEEP] is a
+     * low two-note fall that carries the same fact in half a second.
+     * [UNKNOWN_NONE] says nothing: the rider heard the closing cue and no
+     * answer, and that is already the whole message.
+     */
+    val unknownCue: String = UNKNOWN_MESSAGE,
+    /**
+     * Whether a Bluetooth headset's voice button reaches the app.
+     *
+     * Off by default, and deliberately so. Turning it on makes the app
+     * declare itself a handler for the system voice-command intent, which
+     * puts it in Android's "open with" chooser for every press of that
+     * button, including presses by a rider who wanted their assistant. That
+     * is a change to a device-wide gesture, so it is opted into rather than
+     * shipped switched on.
+     */
+    val headsetButton: Boolean = false,
+    /**
+     * The language the rider speaks commands in, blank to follow the voice.
+     *
+     * Separate from both the interface language and the speaking voice,
+     * because they are three different questions and riders do not answer
+     * them the same way. Someone can run the app in English, be understood in
+     * Russian and be answered in Russian, which was impossible while the
+     * command words came from whatever the interface happened to be set to.
+     */
+    val recognitionLocale: String = "",
+) {
+    companion object {
+        const val CUE_BEEP = "BEEP"
+        const val CUE_VOICE = "VOICE"
+        const val CUE_NONE = "NONE"
+        val CUES = setOf(CUE_BEEP, CUE_VOICE, CUE_NONE)
+
+        const val UNKNOWN_MESSAGE = "MESSAGE"
+        const val UNKNOWN_BEEP = "BEEP"
+        const val UNKNOWN_NONE = "NONE"
+        val UNKNOWNS = setOf(UNKNOWN_MESSAGE, UNKNOWN_BEEP, UNKNOWN_NONE)
+    }
+}
 
 /**
  * Power-user "Advanced" timing / threshold settings. Nested under
@@ -1373,6 +1539,14 @@ data class AdvancedSettings(
     val tripFinalizeGraceMs: Int = 15000,
     // Speed (km/h) above which a lock command is refused, for safety.
     val lockMaxSpeedKmh: Int = 5,
+    /**
+     * Seconds the microphone stays open having heard nothing.
+     *
+     * Rule 1: a global tunable belongs here rather than in its own section.
+     * It lived in the voice section while that section was being designed,
+     * and every other number in the app that behaves like this one is here.
+     */
+    val voiceListenWindowSec: Int = 6,
     val phoneGpsIntervalMs: Int = 1000,
     // Slow "keep-warm" GPS interval used when nothing needs the 1 Hz active
     // stream (idle balanced / low-power tiers). See GpsPowerPolicy.

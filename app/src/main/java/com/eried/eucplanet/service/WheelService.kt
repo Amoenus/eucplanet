@@ -26,6 +26,8 @@ import com.eried.eucplanet.data.model.WheelData
 import com.eried.eucplanet.data.repository.SettingsRepository
 import com.eried.eucplanet.data.repository.TripRepository
 import com.eried.eucplanet.data.repository.WheelRepository
+import com.eried.eucplanet.share.ShareSession
+import com.eried.eucplanet.share.ShareState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -104,6 +106,16 @@ class WheelService : LifecycleService() {
         const val EXTRA_AUTO = "auto_connect"
     }
 
+    /**
+     * Injected so a paired tyre sensor is listened to for as long as the
+     * service runs.
+     *
+     * It used to be created only when the TPMS settings screen was first
+     * opened, so a rider who never went there had a paired cap that was never
+     * heard, and the dashboard tile, the alarms and the HUD all sat on
+     * nothing.
+     */
+    @Inject lateinit var tpmsScanner: com.eried.eucplanet.tpms.TpmsScanner
     @Inject lateinit var wheelRepository: WheelRepository
     @Inject lateinit var settingsRepository: SettingsRepository
 
@@ -115,6 +127,8 @@ class WheelService : LifecycleService() {
     private var distanceUnitCached: String = "km"
     @Volatile
     private var tempUnitCached: String = "C"
+    @Volatile
+    private var pressureUnitCached: String = "bar"
     // Widget layout, mirrored so the painter can run off a telemetry frame
     // without suspending.
     @Volatile
@@ -160,6 +174,7 @@ class WheelService : LifecycleService() {
     @Inject lateinit var radarRepository: com.eried.eucplanet.data.repository.RadarRepository
     @Inject lateinit var phoneHudWindow: com.eried.eucplanet.service.overlay.PhoneHudWindow
     @Inject lateinit var legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController
+    @Inject lateinit var shareSession: ShareSession
 
     // Phone HUD, mirrored so the telemetry loop can read it without suspending.
     @Volatile
@@ -191,10 +206,10 @@ class WheelService : LifecycleService() {
 
     // Voice announcement
     private var voiceJob: Job? = null
-    // RaceBox-style acceleration splits. Pure tracker fed the telemetry stream in
-    // the rider's display speed unit; config re-read each sample so a settings
-    // change takes effect without a reconnect. Reset on disconnect.
-    private val accelSplitTracker = AccelSplitTracker(increment = 10, minSpeed = 20)
+    // RaceBox-style acceleration splits. The session lives in a repository so
+    // the settings screen can show and clear it; config is re-read each sample
+    // so a settings change or the dashboard button takes effect at once.
+    @Inject lateinit var accelSplitRepository: com.eried.eucplanet.data.repository.AccelSplitRepository
     private var lastConnectionState: ConnectionState? = null
     private var lastLightOn: Boolean? = null
     // Flipped true by ACTION_STOP_ALL_AND_KILL so onDestroy knows to
@@ -224,6 +239,10 @@ class WheelService : LifecycleService() {
         super.onCreate()
         isRunning = true
         createNotificationChannel()
+
+        // Start listening for a paired tyre cap. Touching the injected scanner
+        // is what creates it; it then follows the pairing on its own.
+        tpmsScanner.startMonitoring()
 
         val canUseLocation = hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ||
                 hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -262,6 +281,7 @@ class WheelService : LifecycleService() {
                 pushPhoneHud(data)
                 val settings = settingsRepository.get()
                 automationManager.evaluate(settings)
+                shareSession.publishTick()
                 checkLightTransition(data.lightOn, settings)
                 evaluateAutoRecordOnTelemetry(data, settings)
                 if (settings.engineSoundEnabled) {
@@ -281,6 +301,7 @@ class WheelService : LifecycleService() {
                 speedUnitCached = com.eried.eucplanet.util.Units.effectiveSpeedUnit(s)
                 distanceUnitCached = com.eried.eucplanet.util.Units.effectiveDistanceUnit(s)
                 tempUnitCached = com.eried.eucplanet.util.Units.effectiveTempUnit(s)
+                pressureUnitCached = com.eried.eucplanet.util.Units.effectivePressureUnit(s)
                 widgetMetricsCached = s.widget.metrics
                 widgetActionsCached = s.widget.actions
                 widgetStandaloneCached = s.widget.standaloneActions
@@ -424,10 +445,13 @@ class WheelService : LifecycleService() {
                             automationManager.restoreBaselineVolume()
                             automationManager.resetMediaControl()
                             automationManager.onProximityLinkLost()
-                            // Drop any in-flight run + session history so a fresh
-                            // ride starts clean and a stale timestamp gap can't
-                            // fabricate a summary on reconnect.
-                            accelSplitTracker.hardReset()
+                            // Drop the run in flight so the gap until the next
+                            // sample cannot be read as one very slow step. The
+                            // session's times are kept: a wheel powered off for
+                            // a coffee is the same wheel, and the rider is still
+                            // racing the same numbers. A different wheel resets
+                            // them in WheelRepository.connect().
+                            accelSplitRepository.pause()
                         }
                         else -> {}
                     }
@@ -551,7 +575,15 @@ class WheelService : LifecycleService() {
                         tripRepository.recording.value ||
                         navigationEngine.navState.value.active ||
                         s.hudServerEnabled ||
-            s.phoneHudEnabled ||
+                        s.phoneHudEnabled ||
+                        // A live location share publishes on its own heartbeat
+                        // and has nothing to do with a wheel being connected.
+                        // Standing the service down here would put the process
+                        // in the background, Doze would freeze that beat, and
+                        // the rider would silently stop moving on the group's
+                        // map. Turning "Keep app running" off leaves an active
+                        // share running; leaving the group releases it.
+                        shareSession.state.value is ShareState.Joined ||
                         (s.voiceEnabled && s.voiceAnnounceWhen == "ALWAYS")
                     if (!s.keepAppAlive && !stillNeeded) {
                         stopForeground(STOP_FOREGROUND_REMOVE)
@@ -660,6 +692,7 @@ class WheelService : LifecycleService() {
         automationManager.restoreBaselineVolume()
         automationManager.resetMediaControl()
         automationManager.resetProximityLock()
+        shareSession.leave()
         voiceService.shutdown()
         tripRepository.stopLocationUpdates()
         lifecycleScope.launch { tripRepository.stopRecording() }
@@ -807,20 +840,17 @@ class WheelService : LifecycleService() {
         // switch, so gating here silenced split announcements for any rider who
         // turned periodic reports off while wanting acceleration splits on.
         if (!cfg.enabled) {
-            accelSplitTracker.hardReset()
+            // Off is a pause, not a reset. The dashboard button cycles through
+            // off mid-ride, and losing the session's bests on every tap would
+            // make it a button nobody presses.
+            accelSplitRepository.pause()
             return
         }
         val unit = com.eried.eucplanet.util.Units.effectiveSpeedUnit(settings)
         val speed = com.eried.eucplanet.util.Units.speed(data.speed, unit).toDouble()
-        accelSplitTracker.configure(
-            cfg.increment,
-            cfg.minSpeed,
-            trackAccel = cfg.direction != "BRAKE",
-            trackDecel = cfg.direction != "ACCEL",
-        )
         // announceEvent queues (QUEUE_ADD) and never drops, so a step crossed
         // while the previous line is still speaking is voiced right after.
-        for (s in accelSplitTracker.onSample(data.timestamp, speed)) {
+        for (s in accelSplitRepository.onSample(cfg, data.timestamp, speed)) {
             val text = AccelSplitVoice.splitText(this, s, cfg)
             Log.i(TAG, "accel split: $text")
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note("accel_split: $text")
@@ -1169,6 +1199,7 @@ class WheelService : LifecycleService() {
                 speedUnit = speedUnitCached,
                 distanceUnit = distanceUnitCached,
                 tempUnit = tempUnitCached,
+                pressureUnit = pressureUnitCached,
                 clockTimeMs = now,
             )
         )

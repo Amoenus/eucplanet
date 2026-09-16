@@ -29,8 +29,8 @@ android {
         applicationId = "com.eried.eucplanet"
         minSdk = 29
         targetSdk = 36
-        versionCode = 268
-        versionName = "0.19.0"
+        versionCode = 272
+        versionName = "0.20.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -140,6 +140,28 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    lint {
+        // Lint never ran here, so its default severities never mattered:
+        // sync_rate_limited reached 0.19.0 reading English on every language.
+        // checkOnly keeps this to the resource checks that put the wrong words
+        // in front of a rider, so the task stays fast and its failures stay
+        // worth reading. Widen it deliberately, not by turning on everything
+        // at once. LocaleCoverageTest covers the same ground in the unit
+        // tests; this catches the cases a name-by-name comparison cannot, like
+        // a format argument that changed meaning in one language only.
+        checkOnly += setOf(
+            "MissingTranslation",
+            "ExtraTranslation",
+            "MissingQuantity",
+            "ImpliedQuantity",
+            "StringFormatCount",
+            "StringFormatMatches",
+            "StringFormatInvalid",
+        )
+        abortOnError = true
+        warningsAsErrors = true
     }
 
     testOptions {
@@ -320,10 +342,12 @@ dependencies {
     // only need the encoder side.
     implementation(libs.zxing.core)
 
-    // CameraX: Overlay Studio camera viewports
+    // CameraX: Overlay Studio camera viewports, plus the PreviewView the
+    // share dialog's QR scanner draws its live camera feed into.
     implementation(libs.camerax.core)
     implementation(libs.camerax.camera2)
     implementation(libs.camerax.lifecycle)
+    implementation(libs.camerax.view)
 
     // Play Integrity API (Standard Integrity Manager for request-hash-bound tokens)
     implementation("com.google.android.play:integrity:1.4.0")

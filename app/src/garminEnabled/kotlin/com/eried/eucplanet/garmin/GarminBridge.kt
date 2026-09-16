@@ -261,10 +261,26 @@ class GarminBridge @Inject constructor(
                 // channel's ~1 Hz ceiling (PUBLISH_INTERVAL_MS): faster only
                 // floods the outbound queue (issue #14). The rider can still
                 // publish slower to save battery.
-                delay(
-                    settingsRepository.get().garminReportIntervalMs.toLong()
-                        .coerceAtLeast(PUBLISH_INTERVAL_MS)
-                )
+                // Congestion backoff. The watch suppresses its ALIVE heartbeat
+                // while a transmit is outstanding, so a link that has gone
+                // quiet is one that is STRUGGLING, not one that wants more
+                // traffic. Publishing at full rate into it just deepens the
+                // outbound queue and the dial falls further behind. Slow down
+                // while it is quiet so the queue drains; the first ALIVE back
+                // restores the rider's configured rate immediately. The cap in
+                // sendStateToAll bounds how far ahead we get, this bounds how
+                // hard we push while the watch is not answering.
+                val baseIntervalMs = settingsRepository.get().garminReportIntervalMs.toLong()
+                    .coerceAtLeast(PUBLISH_INTERVAL_MS)
+                val lastAckMs = _lastSuccessAtMs.value
+                val quietMs = if (lastAckMs == 0L) 0L
+                    else System.currentTimeMillis() - lastAckMs
+                val backoff = when {
+                    quietMs > 15_000L -> 4L
+                    quietMs > 6_000L -> 2L
+                    else -> 1L
+                }
+                delay(baseIntervalMs * backoff)
             }
         }
 
@@ -280,6 +296,18 @@ class GarminBridge @Inject constructor(
                 val lastAck = _lastSuccessAtMs.value
                 if (lastAck == 0L) continue // never connected yet
                 val sinceAck = System.currentTimeMillis() - lastAck
+                // NOTE: there is deliberately NO timer-based pacing-window
+                // reopen here. A blind "silent for 30 s, so release the cap"
+                // rule cannot tell a watch that is GONE from a watch that is
+                // merely SLOW, and the watch stops sending ALIVE while a
+                // transmit is outstanding (Bridge.mc: the heartbeat skips its
+                // tick while _txBusy), so congestion looks exactly like death.
+                // Releasing the cap then pushes more frames into an already
+                // backed-up link: the queue deepens, updates arrive later, the
+                // watch shows Disconnected, and the cycle repeats with a
+                // growing delay (field report 2026-09-02). A genuinely
+                // restarted watch is already handled precisely, and without
+                // guessing, by the WATCH_INFO and seq-regression reopens.
                 // Only rebuild the transport on the TETHERED dev path, where a
                 // half-dead local socket genuinely needs a fresh one. On real
                 // devices (WIRELESS) the watch's ALIVE ack is unreliable by
@@ -295,6 +323,17 @@ class GarminBridge @Inject constructor(
                 }
             }
         }
+    }
+
+    /** Forget one device's pacing state so the next publish tick sends
+     *  again from seq 1. The MAX_INFLIGHT cap can only be released by acks,
+     *  and a watch that restarted (or lost the link) has nothing to ack, so
+     *  without this the cap is a one-way door. Cheap and safe: the cap
+     *  re-arms after five frames if the watch really is gone. */
+    private fun reopenPacingWindow(id: Long) {
+        lastSentSeq[id] = 0
+        lastAckedSeq[id] = 0
+        sendBusyUntilMs[id] = 0L
     }
 
     /** Tear down all device registrations + the CIQ SDK instance, then
@@ -433,9 +472,21 @@ class GarminBridge @Inject constructor(
                     val id = device.deviceIdentifier
                     watchSupportsSeq[id] = true
                     val sent = lastSentSeq[id] ?: 0
-                    val clamped = echoedInt.coerceIn(0, sent)
                     val prev = (lastAckedSeq[id] ?: 0).coerceAtMost(sent)
-                    lastAckedSeq[id] = maxOf(prev, clamped)
+                    if (echoedInt < prev - MAX_INFLIGHT) {
+                        // A seq far BELOW the last ack is not a late ack, it is
+                        // a watch that restarted with a fresh counter. The old
+                        // monotonic max kept the stale high ack, the window
+                        // stayed "full", the phone never sent again, and the
+                        // watch could never ack its way out: the "watch shows
+                        // Disconnected until the PHONE app restarts" deadlock
+                        // (2026-08-29 field log, three watch restarts ignored).
+                        Log.i(TAG, "watch seq reset ($prev -> $echoedInt); reopening pacing window")
+                        reopenPacingWindow(id)
+                    } else {
+                        val clamped = echoedInt.coerceIn(0, sent)
+                        lastAckedSeq[id] = maxOf(prev, clamped)
+                    }
                 }
             }
             cmd == GarminControl.HORN -> wheelRepository.sendHorn()
@@ -458,6 +509,11 @@ class GarminBridge @Inject constructor(
                 // staring at "Idle" for the first 5 s while the heartbeat
                 // timer warms up.
                 _lastSuccessAtMs.value = System.currentTimeMillis()
+                // It is also the one unambiguous "the watch app just
+                // (re)started" signal: its seq counter is at zero now, so any
+                // pacing window carried over from the previous run is a lie
+                // that would hold every frame back forever. Start clean.
+                reopenPacingWindow(device.deviceIdentifier)
             }
             else -> Log.w(TAG, "unknown Garmin control: $cmd")
         }

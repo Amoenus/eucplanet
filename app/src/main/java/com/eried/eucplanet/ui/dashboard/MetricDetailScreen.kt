@@ -113,6 +113,7 @@ private fun rawCurrentValueFor(key: String, w: WheelData): Float = when (key) {
     "ODOMETER" -> w.totalDistance
     "BATTERY_1" -> w.battery1Percent
     "BATTERY_2" -> w.battery2Percent
+    "BATTERY_ENVELOPE" -> w.batteryEnvelope
     "PITCH" -> w.pitchAngle
     "ROLL" -> w.rollAngle
     "G_FORCE" -> w.gForce
@@ -165,6 +166,7 @@ fun MetricDetailScreen(
     val speedUnit by viewModel.speedUnit.collectAsState()
     val tempUnit by viewModel.tempUnit.collectAsState()
     val distanceUnit by viewModel.distanceUnit.collectAsState()
+    val pressureUnit by viewModel.pressureUnit.collectAsState()
 
     // Long-press Reset → confirmation dialog → wipe ALL history buffers.
     var showResetAllConfirm by remember { mutableStateOf(false) }
@@ -236,7 +238,8 @@ fun MetricDetailScreen(
                     wheelData = wheelData,
                     speedUnit = speedUnit,
                     tempUnit = tempUnit,
-                    distanceUnit = distanceUnit
+                    distanceUnit = distanceUnit,
+                    pressureUnit = pressureUnit,
                 )
 
                 Spacer(Modifier.height(16.dp))
@@ -325,7 +328,8 @@ private fun MetricDetailBody(
     wheelData: WheelData,
     speedUnit: String,
     tempUnit: String,
-    distanceUnit: String
+    distanceUnit: String,
+    pressureUnit: String,
 ) {
     val legacyType: MetricType? = runCatching { MetricType.valueOf(key) }.getOrNull()
     val catalogSpec = com.eried.eucplanet.data.model.MetricCatalog.byKey(key)
@@ -348,10 +352,9 @@ private fun MetricDetailBody(
     // pill - the odometer tile was skipping this, so imperial riders saw km
     // here while the pill showed mi.
     val isDistanceMetric = key == "ODOMETER"
-    // Tire pressure is stored raw in kPa; convert to the rider's pressure unit
-    // (psi for imperial-distance riders, bar otherwise - see Units).
+    // Tire pressure is stored raw in kPa; converted to the unit the rider
+    // chose, which is passed in rather than guessed from the distance unit.
     val isPressureMetric = key == "TIRE_PRESSURE"
-    val pressureUnit = if (distanceUnit == "mi") "psi" else "bar"
     // Non-legacy catalog metrics also carry units the dashboard converts but
     // this screen used to skip - a °F / mph / imperial rider saw raw °C / km/h /
     // metres in the header, chart, and stat pills while the tile showed the
@@ -371,10 +374,13 @@ private fun MetricDetailBody(
         isTempMetric -> com.eried.eucplanet.util.Units.temperature(v, tempUnit)
         isSpeedMetric -> com.eried.eucplanet.util.Units.speed(v, speedUnit)
         isDistanceMetric -> com.eried.eucplanet.util.Units.distance(v, distanceUnit)
-        // psi floored to match the wheel's own display (see pressurePsiFloored).
+        // The rider's own unit, all five of them. Anything-but-psi used to
+        // fall through to bar, so a rider on kgf/cm2 or MPa read bar values
+        // under their own unit's name.
         isPressureMetric -> if (pressureUnit == "psi")
+            // Floored to match the wheel's own display (pressurePsiFloored).
             com.eried.eucplanet.util.Units.pressurePsiFloored(v)
-            else com.eried.eucplanet.util.Units.pressure(v, "bar")
+            else com.eried.eucplanet.util.Units.pressure(v, pressureUnit)
         isAltitudeMetric -> if (distanceUnit == "mi") v * 3.28084f else v
         else -> v
     }
@@ -398,7 +404,9 @@ private fun MetricDetailBody(
     }
     // Pressure in bar reads with 2 decimals everywhere else; match it here.
     // (psi stays 1 decimal, already floored above.)
-    val statFmt = if (isPressureMetric && pressureUnit == "bar") "%.2f" else "%.1f"
+    val statFmt =
+        if (isPressureMetric) "%.${com.eried.eucplanet.util.Units.pressureDecimals(pressureUnit)}f"
+        else "%.1f"
 
     val currentValue = when (legacyType) {
         MetricType.BATTERY -> convert(wheelData.batteryPercent.toFloat())
@@ -410,8 +418,13 @@ private fun MetricDetailBody(
         // Source-derived metrics have no WheelData field (rawCurrentValueFor
         // returns 0), so use the latest already-converted sample as the live
         // value instead of showing 0.0 in the header.
-        null -> if (isSourceDerived) (samples.lastOrNull()?.value ?: 0f)
-            else convert(rawCurrentValueFor(key, wheelData))
+        null -> if (isSourceDerived) (samples.lastOrNull()?.value ?: 0f) else {
+            // NaN is a metric saying it cannot answer yet: the battery
+            // envelope needs half a minute of riding before it means
+            // anything. The last thing it did say beats printing "NaN".
+            val live = convert(rawCurrentValueFor(key, wheelData))
+            if (live.isNaN()) samples.lastOrNull()?.value ?: 0f else live
+        }
     }
 
     // Both legacyType.color (a baked MetricType palette Color) and catalogSpec.accent

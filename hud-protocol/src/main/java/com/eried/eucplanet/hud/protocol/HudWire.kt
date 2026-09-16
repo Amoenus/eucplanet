@@ -47,6 +47,11 @@ data class HudState(
     // --- Live telemetry (canonical metric) ---
     val speedKmh: Float = 0f,
     val batteryPercent: Int = 0,
+    /** Battery percent with the load taken out of it, NaN before the first
+     *  half minute of a ride. The raw percentage on an 84 V pack swings
+     *  several points under acceleration, so this is the one worth reading
+     *  while moving. Added at PROTOCOL_MINOR 19; an older HUD ignores it. */
+    val batteryEnvelope: Float = Float.NaN,
     val voltage: Float = 0f,
     val current: Float = 0f,
     val pwm: Float = 0f,
@@ -82,6 +87,10 @@ data class HudState(
     val unitSpeed: String = "kmh",
     val unitDistance: String = "km",
     val unitTemp: String = "C",
+    /** psi | bar | kpa | kgf | mpa. Its own setting, not derived from
+     *  [unitDistance]: a rider on kilometres can still run psi in the tyre.
+     *  Defaulted so an older phone leaves the HUD reading bar as before. */
+    val unitPressure: String = "bar",
 
     /** Accent colour as an `#AARRGGBB` hex string from phone settings. */
     val accentArgb: String = "#FF00C853",
@@ -318,8 +327,15 @@ data class HudState(
          *    code as a Carto slug and would request a URL that does not exist,
          *    leaving the map blank, so the minor bump is what tells the rider to
          *    update rather than leaving them staring at an empty map.
+         * 18: [HudState.unitPressure] carries the rider's own tyre-pressure
+         *    unit. Older HUDs ignore it and keep deriving one from the
+         *    distance unit, which is what every HUD did until now, so a stale
+         *    HUD reads bar rather than something wrong.
+         * 19: [HudState.batteryEnvelope], the load-free battery line, so the
+         *    overlay can show the number that only moves when the charge
+         *    moved. An older HUD never draws the element.
          */
-        const val PROTOCOL_MINOR: Int = 17
+        const val PROTOCOL_MINOR: Int = 19
 
         /** Legacy alias. New code should read [PROTOCOL_MAJOR] / [PROTOCOL_MINOR]. */
         @Deprecated(

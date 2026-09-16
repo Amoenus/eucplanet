@@ -3,8 +3,11 @@ package com.eried.eucplanet.data.repository
 import com.eried.eucplanet.data.model.ADVANCED_SPECS
 import com.eried.eucplanet.data.model.BatteryPercentSettings
 import com.eried.eucplanet.data.model.ProximityLockSettings
+import com.eried.eucplanet.data.model.TpmsSettings
 import com.eried.eucplanet.data.model.AppSettings
+import com.eried.eucplanet.data.model.VoiceCommandSettings
 import com.eried.eucplanet.data.model.HudDiscoveryMode
+import com.eried.eucplanet.data.model.ShareSettings
 import com.eried.eucplanet.data.store.SettingsStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +53,10 @@ class SettingsRepository @Inject constructor(
         scope.launch { updateLastDevice(address, name) }
     }
 
+    private companion object {
+        /** Prompt styles the segmented row offers. */
+    }
+
     private fun AppSettings.sanitized(): AppSettings = copy(
         autoRecordStopIdleSeconds = autoRecordStopIdleSeconds.coerceAtLeast(30),
         // Weather comfort thresholds from a synced or hand-edited file: keep
@@ -91,6 +98,16 @@ class SettingsRepository @Inject constructor(
             capacityWh = batteryPercent.capacityWh.coerceIn(
                 0, BatteryPercentSettings.MAX_CAPACITY_WH),
         ),
+        // A cue or an unknown-reply this build does not know would fall
+        // through every when() to silence, which is the one behaviour a rider
+        // cannot tell apart from the feature being broken. Fall back to the
+        // defaults instead, so an unrecognised value is merely ignored.
+        voiceCommands = voiceCommands.copy(
+            promptCue = voiceCommands.promptCue.takeIf { it in VoiceCommandSettings.CUES }
+                ?: VoiceCommandSettings.CUE_BEEP,
+            unknownCue = voiceCommands.unknownCue.takeIf { it in VoiceCommandSettings.UNKNOWNS }
+                ?: VoiceCommandSettings.UNKNOWN_MESSAGE,
+        ),
         // An imported or Dropbox-synced file can carry an unlockWhen this build
         // does not know. Fall back to never rather than letting an unrecognised
         // value decide when a wheel unlocks itself.
@@ -99,10 +116,26 @@ class SettingsRepository @Inject constructor(
         } else {
             proximityLock.copy(unlockWhen = ProximityLockSettings.UNLOCK_WHEN_NEVER)
         },
+        // A pressure unit this build cannot convert would fall through the
+        // formatter to kPa, changing every pressure in the app by a factor of
+        // a hundred without saying so. Blank is the documented "follow the
+        // unit system" value, so an unrecognised one lands there.
+        tpms = tpms.copy(
+            pressureUnit = tpms.pressureUnit.takeIf {
+                it in TpmsSettings.PRESSURE_UNIT_VALUES
+            } ?: "",
+        ),
         // An unknown discovery mode (hand-edited or newer file) falls back to
         // AUTO, which never uses the saved IP.
         hudDiscoveryMode = hudDiscoveryMode.takeIf { it in HudDiscoveryMode.VALUES }
             ?: HudDiscoveryMode.AUTO,
+        // The share relay is dialled as a WebSocket. A file carrying an http
+        // URL, a hostname, or junk would fail at the OkHttp request builder,
+        // inside the coroutine that opens a group, so it is reset here instead.
+        share = share.copy(
+            relayUrl = share.relayUrl.takeIf { ShareSettings.isValidRelayUrl(it) }
+                ?: ShareSettings.DEFAULT_RELAY_URL
+        ),
     )
 }
 

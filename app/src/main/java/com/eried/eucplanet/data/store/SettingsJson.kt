@@ -28,6 +28,7 @@ object SettingsJson {
      * folder picker, paired Flic addresses, etc. survive an app restart.
      */
     fun stripDeviceBindings(s: AppSettings): AppSettings = s.copy(
+        share = s.share.copy(deviceSecret = ""),
         lastDeviceAddress = null,
         lastDeviceName = null,
         flic1Address = null,
@@ -40,6 +41,11 @@ object SettingsJson {
         radarAddress = null,
         radarName = null,
         radarVendor = null,
+        // A rider's tyre caps are their hardware, like their Flics and their
+        // radar. A settings file shared with someone else must not carry the
+        // addresses, and a backup restored on a second phone must not pair it
+        // to sensors that are not on that phone's wheel.
+        tpms = s.tpms.copy(pairedAddress = null, pairedAddresses = emptyList()),
         syncFolderUri = null,
         lastSettingsBackupAt = null,
         lastSettingsBackupName = null,
@@ -134,6 +140,22 @@ object SettingsJson {
             put("rateApplyWhen", s.mediaControl.rateApplyWhen)
             put("rateCurve", s.mediaControl.rateCurve)
         })
+        put("share", JSONObject().apply {
+            put("trailMinutes", s.share.trailMinutes); put("shareStatsDefault", s.share.shareStatsDefault)
+            put("lastIdentityMode", s.share.lastIdentityMode); put("lastSessionName", s.share.lastSessionName)
+            put("relayUrl", s.share.relayUrl)
+            put("deviceSecret", s.share.deviceSecret)
+        })
+        put("tpms", JSONObject().apply {
+            // Never written until now, so a paired sensor was forgotten on
+            // every restart and a rider who picked psi got it back as bar. The
+            // fields existed on the model and the model was simply not on this
+            // list, which is the one way a setting can look wired up and still
+            // go nowhere.
+            put("pairedAddress", s.tpms.pairedAddress)
+            put("pairedAddresses", org.json.JSONArray(s.tpms.pairedAddresses))
+            put("pressureUnit", s.tpms.pressureUnit)
+        })
         put("batteryPercent", JSONObject().apply {
             put("mode", s.batteryPercent.mode)
             put("minimumCellVoltageMv", s.batteryPercent.minimumCellVoltageMv)
@@ -222,6 +244,24 @@ object SettingsJson {
         put("weatherPrefWind", s.weather.prefWind)
         put("weatherPrefNight", s.weather.prefNight)
         put("weatherPrefGolden", s.weather.prefGolden)
+        // Flat keys for a nested group, same as the report toggles above: the
+        // file is read by hand and synced between builds, and a nested object
+        // would make every older build drop the lot rather than the one key it
+        // does not know.
+        put("voicePromptCue", s.voiceCommands.promptCue)
+        put("voiceUnknownCue", s.voiceCommands.unknownCue)
+        put("voiceHeadsetButton", s.voiceCommands.headsetButton)
+        put("voiceRecognitionLocale", s.voiceCommands.recognitionLocale)
+        put("voiceReportBatteryEst", s.voiceReports.periodicBatteryEst)
+        put("triggerReportBatteryEst", s.voiceReports.triggerBatteryEst)
+        put("voiceReportRange", s.voiceReports.periodicRange)
+        put("triggerReportRange", s.voiceReports.triggerRange)
+        put("voiceReportVoltage", s.voiceReports.periodicVoltage)
+        put("triggerReportVoltage", s.voiceReports.triggerVoltage)
+        put("voiceReportOdometer", s.voiceReports.periodicOdometer)
+        put("triggerReportOdometer", s.voiceReports.triggerOdometer)
+        put("voiceReportConsumption", s.voiceReports.periodicConsumption)
+        put("triggerReportConsumption", s.voiceReports.triggerConsumption)
         put("voiceReportCurrent", s.voiceReports.periodicCurrent)
         put("voiceReportPower", s.voiceReports.periodicPower)
         put("triggerReportCurrent", s.voiceReports.triggerCurrent)
@@ -434,8 +474,24 @@ object SettingsJson {
             prefNight = j.optString("weatherPrefNight", base.weather.prefNight),
             prefGolden = j.optString("weatherPrefGolden", base.weather.prefGolden),
         ),
+        voiceCommands = com.eried.eucplanet.data.model.VoiceCommandSettings(
+            promptCue = j.optString("voicePromptCue", base.voiceCommands.promptCue),
+            unknownCue = j.optString("voiceUnknownCue", base.voiceCommands.unknownCue),
+            headsetButton = j.optBoolean("voiceHeadsetButton", base.voiceCommands.headsetButton),
+            recognitionLocale = j.optString("voiceRecognitionLocale", base.voiceCommands.recognitionLocale),
+        ),
         voiceReports = com.eried.eucplanet.data.model.VoiceReportSettings(
             periodicSpeed = j.optBoolean("voiceReportSpeed", base.voiceReports.periodicSpeed),
+            periodicBatteryEst = j.optBoolean("voiceReportBatteryEst", base.voiceReports.periodicBatteryEst),
+            triggerBatteryEst = j.optBoolean("triggerReportBatteryEst", base.voiceReports.triggerBatteryEst),
+            periodicRange = j.optBoolean("voiceReportRange", base.voiceReports.periodicRange),
+            triggerRange = j.optBoolean("triggerReportRange", base.voiceReports.triggerRange),
+            periodicVoltage = j.optBoolean("voiceReportVoltage", base.voiceReports.periodicVoltage),
+            triggerVoltage = j.optBoolean("triggerReportVoltage", base.voiceReports.triggerVoltage),
+            periodicOdometer = j.optBoolean("voiceReportOdometer", base.voiceReports.periodicOdometer),
+            triggerOdometer = j.optBoolean("triggerReportOdometer", base.voiceReports.triggerOdometer),
+            periodicConsumption = j.optBoolean("voiceReportConsumption", base.voiceReports.periodicConsumption),
+            triggerConsumption = j.optBoolean("triggerReportConsumption", base.voiceReports.triggerConsumption),
             periodicBattery = j.optBoolean("voiceReportBattery", base.voiceReports.periodicBattery),
             periodicTemp = j.optBoolean("voiceReportTemp", base.voiceReports.periodicTemp),
             periodicPwm = j.optBoolean("voiceReportPwm", base.voiceReports.periodicPwm),
@@ -487,6 +543,26 @@ object SettingsJson {
                 rateCurve = m.optString("rateCurve", base.mediaControl.rateCurve),
             )
         } ?: base.mediaControl,
+        share = j.optJSONObject("share")?.let { m -> base.share.copy(
+            trailMinutes = m.optInt("trailMinutes", base.share.trailMinutes).coerceIn(1, 30),
+            shareStatsDefault = m.optBoolean("shareStatsDefault", base.share.shareStatsDefault),
+            lastIdentityMode = m.optString("lastIdentityMode", base.share.lastIdentityMode),
+            lastSessionName = m.optString("lastSessionName", base.share.lastSessionName),
+            relayUrl = m.optString("relayUrl", base.share.relayUrl),
+            deviceSecret = m.optString("deviceSecret", base.share.deviceSecret),
+        ) } ?: base.share,
+        tpms = j.optJSONObject("tpms")?.let { t ->
+            base.tpms.copy(
+                // optString turns a JSON null into the string "null", which
+                // would pair the rider to a sensor at address "null".
+                pairedAddress = t.optString("pairedAddress", "").ifBlank { null }
+                    ?.takeIf { it != "null" },
+                pairedAddresses = t.optJSONArray("pairedAddresses")?.let { arr ->
+                    (0 until arr.length()).mapNotNull { arr.optString(it).takeIf { s -> s.isNotBlank() } }
+                } ?: base.tpms.pairedAddresses,
+                pressureUnit = t.optString("pressureUnit", base.tpms.pressureUnit),
+            )
+        } ?: base.tpms,
         batteryPercent = j.optJSONObject("batteryPercent")?.let { b ->
             base.batteryPercent.copy(
                 // A file written before the two switches became one choice

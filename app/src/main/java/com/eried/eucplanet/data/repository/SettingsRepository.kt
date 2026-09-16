@@ -53,10 +53,6 @@ class SettingsRepository @Inject constructor(
         scope.launch { updateLastDevice(address, name) }
     }
 
-    private companion object {
-        /** Prompt styles the segmented row offers. */
-    }
-
     private fun AppSettings.sanitized(): AppSettings = copy(
         autoRecordStopIdleSeconds = autoRecordStopIdleSeconds.coerceAtLeast(30),
         // Weather comfort thresholds from a synced or hand-edited file: keep

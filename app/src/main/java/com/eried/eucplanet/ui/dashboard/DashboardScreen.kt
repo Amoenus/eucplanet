@@ -3420,6 +3420,7 @@ fun DashboardScreen(
                                                     "Soolek" to "KS-16X testing.",
                                                     "Jonathan Wiesner" to "LeaperKim Lynx S testing.",
                                                     "Felix K" to "LeaperKim Oryx testing.",
+                                                    "Amoenus" to "Aeon alarm-speed mapping and headlight level readback, decoded from his own BLE captures. The first code contributed from outside.",
                                                     "Ilya Shkolnik" to "Advice and help, and maintains DarknessBot.",
                                                     "InMotion" to "For making my awesome V14."
                                                 )

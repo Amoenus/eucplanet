@@ -25,6 +25,27 @@ while the level label explicitly becomes unknown. Sending a command does not
 create a measured level. Models without this readback retain their existing
 command-tracked behavior.
 
+## Polling and freshness
+
+This follows the existing push-telemetry path, without a headlight polling loop.
+`WheelRepository.runPollingLoop` uses the configurable `wheelPollIntervalMs`
+(250 ms by default) for request/response wheels. Settings and extended-stat
+queries share that loop at cycle-count intervals. Chart sampling and HUD/watch
+reporting are separately paced and do not determine when BLE measurements arrive.
+
+`VeteranAdapter`, including Aeon, returns empty realtime/settings poll commands;
+`BleConnectionManager` ignores those commands. The wheel chooses when to send its
+rotating telemetry pages. A headlight sample updates only on a valid page-1 frame.
+
+`headlightReadbackMaxAgeMs` controls sample validity, not acquisition frequency.
+It follows the existing `AdvancedSettings` and `ADVANCED_SPECS` convention, as do
+other source-specific freshness limits such as `gpsFixMaxAgeSec`. The dashboard
+schedules a single expiry per sample so silence can make the label unknown.
+This sends no BLE traffic and does not periodically poll the UI or the wheel.
+Coupling expiry to `wheelPollIntervalMs` would be misleading because that setting
+does not control Aeon's push cadence. The BLE initial-data watchdog is also a
+different concern: it checks for any data after connection, not the age of page 1.
+
 ## Captured evidence
 
 Source: owner passive BLE capture `aeon-pc-capture-20260907-123125.txt`,

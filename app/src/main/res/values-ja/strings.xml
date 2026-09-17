@@ -685,10 +685,6 @@
     <string name="section_speed_limits">速度制限</string>
     <string name="section_speed_calibration">速度キャリブレーション</string>
     <string name="section_battery_percent">バッテリー補正</string>
-    <string name="section_wheel_lock">ロック</string>
-    <string name="lock_code_label">KingSong ロックコード</string>
-    <string name="lock_code_hint">KingSong アプリで設定した6桁の数字です。ロックはなくてもできますが、解除には必要です。</string>
-    <string name="lock_code_missing">解除には KingSong のロックコードが必要です。設定、ホイールのパラメータ、ロック。</string>
     <string name="battery_override_label">ホイールの残量を上書き</string>
     <string name="battery_override_hint">パック電圧から推定。</string>
     <string name="battery_percent_custom_floor">直線スケール</string>
@@ -2350,6 +2346,8 @@
     <string name="adv_nav_sidebar_min_desc">これより狭い画面は横向きでも下部の経由地パネルを保持します。小さすぎると小画面で地図が埋もれます。</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 ホイールのアクセスPIN。接続時に送信され、ホイールがデータ送信を開始します。InMotionアプリで独自のPINを設定していない限り、000000のままにしてください。</string>
+    <string name="adv_kingsong_unlock_code">KingSong 解除コード</string>
+    <string name="adv_kingsong_unlock_code_desc">KingSong ホイールの解除時に送信する6桁の数字。KingSong アプリで独自のコードを設定していない限り、123456のままにしてください。</string>
     <string name="adv_nav_sidebar_width">経由地パネルの幅</string>
     <string name="adv_nav_sidebar_width_desc">横向きの経由地サイドバーの幅。広すぎると地図が狭くなります。</string>
     <string name="adv_simple_speedo_scale">シンプル速度計のサイズ</string>

@@ -685,10 +685,6 @@
     <string name="section_speed_limits">速度限制</string>
     <string name="section_speed_calibration">速度校準</string>
     <string name="section_battery_percent">電池校準</string>
-    <string name="section_wheel_lock">鎖定</string>
-    <string name="lock_code_label">KingSong 鎖定碼</string>
-    <string name="lock_code_hint">你在 KingSong 應用程式中設定的六位數字。鎖定不需要它，解鎖需要。</string>
-    <string name="lock_code_missing">解鎖需要 KingSong 鎖定碼。設定、車輪參數、鎖定。</string>
     <string name="battery_override_label">覆蓋車輪的電量百分比</string>
     <string name="battery_override_hint">根據電池組電壓估算。</string>
     <string name="battery_percent_custom_floor">線性刻度</string>
@@ -2350,6 +2346,8 @@
     <string name="adv_nav_sidebar_min_desc">比此更窄的螢幕即使橫向也保留底部停靠點面板。太低會在小螢幕上遮住地圖。</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 車輪的存取 PIN，連線時傳送，讓車輪開始傳送資料。除非你在 InMotion 應用程式中設定了自己的 PIN，否則請保持 000000。</string>
+    <string name="adv_kingsong_unlock_code">KingSong 解鎖碼</string>
+    <string name="adv_kingsong_unlock_code_desc">解鎖 KingSong 車輪時傳送的六位數字。除非你在 KingSong 應用程式中設定了自己的解鎖碼，否則請保持 123456。</string>
     <string name="adv_nav_sidebar_width">停靠點面板寬度</string>
     <string name="adv_nav_sidebar_width_desc">橫向停靠點側欄的寬度。太寬會讓地圖變小。</string>
     <string name="adv_simple_speedo_scale">簡易速度表尺寸</string>

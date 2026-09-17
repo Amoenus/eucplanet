@@ -224,12 +224,9 @@ interface WheelAdapter {
      */
     fun setLockFollowup(locked: Boolean): ByteArray? = null
 
-    /** Hand the adapter the rider's lock code before a lock command. Only
-     *  KingSong has one (six digits from the KingSong app; unlock needs it). */
+    /** Hand the adapter the unlock code before a lock command. Only KingSong
+     *  uses one (six digits, from Advanced settings; the unlock frame carries it). */
     fun provideLockCode(code: String) {}
-
-    /** True when an unlock cannot be built because the code is missing. */
-    fun lockNeedsCode(): Boolean = false
 
     /**
      * Resets the wheel's onboard trip meter (the field reported as

@@ -78,14 +78,6 @@ data class WheelProfile(
     @ColumnInfo(defaultValue = "0")
     val batteryCapacityWh: Int = 0,
 
-    /**
-     * The six-digit lock code the rider set in the KingSong app, or "" when
-     * unset. Per wheel because each has its own; only KingSong reads it
-     * (unlock needs it, lock does not).
-     */
-    @ColumnInfo(defaultValue = "")
-    val lockCode: String = "",
-
     /** Wall-clock of the last connect to this wheel. Used to keep the most
      *  recently used profile easy to find if we ever expose a profile list. */
     val lastConnectedAt: Long = System.currentTimeMillis()

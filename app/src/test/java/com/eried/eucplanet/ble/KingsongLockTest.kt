@@ -15,9 +15,12 @@ import org.junit.Test
  *   RX aa 55 01 00 .. 5f 14 5a 5a          state: locked (wheel pings when moved)
  *   TX aa 55 00 .. 5e 14 5a 5a             ask
  *   RX aa 55 01 .. 5f                      still locked
- *   TX aa 55 00×8 35 30 39 35 34 30 5d ..  unlock with the rider's code "509540"
+ *   TX aa 55 00×8 35 30 39 35 34 30 5d ..  unlock with six digits, "509540" here
  *   RX aa 55 00 .. 5f                      state: unlocked
  *
+ * A second capture unlocked with "763021" while the wheel reported "123456" as
+ * its stored code, so with no rider-set code the digits are not checked. The
+ * app sends the code from Advanced settings, 123456 unless the rider set one.
  * Nothing in the public protocol described any of this, which is why the
  * adapter used to say KingSong has no lock.
  */
@@ -52,23 +55,27 @@ class KingsongLockTest {
         )
     }
 
-    @Test fun `no six digit code, no unlock frame`() {
+    @Test fun `anything but six digits sends the wheel default instead of nothing`() {
         for (bad in listOf("", "12345", "1234567", "50954a", "509 40")) {
-            assertNull("\"$bad\" must not build a frame", KingsongCommands.unlock(bad))
+            assertArrayEquals("\"$bad\" falls back to 123456",
+                KingsongCommands.unlock(KingsongCommands.DEFAULT_LOCK_CODE), KingsongCommands.unlock(bad))
         }
+        assertArrayEquals(
+            "aa 55 00 00 00 00 00 00 00 00 31 32 33 34 35 36 5d 14 5a 5a".hex(),
+            KingsongCommands.unlock("123456"),
+        )
     }
 
-    @Test fun `the adapter locks without a code and unlocks only with one`() {
+    @Test fun `the adapter locks without a code and unlocks with the one it was given`() {
         val a = KingsongAdapter()
         assertTrue(a.capabilities.hasLock)
         assertFalse(a.capabilities.needsAuthForLock)
         assertArrayEquals(KingsongCommands.lock(), a.setLock(true))
         assertArrayEquals("the follow-up reads the state back", KingsongCommands.queryLock(), a.setLockFollowup(true))
 
-        assertTrue("no code yet", a.lockNeedsCode())
-        assertNull(a.setLock(false))
+        assertArrayEquals("no code handed over yet: the wheel default goes out",
+            KingsongCommands.unlock(KingsongCommands.DEFAULT_LOCK_CODE), a.setLock(false))
         a.provideLockCode("509540")
-        assertFalse(a.lockNeedsCode())
         assertArrayEquals(KingsongCommands.unlock("509540"), a.setLock(false))
     }
 

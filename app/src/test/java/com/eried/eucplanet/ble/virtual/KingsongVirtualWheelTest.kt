@@ -29,7 +29,7 @@ class KingsongVirtualWheelTest {
         assertEquals("KS-18XL", w!!.bleName)
     }
 
-    @Test fun `lock, wrong code, right code, as the wheel did on the bench`() {
+    @Test fun `lock, then any six digits unlock it, as the tester's wheel did`() {
         val w = KingsongVirtualWheel()
         val a = KingsongAdapter()
         a.notifyConnectingTo(w.bleName)
@@ -39,11 +39,12 @@ class KingsongVirtualWheelTest {
         assertEquals(true, lockedReported(w.onWrite(KingsongCommands.lock()), a))
         assertTrue(w.locked)
 
-        assertEquals("a wrong code leaves it locked",
-            true, lockedReported(w.onWrite(KingsongCommands.unlock("509540")!!), a))
-        assertTrue(w.locked)
+        assertEquals("digits the wheel never saw still unlock it, no code was set",
+            false, lockedReported(w.onWrite(KingsongCommands.unlock("509540")), a))
+        assertFalse(w.locked)
 
-        assertEquals(false, lockedReported(w.onWrite(KingsongCommands.unlock(w.lockCode)!!), a))
+        assertEquals(true, lockedReported(w.onWrite(KingsongCommands.lock()), a))
+        assertEquals(false, lockedReported(w.onWrite(KingsongCommands.unlock(w.lockCode)), a))
         assertFalse(w.locked)
     }
 
@@ -59,7 +60,7 @@ class KingsongVirtualWheelTest {
         assertEquals(82.18f, locked.voltage, 0.01f)
         assertEquals(0f, locked.speed, 0.001f)
 
-        w.onWrite(KingsongCommands.unlock(w.lockCode)!!)
+        w.onWrite(KingsongCommands.unlock(w.lockCode))
         val rolling = w.onTick(3_000L).flatMap { a.onRawNotification(it) }
             .filterIsInstance<DecodeResult.Telemetry>().last().data
         assertTrue("unlocked, the sine rolls again: ${rolling.speed}", rolling.speed > 1f)

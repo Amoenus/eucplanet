@@ -748,10 +748,6 @@
     <string name="external_gps_device_title">Ekstern GPS</string>
     <string name="section_speed_calibration">Hastighetskalibrering</string>
     <string name="section_battery_percent">Batterikalibrering</string>
-    <string name="section_wheel_lock">Lås</string>
-    <string name="lock_code_label">KingSong-låsekode</string>
-    <string name="lock_code_hint">De seks sifrene du satte i KingSong-appen. Låsing virker uten, opplåsing trenger den.</string>
-    <string name="lock_code_missing">Opplåsing trenger KingSong-låsekoden. Innstillinger, Hjulparametere, Lås.</string>
     <string name="battery_override_label">Overstyr hjulets prosent</string>
     <string name="battery_override_hint">Anslå den fra pakkespenningen.</string>
     <string name="battery_percent_custom_floor">Rettlinjet skala</string>
@@ -2237,6 +2233,8 @@
     <string name="adv_nav_sidebar_min_desc">Smalere skjermer beholder det nederste stopp-panelet selv i liggende retning. For lavt skjuler kartet på små skjermer.</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">Tilgangs-PIN for InMotion V5/V8/V10 hjul, sendes ved tilkobling så hjulet begynner å sende data. La 000000 stå med mindre du har satt din egen PIN i InMotion-appen.</string>
+    <string name="adv_kingsong_unlock_code">KingSong-opplåsingskode</string>
+    <string name="adv_kingsong_unlock_code_desc">Seks sifre som sendes for å låse opp et KingSong-hjul. La 123456 stå med mindre du har satt din egen kode i KingSong-appen.</string>
     <string name="adv_nav_sidebar_width">Bredde på stopp-panel</string>
     <string name="adv_nav_sidebar_width_desc">Bredden på det liggende stopp-sidepanelet. For bredt gir lite kart.</string>
     <string name="adv_simple_speedo_scale">Størrelse på enkelt speedometer</string>

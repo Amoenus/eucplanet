@@ -685,10 +685,6 @@
     <string name="section_speed_limits">속도 제한</string>
     <string name="section_speed_calibration">속도 보정</string>
     <string name="section_battery_percent">배터리 보정</string>
-    <string name="section_wheel_lock">잠금</string>
-    <string name="lock_code_label">KingSong 잠금 코드</string>
-    <string name="lock_code_hint">KingSong 앱에서 설정한 여섯 자리 숫자입니다. 잠금은 없어도 되고, 해제에는 필요합니다.</string>
-    <string name="lock_code_missing">해제에는 KingSong 잠금 코드가 필요합니다. 설정, 휠 매개변수, 잠금.</string>
     <string name="battery_override_label">휠 잔량 덮어쓰기</string>
     <string name="battery_override_hint">팩 전압으로 추정.</string>
     <string name="battery_percent_custom_floor">직선 스케일</string>
@@ -2348,6 +2344,8 @@
     <string name="adv_nav_sidebar_min_desc">이보다 좁은 화면은 가로 모드에서도 하단 경유지 패널을 유지합니다. 너무 낮으면 작은 화면에서 지도가 가려집니다.</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 휠의 접속 PIN. 연결 시 전송되어 휠이 데이터 전송을 시작합니다. InMotion 앱에서 직접 PIN을 설정하지 않았다면 000000으로 두세요.</string>
+    <string name="adv_kingsong_unlock_code">KingSong 해제 코드</string>
+    <string name="adv_kingsong_unlock_code_desc">KingSong 휠을 해제할 때 전송하는 여섯 자리 숫자. KingSong 앱에서 직접 코드를 설정하지 않았다면 123456으로 두세요.</string>
     <string name="adv_nav_sidebar_width">경유지 패널 너비</string>
     <string name="adv_nav_sidebar_width_desc">가로 모드 경유지 사이드바의 너비. 너무 넓으면 지도가 거의 남지 않습니다.</string>
     <string name="adv_simple_speedo_scale">단순 속도계 크기</string>

@@ -6,16 +6,17 @@ riders who can try lock and unlock and report what the wheel did.
 
 ## What to check in this build
 
-**KingSong lock.** From the tester's capture of the official app: the wheel
-locks on one command, answers with its lock state, and unlocks only when the
-six-digit code from the KingSong app comes along. So the Lock Wheel tile now
-works on KingSong. Locking needs nothing. Unlocking needs the code: Settings,
-Wheel parameters, Wheel lock, a row that appears while a KingSong wheel is
-connected, saved per wheel. Without it the app says so instead of pretending.
+**KingSong lock.** From the tester's two captures of the official app: the
+wheel locks on one command, answers with its lock state, and unlocks on a
+command that carries six digits. Both captures unlocked with digits the wheel
+had never been given, while the wheel said its stored code was 123456, so a
+wheel nobody set a code on takes any six digits. The Lock Wheel tile now
+works on KingSong with no setup: the app sends 123456. If you did set a code
+in the KingSong app, put it in Settings, Advanced, KingSong unlock code.
 Check that the lock icon follows the wheel (lock, move it, it pings; unlock,
-it stops), that a wrong code leaves it locked, and that the code survives a
-reconnect. The horn is unchanged: the capture had no horn press in it, so we
-still do not know what the official app sends for it.
+it stops) and that unlock works straight after install with nothing typed.
+The horn is the same command the official app sends (0x88), so if it stays
+silent that is the wheel, not the app.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

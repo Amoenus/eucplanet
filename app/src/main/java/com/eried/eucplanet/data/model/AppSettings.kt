@@ -1046,6 +1046,7 @@ data class AppSettings(
     val chargingSanityCapMinutes: Int get() = advanced.chargingSanityCapMinutes
     val chargingMedianFilterSize: Int get() = advanced.chargingMedianFilterSize
     val inmotionV1Pin: Int get() = advanced.inmotionV1Pin
+    val kingsongUnlockCode: Int get() = advanced.kingsongUnlockCode
 }
 
 /**
@@ -1266,16 +1267,6 @@ data class BatteryPercentSettings(
 }
 
 data class ProximityLockSettings(
-    /**
-     * The code the wheel's unlock wants, or "" when none. Only KingSong today:
-     * the rider sets six digits in the KingSong app, the wheel locks on a plain
-     * command and unlocks only when those digits come along (KS-18XL capture,
-     * issue #19, 2026-09-16). The lock tile and the proximity unlock both send
-     * it. Mirrored into the wheel's profile, so it follows the wheel, like the
-     * pack size does. Lives here rather than in a group of its own because
-     * AppSettings sits two slots from the JVM's copy() limit.
-     */
-    val wheelCode: String = "",
     val lockEnabled: Boolean = false,
     // Lock when the signal is at or below this (dBm) - the rider is walking away.
     // Default tuned to a real reading (near ~-59, 4 steps ~-65, 9 steps ~-79):
@@ -1638,6 +1629,12 @@ data class AdvancedSettings(
     // number (0 = "000000", the factory default). Sent on connect so the wheel
     // leaves its identity-only wait and streams; wheels with no PIN ignore it.
     val inmotionV1Pin: Int = 0,
+    // KingSong unlock code, the six digits the unlock command carries (0x5D,
+    // ASCII at bytes 10..15), stored as a number like the V1 PIN. 123456 is
+    // what a wheel reports when the rider never set a code in the KingSong app,
+    // and such a wheel accepts any six digits (two KS-18XL captures, issue
+    // #19). Only a rider who set their own code needs to change it.
+    val kingsongUnlockCode: Int = 123456,
 )
 
 // FlicAction enum removed (2026-05). Replaced by

@@ -674,9 +674,6 @@ fun SettingsScreen(
         stringResource(R.string.speed_legal_tiltback),
         stringResource(R.string.speed_legal_alarm),
         stringResource(R.string.section_speed_calibration),
-        stringResource(R.string.section_wheel_lock),
-        stringResource(R.string.lock_code_label),
-        stringResource(R.string.lock_code_hint),
         stringResource(R.string.section_battery_percent),
         stringResource(R.string.battery_override_label),
         stringResource(R.string.battery_percent_min_cell),
@@ -802,17 +799,12 @@ fun SettingsScreen(
         stringResource(R.string.section_watch_buttons)
     )
 
-    val corpusAdvanced = listOf(
-        titleAdvanced,
-        stringResource(R.string.adv_group_rates),
-        stringResource(R.string.adv_group_nav),
-        stringResource(R.string.adv_group_alarm),
-        stringResource(R.string.adv_group_radar_auto),
-        stringResource(R.string.adv_wheel_poll_rate),
-        stringResource(R.string.adv_phone_gps_interval),
-        stringResource(R.string.adv_hud_report_interval),
-        stringResource(R.string.adv_garmin_report_interval),
-    )
+    // Every group and every spec label, from the registry, so a new Advanced
+    // row is searchable the day it is added instead of when someone remembers
+    // this list. A hand-picked list here once covered four rows of sixty.
+    val corpusAdvanced = listOf(titleAdvanced) +
+        AdvGroup.entries.map { stringResource(it.titleRes) } +
+        ADVANCED_SPECS.map { stringResource(it.label) }
 
     // Section handles for the reorganize editor (key, title, icon). Every section
     // is reorderable and hideable now, including Advanced (which defaults to last).
@@ -6841,41 +6833,6 @@ private fun SpeedTab(
                 allowSign = true,
             )
             Spacer(Modifier.weight(1f))
-        }
-
-        // --- Wheel lock (KingSong) ---
-        // KingSong locks without a code and unlocks with the six digits the
-        // rider set in the KingSong app (issue #19 capture). Shown only while a
-        // KingSong wheel is connected; saved on that wheel's profile.
-        if (isConnected && viewModel.connectedFamilyId == "kingsong") {
-            SectionHeader(stringResource(R.string.section_wheel_lock))
-            HintText(stringResource(R.string.lock_code_hint), small = true)
-            var lockCodeText by remember { mutableStateOf(settings.proximityLock.wheelCode) }
-            // Half width, left side, like the calibration pill above it.
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                OutlinedTextField(
-                    value = lockCodeText,
-                    onValueChange = { new ->
-                        if (new.length <= 6 && new.all { it.isDigit() }) {
-                            lockCodeText = new
-                            viewModel.updateWheelLockCode(new)
-                        }
-                    },
-                    label = { Text(stringResource(R.string.lock_code_label)) },
-                    singleLine = true,
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number,
-                        imeAction = androidx.compose.ui.text.input.ImeAction.Done,
-                    ),
-                    modifier = Modifier.weight(1f),
-                    colors = themedFieldColors(),
-                    shape = RoundedCornerShape(12.dp),
-                )
-                Spacer(Modifier.weight(1f))
-            }
         }
 
         // --- Battery calibration ---

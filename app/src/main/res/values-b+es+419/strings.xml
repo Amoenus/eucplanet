@@ -685,10 +685,6 @@
     <string name="section_speed_limits">Límites de velocidad</string>
     <string name="section_speed_calibration">Calibración de velocidad</string>
     <string name="section_battery_percent">Calibración de batería</string>
-    <string name="section_wheel_lock">Bloqueo</string>
-    <string name="lock_code_label">Código de bloqueo KingSong</string>
-    <string name="lock_code_hint">Los seis dígitos que pusiste en la app de KingSong. Bloquear funciona sin él, desbloquear lo necesita.</string>
-    <string name="lock_code_missing">Para desbloquear hace falta el código de KingSong. Ajustes, Parámetros de la rueda, Bloqueo.</string>
     <string name="battery_override_label">Anular el porcentaje de la rueda</string>
     <string name="battery_override_hint">Calcularlo desde el voltaje del pack.</string>
     <string name="battery_percent_custom_floor">Escala lineal</string>
@@ -2369,6 +2365,8 @@
     <string name="adv_nav_sidebar_min_desc">Las pantallas más estrechas que esto mantienen el panel de paradas inferior incluso en horizontal. Muy bajo entierra el mapa en pantallas pequeñas.</string>
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN de acceso para las ruedas InMotion V5/V8/V10, se envía al conectar para que la rueda empiece a enviar datos. Deja 000000 salvo que hayas configurado tu propio PIN en la app de InMotion.</string>
+    <string name="adv_kingsong_unlock_code">Código de desbloqueo KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Seis dígitos que se envían para desbloquear una rueda KingSong. Deja 123456 salvo que hayas configurado tu propio código en la app de KingSong.</string>
     <string name="adv_nav_sidebar_width">Ancho del panel de paradas</string>
     <string name="adv_nav_sidebar_width_desc">Ancho de la barra lateral de paradas en horizontal. Muy ancho deja poco mapa.</string>
     <string name="adv_simple_speedo_scale">Tamaño del velocímetro simple</string>

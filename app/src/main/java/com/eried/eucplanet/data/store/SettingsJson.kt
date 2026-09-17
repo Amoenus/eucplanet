@@ -165,7 +165,6 @@ object SettingsJson {
         })
         put("proximityLock", JSONObject().apply {
             put("lockEnabled", s.proximityLock.lockEnabled)
-            put("wheelCode", s.proximityLock.wheelCode)
             put("lockBelowDbm", s.proximityLock.lockBelowDbm)
             put("unlockAboveDbm", s.proximityLock.unlockAboveDbm)
             put("unlockWhen", s.proximityLock.unlockWhen)
@@ -587,7 +586,6 @@ object SettingsJson {
         proximityLock = j.optJSONObject("proximityLock")?.let { p ->
             base.proximityLock.copy(
                 lockEnabled = p.optBoolean("lockEnabled", base.proximityLock.lockEnabled),
-                wheelCode = p.optString("wheelCode", base.proximityLock.wheelCode),
                 lockBelowDbm = p.optInt("lockBelowDbm", base.proximityLock.lockBelowDbm),
                 unlockAboveDbm = p.optInt("unlockAboveDbm", base.proximityLock.unlockAboveDbm),
                 // Settings written before the unlock became a three-way carry

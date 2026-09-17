@@ -255,14 +255,6 @@ object AppModule {
         }
     }
 
-    // The wheel's lock code (KingSong, six digits from the KingSong app).
-    // Empty for every existing profile: no wheel has told us one yet.
-    private val MIGRATION_61_62 = object : Migration(61, 62) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL("ALTER TABLE wheel_profile ADD COLUMN lockCode TEXT NOT NULL DEFAULT ''")
-        }
-    }
-
     /**
      * Build the Room database with the v44->v45 migration. If the open still
      * fails (e.g. a future identity-hash mismatch from a forgotten migration),
@@ -287,7 +279,7 @@ object AppModule {
 
     private fun buildDb(context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
-            .addMigrations(MIGRATION_44_45, MIGRATION_45_46, MIGRATION_46_47, MIGRATION_47_48, MIGRATION_48_49, MIGRATION_49_50, MIGRATION_50_51, MIGRATION_51_52, MIGRATION_52_53, MIGRATION_53_54, MIGRATION_54_55, MIGRATION_55_56, MIGRATION_56_57, MIGRATION_57_58, MIGRATION_58_59, MIGRATION_59_60, MIGRATION_60_61, MIGRATION_61_62)
+            .addMigrations(MIGRATION_44_45, MIGRATION_45_46, MIGRATION_46_47, MIGRATION_47_48, MIGRATION_48_49, MIGRATION_49_50, MIGRATION_50_51, MIGRATION_51_52, MIGRATION_52_53, MIGRATION_53_54, MIGRATION_54_55, MIGRATION_55_56, MIGRATION_56_57, MIGRATION_57_58, MIGRATION_58_59, MIGRATION_59_60, MIGRATION_60_61)
             .build()
 
     @Provides

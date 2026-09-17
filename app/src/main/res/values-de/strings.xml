@@ -685,10 +685,6 @@
     <string name="section_speed_limits">Geschwindigkeitsgrenzen</string>
     <string name="section_speed_calibration">Geschwindigkeitskalibrierung</string>
     <string name="section_battery_percent">Batteriekalibrierung</string>
-    <string name="section_wheel_lock">Sperre</string>
-    <string name="lock_code_label">KingSong-Sperrcode</string>
-    <string name="lock_code_hint">Die sechs Ziffern aus der KingSong-App. Sperren geht ohne, Entsperren braucht ihn.</string>
-    <string name="lock_code_missing">Zum Entsperren fehlt der KingSong-Sperrcode. Einstellungen, Wheel-Parameter, Sperre.</string>
     <string name="battery_override_label">Prozentwert des Rads überschreiben</string>
     <string name="battery_override_hint">Aus der Packspannung schätzen.</string>
     <string name="battery_percent_custom_floor">Lineare Skala</string>
@@ -2371,6 +2367,8 @@
     <string name="adv_nav_sidebar_min_desc">Schmalere Bildschirme behalten das untere Halte-Panel auch im Querformat. Zu niedrig begräbt die Karte auf kleinen Bildschirmen.</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">Zugriffs-PIN für InMotion V5/V8/V10 Wheels, wird beim Verbinden gesendet, damit das Wheel Daten sendet. Lass 000000 stehen, außer du hast in der InMotion App eine eigene PIN gesetzt.</string>
+    <string name="adv_kingsong_unlock_code">KingSong-Entsperrcode</string>
+    <string name="adv_kingsong_unlock_code_desc">Sechs Ziffern, die zum Entsperren eines KingSong-Wheels gesendet werden. Lass 123456 stehen, außer du hast in der KingSong-App einen eigenen Code gesetzt.</string>
     <string name="adv_nav_sidebar_width">Breite des Halte-Panels</string>
     <string name="adv_nav_sidebar_width_desc">Breite der Halte-Seitenleiste im Querformat. Zu breit lässt wenig Karte.</string>
     <string name="adv_simple_speedo_scale">Größe des einfachen Tachos</string>

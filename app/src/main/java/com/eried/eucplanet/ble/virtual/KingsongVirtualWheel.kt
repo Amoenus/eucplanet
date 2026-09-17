@@ -1,5 +1,6 @@
 package com.eried.eucplanet.ble.virtual
 
+import com.eried.eucplanet.ble.KingsongCommands
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -9,10 +10,10 @@ import kotlin.math.sin
  * lock can be exercised with no wheel in the room:
  *
  *  - `0x5D` with byte 2 = 1 locks; the wheel answers `0x5F 01` at once.
- *  - `0x5D` with six ASCII digits at bytes 10..15 unlocks when they are the
- *    code the rider set in the KingSong app; here that code is "123456",
- *    the KingSong default. A wrong code leaves it locked, and the wheel says
- *    so with `0x5F 01`.
+ *  - `0x5D` with six ASCII digits at bytes 10..15 unlocks. Nobody set a code
+ *    on the tester's wheel and it took digits it had never seen, so this one
+ *    takes any six digits too and reports "123456", the KingSong default.
+ *    A frame without six digits leaves it locked, `0x5F 01`.
  *  - `0x5E` asks; the wheel answers `0x5F` with the state.
  *
  * Telemetry is the capture's own: 82 V pack, 31 C board, the odometer as it
@@ -29,8 +30,9 @@ class KingsongVirtualWheel : VirtualWheel {
     override val id = "KS18XL"
     override val bleName = "KS-18XL"
 
-    /** What the rider typed into the KingSong app on this wheel. */
-    val lockCode = "123456"
+    /** Nobody set a code on this wheel, so like the tester's KS-18XL it reports
+     *  the default and unlocks on any six digits. */
+    val lockCode = KingsongCommands.DEFAULT_LOCK_CODE
 
     var locked = false
         private set
@@ -53,7 +55,7 @@ class KingsongVirtualWheel : VirtualWheel {
                     locked = true
                 } else {
                     val code = String(data, 10, 6, Charsets.US_ASCII)
-                    if (code == lockCode) locked = false
+                    if (KingsongCommands.isLockCode(code)) locked = false
                 }
                 listOf(lockStateFrame())
             }

@@ -872,7 +872,7 @@ class WheelRepository @Inject constructor(
         // wheel restores everything (tiltback, alarm, safety, calibration).
         scope.launch {
             settingsRepository.settings.collect { s ->
-                lockCodeCache = s.proximityLock.wheelCode
+                lockCodeCache = String.format(java.util.Locale.US, "%06d", s.advanced.kingsongUnlockCode)
                 val clamped = s.speedCalibrationOffsetPct.coerceIn(-15f, 15f)
                 speedCalibrationMultiplier = 1f + clamped / 100f
                 // Wheel poll + chart sampling are independent rider settings now,
@@ -1364,8 +1364,6 @@ class WheelRepository @Inject constructor(
                         // estimate from the right number on each wheel.
                         capacityWh = existing.batteryCapacityWh,
                     ),
-                    // The lock code is the wheel's too.
-                    proximityLock = s.proximityLock.copy(wheelCode = existing.lockCode),
                 )
             )
         } else {
@@ -1379,8 +1377,6 @@ class WheelRepository @Inject constructor(
                         // last wheel's capacity into this one's range estimate.
                         capacityWh = 0,
                     ),
-                    // A wheel we have never seen has no code on file.
-                    proximityLock = s.proximityLock.copy(wheelCode = ""),
                 )
             )
             persistWheelProfile(name, settingsRepository.get())
@@ -1403,7 +1399,6 @@ class WheelRepository @Inject constructor(
                     seriesCells = s.batteryPercent.seriesCells,
                     batteryMode = s.batteryPercent.mode,
                     batteryCapacityWh = s.batteryPercent.capacityWh,
-                    lockCode = s.proximityLock.wheelCode,
                     lastConnectedAt = System.currentTimeMillis()
                 )
             )
@@ -1617,8 +1612,8 @@ class WheelRepository @Inject constructor(
         if (_locked.value != target) toggleLock()
     }
 
-    /** The rider's wheel lock code, mirrored from settings so [toggleLock] can
-     *  hand it to the adapter without suspending. */
+    /** The KingSong unlock code from Advanced settings as six digits, mirrored
+     *  so [toggleLock] can hand it to the adapter without suspending. */
     @Volatile private var lockCodeCache: String = ""
 
     fun toggleLock() {
@@ -1635,15 +1630,10 @@ class WheelRepository @Inject constructor(
             return
         }
         val targetState = !_locked.value
-        // KingSong unlocks with the six digits the rider set in the KingSong
-        // app; locking needs none. Hand the saved code over first, and when the
-        // unlock cannot be built say where the code goes instead of flipping the
-        // icon on a command that was never sent.
+        // KingSong unlocks with six digits; locking needs none. A wheel with no
+        // rider-set code takes any digits, so the Advanced default unlocks it,
+        // and a rider who set a code in the KingSong app enters it there.
         wheelAdapter.provideLockCode(lockCodeCache)
-        if (!targetState && wheelAdapter.lockNeedsCode()) {
-            appNotifier.post(context.getString(com.eried.eucplanet.R.string.lock_code_missing))
-            return
-        }
         // Hard block the lock direction when the wheel is moving, any entry
         // path (Flic, watch, volume keys, dashboard) lands here. Unlock is
         // always allowed; if the wheel is already locked, speed is 0 anyway.

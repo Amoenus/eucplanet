@@ -727,13 +727,6 @@ class SettingsViewModel @Inject constructor(
     }
     fun updateAutoLightsOnMinutes(v: Int) = update { copy(lights = lights.copy(onMinutesBefore = v)) }
     fun updateAutoLightsOffMinutes(v: Int) = update { copy(lights = lights.copy(offMinutesAfter = v)) }
-
-    /** The six-digit KingSong lock code; digits only, six at most. */
-    fun updateWheelLockCode(v: String) =
-        update { copy(proximityLock = proximityLock.copy(wheelCode = v.filter { it.isDigit() }.take(6))) }
-
-    /** Which wheel family is connected, for rows that only one family has. */
-    val connectedFamilyId: String? get() = wheelRepository.connectedFamilyId
     fun updateAutoLightsOffWhenSlow(v: Boolean) =
         update { copy(lights = lights.copy(offWhenSlow = v)) }
             // Switching it off hands the beam straight back to the schedule.

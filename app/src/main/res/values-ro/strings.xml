@@ -620,6 +620,8 @@
     <string name="adv_nav_sidebar_min_desc">Ecranele mai înguste de atât păstrează panoul de opriri de jos chiar și în modul peisaj. O valoare prea mică îngroapă harta pe ecranele mici.</string>
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN-ul de acces pentru monociclurile InMotion V5/V8/V10, trimis la conectare pentru ca monociclul să înceapă să trimită date. Lasă 000000 dacă nu ți-ai setat propriul PIN în aplicația InMotion.</string>
+    <string name="adv_kingsong_unlock_code">Cod de deblocare KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Șase cifre trimise pentru a debloca un monociclu KingSong. Lasă 123456 dacă nu ți-ai setat propriul cod în aplicația KingSong.</string>
     <string name="adv_charging_warning">Acestea reglează estimarea timpului până la încărcarea completă. Valorile greșite dau o estimare înșelătoare, dar nu afectează niciodată încărcarea în sine.</string>
     <string name="adv_charging_target_pct">Procentul țintă</string>
     <string name="adv_charging_target_pct_desc">Influențează nivelul de încărcare la care estimarea trece la faza finală, mai lentă.</string>
@@ -835,10 +837,6 @@
     <string name="section_speed_limits">Limite de viteză</string>
     <string name="section_speed_calibration">Calibrarea vitezei</string>
     <string name="section_battery_percent">Calibrarea bateriei</string>
-    <string name="section_wheel_lock">Blocare</string>
-    <string name="lock_code_label">Cod de blocare KingSong</string>
-    <string name="lock_code_hint">Cele șase cifre setate în aplicația KingSong. Blocarea merge fără el, deblocarea îl cere.</string>
-    <string name="lock_code_missing">Deblocarea cere codul KingSong. Setări, Parametrii monociclului, Blocare.</string>
     <string name="battery_override_label">Înlocuiește procentul roții</string>
     <string name="battery_override_hint">Estimează-l din tensiunea pachetului.</string>
     <string name="battery_percent_custom_floor">Scală liniară</string>

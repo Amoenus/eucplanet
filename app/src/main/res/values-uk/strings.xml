@@ -685,10 +685,6 @@
     <string name="section_speed_limits">Обмеження швидкості</string>
     <string name="section_speed_calibration">Калібрування швидкості</string>
     <string name="section_battery_percent">Калібрування заряду</string>
-    <string name="section_wheel_lock">Блокування</string>
-    <string name="lock_code_label">Код блокування KingSong</string>
-    <string name="lock_code_hint">Шість цифр, заданих у застосунку KingSong. Заблокувати можна без нього, розблокувати ні.</string>
-    <string name="lock_code_missing">Для розблокування потрібен код KingSong. Налаштування, Параметри колеса, Блокування.</string>
     <string name="battery_override_label">Замінити відсоток колеса</string>
     <string name="battery_override_hint">Оцінювати за напругою батареї.</string>
     <string name="battery_percent_custom_floor">Лінійна шкала</string>
@@ -2348,6 +2344,8 @@
     <string name="adv_nav_sidebar_min_desc">Вужчі екрани зберігають нижню панель зупинок навіть в альбомній орієнтації. Замало ховає карту на малих екранах.</string>
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN доступу для моноколіс InMotion V5/V8/V10, надсилається під час підключення, щоб колесо почало передавати дані. Залиште 000000, якщо ви не задали власний PIN у застосунку InMotion.</string>
+    <string name="adv_kingsong_unlock_code">Код розблокування KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Шість цифр, що надсилаються для розблокування колеса KingSong. Залиште 123456, якщо ви не задали власний код у застосунку KingSong.</string>
     <string name="adv_nav_sidebar_width">Ширина панелі зупинок</string>
     <string name="adv_nav_sidebar_width_desc">Ширина бічної панелі зупинок в альбомній орієнтації. Заширока лишає мало карти.</string>
     <string name="adv_simple_speedo_scale">Розмір простого спідометра</string>

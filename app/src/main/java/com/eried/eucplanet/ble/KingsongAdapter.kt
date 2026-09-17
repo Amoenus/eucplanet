@@ -35,8 +35,8 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
     @Volatile private var lastTelemetry: WheelData = WheelData()
     /** Lock state from the last 0x5F frame; null until the wheel has said. */
     @Volatile private var lastLockState: Boolean? = null
-    /** The rider's six-digit KingSong lock code, handed over by the repository
-     *  from the wheel's profile before a lock command. Unlock needs it. */
+    /** The six-digit unlock code, handed over by the repository from Advanced
+     *  settings before a lock command. Blank falls back to the wheel default. */
     @Volatile private var lockCode: String = ""
     /** Latest temperature from the 0xA9 frame (board or generic sensor). */
     @Volatile private var lastTempA9: Float = 0f
@@ -175,7 +175,6 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
     /** Read the state straight back so the icon settles on what the wheel says. */
     override fun setLockFollowup(locked: Boolean): ByteArray? = KingsongCommands.queryLock()
     override fun provideLockCode(code: String) { lockCode = code }
-    override fun lockNeedsCode(): Boolean = !KingsongCommands.isLockCode(lockCode)
 
     override fun requestAuthKey(): ByteArray? = null
     override fun verifyAuth(encryptedKey: ByteArray): ByteArray? = null

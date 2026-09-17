@@ -104,23 +104,29 @@ object KingsongCommands {
      */
     fun lock(): ByteArray = frame(Type.LOCK_SET) { it[2] = 0x01 }
 
+    /** The code a KingSong wheel reports when the rider never set one in the
+     *  KingSong app. Such a wheel unlocks on any six digits. */
+    const val DEFAULT_LOCK_CODE = "123456"
+
     /**
-     * Unlock with the six-digit code the rider set in the KingSong app, as
-     * ASCII digits at offsets 10..15 (`AA 55 ..00.. 35 30 39 35 34 30 5D 14 5A 5A`
-     * for "509540" in the capture). Null unless [isLockCode]: the wheel keeps
-     * the lock on a wrong code, so there is no point sending a guess.
+     * Unlock: six ASCII digits at offsets 10..15 (`AA 55 ..00.. 35 30 39 35 34 30
+     * 5D 14 5A 5A` for "509540"). The two KS-18XL captures (issue #19) unlocked
+     * with different digits the wheel had never sent while it reported "123456"
+     * as its stored code, so a wheel with no rider-set code does not check them.
+     * Anything that is not six digits sends [DEFAULT_LOCK_CODE] instead of
+     * nothing, since an unlock the wheel ignores is better than one never sent.
      */
-    fun unlock(code: String): ByteArray? {
-        if (!isLockCode(code)) return null
+    fun unlock(code: String): ByteArray {
+        val digits = if (isLockCode(code)) code else DEFAULT_LOCK_CODE
         return frame(Type.LOCK_SET) { f ->
-            for (i in 0 until 6) f[10 + i] = code[i].code.toByte()
+            for (i in 0 until 6) f[10 + i] = digits[i].code.toByte()
         }
     }
 
     /** Ask for the lock state; the wheel answers 0x5F with 1 or 0 at offset 2. */
     fun queryLock(): ByteArray = frame(Type.LOCK_QUERY)
 
-    /** The KingSong app's lock code is six digits. */
+    /** A KingSong lock code is six digits. */
     fun isLockCode(code: String): Boolean = code.length == 6 && code.all { it.isDigit() }
 
     /** Powers the wheel off. No confirmation. */

@@ -17,7 +17,7 @@ import com.eried.eucplanet.data.model.WheelProfile
  */
 @Database(
     entities = [TripRecord::class, AlarmRule::class, WheelProfile::class],
-    version = 62,
+    version = 61,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

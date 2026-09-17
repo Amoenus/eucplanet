@@ -620,6 +620,8 @@
     <string name="adv_nav_sidebar_min_desc">Obrazovky užší než toto ponechají spodní panel zastávek i na šířku. Příliš nízká hodnota pohřbí mapu na malých obrazovkách.</string>
     <string name="adv_inmotion_v1_pin">PIN pro InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">Přístupový PIN pro monokola InMotion V5/V8/V10, odesílá se při připojení, aby monokolo začalo posílat data. Ponechte 000000, pokud jste si v aplikaci InMotion nenastavili vlastní PIN.</string>
+    <string name="adv_kingsong_unlock_code">Kód odemknutí KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Šest číslic odesílaných k odemknutí monokola KingSong. Ponechte 123456, pokud jste si v aplikaci KingSong nenastavili vlastní kód.</string>
     <string name="adv_charging_warning">Tyto hodnoty ladí odhad času do plného nabití. Nesprávné hodnoty dají zavádějící odhad, ale nikdy neovlivní samotné nabíjení.</string>
     <string name="adv_charging_target_pct">Cílové procento</string>
     <string name="adv_charging_target_pct_desc">Ovlivňuje úroveň nabití, kde odhad přejde do pomalejší závěrečné fáze.</string>
@@ -835,10 +837,6 @@
     <string name="section_speed_limits">Rychlostní limity</string>
     <string name="section_speed_calibration">Kalibrace rychlosti</string>
     <string name="section_battery_percent">Kalibrace baterie</string>
-    <string name="section_wheel_lock">Zámek</string>
-    <string name="lock_code_label">Kód zámku KingSong</string>
-    <string name="lock_code_hint">Šest číslic, které jsi nastavil v aplikaci KingSong. Zamknout jde i bez něj, odemknout ne.</string>
-    <string name="lock_code_missing">K odemknutí je potřeba kód zámku KingSong. Nastavení, Parametry monokola, Zámek.</string>
     <string name="battery_override_label">Přepsat procenta z kola</string>
     <string name="battery_override_hint">Odhadnout je z napětí sady.</string>
     <string name="battery_percent_custom_floor">Lineární stupnice</string>

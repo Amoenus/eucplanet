@@ -1,5 +1,9 @@
-Your tire sensor now reaches the whole app: dashboard tile, alarms, trip graphs, overlay and HUD, not only the settings row. A flat tire reads 0 rather than looking like a sensor that stopped, so a low pressure alarm can actually fire.
+Voice commands: ask for battery, speed or the weather, or say horn, lights, lock.
 
-Battery (est) is a dashboard tile too, not just an alarm, and it now follows your percentage override the way every other reading does.
+Share a ride: invite friends with a link or QR and see each other live on the map.
 
-Tire pressure shows in the unit you picked, psi, bar, kPa, kgf/cm2 or MPa, on every screen.
+Tire pressure sensors, in the unit you pick.
+
+Battery (est): a battery reading with the load sag taken out, so it holds steady when you accelerate hard.
+
+Also: per-wheel alarms, a speed splits button, better settings search, NOSFET Aeon fixes.

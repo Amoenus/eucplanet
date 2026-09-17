@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -219,13 +218,64 @@ fun WeatherFlyout(
         shadowElevation = 10.dp,
     ) {
         Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            // Always now, never the scrubbed hour. Dragging the curve
+            // already answers "what about then" in the tooltip that follows
+            // the finger; if the header moved too, the rider would lose the
+            // one fixed reading on the panel and have to lift off to get it
+            // back. The header is the answer to "should I go out", which is
+            // a question about now.
+            val head = hours.firstOrNull()
+            // The panel's own ramp, from the theme. The widget hardcodes the
+            // same two ends only because widgets inflate outside the theme.
+            val good = MaterialTheme.appColors.weatherGood
+            val bad = MaterialTheme.appColors.weatherBad
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(titleRes),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = ink,
-                )
-                Spacer(Modifier.width(6.dp))
+                if (head != null) {
+                    val (emoji, verdictRes) = faceFor(head.b)
+                    Text(emoji, fontSize = 22.sp)
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        signedLabel(head.b.score),
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = lerp(bad, good, (head.b.score + 5f) / 10f),
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            stringResource(titleRes),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = ink,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            stringResource(verdictRes),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = ink.copy(alpha = 0.75f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                } else {
+                    // No forecast yet: the question is all there is to say.
+                    Text(
+                        stringResource(titleRes),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = ink,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                IconButton(onClick = { expanded = !expanded }, modifier = Modifier.size(28.dp)) {
+                    Icon(
+                        if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = stringResource(R.string.weather_expand),
+                        tint = ink.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     windowShortLabel(windowHours),
                     fontSize = 10.sp,
@@ -252,7 +302,7 @@ fun WeatherFlyout(
                     color = if (usingDest) panel else ink.copy(alpha = 0.7f),
                     modifier = Modifier
                         // Long place names ellipsize instead of squeezing the
-                        // refresh and expand buttons off the row.
+                        // conditions and the refresh button off the row.
                         .widthIn(max = 110.dp)
                         .background(
                             if (usingDest) ink.copy(alpha = 0.75f) else ink.copy(alpha = 0.12f),
@@ -274,18 +324,44 @@ fun WeatherFlyout(
                     }
                 }
                 Spacer(Modifier.width(8.dp))
-                // A fresh fetch reads "just now", then quietly fades out;
-                // older stamps stay as minutes.
-                var justNowShown by remember { mutableStateOf(true) }
-                LaunchedEffect(refreshing, updatedAgoMin) {
-                    justNowShown = true
-                    if (!refreshing && updatedAgoMin == 0) {
-                        delay(2500)
-                        justNowShown = false
+                // The numbers the widget shows under its score, in the panel's
+                // own units. This is the flexible cell: it ellipsizes first so
+                // the stamp and the refresh button keep their size.
+                Text(
+                    head?.let {
+                        val degrees = if (tempF) it.h.tempC * 9f / 5f + 32f else it.h.tempC
+                        val speed = if (windMph) it.h.windMs * 2.23694f else it.h.windMs
+                        "%.1f%s · %.1f %s".format(
+                            degrees, if (tempF) "°F" else "°C",
+                            speed, if (windMph) "mph" else "m/s",
+                        )
+                    }.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ink.copy(alpha = 0.7f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                // The stamp says its piece and then gets out of the way. It
+                // is context for a reading, not a clock worth a permanent
+                // seat: how old the forecast is matters when you arrive at
+                // the panel, and stops mattering while you read it.
+                //
+                // Keyed on refreshing alone, deliberately. The age ticks over
+                // on its own every minute, and keying on that would flash the
+                // stamp back once a minute forever. This way it returns for
+                // the two things the rider would call an update: opening the
+                // panel again, which remembers afresh, and a fetch landing.
+                var stampShown by remember { mutableStateOf(true) }
+                LaunchedEffect(refreshing) {
+                    stampShown = true
+                    if (!refreshing) {
+                        delay(STAMP_HOLD_MS)
+                        stampShown = false
                     }
                 }
                 val statusAlpha by animateFloatAsState(
-                    targetValue = if (refreshing || (updatedAgoMin ?: 1) > 0 || justNowShown) 0.6f else 0f,
+                    targetValue = if (stampShown) 0.6f else 0f,
                     animationSpec = tween(900),
                     label = "updatedFade",
                 )
@@ -307,37 +383,38 @@ fun WeatherFlyout(
                     color = ink.copy(alpha = statusAlpha),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    // The flexible middle: this shrinks first, so the trailing
-                    // icon buttons always keep their full size.
-                    modifier = Modifier.weight(1f),
                 )
-                if (refreshing) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp,
-                        color = ink,
-                    )
-                } else {
-                    IconButton(onClick = onRefresh, modifier = Modifier.size(28.dp)) {
-                        Icon(
-                            Icons.Default.Refresh,
-                            contentDescription = stringResource(R.string.weather_refresh),
-                            tint = ink.copy(alpha = 0.6f),
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                }
-                IconButton(onClick = { expanded = !expanded }, modifier = Modifier.size(28.dp)) {
+                // One still icon, never a spinner swapped in for it. A
+                // spinner here spun in the corner of a panel a rider is
+                // reading, and it moved the row's contents as it came and
+                // went. It dims instead, and the panel body already says
+                // "fetching" where the graph will be.
+                IconButton(
+                    onClick = onRefresh,
+                    enabled = !refreshing,
+                    modifier = Modifier.size(28.dp),
+                ) {
                     Icon(
-                        if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = stringResource(R.string.weather_expand),
-                        tint = ink.copy(alpha = 0.6f),
-                        modifier = Modifier.size(20.dp),
+                        Icons.Default.Refresh,
+                        contentDescription = stringResource(R.string.weather_refresh),
+                        tint = ink.copy(alpha = if (refreshing) 0.25f else 0.6f),
+                        modifier = Modifier.size(18.dp),
                     )
                 }
             }
 
             when {
+                // A precondition, not a failure: there is nothing to report
+                // about because there is nowhere to ask about. Shown on its
+                // own, without the "Forecast failed" wrapper that a real fetch
+                // error earns.
+                hours.isEmpty() && error == stringResource(R.string.weather_error_no_location) -> Text(
+                    error,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ink.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(vertical = 10.dp),
+                )
+
                 hours.isEmpty() && error != null -> Text(
                     stringResource(R.string.weather_error, error),
                     style = MaterialTheme.typography.bodySmall,
@@ -378,6 +455,9 @@ fun WeatherFlyout(
 
 /** How long a scrubbed read stays put after the finger stops. */
 private const val SCRUB_HOLD_MS = 5000L
+
+/** How long the "7 min ago" stamp stays before fading out of the header. */
+private const val STAMP_HOLD_MS = 4000L
 
 /** And how long it takes to go, so it fades rather than blinking out. */
 private const val SCRUB_FADE_MS = 600
@@ -759,7 +839,11 @@ private fun ScoreGraph(
             } ?: break
             list.remove(drop)
         }
-        list.map { i ->
+        // Not the first one. The header shows exactly that face, larger and
+        // a couple of centimetres above, so on the curve it is the same
+        // answer twice. The transitions after it are the ones that say
+        // something the header cannot.
+        list.filter { it != 0 }.map { i ->
             val (emoji, res) = faceFor(hours[i].b)
             FaceSpot(i, emoji, res)
         }
@@ -1165,7 +1249,8 @@ private fun ScoreGraph(
             Text(
                 nowLabel,
                 fontSize = 9.sp,
-                color = ink.copy(alpha = 0.6f),
+                fontWeight = FontWeight.Bold,
+                color = ink.copy(alpha = 0.85f),
                 modifier = Modifier.align(Alignment.CenterStart),
             )
             ticks.forEach { (f, t) ->

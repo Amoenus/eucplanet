@@ -5,11 +5,13 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
 import com.eried.eucplanet.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,6 +80,7 @@ class AppHealthRepository @Inject constructor(
         // told once; the setting has already been turned off to match.
         if (id == PERM_PIP_ID) pipNoticePending = false
         if (id == PERM_OVERLAY_ID) hudNoticePending = false
+        if (id == PERM_MIC_ID) micNoticePending = false
         val current = _warnings.value
         if (current.any { it.id == id }) {
             _warnings.value = current.filterNot { it.id == id }
@@ -102,6 +105,26 @@ class AppHealthRepository @Inject constructor(
      * dismisses the corresponding warning. Idempotent — safe to call from
      * onResume on every dashboard visit.
      */
+    /**
+     * Set when a rider pressed a listen button and the microphone was not
+     * ours to open.
+     *
+     * Gated rather than always on, because the microphone is only needed by a
+     * rider who uses voice commands, and there is no setting left that says
+     * whether they do. Warning everybody about a permission they may never
+     * want is how a top bar becomes something riders stop reading. Asking for
+     * it is the signal that it matters, and it is remembered so the warning
+     * survives the walk to system settings and back.
+     */
+    @Volatile
+    var micNoticePending: Boolean = false
+        private set
+
+    /** Called when listening is refused for want of the permission. */
+    fun noteMicrophoneNeeded() {
+        micNoticePending = true
+    }
+
     fun refreshPermissionWarnings(
         pipRequested: Boolean = false,
         phoneHudRequested: Boolean = false,
@@ -125,6 +148,77 @@ class AppHealthRepository @Inject constructor(
                     )
                 )
             }
+        }
+
+        // Microphone, but only once a rider has actually reached for it.
+        if (micNoticePending) {
+            val micGranted = ContextCompat.checkSelfPermission(
+                context, Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+            if (micGranted) {
+                micNoticePending = false
+                dismiss(PERM_MIC_ID)
+            } else {
+                upsert(
+                    AppWarning(
+                        id = PERM_MIC_ID,
+                        titleRes = R.string.warnings_perm_mic_title,
+                        bodyRes = R.string.warnings_perm_mic_body,
+                        fix = { openAppSettings() }
+                    )
+                )
+            }
+        }
+
+        // Location. The app is most useless without this one: no route on a
+        // recorded trip, no GPS speed, no speed calibration, and nothing said
+        // so until a rider opened a trip and found no line on the map.
+        //
+        // Only when there is NO access at all. A rider who deliberately gave
+        // coarse gets on with it, and the warning clears the instant access is
+        // granted, which is also the instant a fix becomes possible: a fix
+        // cannot happen without the permission, so this covers both.
+        val anyLocation = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        // Two different things stop a fix, and a rider hits them separately:
+        // the app not being allowed to ask, and Android being switched off for
+        // everyone. The first version only covered the permission, so a phone
+        // with location toggled off said nothing at all.
+        val locationServicesOn = runCatching {
+            LocationManagerCompat.isLocationEnabled(
+                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            )
+        }.getOrDefault(true)
+        if (anyLocation && !locationServicesOn) {
+            dismiss(PERM_LOCATION_ID)
+            upsert(
+                AppWarning(
+                    id = LOCATION_SERVICES_ID,
+                    titleRes = R.string.warnings_location_services_title,
+                    bodyRes = R.string.warnings_location_services_body,
+                    fix = { openLocationSettings() }
+                )
+            )
+        } else if (anyLocation) {
+            dismiss(PERM_LOCATION_ID)
+            dismiss(LOCATION_SERVICES_ID)
+        } else {
+            // No permission is the louder problem, and pointing a rider at the
+            // system toggle while the app is not allowed to ask would send
+            // them to the wrong screen. One warning at a time.
+            dismiss(LOCATION_SERVICES_ID)
+            upsert(
+                AppWarning(
+                    id = PERM_LOCATION_ID,
+                    titleRes = R.string.warnings_perm_location_title,
+                    bodyRes = R.string.warnings_perm_location_body,
+                    fix = { openAppSettings() }
+                )
+            )
         }
 
         // Playback rate's notification-access warning, PARKED with the
@@ -327,6 +421,16 @@ class AppHealthRepository @Inject constructor(
     }
 
     /** The system's notification-access list, where that grant lives. */
+    /** Android's own location screen, where the master switch lives. */
+    private fun openLocationSettings() {
+        runCatching {
+            context.startActivity(
+                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }.onFailure { openAppSettings() }
+    }
+
     fun openNotificationAccessSettings() {
         val direct = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS").apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -360,9 +464,12 @@ class AppHealthRepository @Inject constructor(
 
     companion object {
         private const val PERM_NOTIFICATIONS_ID = "perm.notifications"
+        private const val PERM_LOCATION_ID = "perm.location"
+        private const val LOCATION_SERVICES_ID = "location.services-off"
         private const val PERM_MEDIA_ACCESS_ID = "perm.media-access"
         private const val PERM_PIP_ID = "perm.pip"
         private const val PERM_OVERLAY_ID = "perm.overlay"
+        private const val PERM_MIC_ID = "perm.microphone"
         private const val BATTERY_OPT_ID = "power.battery-optimised"
         private const val BACKUP_FOLDER_ID = "backup.folder"
 

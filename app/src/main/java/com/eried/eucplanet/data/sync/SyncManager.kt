@@ -809,12 +809,16 @@ class SyncManager @Inject constructor(
             // never swap in a (possibly stale or blank) token. fromJson now
             // reads these from the JSON like any other field, so re-apply the
             // current values here.
-            val restored = SettingsJson.fromJson(json, current).copy(
+            val parsed = SettingsJson.fromJson(json, current)
+            val restored = parsed.copy(
                 dropboxAccessToken = current.dropboxAccessToken,
                 dropboxRefreshToken = current.dropboxRefreshToken,
                 dropboxAccessTokenExpiresAt = current.dropboxAccessTokenExpiresAt,
                 dropboxAccountLabel = current.dropboxAccountLabel,
                 dropboxLastSyncAt = current.dropboxLastSyncAt,
+                // The share secret is this phone's identity in a group: never
+                // taken from a backup, or two phones would ride as one rider.
+                share = parsed.share.copy(deviceSecret = current.share.deviceSecret),
             )
             settingsRepository.update(restored)
             applyRestoredLanguage(restored.language)
@@ -868,12 +872,14 @@ class SyncManager @Inject constructor(
             val factoryJson = SettingsJson.toJson(SettingsJson.stripDeviceBindings(AppSettings()))
             // Factory reset keeps device bindings (pairings, sync folder) and
             // the live Dropbox link, same as the restore path above.
-            val reset = SettingsJson.fromJson(factoryJson, current).copy(
+            val parsedReset = SettingsJson.fromJson(factoryJson, current)
+            val reset = parsedReset.copy(
                 dropboxAccessToken = current.dropboxAccessToken,
                 dropboxRefreshToken = current.dropboxRefreshToken,
                 dropboxAccessTokenExpiresAt = current.dropboxAccessTokenExpiresAt,
                 dropboxAccountLabel = current.dropboxAccountLabel,
                 dropboxLastSyncAt = current.dropboxLastSyncAt,
+                share = parsedReset.share.copy(deviceSecret = current.share.deviceSecret),
             )
             settingsRepository.update(reset)
             alarmDao.deleteAll()
@@ -1849,6 +1855,8 @@ class SyncManager @Inject constructor(
                 put("cooldownSeconds", r.cooldownSeconds)
                 put("repeatWhileActive", r.repeatWhileActive)
                 put("leadTimeMs", r.leadTimeMs)
+                r.wheelAddress?.let { put("wheelAddress", it) }
+                r.wheelName?.let { put("wheelName", it) }
             })
         }
     }
@@ -1883,7 +1891,10 @@ class SyncManager @Inject constructor(
                 vibrateTarget = o.optString("vibrateTarget", default.vibrateTarget),
                 cooldownSeconds = o.optInt("cooldownSeconds", default.cooldownSeconds),
                 repeatWhileActive = o.optBoolean("repeatWhileActive", default.repeatWhileActive),
-                leadTimeMs = o.optInt("leadTimeMs", default.leadTimeMs)
+                leadTimeMs = o.optInt("leadTimeMs", default.leadTimeMs),
+                // Absent in older backups -> null -> the classic any-wheel rule.
+                wheelAddress = o.optString("wheelAddress").takeIf { it.isNotEmpty() },
+                wheelName = o.optString("wheelName").takeIf { it.isNotEmpty() }
             )
         }
         return out

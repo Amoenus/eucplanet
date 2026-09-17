@@ -13,7 +13,11 @@ object VirtualWheelRegistry {
         "V14" to ::V14VirtualWheel,
         "P6" to ::P6VirtualWheel,
         "V8S" to { InMotionV1VirtualWheel() },
-        "MASTER" to ::BegodeMasterVirtualWheel
+        "MASTER" to ::BegodeMasterVirtualWheel,
+        // The same Master on a pack that sags under load, discharges at a
+        // real rate and jitters frame to frame: the ride a battery filter has
+        // to survive, on a phone with no wheel in the room.
+        "MASTER_SAG" to ::BegodeMasterSaggingVirtualWheel,
     )
 
     fun all(): List<VirtualWheelInfo> =

@@ -17,9 +17,13 @@ interface ActionUi {
     fun openAbout()
     fun openService()
     fun openTrips()
+    fun openWeather()
+    fun openCharging()
     fun toggleUnits()
     fun toggleAlarmsMuted()
     fun resetMetrics()
+    /** Off, accel, brake, both, and round again. */
+    fun cycleSpeedSplits()
 }
 
 /**
@@ -39,9 +43,12 @@ fun dispatchAction(key: String, ui: ActionUi, fallback: (String) -> Unit) {
         "OPEN_ABOUT" -> ui.openAbout()
         "OPEN_SERVICE" -> ui.openService()
         "OPEN_TRIPS" -> ui.openTrips()
+        "OPEN_WEATHER" -> ui.openWeather()
+        "OPEN_CHARGING" -> ui.openCharging()
         "TOGGLE_UNITS" -> ui.toggleUnits()
         "MUTE_ALARMS" -> ui.toggleAlarmsMuted()
         "RESET_TRIP" -> ui.resetMetrics()
+        "SPEED_SPLITS" -> ui.cycleSpeedSplits()
         else -> fallback(key)
     }
 }

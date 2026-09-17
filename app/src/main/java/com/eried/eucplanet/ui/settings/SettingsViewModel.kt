@@ -68,7 +68,8 @@ internal val KNOWN_DASHBOARD_METRICS = listOf(
     // value. Riders use Motor power / Battery power instead.)
     "SPEED", "ODOMETER", "TRIP_METER",
     "MOTOR_POWER", "BATTERY_POWER",
-    "BATTERY_1", "BATTERY_2",
+    // The load-free battery line, beside the packs it is derived from.
+    "BATTERY_ENVELOPE", "BATTERY_1", "BATTERY_2",
     "PITCH", "ROLL",
     "G_FORCE", "LATERAL_G", "FORWARD_G",
     "TORQUE", "PHASE_CURRENT", "DYN_SPEED_LIMIT", "DYN_CURRENT_LIMIT",
@@ -106,8 +107,11 @@ internal val DASHBOARD_METRIC_ALIASES = emptySet<String>()
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val wheelRepository: WheelRepository,
+    private val accelSplitRepository: com.eried.eucplanet.data.repository.AccelSplitRepository,
     val legalLockdown: com.eried.eucplanet.data.repository.LegalLockdownController,
     private val voiceService: VoiceService,
+    private val tonePlayer: com.eried.eucplanet.service.TonePlayer,
+    private val voiceCommands: com.eried.eucplanet.voice.VoiceCommandController,
     private val tripRepository: TripRepository,
     private val syncManager: SyncManager,
     private val automationManager: AutomationManager,
@@ -244,6 +248,17 @@ class SettingsViewModel @Inject constructor(
         .map { it.rssiDbm }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
     val wheelHasLock: StateFlow<Boolean> = wheelRepository.wheelHasLock
+
+    /**
+     * The live packet, for the report previews.
+     *
+     * Rule 10: the play button beside a report row speaks the rider's own
+     * wheel, not an invented number. The catalog-backed reports have no
+     * hand-written example sentence to fall back on, so they read the same
+     * values the tiles do.
+     */
+    val wheelData: StateFlow<com.eried.eucplanet.data.model.WheelData> =
+        wheelRepository.wheelData
 
     /**
      * Unified view of every paired companion device — Wear OS + Garmin —
@@ -523,6 +538,12 @@ class SettingsViewModel @Inject constructor(
     fun updateTriggerReportPower(v: Boolean) = update { copy(voiceReports = voiceReports.copy(triggerPower = v)) }
     // Acceleration splits (RaceBox-style). Feature-local nested group.
     fun updateAccelSplitEnabled(v: Boolean) = update { copy(accelSplit = accelSplit.copy(enabled = v)) }
+
+    /** The session's split times, best and last per step, for the section to show. */
+    val splitSession: StateFlow<com.eried.eucplanet.service.AccelSplitTracker.Session> = accelSplitRepository.session
+
+    /** Clear the session's split times. Switching the splits off does not. */
+    fun resetSplits() = accelSplitRepository.reset()
     fun updateAccelSplitIncrement(v: Int) =
         update { copy(accelSplit = accelSplit.copy(increment = v.coerceIn(1, 50))) }
     fun updateAccelSplitMinSpeed(v: Int) =
@@ -788,20 +809,95 @@ class SettingsViewModel @Inject constructor(
     fun updateAnnounceSafetyMode(v: Boolean) = update { copy(announceSafetyMode = v) }
     fun updateAnnounceWelcome(v: Boolean) = update { copy(announceWelcome = v) }
 
+    /**
+     * Pick a cue and hear it, because picking is the only reason to be here.
+     *
+     * The row used to carry a small play button beside its label. It was a
+     * second thing to find and press for something the choice itself can
+     * answer, and a rider comparing three options wants to hear each as they
+     * touch it rather than choose blind and then hunt for a button.
+     *
+     * The chosen value is played, not the stored one: the write is
+     * asynchronous, so reading the setting back here would play whatever was
+     * selected a moment ago.
+     */
+    fun updateVoicePromptCue(v: String, spokenWord: String) {
+        update { copy(voiceCommands = voiceCommands.copy(promptCue = v)) }
+        viewModelScope.launch {
+            when (v) {
+                // The opening note only. The falling one means "the window
+                // closed", which is a thing a session says and this is not a
+                // session: back to back here they just sound like one longer
+                // cue that is not the one being chosen.
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_BEEP -> tonePlayer.playPrompt()
+                com.eried.eucplanet.data.model.VoiceCommandSettings.CUE_VOICE -> {
+                    val s = settingsRepository.get()
+                    voiceService.testSpeak(spokenWord, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
+                }
+                else -> {}
+            }
+        }
+    }
+
+    /** The same, for what a rider hears when nothing matched. */
+    fun updateVoiceUnknownCue(v: String, sentence: String) {
+        update { copy(voiceCommands = voiceCommands.copy(unknownCue = v)) }
+        viewModelScope.launch {
+            when (v) {
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_MESSAGE -> {
+                    val s = settingsRepository.get()
+                    voiceService.testSpeak(sentence, s.voiceSpeechRate, s.voiceLocale, s.voiceName)
+                }
+                com.eried.eucplanet.data.model.VoiceCommandSettings.UNKNOWN_BEEP -> tonePlayer.playErrorPrompt()
+                else -> {}
+            }
+        }
+    }
+
+    fun updateVoiceRecognitionLocale(v: String) =
+        update { copy(voiceCommands = voiceCommands.copy(recognitionLocale = v)) }
+
+    fun updateVoiceHeadsetButton(v: Boolean) =
+        update { copy(voiceCommands = voiceCommands.copy(headsetButton = v)) }
+
+    /**
+     * Switch one catalog-backed report on or off.
+     *
+     * One method for all of them, rather than the two-per-report pattern the
+     * hand-written eleven use. Twenty-two more named methods to add five
+     * reports is the boilerplate the registry exists to stop.
+     */
+    fun updateVoiceReportExtra(key: String, periodic: Boolean, on: Boolean) {
+        val spec = com.eried.eucplanet.service.VoiceReportPlan.extra(key) ?: return
+        update { copy(voiceReports = spec.set(voiceReports, periodic, on)) }
+    }
+
     fun updateVoiceReportOrder(order: String) = update { copy(voiceReportOrder = order) }
+
+    // Voice commands. The window and the prompt are clamped in
+    // SettingsRepository.sanitized(), so a synced file cannot leave the
+    // segmented row with nothing selected.
 
     // Measurement units: speed, distance and temperature are independently
     // selectable. Metric/Imperial/Custom is a derived label (see Units.unitSystemOf).
     fun setUnitSpeed(v: String) = update { copy(unitSpeed = v) }
+    fun setUnitPressure(v: String) = update { copy(tpms = tpms.copy(pressureUnit = v)) }
     fun setUnitDistance(v: String) = update { copy(unitDistance = v) }
     fun setUnitTemp(v: String) = update { copy(unitTemp = v) }
 
-    /** Sets all three per-unit fields at once from the Metric/Imperial preset. */
+    /**
+     * Sets every per-unit field at once from the Metric/Imperial preset.
+     *
+     * Pressure included. It was left out when it stopped being derived from
+     * distance, so picking Metric moved speed, distance and temperature and
+     * left the tyre reading in psi, which is not what Metric means.
+     */
     fun applyUnitPreset(imperial: Boolean) = update {
         copy(
             unitSpeed = if (imperial) "mph" else "kmh",
             unitDistance = if (imperial) "mi" else "km",
-            unitTemp = if (imperial) "F" else "C"
+            unitTemp = if (imperial) "F" else "C",
+            tpms = tpms.copy(pressureUnit = if (imperial) "psi" else "bar"),
         )
     }
 

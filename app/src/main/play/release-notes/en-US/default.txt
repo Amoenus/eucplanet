@@ -1,9 +1,9 @@
-New this release:
+Voice commands: ask for battery, speed or the weather, or say horn, lights, lock.
 
-🌤️ Weather panel and home screen widgets for riding conditions.
-⌚ Amazfit (Zepp OS) watch app.
-🔋 Battery notifications at 80% and when charging finishes.
-💡 The headlight can turn off at walking pace.
-📈 Trip Details improvements.
-🔄 Reset metrics now works on every wheel.
-🛠️ Garmin, HUD and widget fixes.
+Share a ride: invite friends with a link or QR and see each other live on the map.
+
+Tire pressure sensors, in the unit you pick.
+
+Battery (est): a battery reading with the load sag taken out, so it holds steady when you accelerate hard.
+
+Also: per-wheel alarms, a speed splits button, better settings search, NOSFET Aeon fixes.

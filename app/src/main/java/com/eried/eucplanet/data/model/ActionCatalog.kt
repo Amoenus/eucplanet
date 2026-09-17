@@ -4,12 +4,14 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.PlayArrow
@@ -19,6 +21,8 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.WbCloudy
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.eried.eucplanet.R
 
@@ -95,6 +99,8 @@ data class StatusContext(
     val alarmsMuted: Boolean = false,
     /** True when the wheel is currently in safety / legal mode. */
     val safetyActive: Boolean = false,
+    /** True while speed splits are on in any direction (see [AccelSplitMode]). */
+    val speedSplitsOn: Boolean = false,
     /** True when a wheel is connected over BLE. Consumed by [ActionSpec.enabledReader]
      *  to gate actions that write to the wheel. Defaults false so existing
      *  construction sites that don't plumb it keep compiling. */
@@ -199,6 +205,15 @@ object ActionCatalog {
             enabledReader = { it.connected }
         ),
         ActionSpec(
+            // Opens the microphone for a spoken question. Eyes-free by
+            // definition: the whole point is that the rider does not have to
+            // look, so every physical surface picks it up from here.
+            key = "VOICE_LISTEN",
+            labelRes = R.string.action_chip_voice_listen,
+            icon = Icons.Filled.Mic,
+            isEyesFreeSafe = true
+        ),
+        ActionSpec(
             key = "VOICE_ANNOUNCE",
             labelRes = R.string.action_chip_voice,
             icon = Icons.Filled.RecordVoiceOver,
@@ -273,6 +288,16 @@ object ActionCatalog {
             icon = Icons.AutoMirrored.Filled.List
         ),
         ActionSpec(
+            key = "OPEN_WEATHER",
+            labelRes = R.string.action_chip_open_weather,
+            icon = Icons.Filled.WbCloudy
+        ),
+        ActionSpec(
+            key = "OPEN_CHARGING",
+            labelRes = R.string.action_chip_open_charging,
+            icon = Icons.Filled.BatteryChargingFull
+        ),
+        ActionSpec(
             key = "MUTE_ALARMS",
             labelRes = R.string.action_chip_mute_alarms,
             icon = Icons.AutoMirrored.Filled.VolumeOff,
@@ -295,6 +320,15 @@ object ActionCatalog {
             labelRes = R.string.action_chip_toggle_units,
             icon = Icons.Filled.SwapHoriz,
             statusReader = { it.imperialUnits }
+        ),
+        ActionSpec(
+            // Cycles off, accel, brake, both: see AccelSplitMode. Screen-only,
+            // because a four-way cycle needs the rider to see where it landed;
+            // the tile's label says which.
+            key = "SPEED_SPLITS",
+            labelRes = R.string.section_accel_splits,
+            icon = Icons.Filled.Timer,
+            statusReader = { it.speedSplitsOn }
         )
     )
 

@@ -21,11 +21,13 @@ import android.os.Build
 import android.util.Log
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -111,6 +113,20 @@ class BleConnectionManager @Inject constructor(
     private val _connectedDeviceName = MutableStateFlow<String?>(null)
     val connectedDeviceName: StateFlow<String?> = _connectedDeviceName.asStateFlow()
 
+    /**
+     * Address of the wheel behind the current connect target (virtual wheels
+     * use their pseudo-address); null after an explicit disconnect. Set as
+     * soon as a connect is requested, so pair it with [connectionState] ==
+     * CONNECTED (or use [connectedAddressOrNull]) to know which wheel is
+     * actually live. Drives the per-wheel alarm binding.
+     */
+    private val _connectedAddress = MutableStateFlow<String?>(null)
+    val connectedAddress: StateFlow<String?> = _connectedAddress.asStateFlow()
+
+    /** The connected wheel's address, or null while not fully connected. */
+    fun connectedAddressOrNull(): String? =
+        if (_connectionState.value == ConnectionState.CONNECTED) _connectedAddress.value else null
+
     /** Brand of the connected wheel, from the active adapter. Set on connect. */
     private val _connectedBrand = MutableStateFlow<String?>(null)
     val connectedBrand: StateFlow<String?> = _connectedBrand.asStateFlow()
@@ -143,6 +159,17 @@ class BleConnectionManager @Inject constructor(
     // watchdog fires, no data ever arrived on this connection = a phantom link.
     @Volatile private var lastDataMs = 0L
     @Volatile private var connectedAtMs = 0L
+
+    private val _connectedSinceMs = MutableStateFlow(0L)
+
+    /**
+     * When the current connection went CONNECTED, or 0 when there is none.
+     *
+     * Already tracked for the stale-data check; exposed because "how long has
+     * the wheel been connected" is a question a rider asks out loud when the
+     * dashboard looks frozen and they want to know whether to trust it.
+     */
+    val connectedSinceMs: StateFlow<Long> = _connectedSinceMs.asStateFlow()
 
     // Poll the link RSSI once a second while connected so the BT dBm metric and
     // the proximity-lock feature stay snappy. A no-op on virtual connections.
@@ -189,9 +216,30 @@ class BleConnectionManager @Inject constructor(
     // RECONNECT_SCAN_PAUSES_MS; reset when the wheel is seen or connects.
     @Volatile private var reconnectScanCycle = 0
 
-    // Write serialization - only one BLE write at a time
-    private val writeChannel = Channel<ByteArray>(Channel.BUFFERED)
+    // Write serialization - only one BLE write at a time.
+    //
+    // Two lanes, not one FIFO: a rider's horn must not queue behind a wall of
+    // telemetry polls and then be dropped by the rule that drops a poll. See
+    // [BleWriteQueue].
+    private val writeQueue = BleWriteQueue()
+    private val writeQueueLock = Any()
+    /** Signalled whenever something is offered, so the worker can wait rather
+     *  than spin. */
+    private val writeSignal = Channel<Unit>(Channel.CONFLATED)
     private var writeReady = false
+
+    /**
+     * Completed by `onCharacteristicWrite` for the write currently in flight.
+     *
+     * The link used to pace itself by assuming a write had landed 200 ms after
+     * the stack accepted it. On a wheel that answers every poll with eight
+     * notification fragments the write-response routinely takes longer than
+     * that, so the next write went out while the stack still had one in hand
+     * and came back `code=201` busy: 2403 times in one rider's twenty-minute
+     * log, with 390 writes given up on entirely. Waiting for the callback is
+     * the whole difference.
+     */
+    @Volatile private var pendingAck: CompletableDeferred<Unit>? = null
 
     /** What the GATT layer did with one write attempt. */
     private enum class WriteOutcome { ACCEPTED, REJECTED, CONNECTION_LOST }
@@ -206,8 +254,23 @@ class BleConnectionManager @Inject constructor(
      * used to be logged and thrown away: a rider's lock command simply never
      * left the phone, which reads as the button doing nothing.
      */
-    private val WRITE_MAX_ATTEMPTS = 4
-    private val WRITE_RETRY_DELAY_MS = 80L
+    /**
+     * Backstop for a write-response that never arrives, on the families that
+     * write WITH one. Generous on purpose: it is not the pacing, the callback
+     * is. A rider's log showed the stack busy for up to about 300 ms at a time
+     * while it streamed a reply, so anything near that turns the backstop back
+     * into the pacing and brings the collisions with it.
+     */
+    private val WRITE_ACK_TIMEOUT_MS = 1_500L
+
+    /**
+     * The same backstop on a no-response profile, where the callback is a
+     * courtesy rather than a contract. HM-10 modules (KingSong, Begode,
+     * Veteran) are on that profile precisely because they do not ack
+     * reliably, so waiting on one is how a link that used to work stalls a
+     * second and a half per write. Short enough to be the old behaviour.
+     */
+    private val WRITE_ACK_NO_RESPONSE_MS = 200L
 
     // Active virtual wheel when in demo mode (address starts with "VIRTUAL:").
     // When non-null, writes are routed to the simulator instead of GATT and the
@@ -250,10 +313,12 @@ class BleConnectionManager @Inject constructor(
         // Keep shouldReconnect / currentAddress so onBluetoothOn() can re-arm.
         rxCharacteristic = null
         writeReady = false
+        synchronized(writeQueueLock) { writeQueue.clear() }
         gatt?.let { g -> try { g.close() } catch (_: Exception) {} }
         gatt = null
         wheelAdapter.onDisconnect()
         _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
     }
 
     private fun onBluetoothOn() {
@@ -337,6 +402,7 @@ class BleConnectionManager @Inject constructor(
             stopReconnectScan()
             if (_connectionState.value == ConnectionState.SCANNING) {
                 _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             }
             val pause = RECONNECT_SCAN_PAUSES_MS[
                 minOf(reconnectScanCycle, RECONNECT_SCAN_PAUSES_MS.lastIndex)
@@ -403,13 +469,16 @@ class BleConnectionManager @Inject constructor(
         if (bluetoothManager.adapter?.isEnabled != true) {
             Log.i(TAG, "connect($address) deferred: Bluetooth is off")
             currentAddress = address
+            _connectedAddress.value = address
             currentName = name ?: currentName
             shouldReconnect = true
             _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             return
         }
 
         currentAddress = address
+        _connectedAddress.value = address
         // Hold on to the name so the auto-reconnect path keeps the same hint;
         // otherwise a P6 that briefly drops would come back as an unknown wheel.
         currentName = name ?: currentName
@@ -472,6 +541,7 @@ class BleConnectionManager @Inject constructor(
             gatt?.let { g -> try { g.close() } catch (_: Exception) {} }
             gatt = null
             _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             val addr = currentAddress
             if (shouldReconnect && currentConnectIsAuto && addr != null && !autoConnectSuppressed) {
                 reconnectViaScan(addr, currentName)
@@ -492,6 +562,7 @@ class BleConnectionManager @Inject constructor(
         val address = currentAddress ?: return
         if (bluetoothManager.adapter?.isEnabled != true) {
             _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             return
         }
         _connectionState.value = ConnectionState.CONNECTING
@@ -554,6 +625,7 @@ class BleConnectionManager @Inject constructor(
         wheel.reset()
         virtualWheel = wheel
         currentAddress = VirtualWheelRegistry.pseudoAddress(id)
+        _connectedAddress.value = currentAddress
         currentName = wheel.bleName.takeIf { it.isNotEmpty() }
         _connectedDeviceName.value = "${wheel.displayName} (virtual)"
         shouldReconnect = false
@@ -614,9 +686,11 @@ class BleConnectionManager @Inject constructor(
         shouldReconnect = false
         stopReconnectScan()
         currentAddress = null
+        _connectedAddress.value = null
         currentName = null
         rxCharacteristic = null
         writeReady = false
+        synchronized(writeQueueLock) { writeQueue.clear() }
 
         // Virtual wheel: just drop the reference; no GATT to tear down.
         if (virtualWheel != null) {
@@ -625,12 +699,14 @@ class BleConnectionManager @Inject constructor(
             wheelAdapter.onDisconnect()
             virtualWheel = null
             _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             return
         }
 
         val g = gatt
         if (g == null) {
             _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             return
         }
         // Request clean GATT teardown; close() runs in the STATE_DISCONNECTED callback
@@ -649,11 +725,20 @@ class BleConnectionManager @Inject constructor(
                 try { still.close() } catch (_: Exception) {}
                 gatt = null
                 _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             }
         }
     }
 
-    fun writeCommand(data: ByteArray) {
+    /**
+     * Queue one write.
+     *
+     * [kind] is what the link falls back on when it cannot send everything:
+     * a poll is replaced by the next poll and barely retried, a command is
+     * queued ahead of polls and retried hard. Defaults to COMMAND so anything
+     * that is not explicitly routine keeps the careful treatment.
+     */
+    fun writeCommand(data: ByteArray, kind: BleWriteQueue.Kind = BleWriteQueue.Kind.COMMAND) {
         // Push-only adapters (Begode, Veteran, KingSong) return an empty
         // array from poll* to signal "nothing to send; just wait for the
         // wheel's notifications". Drop those on the floor instead of
@@ -661,20 +746,29 @@ class BleConnectionManager @Inject constructor(
         if (data.isEmpty()) return
         Log.d(TAG, "Queuing write: ${data.joinToString(" ") { "%02x".format(it) }}")
         com.eried.eucplanet.diagnostics.DiagnosticsLogger.tx(data)
-        // A full queue means the link has been stuck long enough to back up
-        // hundreds of milliseconds of polling. Say so: the log already showed
-        // the bytes as sent, and a command that never went anywhere must not
-        // read as one the wheel ignored.
-        if (writeChannel.trySend(data).isFailure) {
+        val accepted = synchronized(writeQueueLock) { writeQueue.offer(kind, data) }
+        // A command only fails to queue on a link that has been stuck long
+        // enough to fill it. Say so: the log already showed the bytes as sent,
+        // and a command that never went anywhere must not read as one the
+        // wheel ignored.
+        if (!accepted) {
             com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
-                "Write DROPPED (${data.size}B) - the write queue is full"
+                "Write DROPPED (${data.size}B) - the command queue is full"
             )
         }
+        writeSignal.trySend(Unit)
     }
 
     @SuppressLint("MissingPermission")
     private suspend fun processWriteQueue() {
-        for (data in writeChannel) {
+        while (true) {
+            val entry = synchronized(writeQueueLock) { writeQueue.take() }
+            if (entry == null) {
+                writeSignal.receive()
+                continue
+            }
+            val data = entry.data
+
             // Virtual mode: hand the write to the simulator and feed any responses
             // back through the adapter pipeline. No GATT, no writeReady gating.
             val virtual = virtualWheel
@@ -688,39 +782,59 @@ class BleConnectionManager @Inject constructor(
             }
 
             var connectionLost = false
-            for (attempt in 1..WRITE_MAX_ATTEMPTS) {
+            var accepted = false
+            val maxAttempts = BleWriteQueue.maxAttempts(entry.kind)
+            for (attempt in 1..maxAttempts) {
                 writeReady = false
                 when (attemptWrite(data)) {
-                    WriteOutcome.ACCEPTED -> break
+                    WriteOutcome.ACCEPTED -> { accepted = true; break }
                     WriteOutcome.CONNECTION_LOST -> { connectionLost = true; break }
                     WriteOutcome.REJECTED -> {
                         // The stack refused it, so nothing is in flight from us.
                         writeReady = true
-                        if (attempt == WRITE_MAX_ATTEMPTS) {
-                            com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
-                                "Write DROPPED after $WRITE_MAX_ATTEMPTS attempts (${data.size}B) - " +
-                                    "the stack stayed busy"
-                            )
+                        if (attempt == maxAttempts) {
+                            // A poll giving up is routine, and saying so at the
+                            // same volume as a lost command buries the one that
+                            // matters under thousands that do not.
+                            if (entry.kind == BleWriteQueue.Kind.COMMAND) {
+                                com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                                    "Write DROPPED after $maxAttempts attempts (${data.size}B) - " +
+                                        "the stack stayed busy"
+                                )
+                            }
                         } else {
-                            delay(WRITE_RETRY_DELAY_MS)
+                            delay(BleWriteQueue.retryDelayMs(attempt))
                         }
                     }
                 }
             }
-            if (connectionLost) continue
+            if (connectionLost || !accepted) continue
 
-            // Wait for write callback or timeout
-            delay(20)
-            if (!writeReady) {
-                delay(180) // longer wait for write-with-response
-                writeReady = true // assume success after timeout
+            // Wait for the stack to say the write actually went, rather than
+            // assuming it after a fixed pause and starting the next one on top
+            // of it. The timeout is the backstop for a callback that never
+            // arrives, not the normal path.
+            val ack = pendingAck
+            if (ack != null) {
+                val budget =
+                    if (wheelAdapter.bleProfile().writeType ==
+                        BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+                    ) WRITE_ACK_NO_RESPONSE_MS else WRITE_ACK_TIMEOUT_MS
+                if (withTimeoutOrNull(budget) { ack.await() } == null &&
+                    budget == WRITE_ACK_TIMEOUT_MS
+                ) {
+                    com.eried.eucplanet.diagnostics.DiagnosticsLogger.note(
+                        "Write ACK timed out after $budget ms (${data.size}B)"
+                    )
+                }
             }
+            writeReady = true
         }
     }
 
     /**
      * One pass at handing [data] to the GATT layer. Separate from the queue so
-     * a rejection can simply be retried; see [WRITE_MAX_ATTEMPTS].
+     * a rejection can simply be retried; see [BleWriteQueue.maxAttempts].
      */
     @SuppressLint("MissingPermission")
     private fun attemptWrite(data: ByteArray): WriteOutcome {
@@ -761,7 +875,11 @@ class BleConnectionManager @Inject constructor(
                 }
                 result
             }
-            if (accepted) WriteOutcome.ACCEPTED else WriteOutcome.REJECTED
+            if (accepted) {
+                // Arm the ack the worker waits on before it sends anything else.
+                pendingAck = CompletableDeferred()
+                WriteOutcome.ACCEPTED
+            } else WriteOutcome.REJECTED
         } catch (e: Exception) {
             // The GATT binder can die mid-write - Bluetooth toggled off, or
             // the wheel dropping out of range - and writeCharacteristic
@@ -777,6 +895,7 @@ class BleConnectionManager @Inject constructor(
                 gatt = null
                 wheelAdapter.onDisconnect()
                 _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
             }
             writeReady = true
             WriteOutcome.CONNECTION_LOST
@@ -821,6 +940,10 @@ class BleConnectionManager @Inject constructor(
                     )
                     rxCharacteristic = null
                     writeReady = false
+                    // A write queued against a link that has just dropped is
+                    // stale: the rider's horn belongs to the ride they were on,
+                    // not to whatever the next connection turns out to be.
+                    synchronized(writeQueueLock) { writeQueue.clear() }
                     // Reset adapter framing state for the next connection
                     wheelAdapter.onDisconnect()
                     // Close the GATT here so the underlying connection is fully torn down
@@ -829,6 +952,7 @@ class BleConnectionManager @Inject constructor(
                         this@BleConnectionManager.gatt = null
                     }
                     _connectionState.value = ConnectionState.DISCONNECTED
+        _connectedSinceMs.value = 0L
 
                     if (shouldReconnect && status != 0 && !currentConnectIsAuto &&
                         manualRetryCount < MAX_MANUAL_CONNECT_RETRIES) {
@@ -1039,6 +1163,9 @@ class BleConnectionManager @Inject constructor(
             status: Int
         ) {
             Log.d(TAG, "onCharacteristicWrite status=$status")
+            // Releases the worker: the stack has finished with this write, so
+            // the next one can go without colliding with it.
+            pendingAck?.complete(Unit)
             writeReady = true
         }
 
@@ -1122,6 +1249,7 @@ class BleConnectionManager @Inject constructor(
         // rider power-cycles the wheel and reconnects. Any real frame resets the
         // timer, so a slow-streaming wheel is never dropped.
         connectedAtMs = System.currentTimeMillis()
+        _connectedSinceMs.value = connectedAtMs
         val watchdogGatt = gatt
         scope.launch {
             delay(NO_DATA_TIMEOUT_MS)

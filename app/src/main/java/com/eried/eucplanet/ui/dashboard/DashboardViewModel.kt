@@ -77,6 +77,7 @@ class DashboardViewModel @Inject constructor(
     private val dropboxRepository: com.eried.eucplanet.data.repository.DropboxRepository,
     private val appNotifier: com.eried.eucplanet.util.AppNotifier,
     private val navigationEngine: com.eried.eucplanet.nav.NavigationEngine,
+    private val voiceCommands: com.eried.eucplanet.voice.VoiceCommandController,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -213,8 +214,18 @@ class DashboardViewModel @Inject constructor(
     private fun fineDetail(windowHours: Int): Boolean = windowHours <= 12
 
     fun refreshWeather(force: Boolean = false) {
+        // No location, nothing to ask about. Returning quietly left the panel
+        // reading "Fetching..." forever with nothing in flight, which is the
+        // one failure a rider cannot wait out: it needs the phone's location
+        // switch or the permission, not patience.
         val loc = tripRepository.currentLocation.value
-            ?: tripRepository.lastKnownLocation.value ?: return
+            ?: tripRepository.lastKnownLocation.value
+            ?: run {
+                weatherRepository.reportNoLocation(
+                    context.getString(R.string.weather_error_no_location)
+                )
+                return
+            }
         val w = weatherSettings.value
         val dest = weatherDest.value
         if (dest != null && weatherUseDest.value) {
@@ -464,6 +475,12 @@ class DashboardViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly,
             com.eried.eucplanet.util.Units.effectiveDistanceUnit(initialSettings))
 
+    /** The rider's own pressure unit, for the tyre-pressure tile and stats. */
+    val pressureUnit: StateFlow<String> = settingsRepository.settings
+        .map { com.eried.eucplanet.util.Units.effectivePressureUnit(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly,
+            com.eried.eucplanet.util.Units.effectivePressureUnit(initialSettings))
+
     val tempUnit: StateFlow<String> = settingsRepository.settings
         .map { com.eried.eucplanet.util.Units.effectiveTempUnit(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly,
@@ -513,6 +530,22 @@ class DashboardViewModel @Inject constructor(
     val voicePeriodicEnabled: StateFlow<Boolean> = settingsRepository.settings
         .map { it.voiceEnabled }
         .stateIn(viewModelScope, SharingStarted.Eagerly, initialSettings.voiceEnabled)
+
+    /**
+     * The language the spoken-command list should be written in.
+     *
+     * The rider's own choice, or the speaking voice when they have not made
+     * one. Needed here because "what can I say" opens the same list from the
+     * dashboard as the settings screen does, and a list of words in the wrong
+     * language is a list of words that will not work.
+     */
+    val voiceCommandLanguage: StateFlow<String> = settingsRepository.settings
+        .map { it.voiceCommands.recognitionLocale.ifBlank { it.voiceLocale } }
+        .stateIn(
+            viewModelScope, SharingStarted.Eagerly,
+            initialSettings.voiceCommands.recognitionLocale
+                .ifBlank { initialSettings.voiceLocale },
+        )
 
     /** Whether the dashboard top-bar Battery-monitor (spark) icon renders at all. */
     val chargingDashboardIcon: StateFlow<Boolean> = settingsRepository.settings
@@ -758,6 +791,22 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    /** Which of the four speed-split states the settings are in, for the tile. */
+    val accelSplitMode: StateFlow<com.eried.eucplanet.data.model.AccelSplitMode> = settingsRepository.settings
+        .map { com.eried.eucplanet.data.model.AccelSplitMode.of(it.accelSplit) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly,
+            com.eried.eucplanet.data.model.AccelSplitMode.of(initialSettings.accelSplit))
+
+    /** Off, accel, brake, both, and round again. The service re-reads the
+     *  settings on every frame, so the tracker follows at once. */
+    fun cycleSpeedSplits() {
+        viewModelScope.launch {
+            val current = settingsRepository.get()
+            val next = com.eried.eucplanet.data.model.AccelSplitMode.of(current.accelSplit).next()
+            settingsRepository.update(current.copy(accelSplit = next.applyTo(current.accelSplit)))
+        }
+    }
+
     /** Flip the persisted alarm mute. AlarmEngine reads this on every
      *  evaluate() so the change takes effect on the next telemetry frame. */
     fun toggleAlarmsMuted() {
@@ -1000,6 +1049,37 @@ class DashboardViewModel @Inject constructor(
     fun onSafetySpeedToggle() {
         viewModelScope.launch {
             wheelRepository.toggleSafetySpeed()
+        }
+    }
+
+    /** What a listening session is doing, for the tile and the transcript. */
+    val voiceCommandState = voiceCommands.state
+
+    /** Asking out loud what can be said puts the list on screen. */
+    val showVocabulary = voiceCommands.showVocabulary
+
+    fun onVoiceListen() {
+        // The tile lights up, so it does not also need a snackbar saying so.
+        voiceCommands.listen(notify = false)
+    }
+
+    /**
+     * Swap which of the two voice tiles owns this dashboard slot.
+     *
+     * The pair shares one slot and one icon, so this is a single entry in
+     * dashboardActionOrder changing. Per slot rather than global: a rider with
+     * two voice tiles gets to keep them different.
+     */
+    fun switchVoiceTile(from: String, to: String) {
+        viewModelScope.launch {
+            val current = settingsRepository.get()
+            val order = current.dashboardActionOrder.split(",").map { it.trim() }
+            val at = order.indexOf(from)
+            if (at < 0) return@launch
+            val swapped = order.toMutableList().also { it[at] = to }
+            settingsRepository.update(
+                current.copy(dashboardActionOrder = swapped.joinToString(","))
+            )
         }
     }
 

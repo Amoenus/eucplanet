@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">ses kapalı,duyurular kapalı,sesi kapat</string>
     <string name="voice_command_vocabulary">Ne diyebilirim</string>
     <string name="voice_command_vocabulary_tap">Bir adı tek başına ya da soru içinde söyle.</string>
-    <string name="voice_command_vocabulary_legend">* tekerlek ölçümü değil: bir şey yapar veya başka bir şeyi yanıtlar.</string>
+    <string name="voice_vocab_group_wheel">Teker</string>
+    <string name="voice_vocab_group_actions">Eylemler</string>
+    <string name="voice_vocab_group_around">Çevrende</string>
     <string name="voice_listening">Dinliyorum</string>
     <string name="voice_answer_off">%1$s kapalı. Ayarlardan açabilirsin.</string>
     <string name="voice_answer_unsupported">Tekerleğin %1$s bildirmiyor.</string>
@@ -2342,6 +2344,8 @@
     <string name="adv_nav_sidebar_min_desc">Bundan dar ekranlar, yatayda bile alttaki durak panelini tutar. Çok düşük, küçük ekranlarda haritayı gizler.</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 tekerler için erişim PIN\'i, bağlanınca gönderilir ve teker veri göndermeye başlar. InMotion uygulamasında kendi PIN\'inizi ayarlamadıysanız 000000 olarak bırakın.</string>
+    <string name="adv_kingsong_unlock_code">KingSong kilit açma kodu</string>
+    <string name="adv_kingsong_unlock_code_desc">Kilit açma komutuyla gönderilen altı hane. Test edilen tekerler her haneyi kabul eder, bu yüzden sizinki reddetmedikçe 123456 olarak bırakın.</string>
     <string name="adv_nav_sidebar_width">Durak paneli genişliği</string>
     <string name="adv_nav_sidebar_width_desc">Yatay durak kenar çubuğunun genişliği. Çok geniş olursa harita az kalır.</string>
     <string name="adv_simple_speedo_scale">Basit hız göstergesi boyutu</string>

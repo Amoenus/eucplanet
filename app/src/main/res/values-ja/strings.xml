@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">音声オフ,アナウンスオフ,音声をオフ</string>
     <string name="voice_command_vocabulary">何と言えますか</string>
     <string name="voice_command_vocabulary_tap">名前だけでも、質問の中でもかまいません。</string>
-    <string name="voice_command_vocabulary_legend">* はホイールの計測値ではありません。何かを実行するか、別のことに答えます。</string>
+    <string name="voice_vocab_group_wheel">ホイール</string>
+    <string name="voice_vocab_group_actions">操作</string>
+    <string name="voice_vocab_group_around">周囲</string>
     <string name="voice_listening">聞き取り中</string>
     <string name="voice_answer_off">%1$sはオフです。設定でオンにできます。</string>
     <string name="voice_answer_unsupported">このホイールは%1$sを報告しません。</string>
@@ -2344,6 +2346,8 @@
     <string name="adv_nav_sidebar_min_desc">これより狭い画面は横向きでも下部の経由地パネルを保持します。小さすぎると小画面で地図が埋もれます。</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 ホイールのアクセスPIN。接続時に送信され、ホイールがデータ送信を開始します。InMotionアプリで独自のPINを設定していない限り、000000のままにしてください。</string>
+    <string name="adv_kingsong_unlock_code">KingSong 解除コード</string>
+    <string name="adv_kingsong_unlock_code_desc">解除コマンドと一緒に送信する6桁の数字。テスト済みのホイールはどの数字でも受け付けるため、拒否されない限り123456のままにしてください。</string>
     <string name="adv_nav_sidebar_width">経由地パネルの幅</string>
     <string name="adv_nav_sidebar_width_desc">横向きの経由地サイドバーの幅。広すぎると地図が狭くなります。</string>
     <string name="adv_simple_speedo_scale">シンプル速度計のサイズ</string>

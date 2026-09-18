@@ -316,7 +316,9 @@
     <string name="voice_act_announce_off_terms">ääni pois,kuulutukset pois,puhe pois</string>
     <string name="voice_command_vocabulary">Mitä voin sanoa</string>
     <string name="voice_command_vocabulary_tap">Sano nimi yksin tai osana kysymystä.</string>
-    <string name="voice_command_vocabulary_legend">* ei ole pyörän lukema: se tekee jotain tai vastaa muusta.</string>
+    <string name="voice_vocab_group_wheel">Yksipyöräinen</string>
+    <string name="voice_vocab_group_actions">Toiminnot</string>
+    <string name="voice_vocab_group_around">Ympärilläsi</string>
     <string name="voice_listening">Kuuntelen</string>
     <string name="voice_answer_off">%1$s on pois käytöstä. Voit ottaa sen käyttöön asetuksista.</string>
     <string name="voice_answer_unsupported">Pyöräsi ei ilmoita %1$s.</string>
@@ -618,6 +620,8 @@
     <string name="adv_nav_sidebar_min_desc">Tätä kapeammat näytöt pitävät alapysähdyspaneelin myös vaakanäkymässä. Liian pieni hautaa kartan pienillä näytöillä.</string>
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 -yksipyöräisten pääsykoodi, lähetetään yhdistettäessä, jotta yksipyöräinen alkaa lähettää dataa. Jätä arvoon 000000, ellet ole asettanut omaa PIN-koodia InMotion-sovelluksessa.</string>
+    <string name="adv_kingsong_unlock_code">KingSong-avauskoodi</string>
+    <string name="adv_kingsong_unlock_code_desc">Kuusi numeroa, jotka lähetetään avauskomennon mukana. Testatut yksipyöräiset hyväksyvät mitkä tahansa numerot, joten jätä arvoon 123456, ellei omasi hylkää sitä.</string>
     <string name="adv_charging_warning">Nämä säätävät arviota täyteen latautumisen ajasta. Väärät arvot antavat harhaanjohtavan arvion, mutta eivät koskaan vaikuta itse lataukseen.</string>
     <string name="adv_charging_target_pct">Tavoiteprosentti</string>
     <string name="adv_charging_target_pct_desc">Vaikuttaa lataustasoon, jossa arvio siirtyy hitaampaan loppuvaiheeseen.</string>
@@ -1279,7 +1283,7 @@
     <string name="pip_desc">Kutistuu kelluvaksi ikkunaksi, kun poistut sovelluksesta.</string>
     <string name="pip_mode_label">PIP-tila</string>
     <string name="pip_mode_off">Pois</string>
-    <string name="pip_mode_simple">Yksinkertainen</string>
+    <string name="pip_mode_simple">Perus</string>
     <string name="pip_mode_dashboard">Mittaristo</string>
     <string name="phone_hud_section">Puhelimen HUD</string>
     <string name="phone_hud_desc">Piirtää Overlay Studio -asettelun muiden sovellusten päälle, joten näet yksipyöräisesi karttoja tai musiikkia käyttäessäsi.</string>

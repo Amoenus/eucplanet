@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">голос выключить,объявления выключить,выключи голос</string>
     <string name="voice_command_vocabulary">Что можно сказать</string>
     <string name="voice_command_vocabulary_tap">Назовите пункт отдельно или в вопросе.</string>
-    <string name="voice_command_vocabulary_legend">* это не показание колеса: команда что-то делает или отвечает о другом.</string>
+    <string name="voice_vocab_group_wheel">Колесо</string>
+    <string name="voice_vocab_group_actions">Действия</string>
+    <string name="voice_vocab_group_around">Вокруг вас</string>
     <string name="voice_listening">Слушаю</string>
     <string name="voice_answer_off">%1$s выключено. Включить можно в настройках.</string>
     <string name="voice_answer_unsupported">Ваше колесо не сообщает %1$s.</string>
@@ -2345,6 +2347,8 @@
     <string name="adv_nav_sidebar_min_desc">Экраны уже этого сохраняют нижнюю панель остановок даже в альбомной ориентации. Слишком мало прячет карту на малых экранах.</string>
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN доступа для моноколёс InMotion V5/V8/V10, отправляется при подключении, чтобы моноколесо начало передавать данные. Оставьте 000000, если вы не задали свой PIN в приложении InMotion.</string>
+    <string name="adv_kingsong_unlock_code">Код разблокировки KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Шесть цифр, отправляемых с командой разблокировки. Проверенные моноколёса принимают любые цифры, поэтому оставьте 123456, если ваше их не отклоняет.</string>
     <string name="adv_nav_sidebar_width">Ширина панели остановок</string>
     <string name="adv_nav_sidebar_width_desc">Ширина боковой панели остановок в альбомной ориентации. Слишком широкая оставляет мало карты.</string>
     <string name="adv_simple_speedo_scale">Размер простого спидометра</string>
@@ -2528,7 +2532,7 @@
     <string name="hud_discovery_auto">Авто</string>
     <string name="hud_discovery_both">Оба</string>
     <string name="hud_discovery_desc">Авто находит HUD сам. Фиксированный использует только адрес ниже.</string>
-    <string name="hud_discovery_fixed">Фиксированный</string>
+    <string name="hud_discovery_fixed">Вручную</string>
     <string name="hud_discovery_mode">Режим поиска</string>
     <string name="metric_chip_battery_range">Батарея начало → конец</string>
     <string name="recording_summary_battery_range">Начало→конец (-%1$d%%)</string>

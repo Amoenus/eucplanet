@@ -872,6 +872,7 @@ class WheelRepository @Inject constructor(
         // wheel restores everything (tiltback, alarm, safety, calibration).
         scope.launch {
             settingsRepository.settings.collect { s ->
+                lockCodeCache = String.format(java.util.Locale.US, "%06d", s.advanced.kingsongUnlockCode)
                 val clamped = s.speedCalibrationOffsetPct.coerceIn(-15f, 15f)
                 speedCalibrationMultiplier = 1f + clamped / 100f
                 // Wheel poll + chart sampling are independent rider settings now,
@@ -1375,7 +1376,7 @@ class WheelRepository @Inject constructor(
                         // A pack we've never sized starts blank, not carrying the
                         // last wheel's capacity into this one's range estimate.
                         capacityWh = 0,
-                    )
+                    ),
                 )
             )
             persistWheelProfile(name, settingsRepository.get())
@@ -1611,6 +1612,10 @@ class WheelRepository @Inject constructor(
         if (_locked.value != target) toggleLock()
     }
 
+    /** The KingSong unlock code from Advanced settings as six digits, mirrored
+     *  so [toggleLock] can hand it to the adapter without suspending. */
+    @Volatile private var lockCodeCache: String = ""
+
     fun toggleLock() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
         if (_lockBusy.value) return  // cooldown active, ignore the spam tap
@@ -1625,6 +1630,10 @@ class WheelRepository @Inject constructor(
             return
         }
         val targetState = !_locked.value
+        // KingSong unlocks with six digits; locking needs none. A wheel with no
+        // rider-set code takes any digits, so the Advanced default unlocks it,
+        // and a rider who set a code in the KingSong app enters it there.
+        wheelAdapter.provideLockCode(lockCodeCache)
         // Hard block the lock direction when the wheel is moving, any entry
         // path (Flic, watch, volume keys, dashboard) lands here. Unlock is
         // always allowed; if the wheel is already locked, speed is 0 anyway.

@@ -353,7 +353,9 @@
     <string name="voice_act_announce_off_terms">voz desligada,anúncios desligados,desligar a voz</string>
     <string name="voice_command_vocabulary">O que posso dizer</string>
     <string name="voice_command_vocabulary_tap">Diga um nome sozinho ou dentro de uma pergunta.</string>
-    <string name="voice_command_vocabulary_legend">* não é uma leitura da roda: faz algo ou responde sobre outra coisa.</string>
+    <string name="voice_vocab_group_wheel">Roda</string>
+    <string name="voice_vocab_group_actions">Ações</string>
+    <string name="voice_vocab_group_around">Ao seu redor</string>
     <string name="voice_listening">Ouvindo</string>
     <string name="voice_answer_off">%1$s está desativado. Você pode ativar nas configurações.</string>
     <string name="voice_answer_unsupported">Sua roda não informa %1$s.</string>
@@ -647,7 +649,7 @@
     <string name="units_label">Unidades</string>
     <string name="units_metric">Métrico</string>
     <string name="units_imperial">Imperial</string>
-    <string name="units_custom">Personalizado</string>
+    <string name="units_custom">Próprio</string>
     <string name="units_temperature">Temperatura</string>
     <string name="units_speed">Velocidade</string>
     <string name="tpms_forget">Esquecer</string>
@@ -2345,6 +2347,8 @@
     <string name="adv_nav_sidebar_min_desc">Telas mais estreitas que isso mantêm o painel de paradas embaixo mesmo na horizontal. Muito baixo esconde o mapa em telas pequenas.</string>
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN de acesso para rodas InMotion V5/V8/V10, enviado ao conectar para que a roda comece a enviar dados. Deixe 000000, a menos que você tenha definido seu próprio PIN no app da InMotion.</string>
+    <string name="adv_kingsong_unlock_code">Código de destravar KingSong</string>
+    <string name="adv_kingsong_unlock_code_desc">Seis dígitos enviados com o comando de destravar. As rodas testadas aceitam quaisquer dígitos, então deixe 123456 a menos que a sua recuse.</string>
     <string name="adv_nav_sidebar_width">Largura do painel de paradas</string>
     <string name="adv_nav_sidebar_width_desc">Largura da barra lateral de paradas na horizontal. Muito larga deixa pouco mapa.</string>
     <string name="adv_simple_speedo_scale">Tamanho do velocímetro simples</string>

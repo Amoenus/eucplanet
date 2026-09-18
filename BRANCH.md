@@ -1,22 +1,21 @@
-# kingsong-fixes
+# next-experimental
 
-KingSong fixes from issue #19 (KS-18XL, FW 2.00), branched from
-next-experimental so everything there is in this build too. For KingSong
-riders who can try lock and unlock and report what the wheel did.
+Where new features are built first. Things here work on the wheels they were
+written against and may not work on yours yet, and settings can move or reset
+between builds. Fine for a ride you are happy to cut short, not for one you
+need to get home from.
+
+For riders who are happy to report what broke. Everyone else wants the Play
+Store build.
 
 ## What to check in this build
 
-**KingSong lock.** From the tester's two captures of the official app: the
-wheel locks on one command, answers with its lock state, and unlocks on a
-command that carries six digits. Both captures unlocked with digits the wheel
-had never been given, while the wheel said its stored code was 123456, so a
-wheel nobody set a code on takes any six digits. The Lock Wheel tile now
-works on KingSong with no setup: the app sends 123456. If you did set a code
-in the KingSong app, put it in Settings, Advanced, KingSong unlock code.
-Confirmed by the tester on 2026-09-18: lock, unlock and horn work with
-nothing typed. Known gap: with a 4-digit password set in the KingSong app the
-wheel ignores lock and unlock; remove the password and they work. Supporting
-a password needs a capture of the official app locking with one set.
+**KingSong lock.** The Lock Wheel tile and the horn now work on KingSong,
+from a tester's captures of the official app on a KS-18XL and confirmed by
+him on 2026-09-18: nothing to type, the wheel takes the default six digits.
+Known gap: with a 4-digit password set in the KingSong app the wheel ignores
+lock and unlock; remove the password and they work. If yours refuses, say
+which model and firmware, and whether a password is set.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

@@ -2352,7 +2352,7 @@
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN d\'accès pour les roues InMotion V5/V8/V10, envoyé à la connexion pour que la roue commence à envoyer des données. Laissez 000000 sauf si vous avez défini votre propre PIN dans l\'application InMotion.</string>
     <string name="adv_kingsong_unlock_code">Code de déverrouillage KingSong</string>
-    <string name="adv_kingsong_unlock_code_desc">Six chiffres envoyés pour déverrouiller une roue KingSong. Laissez 123456 sauf si vous avez défini votre propre code dans l\'application KingSong.</string>
+    <string name="adv_kingsong_unlock_code_desc">Six chiffres envoyés avec la commande de déverrouillage. Les roues testées acceptent n\'importe quels chiffres, laissez donc 123456 sauf si la vôtre le refuse.</string>
     <string name="adv_nav_sidebar_width">Largeur du panneau d\'arrêts</string>
     <string name="adv_nav_sidebar_width_desc">Largeur de la barre latérale d\'arrêts en paysage. Trop large laisse peu de carte.</string>
     <string name="adv_simple_speedo_scale">Taille du compteur simple</string>

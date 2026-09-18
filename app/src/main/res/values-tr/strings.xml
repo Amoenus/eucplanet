@@ -2345,7 +2345,7 @@
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 tekerler için erişim PIN\'i, bağlanınca gönderilir ve teker veri göndermeye başlar. InMotion uygulamasında kendi PIN\'inizi ayarlamadıysanız 000000 olarak bırakın.</string>
     <string name="adv_kingsong_unlock_code">KingSong kilit açma kodu</string>
-    <string name="adv_kingsong_unlock_code_desc">KingSong tekerin kilidini açmak için gönderilen altı hane. KingSong uygulamasında kendi kodunuzu ayarlamadıysanız 123456 olarak bırakın.</string>
+    <string name="adv_kingsong_unlock_code_desc">Kilit açma komutuyla gönderilen altı hane. Test edilen tekerler her haneyi kabul eder, bu yüzden sizinki reddetmedikçe 123456 olarak bırakın.</string>
     <string name="adv_nav_sidebar_width">Durak paneli genişliği</string>
     <string name="adv_nav_sidebar_width_desc">Yatay durak kenar çubuğunun genişliği. Çok geniş olursa harita az kalır.</string>
     <string name="adv_simple_speedo_scale">Basit hız göstergesi boyutu</string>

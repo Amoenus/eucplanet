@@ -621,7 +621,7 @@
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN-ul de acces pentru monociclurile InMotion V5/V8/V10, trimis la conectare pentru ca monociclul să înceapă să trimită date. Lasă 000000 dacă nu ți-ai setat propriul PIN în aplicația InMotion.</string>
     <string name="adv_kingsong_unlock_code">Cod de deblocare KingSong</string>
-    <string name="adv_kingsong_unlock_code_desc">Șase cifre trimise pentru a debloca un monociclu KingSong. Lasă 123456 dacă nu ți-ai setat propriul cod în aplicația KingSong.</string>
+    <string name="adv_kingsong_unlock_code_desc">Șase cifre trimise cu comanda de deblocare. Monociclurile testate acceptă orice cifre, așa că lasă 123456 dacă al tău nu îl refuză.</string>
     <string name="adv_charging_warning">Acestea reglează estimarea timpului până la încărcarea completă. Valorile greșite dau o estimare înșelătoare, dar nu afectează niciodată încărcarea în sine.</string>
     <string name="adv_charging_target_pct">Procentul țintă</string>
     <string name="adv_charging_target_pct_desc">Influențează nivelul de încărcare la care estimarea trece la faza finală, mai lentă.</string>

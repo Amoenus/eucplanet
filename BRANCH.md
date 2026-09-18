@@ -13,10 +13,10 @@ had never been given, while the wheel said its stored code was 123456, so a
 wheel nobody set a code on takes any six digits. The Lock Wheel tile now
 works on KingSong with no setup: the app sends 123456. If you did set a code
 in the KingSong app, put it in Settings, Advanced, KingSong unlock code.
-Check that the lock icon follows the wheel (lock, move it, it pings; unlock,
-it stops) and that unlock works straight after install with nothing typed.
-The horn is the same command the official app sends (0x88), so if it stays
-silent that is the wheel, not the app.
+Confirmed by the tester on 2026-09-18: lock, unlock and horn work with
+nothing typed. Known gap: with a 4-digit password set in the KingSong app the
+wheel ignores lock and unlock; remove the password and they work. Supporting
+a password needs a capture of the official app locking with one set.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

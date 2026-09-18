@@ -3420,6 +3420,12 @@ fun DashboardScreen(
                                                     "Soolek" to "KS-16X testing.",
                                                     "Jonathan Wiesner" to "LeaperKim Lynx S testing.",
                                                     "Felix K" to "LeaperKim Oryx testing.",
+                                                    "Bearkat713" to "Motoeye E6 testing.",
+                                                    "PhilDaintree" to "KS-18XL testing and the BLE captures behind the KingSong lock and horn.",
+                                                    "elektro-NIK" to "Garmin watch testing across nine builds, with the logs that pinned the pacing bug.",
+                                                    "jeronimo701" to "KingSong S22 report and patch that led to battery percent from voltage.",
+                                                    "jforssblad" to "NOSFET Aeon cell-voltage testing.",
+                                                    "Dubardo" to "Odometer-in-trip bug report.",
                                                     "Amoenus" to "Aeon alarm-speed mapping and headlight level readback, decoded from his own BLE captures. The first code contributed from outside.",
                                                     "Ilya Shkolnik" to "Advice and help, and maintains DarknessBot.",
                                                     "InMotion" to "For making my awesome V14."

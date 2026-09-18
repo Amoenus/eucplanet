@@ -2346,7 +2346,7 @@
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN dostępu do kół InMotion V5/V8/V10, wysyłany przy połączeniu, aby koło zaczęło przesyłać dane. Zostaw 000000, chyba że ustawiłeś własny PIN w aplikacji InMotion.</string>
     <string name="adv_kingsong_unlock_code">Kod odblokowania KingSong</string>
-    <string name="adv_kingsong_unlock_code_desc">Sześć cyfr wysyłanych, aby odblokować koło KingSong. Zostaw 123456, chyba że ustawiłeś własny kod w aplikacji KingSong.</string>
+    <string name="adv_kingsong_unlock_code_desc">Sześć cyfr wysyłanych z poleceniem odblokowania. Przetestowane koła przyjmują dowolne cyfry, więc zostaw 123456, chyba że twoje je odrzuci.</string>
     <string name="adv_nav_sidebar_width">Szerokość panelu przystanków</string>
     <string name="adv_nav_sidebar_width_desc">Szerokość bocznego panelu przystanków w poziomie. Zbyt szeroki zostawia mało mapy.</string>
     <string name="adv_simple_speedo_scale">Rozmiar prostego prędkościomierza</string>

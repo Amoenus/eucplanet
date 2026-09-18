@@ -2363,7 +2363,7 @@
     <string name="adv_inmotion_v1_pin">InMotion V5/V8/V10 PIN</string>
     <string name="adv_inmotion_v1_pin_desc">Adgangs-PIN til InMotion V5/V8/V10 hjul, sendes ved tilslutning så hjulet begynder at sende data. Lad 000000 stå, medmindre du har angivet din egen PIN i InMotion-appen.</string>
     <string name="adv_kingsong_unlock_code">KingSong oplåsningskode</string>
-    <string name="adv_kingsong_unlock_code_desc">Seks cifre der sendes for at låse et KingSong-hjul op. Lad 123456 stå, medmindre du har angivet din egen kode i KingSong-appen.</string>
+    <string name="adv_kingsong_unlock_code_desc">Seks cifre der sendes med oplåsningskommandoen. Testede hjul accepterer alle cifre, så lad 123456 stå, medmindre dit afviser det.</string>
     <string name="adv_nav_sidebar_width">Bredde på stoppanel</string>
     <string name="adv_nav_sidebar_width_desc">Bredden på det liggende stopsidepanel. For bredt efterlader lidt kort.</string>
     <string name="adv_simple_speedo_scale">Størrelse på simpelt speedometer</string>

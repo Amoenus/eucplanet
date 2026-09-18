@@ -2348,7 +2348,7 @@
     <string name="adv_inmotion_v1_pin">PIN InMotion V5/V8/V10</string>
     <string name="adv_inmotion_v1_pin_desc">PIN de acesso para rodas InMotion V5/V8/V10, enviado ao conectar para que a roda comece a enviar dados. Deixe 000000, a menos que você tenha definido seu próprio PIN no app da InMotion.</string>
     <string name="adv_kingsong_unlock_code">Código de destravar KingSong</string>
-    <string name="adv_kingsong_unlock_code_desc">Seis dígitos enviados para destravar uma roda KingSong. Deixe 123456, a menos que você tenha definido seu próprio código no app da KingSong.</string>
+    <string name="adv_kingsong_unlock_code_desc">Seis dígitos enviados com o comando de destravar. As rodas testadas aceitam quaisquer dígitos, então deixe 123456 a menos que a sua recuse.</string>
     <string name="adv_nav_sidebar_width">Largura do painel de paradas</string>
     <string name="adv_nav_sidebar_width_desc">Largura da barra lateral de paradas na horizontal. Muito larga deixa pouco mapa.</string>
     <string name="adv_simple_speedo_scale">Tamanho do velocímetro simples</string>

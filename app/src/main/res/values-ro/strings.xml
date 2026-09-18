@@ -430,7 +430,7 @@
     <string name="hud_ip_incomplete">Introdu o adresă completă, de exemplu 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">IP-ul dispozitivului (automat)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Hotspotul telefonului este oprit. Asigură-te că HUD-ul și telefonul sunt în aceeași rețea WiFi.</string>
+    <string name="hud_hotspot_unknown_hint">Asigură-te că HUD-ul și telefonul sunt în aceeași rețea WiFi. Dacă folosești hotspotul telefonului, pornește-l mai întâi.</string>
     <string name="hud_hotspot_on_hint">Hotspotul telefonului emite. Conectează HUD-ul la WiFi-ul acestui telefon pentru a activa legătura.</string>
     <string name="hud_overlay_subsection">Suprapunere personalizată</string>
     <string name="hud_overlay_subsection_desc">Importă o presetare din Overlay Studio pe ecranul Personalizat al HUD-ului, fără fundaluri. Presetarea se copiază aici, așa că modificările ulterioare din studio nu schimbă HUD-ul până nu o imporți din nou.</string>

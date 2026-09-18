@@ -104,7 +104,7 @@
     <string name="hud_ip_incomplete">请输入完整地址，例如 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">设备 IP（自动）</string>
     <string name="hud_server_port">端口</string>
-    <string name="hud_hotspot_off_hint">手机热点已关闭。请确保 HUD 和手机在同一个 WiFi 网络上。</string>
+    <string name="hud_hotspot_unknown_hint">请确保 HUD 和手机在同一个 WiFi 网络上。如果使用手机热点，请先开启。</string>
     <string name="hud_hotspot_on_hint">手机热点正在广播。将 HUD 连接到此手机的 WiFi 以启用连接。</string>
     <string name="hud_custom_overlay_none">无</string>
 

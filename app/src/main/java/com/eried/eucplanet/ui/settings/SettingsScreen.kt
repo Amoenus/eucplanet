@@ -11668,18 +11668,20 @@ private fun HudInstallHint(pairedHudVersion: String?, hudEverConnected: Boolean)
 @Composable
 private fun HudHotspotHint() {
     val ctx = LocalContext.current
+    var probed by remember { mutableStateOf(false) }
     var hotspotOn by remember { mutableStateOf<Boolean?>(null) }
     LaunchedEffect(Unit) {
         while (true) {
             hotspotOn = detectHotspotEnabled(ctx)
+            probed = true
             kotlinx.coroutines.delay(5_000L)
         }
     }
     // Always informational, never alarming. surfaceVariant + the outlined
     // Info icon matches the InfoHint pattern used elsewhere in the app, so
     // this reads as a regular "here's some context" card, not a red error.
-    // null = first probe in flight; suppress so the card doesn't flash.
-    val on = hotspotOn ?: return
+    // Nothing until the first probe lands, so the card doesn't flash.
+    if (!probed) return
     androidx.compose.material3.Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -11698,7 +11700,11 @@ private fun HudHotspotHint() {
             )
             Text(
                 text = stringResource(
-                    if (on) R.string.hud_hotspot_on_hint else R.string.hud_hotspot_off_hint
+                    // Confirmed on, or "we cannot tell". There is deliberately
+                    // no "off" copy: nothing available to an ordinary app can
+                    // prove a hotspot is off, so the card never claims it.
+                    if (hotspotOn == true) R.string.hud_hotspot_on_hint
+                    else R.string.hud_hotspot_unknown_hint
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -11708,10 +11714,19 @@ private fun HudHotspotHint() {
 }
 
 /**
- * Two-stage hotspot detection. Returns true/false when we have a signal, or
- * false when nothing answered (so the UI defaults to surfacing the hint).
+ * Two-stage hotspot detection. Returns true or false only when a stage
+ * actually answered, and null when neither could tell.
+ *
+ * The null matters. This used to return false when nothing answered, so the
+ * card stated "Phone hotspot is off" to riders whose hotspot was plainly on,
+ * and a tester had to argue with it. Neither stage is dependable on a modern
+ * phone: [android.net.wifi.WifiManager] `isWifiApEnabled` is a blocklisted
+ * hidden API for apps targeting API 30 and up (we target 36), and the
+ * interface-name sniff below only recognises the names we happened to know.
+ * A miss on both is "we cannot tell", which is not the same fact as "off",
+ * and only one of those is safe to print.
  */
-private fun detectHotspotEnabled(ctx: android.content.Context): Boolean {
+private fun detectHotspotEnabled(ctx: android.content.Context): Boolean? {
     // Stage 1: reflection into the legacy isWifiApEnabled API.
     val viaReflection: Boolean? = runCatching {
         val wifi = ctx.applicationContext
@@ -11720,13 +11735,23 @@ private fun detectHotspotEnabled(ctx: android.content.Context): Boolean {
         val m = wifi.javaClass.getMethod("isWifiApEnabled")
         m.invoke(wifi) as? Boolean
     }.getOrNull()
-    if (viaReflection != null) return viaReflection
+    // Only a `true` here means anything. Querying AP state is a privileged
+    // operation, so for an ordinary app this answers false whether the hotspot
+    // is off OR we simply are not allowed to know, and those are not the same
+    // fact. Verified on an emulator: it returns false with no hidden-API denial
+    // logged at all. Trusting that false is what told a tester his hotspot was
+    // off while he was looking at it running.
+    if (viaReflection == true) return true
 
     // Stage 2: look for a SoftAP-style network interface. When the rider
     // toggles hotspot on, the kernel brings up an interface named "ap0",
-    // "softap0", "wlan1" (Samsung) or "swlan0" (some MIUI). When hotspot
-    // is off, none of those exist - only "wlan0" for the regular client.
-    return runCatching {
+    // "softap0", "wlan1" (Samsung) or "swlan0" (some MIUI).
+    //
+    // Finding one proves the hotspot is up. NOT finding one proves nothing:
+    // the list is a guess at OEM naming, and an OEM we have not met names it
+    // something else. So a hit returns true and a miss returns null, never
+    // false. Only stage 1 can report a trustworthy "off".
+    val sawSoftAp = runCatching {
         val ifs = java.net.NetworkInterface.getNetworkInterfaces()?.toList().orEmpty()
         ifs.any { iface ->
             val name = iface.name.orEmpty().lowercase()
@@ -11736,6 +11761,7 @@ private fun detectHotspotEnabled(ctx: android.content.Context): Boolean {
             )
         }
     }.getOrDefault(false)
+    return if (sawSoftAp) true else null
 }
 
 // --- HUD section (lives inside the Integration tab) ---

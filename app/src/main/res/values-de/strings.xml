@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Vollständige Adresse eingeben, z. B. 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Geräte-IP (automatisch)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Handy-Hotspot ist aus. Stell sicher, dass HUD und Handy im selben WLAN sind.</string>
+    <string name="hud_hotspot_unknown_hint">Stell sicher, dass HUD und Handy im selben WLAN sind. Wenn du den Handy-Hotspot nutzt, schalte ihn zuerst ein.</string>
     <string name="hud_hotspot_on_hint">Handy-Hotspot sendet. Verbinde das HUD mit diesem WLAN, um die Verbindung herzustellen.</string>
     <string name="hud_overlay_subsection">Eigenes Overlay</string>
     <string name="hud_overlay_subsection_desc">Importiere eine Overlay-Studio-Vorlage auf den Custom-Bildschirm des HUD, ohne Hintergrund. Die Vorlage wird hierher kopiert, spätere Änderungen im Studio wirken erst nach erneutem Import.</string>

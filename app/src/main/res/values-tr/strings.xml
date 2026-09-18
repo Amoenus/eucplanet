@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Tam bir adres gir, örneğin 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Cihaz IP (otomatik)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Telefon hotspot\'u kapalı. HUD ile telefonun aynı WiFi ağında olduğundan emin olun.</string>
+    <string name="hud_hotspot_unknown_hint">HUD ile telefonun aynı WiFi ağında olduğundan emin olun. Telefon hotspot\'unu kullanıyorsanız önce açın.</string>
     <string name="hud_hotspot_on_hint">Telefon hotspot\'u yayın yapıyor. Bağlantıyı etkinleştirmek için HUD\'ı bu telefonun WiFi\'sine bağlayın.</string>
     <string name="hud_overlay_subsection">Özel kaplama</string>
     <string name="hud_overlay_subsection_desc">Overlay Studio önayarını HUD\'ın Özel ekranına arka plan olmadan aktarır. Önayar buraya kopyalanır; stüdyodaki sonraki düzenlemeler tekrar içe aktarılmadan HUD\'ı etkilemez.</string>

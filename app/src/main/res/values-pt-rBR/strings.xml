@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Digite um endereço completo, por exemplo 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">IP do dispositivo (automático)</string>
     <string name="hud_server_port">Porta</string>
-    <string name="hud_hotspot_off_hint">O hotspot do celular está desligado. Verifique se o HUD e o celular estão na mesma rede Wi-Fi.</string>
+    <string name="hud_hotspot_unknown_hint">Verifique se o HUD e o celular estão na mesma rede Wi-Fi. Se usar o hotspot do celular, ligue-o primeiro.</string>
     <string name="hud_hotspot_on_hint">O hotspot do celular está ativo. Conecte o HUD ao Wi-Fi deste celular para ativar o link.</string>
     <string name="hud_overlay_subsection">Overlay personalizado</string>
     <string name="hud_overlay_subsection_desc">Importe um preset do Overlay Studio para a tela Custom do HUD, sem fundos. O preset é copiado aqui, então edições posteriores no Studio só atualizam o HUD quando você importar novamente.</string>

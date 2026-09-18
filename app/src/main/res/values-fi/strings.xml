@@ -430,7 +430,7 @@
     <string name="hud_ip_incomplete">Anna koko osoite, esimerkiksi 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Laitteen IP (automaattinen)</string>
     <string name="hud_server_port">Portti</string>
-    <string name="hud_hotspot_off_hint">Puhelimen yhteyspiste on pois päältä. Varmista, että HUD ja puhelin ovat samassa WiFi-verkossa.</string>
+    <string name="hud_hotspot_unknown_hint">Varmista, että HUD ja puhelin ovat samassa WiFi-verkossa. Jos käytät puhelimen yhteyspistettä, kytke se ensin päälle.</string>
     <string name="hud_hotspot_on_hint">Puhelimen yhteyspiste lähettää. Yhdistä HUD tämän puhelimen WiFiin, niin yhteys muodostuu.</string>
     <string name="hud_overlay_subsection">Mukautettu päällyste</string>
     <string name="hud_overlay_subsection_desc">Tuo Overlay Studion esiasetus HUDin Mukautettu-näytölle ilman taustoja. Esiasetus kopioidaan tänne, joten myöhemmät muutokset studiossa eivät muuta HUDia ennen kuin tuot sen uudelleen.</string>

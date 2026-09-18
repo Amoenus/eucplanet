@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">完全なアドレスを入力してください（例: 192.168.43.42）</string>
     <string name="hud_ip_label_autodetect">デバイス IP（自動）</string>
     <string name="hud_server_port">ポート</string>
-    <string name="hud_hotspot_off_hint">スマホのホットスポットがオフです。HUD とスマホが同じ WiFi ネットワークに接続されているか確認してください。</string>
+    <string name="hud_hotspot_unknown_hint">HUD とスマホが同じ WiFi ネットワークに接続されているか確認してください。スマホのホットスポットを使う場合は、先にオンにしてください。</string>
     <string name="hud_hotspot_on_hint">スマホのホットスポットが起動中です。HUD をこのスマホの WiFi に接続してリンクを有効にしてください。</string>
     <string name="hud_overlay_subsection">カスタムオーバーレイ</string>
     <string name="hud_overlay_subsection_desc">オーバーレイスタジオのプリセットを背景なしで HUD のカスタム画面にインポートします。プリセットはここにコピーされるため、スタジオで後から編集しても再インポートするまで HUD には反映されません。</string>

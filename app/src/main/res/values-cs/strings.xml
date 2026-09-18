@@ -430,7 +430,7 @@
     <string name="hud_ip_incomplete">Zadejte celou adresu, například 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">IP adresa zařízení (automaticky)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Hotspot telefonu je vypnutý. Ujistěte se, že HUD i telefon jsou na stejné síti WiFi.</string>
+    <string name="hud_hotspot_unknown_hint">Ujistěte se, že HUD i telefon jsou na stejné síti WiFi. Pokud používáte hotspot telefonu, nejprve jej zapněte.</string>
     <string name="hud_hotspot_on_hint">Hotspot telefonu vysílá. Připojte HUD k WiFi tohoto telefonu a spojení se naváže.</string>
     <string name="hud_overlay_subsection">Vlastní překryv</string>
     <string name="hud_overlay_subsection_desc">Naimportuje předvolbu z Overlay Studia na obrazovku Vlastní v HUD, bez pozadí. Předvolba se sem zkopíruje, takže pozdější úpravy ve studiu HUD nezmění, dokud ji neimportujete znovu.</string>

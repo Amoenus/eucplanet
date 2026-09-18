@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Indtast en fuld adresse, f.eks. 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Enheds-IP (automatisk)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Telefonens hotspot er slukket. Sørg for, at HUD\'en og telefonen er på samme WiFi-netværk.</string>
+    <string name="hud_hotspot_unknown_hint">Sørg for, at HUD\'en og telefonen er på samme WiFi-netværk. Hvis du bruger telefonens hotspot, skal du tænde det først.</string>
     <string name="hud_hotspot_on_hint">Telefonens hotspot sender. Tilslut HUD\'en til denne telefons WiFi for at aktivere forbindelsen.</string>
     <string name="hud_overlay_subsection">Eget overlay</string>
     <string name="hud_overlay_subsection_desc">Importér en Overlay Studio-skabelon til HUDens Custom-skærm uden baggrunde. Skabelonen kopieres hertil, så senere ændringer i studiet ændrer ikke HUDen, før du importerer igen.</string>

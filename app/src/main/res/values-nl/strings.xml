@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Voer een volledig adres in, bijvoorbeeld 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Apparaat-IP (automatisch)</string>
     <string name="hud_server_port">Poort</string>
-    <string name="hud_hotspot_off_hint">Telefoon-hotspot is uit. Zorg dat de HUD en de telefoon op hetzelfde wifi-netwerk zitten.</string>
+    <string name="hud_hotspot_unknown_hint">Zorg dat de HUD en de telefoon op hetzelfde wifi-netwerk zitten. Gebruik je de telefoon-hotspot, zet die dan eerst aan.</string>
     <string name="hud_hotspot_on_hint">Telefoon-hotspot zendt uit. Verbind de HUD met de wifi van deze telefoon om de link te activeren.</string>
     <string name="hud_overlay_subsection">Eigen overlay</string>
     <string name="hud_overlay_subsection_desc">Importeer een Overlay Studio-preset op het Custom-scherm van de HUD, zonder achtergrond. De preset wordt hier gekopieerd, dus latere wijzigingen in de studio veranderen de HUD pas als je opnieuw importeert.</string>

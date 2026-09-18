@@ -480,7 +480,7 @@
     <string name="hud_discovery_both">Both</string>
     <string name="hud_discovery_desc">Auto finds the HUD on its own. Fixed only uses the address below.</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Phone hotspot is off. Make sure the HUD and the phone are on the same WiFi network.</string>
+    <string name="hud_hotspot_unknown_hint">Make sure the HUD and the phone are on the same WiFi network. If you use the phone hotspot, turn it on first.</string>
     <string name="hud_hotspot_on_hint">Phone hotspot is broadcasting. Connect the HUD to this phone\'s WiFi to enable the link.</string>
     <string name="hud_overlay_subsection">Custom overlay</string>
     <string name="hud_overlay_subsection_desc">Import an Overlay Studio preset onto the HUD\'s Custom screen, without backgrounds. The preset is copied here, so later edits in the studio won\'t change the HUD until you import again.</string>

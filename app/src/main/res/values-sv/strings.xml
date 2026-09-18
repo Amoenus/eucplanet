@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">Ange en fullständig adress, till exempel 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Enhets-IP (automatisk)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">Telefonens hotspot är av. Se till att HUD:en och telefonen är på samma WiFi-nätverk.</string>
+    <string name="hud_hotspot_unknown_hint">Se till att HUD:en och telefonen är på samma WiFi-nätverk. Om du använder telefonens hotspot, slå på den först.</string>
     <string name="hud_hotspot_on_hint">Telefonens hotspot sänder. Anslut HUD:en till telefonens WiFi för att aktivera länken.</string>
     <string name="hud_overlay_subsection">Eget överlägg</string>
     <string name="hud_overlay_subsection_desc">Importera en Overlay Studio-mall till HUD:ens Custom-skärm, utan bakgrund. Mallen kopieras hit, så senare ändringar i studion påverkar inte HUD:en förrän du importerar igen.</string>

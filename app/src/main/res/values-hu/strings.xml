@@ -430,7 +430,7 @@
     <string name="hud_ip_incomplete">Add meg a teljes címet, például 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">Eszköz IP-címe (automatikus)</string>
     <string name="hud_server_port">Port</string>
-    <string name="hud_hotspot_off_hint">A telefon hotspotja ki van kapcsolva. Győződj meg róla, hogy a HUD és a telefon ugyanazon a WiFi-hálózaton van.</string>
+    <string name="hud_hotspot_unknown_hint">Győződj meg róla, hogy a HUD és a telefon ugyanazon a WiFi-hálózaton van. Ha a telefon hotspotját használod, előbb kapcsold be.</string>
     <string name="hud_hotspot_on_hint">A telefon hotspotja sugároz. Csatlakoztasd a HUD-ot ennek a telefonnak a WiFi-jéhez a kapcsolat létrehozásához.</string>
     <string name="hud_overlay_subsection">Egyéni átfedés</string>
     <string name="hud_overlay_subsection_desc">Overlay Studio-előbeállítás importálása a HUD Egyéni képernyőjére, háttér nélkül. Az előbeállítás ide másolódik, így a stúdióban végzett későbbi módosítások nem változtatják meg a HUD-ot, amíg újra nem importálod.</string>

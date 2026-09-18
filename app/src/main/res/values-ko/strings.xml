@@ -470,7 +470,7 @@
     <string name="hud_ip_incomplete">전체 주소를 입력하세요. 예: 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">기기 IP (자동)</string>
     <string name="hud_server_port">포트</string>
-    <string name="hud_hotspot_off_hint">폰 핫스팟이 꺼져 있습니다. HUD와 폰이 같은 Wi-Fi 네트워크에 있는지 확인하세요.</string>
+    <string name="hud_hotspot_unknown_hint">HUD와 폰이 같은 Wi-Fi 네트워크에 있는지 확인하세요. 폰 핫스팟을 사용한다면 먼저 켜세요.</string>
     <string name="hud_hotspot_on_hint">폰 핫스팟이 켜져 있습니다. HUD를 이 폰의 Wi-Fi에 연결하면 링크가 활성화됩니다.</string>
     <string name="hud_overlay_subsection">커스텀 오버레이</string>
     <string name="hud_overlay_subsection_desc">Overlay Studio 프리셋을 배경 없이 HUD 커스텀 화면에 가져옵니다. 프리셋은 여기에 복사되므로 스튜디오에서 편집해도 다시 가져오기 전까지 HUD에 반영되지 않습니다.</string>

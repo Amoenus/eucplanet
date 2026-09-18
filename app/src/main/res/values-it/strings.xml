@@ -132,7 +132,7 @@
     <string name="hud_ip_incomplete">Inserisci un indirizzo completo, ad esempio 192.168.43.42</string>
     <string name="hud_ip_label_autodetect">IP del dispositivo (automatico)</string>
     <string name="hud_server_port">Porta</string>
-    <string name="hud_hotspot_off_hint">L\'hotspot del telefono è disattivato. Assicurati che il HUD e il telefono siano sulla stessa rete WiFi.</string>
+    <string name="hud_hotspot_unknown_hint">Assicurati che il HUD e il telefono siano sulla stessa rete WiFi. Se usi l\'hotspot del telefono, attivalo prima.</string>
     <string name="hud_hotspot_on_hint">L\'hotspot del telefono sta trasmettendo. Collega il HUD al WiFi di questo telefono per abilitare il collegamento.</string>
     <string name="hud_custom_overlay_none">Nessuno</string>
 

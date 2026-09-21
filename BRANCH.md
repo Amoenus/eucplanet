@@ -10,6 +10,11 @@ Store build.
 
 ## What to check in this build
 
+**Begode PWM sign.** On a T4 (or any Begode whose speed used to read negative
+before the app fixed that) the PWM tile now reads a positive number under
+load, and a PWM alarm set at, say, 60 % fires when you push past it. Same
+source on the wheel, just without the minus (issue #24).
+
 **KingSong lock.** The Lock Wheel tile and the horn now work on KingSong,
 from a tester's captures of the official app on a KS-18XL and confirmed by
 him on 2026-09-18: nothing to type, the wheel takes the default six digits.

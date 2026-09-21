@@ -228,8 +228,12 @@ class BegodeParser {
         // when a CF/BF banner has flagged the firmware as HW-PWM capable
         // ([hwPwmFirmware]); otherwise we derive PWM from speed/voltage so
         // Master / Mten3 / EX30 / E20 riders see a real number.
+        // Signed on the wire, and the sign is the motor's direction, not a
+        // load. A T4 read -67 % at 42 km/h (issue #24): the same inverted
+        // wiring that sends speed negative, which speed already loses at the
+        // apply site. PWM is a duty cycle, so it is a magnitude here too.
         val hardwarePwmRaw = ByteUtils.getInt16BE(frame, 14)
-        val hardwarePwmPct = hardwarePwmRaw / 10f
+        val hardwarePwmPct = kotlin.math.abs(hardwarePwmRaw) / 10f
         val pwmPct = when {
             hasExtras -> lastPwmPct
             hwPwmFirmware && hardwarePwmPct != 0f -> hardwarePwmPct
@@ -342,8 +346,11 @@ class BegodeParser {
         // 0x07 offset 8 carries true PWM as a signed short already in PERCENT
         // (raw 50 = 50 % PWM); no further scaling needed. An earlier `/ 100f`
         // here was dividing again and producing 0.x % for every reading.
+        // Signed, with the motor direction as the sign (issue #24, a T4 at
+        // 42 km/h read -67 %). The duty cycle is what the tile, the alarms
+        // and the trip log want, so the sign goes.
         val truePwmRaw = ByteUtils.getInt16BE(frame, 8)
-        val truePwm = truePwmRaw.toFloat()
+        val truePwm = kotlin.math.abs(truePwmRaw).toFloat()
 
         // Only latch onto the 0x07 PWM path when the field is actually
         // populated (`abs(hwPWMb) > 0` arming check). Some Begode firmwares

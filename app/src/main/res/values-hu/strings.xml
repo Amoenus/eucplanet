@@ -472,6 +472,15 @@
     <string name="watch_keep_on_desc">Ébren tartja az órát, amíg az alkalmazás nyitva van.</string>
     <string name="watch_update_rate">Frissítési gyakoriság</string>
     <string name="watch_update_rate_desc">A lassabb frissítés kíméli az óra akkumulátorát. Ez független az egykerekű lekérdezési gyakoriságától a Speciális részben.</string>
+    <string name="watch_map_enabled">Térkép az órán</string>
+    <string name="watch_map_enabled_desc">Megjeleníti a telefon helyzetét és útvonalát. A háttérben működéshez egy értesítés megmarad.</string>
+    <string name="watch_map_orientation">Térkép tájolása</string>
+    <string name="watch_map_north_up">Észak felül</string>
+    <string name="watch_map_heading_up">Menetirány felül</string>
+    <string name="watch_keep_on_navigation">Bekapcsolva navigáció közben</string>
+    <string name="watch_keep_on_navigation_desc">Navigálás közben bekapcsolva tartja az óra kijelzőjét. Több akkumulátort használ.</string>
+    <string name="watch_map_telemetry">Térképes telemetria</string>
+    <string name="watch_map_telemetry_desc">A PWM-et, a sebességet és a feszültséget a felső szélen jeleníti meg.</string>
     <string name="tab_advanced">Speciális</string>
     <string name="adv_restore_default">Alapérték visszaállítása</string>
     <string name="adv_reset_all">Összes visszaállítása alapértékre</string>
@@ -598,6 +607,11 @@
     <string name="adv_radar_min_frame_desc">Befolyásolja a képkockák közti legrövidebb időt, amelyet a közeledési ütem számításához használ. Veszély: a túl alacsony érték túlreagálhatja a remegést.</string>
     <string name="adv_group_charging">Töltési becslés</string>
     <string name="adv_group_geometry">Képernyőgeometria változói</string>
+    <string name="adv_group_map_cache">Térképcache</string>
+    <string name="adv_map_encoded_cache">Kódolt csempék gyorsítótára</string>
+    <string name="adv_map_encoded_cache_desc">Az órához megtartott PNG-csempék. A nagyobb érték több telefonmemóriát használ.</string>
+    <string name="adv_map_http_cache">Letöltött csempék gyorsítótára</string>
+    <string name="adv_map_http_cache_desc">A telefonon tárolt letöltött térképcsempék. A nagyobb érték több tárhelyet használ.</string>
     <string name="adv_group_controls">Egykerekű vezérlése</string>
     <string name="adv_group_weather">Időjárás-pontszám</string>
     <string name="adv_weather_cold_desc">Ez alatt az óra túl hidegnek számít.</string>

@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">應用程式開啟時保持手錶喚醒。</string>
     <string name="watch_update_rate">更新頻率</string>
     <string name="watch_update_rate_desc">降低更新頻率可節省手機與手錶的電量。</string>
+    <string name="watch_map_enabled">手錶地圖</string>
+    <string name="watch_map_enabled_desc">顯示手機上的位置和路線。背景執行時會保留通知。</string>
+    <string name="watch_map_orientation">地圖方向</string>
+    <string name="watch_map_north_up">北方朝上</string>
+    <string name="watch_map_heading_up">航向朝上</string>
+    <string name="watch_keep_on_navigation">導航時保持開啟</string>
+    <string name="watch_keep_on_navigation_desc">導航時保持手錶螢幕開啟。會消耗更多電量。</string>
+    <string name="watch_map_telemetry">地圖遙測</string>
+    <string name="watch_map_telemetry_desc">在頂部邊緣顯示 PWM、速度和電壓。</string>
     <string name="watch_update_conservative">省電</string>
     <string name="watch_update_normal">正常</string>
     <string name="watch_update_fast">快速</string>
@@ -2338,6 +2347,11 @@
     <string name="side_left">左</string>
     <string name="side_right">右</string>
     <string name="adv_group_geometry">螢幕幾何變數</string>
+    <string name="adv_group_map_cache">地圖快取</string>
+    <string name="adv_map_encoded_cache">已編碼圖磚快取</string>
+    <string name="adv_map_encoded_cache_desc">為手錶保留的 PNG 圖磚。數值越高，使用的手機記憶體越多。</string>
+    <string name="adv_map_http_cache">已下載圖磚快取</string>
+    <string name="adv_map_http_cache_desc">保留在手機上的已下載地圖圖磚。數值越高，使用的儲存空間越多。</string>
     <string name="adv_compact_max_screen">精簡螢幕上限</string>
     <string name="adv_compact_max_screen_desc">當精簡儀表板設為「小螢幕」時，兩邊都小於此值的螢幕會切換為精簡儀表板。</string>
     <string name="adv_cover_cutout_inset">鏡頭開孔尺寸</string>

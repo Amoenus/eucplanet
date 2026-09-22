@@ -788,6 +788,8 @@ fun SettingsScreen(
         stringResource(R.string.section_watch_general),
         stringResource(R.string.section_watch_display),
         stringResource(R.string.watch_keep_on),
+        stringResource(R.string.watch_keep_on_navigation),
+        stringResource(R.string.watch_keep_on_navigation_desc),
         stringResource(R.string.watch_auto_start),
         stringResource(R.string.watch_close_on_exit),
         stringResource(R.string.watch_show_wheel_battery),
@@ -796,7 +798,14 @@ fun SettingsScreen(
         stringResource(R.string.watch_pwm_display),
         stringResource(R.string.watch_show_speed_unit),
         stringResource(R.string.section_watch_device),
-        stringResource(R.string.section_watch_buttons)
+        stringResource(R.string.section_watch_buttons),
+        stringResource(R.string.watch_map_enabled),
+        stringResource(R.string.watch_map_enabled_desc),
+        stringResource(R.string.watch_map_orientation),
+        stringResource(R.string.watch_map_north_up),
+        stringResource(R.string.watch_map_heading_up),
+        stringResource(R.string.watch_map_telemetry),
+        stringResource(R.string.watch_map_telemetry_desc),
     )
 
     // Every group and every spec label, from the registry, so a new Advanced
@@ -8066,6 +8075,19 @@ private fun WatchTab(
     val garminBadge: (@Composable () -> Unit)? = if (hasGarminPaired) {
         { com.eried.eucplanet.ui.theme.PlatformUnsupportedTextBadge("GARMIN") }
     } else null
+    val mapUnsupportedBadge: (@Composable () -> Unit)? =
+        if (hasGarminPaired || hasAmazfitPaired) {
+            {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    if (hasGarminPaired) {
+                        com.eried.eucplanet.ui.theme.PlatformUnsupportedTextBadge("GARMIN")
+                    }
+                    if (hasAmazfitPaired) {
+                        com.eried.eucplanet.ui.theme.PlatformUnsupportedTextBadge("AMAZFIT")
+                    }
+                }
+            }
+        } else null
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -8104,13 +8126,10 @@ private fun WatchTab(
             onCheckedChange = { viewModel.updateWatchCloseOnExit(it) }
         )
 
-        // Display: when the watch screen is on / what it primarily shows.
-        // Pared down to the two switches that affect "do I see anything
-        // useful right now" — Keep-display-on (Wear OS only — Garmin
-        // watches manage screen timeout in their own system Settings)
-        // and Show-navigation (mirror the turn arrow). Battery icons,
-        // PWM rendering, unit labels, dial rotation are all visual
-        // tweaks that live in Customization below.
+        // Display controls screen wake behavior and what the watch shows.
+        // Navigation-only screen hold is Wear OS only. Garmin watches
+        // manage screen timeout in system settings. Visual tweaks such as
+        // battery icons, PWM, units, and rotation live in Customization below.
         SectionHeader(stringResource(R.string.section_watch_display))
 
         if (hasWearOs || hasAmazfitPaired) {
@@ -8122,12 +8141,46 @@ private fun WatchTab(
                 badge = garminBadge
             )
         }
+        if (hasWearOs || settings.watchMap.keepScreenOnDuringNavigation) {
+            SwitchSettingWithDesc(
+                label = stringResource(R.string.watch_keep_on_navigation),
+                description = stringResource(R.string.watch_keep_on_navigation_desc),
+                checked = settings.watchMap.keepScreenOnDuringNavigation,
+                onCheckedChange = { viewModel.updateWatchKeepScreenOnDuringNavigation(it) },
+            )
+        }
         SwitchSettingWithDesc(
             label = stringResource(R.string.watch_show_navigation),
             description = stringResource(R.string.watch_show_navigation_desc),
             checked = settings.watchShowNavigation,
             onCheckedChange = { viewModel.updateWatchShowNavigation(it) }
         )
+        if (hasWearOs || settings.watchMap.enabled) {
+            SwitchSettingWithDesc(
+                label = stringResource(R.string.watch_map_enabled),
+                description = stringResource(R.string.watch_map_enabled_desc),
+                checked = settings.watchMap.enabled,
+                onCheckedChange = { viewModel.updateWatchMapEnabled(it) },
+                badge = mapUnsupportedBadge,
+            )
+            if (settings.watchMap.enabled) {
+                SegmentedChoice(
+                    label = stringResource(R.string.watch_map_orientation),
+                    options = listOf(
+                        "NORTH_UP" to stringResource(R.string.watch_map_north_up),
+                        "HEADING_UP" to stringResource(R.string.watch_map_heading_up),
+                    ),
+                    current = if (settings.watchMap.headingUp) "HEADING_UP" else "NORTH_UP",
+                    onChange = { viewModel.updateWatchMapHeadingUp(it == "HEADING_UP") },
+                )
+                SwitchSettingWithDesc(
+                    label = stringResource(R.string.watch_map_telemetry),
+                    description = stringResource(R.string.watch_map_telemetry_desc),
+                    checked = settings.watchMap.showTelemetry,
+                    onCheckedChange = { viewModel.updateWatchMapShowTelemetry(it) },
+                )
+            }
+        }
 
         // Advanced (collapsed by default) — visual tweaks most riders
         // configure once and forget. Hiding them keeps the Watch tab

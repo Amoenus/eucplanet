@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Mantiene el reloj activo mientras la app esté abierta.</string>
     <string name="watch_update_rate">Frecuencia de actualización</string>
     <string name="watch_update_rate_desc">Las actualizaciones más lentas ahorran batería en el teléfono y el reloj.</string>
+    <string name="watch_map_enabled">Mapa en el reloj</string>
+    <string name="watch_map_enabled_desc">Muestra la posición y la ruta del teléfono. Se mantiene una notificación para funcionar en segundo plano.</string>
+    <string name="watch_map_orientation">Orientación del mapa</string>
+    <string name="watch_map_north_up">Norte arriba</string>
+    <string name="watch_map_heading_up">Dirección arriba</string>
+    <string name="watch_keep_on_navigation">Mantener encendida durante navegación</string>
+    <string name="watch_keep_on_navigation_desc">Mantiene encendida la pantalla del reloj al navegar. Usa más batería.</string>
+    <string name="watch_map_telemetry">Telemetría del mapa</string>
+    <string name="watch_map_telemetry_desc">Muestra PWM, velocidad y voltaje en el borde superior.</string>
     <string name="watch_update_conservative">Conservador</string>
     <string name="watch_update_normal">Normal</string>
     <string name="watch_update_fast">Rápido</string>
@@ -2336,6 +2345,11 @@
     <string name="side_left">Izquierda</string>
     <string name="side_right">Derecha</string>
     <string name="adv_group_geometry">Variables de geometría de pantalla</string>
+    <string name="adv_group_map_cache">Caché de mapas</string>
+    <string name="adv_map_encoded_cache">Caché de mosaicos codificados</string>
+    <string name="adv_map_encoded_cache_desc">Mosaicos PNG guardados para el reloj. Los valores altos usan más memoria del teléfono.</string>
+    <string name="adv_map_http_cache">Caché de mosaicos descargados</string>
+    <string name="adv_map_http_cache_desc">Mosaicos de mapa descargados en el teléfono. Los valores altos usan más almacenamiento.</string>
     <string name="adv_compact_max_screen">Límite de pantalla compacta</string>
     <string name="adv_compact_max_screen_desc">Las pantallas con ambos lados por debajo de esto cambian al panel compacto cuando Panel compacto está en Pantallas pequeñas.</string>
     <string name="adv_cover_cutout_inset">Tamaño del recorte de cámara</string>

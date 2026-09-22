@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Garde la montre éveillée tant que l\'appli est ouverte.</string>
     <string name="watch_update_rate">Fréquence de mise à jour</string>
     <string name="watch_update_rate_desc">Des mises à jour plus lentes économisent la batterie du téléphone et de la montre.</string>
+    <string name="watch_map_enabled">Carte sur la montre</string>
+    <string name="watch_map_enabled_desc">Affiche la position et l’itinéraire du téléphone. Une notification reste active pour le fonctionnement en arrière-plan.</string>
+    <string name="watch_map_orientation">Orientation de la carte</string>
+    <string name="watch_map_north_up">Nord en haut</string>
+    <string name="watch_map_heading_up">Direction en haut</string>
+    <string name="watch_keep_on_navigation">Garder allumé pendant la navigation</string>
+    <string name="watch_keep_on_navigation_desc">Garde l’écran de la montre allumé pendant la navigation. Consomme plus de batterie.</string>
+    <string name="watch_map_telemetry">Télémétrie de la carte</string>
+    <string name="watch_map_telemetry_desc">Affiche le PWM, la vitesse et la tension sur le bord supérieur.</string>
     <string name="watch_update_conservative">Économe</string>
     <string name="watch_update_normal">Normale</string>
     <string name="watch_update_fast">Rapide</string>
@@ -2343,6 +2352,11 @@
     <string name="side_left">Gauche</string>
     <string name="side_right">Droite</string>
     <string name="adv_group_geometry">Variables de géométrie de l\'écran</string>
+    <string name="adv_group_map_cache">Cache de carte</string>
+    <string name="adv_map_encoded_cache">Cache des tuiles encodées</string>
+    <string name="adv_map_encoded_cache_desc">Tuiles PNG conservées pour la montre. Une valeur élevée utilise plus de mémoire du téléphone.</string>
+    <string name="adv_map_http_cache">Cache des tuiles téléchargées</string>
+    <string name="adv_map_http_cache_desc">Tuiles cartographiques téléchargées sur le téléphone. Une valeur élevée utilise plus de stockage.</string>
     <string name="adv_compact_max_screen">Limite d\'écran compact</string>
     <string name="adv_compact_max_screen_desc">Les écrans dont les deux côtés sont en dessous passent au tableau de bord compact lorsque Tableau de bord compact est réglé sur Petits écrans.</string>
     <string name="adv_cover_cutout_inset">Taille de la découpe caméra</string>

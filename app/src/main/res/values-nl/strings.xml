@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Houd het horloge wakker terwijl de app open is.</string>
     <string name="watch_update_rate">Verversingssnelheid</string>
     <string name="watch_update_rate_desc">Langzamere updates besparen batterij op telefoon en horloge.</string>
+    <string name="watch_map_enabled">Kaart op horloge</string>
+    <string name="watch_map_enabled_desc">Toont de positie en route vanaf de telefoon. Er blijft een melding staan voor werking op de achtergrond.</string>
+    <string name="watch_map_orientation">Kaartoriëntatie</string>
+    <string name="watch_map_north_up">Noorden boven</string>
+    <string name="watch_map_heading_up">Rijrichting boven</string>
+    <string name="watch_keep_on_navigation">Aan tijdens navigatie</string>
+    <string name="watch_keep_on_navigation_desc">Houdt het horlogescherm aan tijdens navigatie. Gebruikt meer batterij.</string>
+    <string name="watch_map_telemetry">Kaarttelemetrie</string>
+    <string name="watch_map_telemetry_desc">Toont PWM, snelheid en spanning langs de bovenrand.</string>
     <string name="watch_update_conservative">Zuinig</string>
     <string name="watch_update_normal">Normaal</string>
     <string name="watch_update_fast">Snel</string>
@@ -2339,6 +2348,11 @@
     <string name="side_left">Links</string>
     <string name="side_right">Rechts</string>
     <string name="adv_group_geometry">Variabelen voor schermgeometrie</string>
+    <string name="adv_group_map_cache">Kaartcache</string>
+    <string name="adv_map_encoded_cache">Cache voor gecodeerde tegels</string>
+    <string name="adv_map_encoded_cache_desc">PNG-tegels voor het horloge. Hogere waarden gebruiken meer telefoongeheugen.</string>
+    <string name="adv_map_http_cache">Cache voor gedownloade tegels</string>
+    <string name="adv_map_http_cache_desc">Gedownloade kaarttegels op de telefoon. Hogere waarden gebruiken meer opslagruimte.</string>
     <string name="adv_compact_max_screen">Limiet compact scherm</string>
     <string name="adv_compact_max_screen_desc">Schermen met beide zijden hieronder schakelen naar het compacte dashboard als Compact dashboard op Kleine schermen staat.</string>
     <string name="adv_cover_cutout_inset">Grootte camera-uitsparing</string>

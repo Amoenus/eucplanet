@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Тримати годинник активним, поки додаток відкритий.</string>
     <string name="watch_update_rate">Частота оновлення</string>
     <string name="watch_update_rate_desc">Повільніші оновлення заощаджують заряд телефона та годинника.</string>
+    <string name="watch_map_enabled">Карта на годиннику</string>
+    <string name="watch_map_enabled_desc">Показує місцезнаходження та маршрут із телефона. Для роботи у фоні залишається сповіщення.</string>
+    <string name="watch_map_orientation">Орієнтація карти</string>
+    <string name="watch_map_north_up">Північ угорі</string>
+    <string name="watch_map_heading_up">Напрямок руху вгору</string>
+    <string name="watch_keep_on_navigation">Не вимикати під час навігації</string>
+    <string name="watch_keep_on_navigation_desc">Тримає екран годинника ввімкненим під час навігації. Витрачає більше заряду.</string>
+    <string name="watch_map_telemetry">Телеметрія карти</string>
+    <string name="watch_map_telemetry_desc">Показує PWM, швидкість і напругу вздовж верхнього краю.</string>
     <string name="watch_update_conservative">Економна</string>
     <string name="watch_update_normal">Звичайна</string>
     <string name="watch_update_fast">Швидка</string>
@@ -2336,6 +2345,11 @@
     <string name="side_left">Ліворуч</string>
     <string name="side_right">Праворуч</string>
     <string name="adv_group_geometry">Змінні геометрії екрана</string>
+    <string name="adv_group_map_cache">Кеш карти</string>
+    <string name="adv_map_encoded_cache">Кеш кодованих тайлів</string>
+    <string name="adv_map_encoded_cache_desc">PNG-тайли, що зберігаються для годинника. Вищі значення використовують більше пам’яті телефона.</string>
+    <string name="adv_map_http_cache">Кеш завантажених тайлів</string>
+    <string name="adv_map_http_cache_desc">Завантажені тайли карти, що зберігаються на телефоні. Вищі значення використовують більше місця.</string>
     <string name="adv_compact_max_screen">Межа компактного екрана</string>
     <string name="adv_compact_max_screen_desc">Екрани, обидві сторони яких менші за це, перемикаються на компактну панель, коли Компактна панель встановлена на Малі екрани.</string>
     <string name="adv_cover_cutout_inset">Розмір вирізу камери</string>

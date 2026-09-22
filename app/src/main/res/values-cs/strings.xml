@@ -472,6 +472,15 @@
     <string name="watch_keep_on_desc">Nenechá hodinky usnout, dokud je aplikace otevřená.</string>
     <string name="watch_update_rate">Frekvence aktualizací</string>
     <string name="watch_update_rate_desc">Pomalejší aktualizace šetří baterii hodinek. Toto je nezávislé na frekvenci dotazování monokola v části Pokročilé.</string>
+    <string name="watch_map_enabled">Mapa v hodinkách</string>
+    <string name="watch_map_enabled_desc">Zobrazuje polohu a trasu z telefonu. Pro běh na pozadí zůstává aktivní oznámení.</string>
+    <string name="watch_map_orientation">Orientace mapy</string>
+    <string name="watch_map_north_up">Sever nahoře</string>
+    <string name="watch_map_heading_up">Směr jízdy nahoře</string>
+    <string name="watch_keep_on_navigation">Nechat zapnuté při navigaci</string>
+    <string name="watch_keep_on_navigation_desc">Při navigaci udrží obrazovku hodinek zapnutou. Spotřebuje více baterie.</string>
+    <string name="watch_map_telemetry">Telemetrie mapy</string>
+    <string name="watch_map_telemetry_desc">Zobrazuje PWM, rychlost a napětí podél horního okraje.</string>
     <string name="tab_advanced">Pokročilé</string>
     <string name="adv_restore_default">Obnovit výchozí</string>
     <string name="adv_reset_all">Obnovit vše na výchozí</string>
@@ -598,6 +607,11 @@
     <string name="adv_radar_min_frame_desc">Ovlivňuje nejmenší dobu mezi snímky použitou pro výpočet rychlosti přiblížení. Nebezpečí: příliš nízká hodnota může přehnaně reagovat na kolísání.</string>
     <string name="adv_group_charging">Odhad nabíjení</string>
     <string name="adv_group_geometry">Proměnné geometrie obrazovky</string>
+    <string name="adv_group_map_cache">Mezipaměť map</string>
+    <string name="adv_map_encoded_cache">Mezipaměť kódovaných dlaždic</string>
+    <string name="adv_map_encoded_cache_desc">PNG dlaždice uložené pro hodinky. Vyšší hodnota používá více paměti telefonu.</string>
+    <string name="adv_map_http_cache">Mezipaměť stažených dlaždic</string>
+    <string name="adv_map_http_cache_desc">Stažené mapové dlaždice uložené v telefonu. Vyšší hodnota zabere více úložiště.</string>
     <string name="adv_group_controls">Ovládání monokola</string>
     <string name="adv_group_weather">Skóre počasí</string>
     <string name="adv_weather_cold_desc">Pod tímto je hodina příliš studená.</string>

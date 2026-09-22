@@ -586,6 +586,7 @@ data class AppSettings(
      * as the only glance surface.
      */
     val watchShowNavigation: Boolean = true,
+    val watchMap: WatchMapSettings = WatchMapSettings(),
 
     // --- HUD companion (paired by typing the HUD IP, see HudServer) ---
     /**
@@ -1048,6 +1049,13 @@ data class AppSettings(
     val inmotionV1Pin: Int get() = advanced.inmotionV1Pin
     val kingsongUnlockCode: Int get() = advanced.kingsongUnlockCode
 }
+/** Watch map display settings, grouped to preserve AppSettings copy() headroom. */
+data class WatchMapSettings(
+    val enabled: Boolean = false,
+    val headingUp: Boolean = false,
+    val keepScreenOnDuringNavigation: Boolean = false,
+    val showTelemetry: Boolean = true,
+)
 
 /**
  * The rider's Settings-screen arrangement.
@@ -1625,6 +1633,8 @@ data class AdvancedSettings(
     val simpleSpeedoScalePct: Int = 62,
     val navSidebarWidthDp: Int = 400,
     val navSidebarMinScreenDp: Int = 600,
+    val mapEncodedCacheMiB: Int = 32,
+    val mapHttpCacheMiB: Int = 64,
     // InMotion V1 (V5 / V8 / V10 / L6) BLE access PIN, stored as the 6-digit
     // number (0 = "000000", the factory default). Sent on connect so the wheel
     // leaves its identity-only wait and streams; wheels with no PIN ignore it.

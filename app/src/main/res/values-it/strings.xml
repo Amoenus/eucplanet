@@ -145,6 +145,15 @@
     <string name="watch_keep_on_desc">Tieni l\'orologio sveglio mentre l\'app è aperta.</string>
     <string name="watch_update_rate">Frequenza di aggiornamento</string>
     <string name="watch_update_rate_desc">Aggiornamenti più lenti risparmiano batteria su telefono e orologio.</string>
+    <string name="watch_map_enabled">Mappa sull’orologio</string>
+    <string name="watch_map_enabled_desc">Mostra posizione e percorso dal telefono. Una notifica resta attiva per il funzionamento in background.</string>
+    <string name="watch_map_orientation">Orientamento mappa</string>
+    <string name="watch_map_north_up">Nord in alto</string>
+    <string name="watch_map_heading_up">Direzione in alto</string>
+    <string name="watch_keep_on_navigation">Mantieni acceso durante la navigazione</string>
+    <string name="watch_keep_on_navigation_desc">Mantiene acceso lo schermo dell’orologio durante la navigazione. Usa più batteria.</string>
+    <string name="watch_map_telemetry">Telemetria mappa</string>
+    <string name="watch_map_telemetry_desc">Mostra PWM, velocità e tensione lungo il bordo superiore.</string>
     <string name="watch_update_conservative">Conservativo</string>
     <string name="watch_update_normal">Normale</string>
     <string name="watch_update_fast">Veloce</string>
@@ -2244,6 +2253,11 @@
     <string name="side_left">Sinistra</string>
     <string name="side_right">Destra</string>
     <string name="adv_group_geometry">Variabili di geometria dello schermo</string>
+    <string name="adv_group_map_cache">Cache mappe</string>
+    <string name="adv_map_encoded_cache">Cache delle tile codificate</string>
+    <string name="adv_map_encoded_cache_desc">Tile PNG conservate per l\'orologio. Valori più alti usano più memoria del telefono.</string>
+    <string name="adv_map_http_cache">Cache delle tile scaricate</string>
+    <string name="adv_map_http_cache_desc">Tile della mappa scaricate e conservate sul telefono. Valori più alti usano più spazio.</string>
     <string name="adv_compact_max_screen">Limite schermo compatto</string>
     <string name="adv_compact_max_screen_desc">Gli schermi con entrambi i lati sotto questo valore passano al cruscotto compatto quando Cruscotto compatto è impostato su Schermi piccoli.</string>
     <string name="adv_cover_cutout_inset">Dimensione ritaglio fotocamera</string>

@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Не давать часам засыпать, пока открыто приложение.</string>
     <string name="watch_update_rate">Частота обновления</string>
     <string name="watch_update_rate_desc">Более редкие обновления экономят заряд телефона и часов.</string>
+    <string name="watch_map_enabled">Карта на часах</string>
+    <string name="watch_map_enabled_desc">Показывает позицию и маршрут с телефона. Для работы в фоне остаётся уведомление.</string>
+    <string name="watch_map_orientation">Ориентация карты</string>
+    <string name="watch_map_north_up">Север сверху</string>
+    <string name="watch_map_heading_up">Направление движения сверху</string>
+    <string name="watch_keep_on_navigation">Не гасить при навигации</string>
+    <string name="watch_keep_on_navigation_desc">Не гасит экран часов при ведении по маршруту. Увеличивает расход заряда.</string>
+    <string name="watch_map_telemetry">Показатели на карте</string>
+    <string name="watch_map_telemetry_desc">Показывает PWM, скорость и напряжение вдоль верхнего края.</string>
     <string name="watch_update_conservative">Экономная</string>
     <string name="watch_update_normal">Обычная</string>
     <string name="watch_update_fast">Быстрая</string>
@@ -2339,6 +2348,11 @@
     <string name="side_left">Слева</string>
     <string name="side_right">Справа</string>
     <string name="adv_group_geometry">Переменные геометрии экрана</string>
+    <string name="adv_group_map_cache">Кэш карты</string>
+    <string name="adv_map_encoded_cache">Кэш кодированных тайлов</string>
+    <string name="adv_map_encoded_cache_desc">PNG-тайлы, хранимые для часов. Большие значения используют больше памяти телефона.</string>
+    <string name="adv_map_http_cache">Кэш загруженных тайлов</string>
+    <string name="adv_map_http_cache_desc">Загруженные тайлы карты, хранимые на телефоне. Большие значения используют больше места.</string>
     <string name="adv_compact_max_screen">Предел компактного экрана</string>
     <string name="adv_compact_max_screen_desc">Экраны, у которых обе стороны меньше этого, переключаются на компактную панель, когда Компактная панель установлена на Малые экраны.</string>
     <string name="adv_cover_cutout_inset">Размер выреза камеры</string>

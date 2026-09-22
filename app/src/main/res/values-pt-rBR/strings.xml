@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Mantém o relógio ativo enquanto o app estiver aberto.</string>
     <string name="watch_update_rate">Taxa de atualização</string>
     <string name="watch_update_rate_desc">Atualizações mais lentas economizam bateria no celular e no relógio.</string>
+    <string name="watch_map_enabled">Mapa no relógio</string>
+    <string name="watch_map_enabled_desc">Mostra a posição e a rota do celular. Uma notificação permanece para funcionar em segundo plano.</string>
+    <string name="watch_map_orientation">Orientação do mapa</string>
+    <string name="watch_map_north_up">Norte para cima</string>
+    <string name="watch_map_heading_up">Direção para cima</string>
+    <string name="watch_keep_on_navigation">Manter ligado durante a navegação</string>
+    <string name="watch_keep_on_navigation_desc">Mantém a tela do relógio ligada durante a navegação. Usa mais bateria.</string>
+    <string name="watch_map_telemetry">Telemetria do mapa</string>
+    <string name="watch_map_telemetry_desc">Mostra PWM, velocidade e tensão na borda superior.</string>
     <string name="watch_update_conservative">Conservador</string>
     <string name="watch_update_normal">Normal</string>
     <string name="watch_update_fast">Rápido</string>
@@ -2339,6 +2348,11 @@
     <string name="side_left">Esquerda</string>
     <string name="side_right">Direita</string>
     <string name="adv_group_geometry">Variáveis de geometria da tela</string>
+    <string name="adv_group_map_cache">Cache de mapa</string>
+    <string name="adv_map_encoded_cache">Cache de blocos codificados</string>
+    <string name="adv_map_encoded_cache_desc">Blocos PNG mantidos para o relógio. Valores maiores usam mais memória do telefone.</string>
+    <string name="adv_map_http_cache">Cache de blocos baixados</string>
+    <string name="adv_map_http_cache_desc">Blocos de mapa baixados mantidos no telefone. Valores maiores usam mais armazenamento.</string>
     <string name="adv_compact_max_screen">Limite de tela compacta</string>
     <string name="adv_compact_max_screen_desc">Telas com ambos os lados abaixo disso mudam para o painel compacto quando Painel compacto está em Telas pequenas.</string>
     <string name="adv_cover_cutout_inset">Tamanho do recorte da câmera</string>

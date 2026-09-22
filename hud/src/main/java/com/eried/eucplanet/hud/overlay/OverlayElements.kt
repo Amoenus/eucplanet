@@ -50,9 +50,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eried.eucplanet.hud.protocol.OverlayElement
 import com.eried.eucplanet.hud.protocol.OverlayElementType
+import com.eried.eucplanet.hud.protocol.WebMercator
 import kotlin.math.cos
 import kotlin.math.floor
-import kotlin.math.ln
 import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.tan
@@ -799,7 +799,8 @@ private fun MapElement(element: OverlayElement, data: StudioElementData) {
             }
             return@Box
         }
-        val (cx, cy) = lonLatToTileFloat(data.longitude, data.latitude, z)
+        val cx = WebMercator.tileX(data.longitude, z)
+        val cy = WebMercator.tileY(data.latitude, z)
         Canvas(Modifier.fillMaxSize()) {
             @Suppress("UNUSED_EXPRESSION") tick
             val cols = (size.width / 256f).toInt() + 2
@@ -808,8 +809,8 @@ private fun MapElement(element: OverlayElement, data: StudioElementData) {
             val originY = floor(cy).toInt() - rows / 2
             val centerPx = Offset(size.width / 2f, size.height / 2f)
             val originTilePx = Offset(
-                centerPx.x - ((cx - originX) * 256f),
-                centerPx.y - ((cy - originY) * 256f)
+                centerPx.x - ((cx - originX) * 256f).toFloat(),
+                centerPx.y - ((cy - originY) * 256f).toFloat()
             )
             for (dy in 0 until rows) for (dx in 0 until cols) {
                 val tx = originX + dx
@@ -847,13 +848,6 @@ private fun MapElement(element: OverlayElement, data: StudioElementData) {
     }
 }
 
-private fun lonLatToTileFloat(lon: Double, lat: Double, z: Int): Pair<Float, Float> {
-    val n = (1 shl z).toDouble()
-    val x = (lon + 180.0) / 360.0 * n
-    val latRad = lat * PI / 180.0
-    val y = (1.0 - ln(tan(latRad) + 1.0 / cos(latRad)) / PI) / 2.0 * n
-    return x.toFloat() to y.toFloat()
-}
 
 // ---------- RADAR (Garmin Varia rear-view) ------------------------------
 // HUD-side twin of the phone's RadarElement. Same geometry/colours so a

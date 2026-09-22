@@ -34,6 +34,7 @@ enum class AdvGroup(
     RADAR_CLASS(R.string.adv_group_radar_class, warningRes = R.string.adv_radar_warning),
     CHARGING(R.string.adv_group_charging, warningRes = R.string.adv_charging_warning),
     GEOMETRY(R.string.adv_group_geometry),
+    MAP_CACHE(R.string.adv_group_map_cache),
     CONTROLS(R.string.adv_group_controls),
     WEATHER(R.string.adv_group_weather),
 }
@@ -236,6 +237,12 @@ val ADVANCED_SPECS: List<AdvancedSpec> = listOf(
         240..480, 10, unit = "dp", get = { it.navSidebarWidthDp }, set = { s, v -> s.copy(navSidebarWidthDp = v) }),
     AdvancedSpec("navSidebarMinScreenDp", AdvGroup.GEOMETRY, R.string.adv_nav_sidebar_min, R.string.adv_nav_sidebar_min_desc,
         400..900, 20, unit = "dp", get = { it.navSidebarMinScreenDp }, set = { s, v -> s.copy(navSidebarMinScreenDp = v) }),
+
+    // --- Map cache budgets ---
+    AdvancedSpec("mapEncodedCacheMiB", AdvGroup.MAP_CACHE, R.string.adv_map_encoded_cache, R.string.adv_map_encoded_cache_desc,
+        1..32, 1, unit = "MiB", get = { it.mapEncodedCacheMiB }, set = { s, v -> s.copy(mapEncodedCacheMiB = v) }),
+    AdvancedSpec("mapHttpCacheMiB", AdvGroup.MAP_CACHE, R.string.adv_map_http_cache, R.string.adv_map_http_cache_desc,
+        16..256, 16, unit = "MiB", get = { it.mapHttpCacheMiB }, set = { s, v -> s.copy(mapHttpCacheMiB = v) }),
 
     // --- Wheel access ---
     // InMotion V1 (V5/V8/V10/L6) BLE PIN. Typed 6-digit field; factory default

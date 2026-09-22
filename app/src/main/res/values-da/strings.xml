@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Hold uret vågent, mens appen er åben.</string>
     <string name="watch_update_rate">Opdateringshastighed</string>
     <string name="watch_update_rate_desc">Langsommere opdateringer sparer batteri på telefon og ur.</string>
+    <string name="watch_map_enabled">Kort på uret</string>
+    <string name="watch_map_enabled_desc">Viser position og rute fra telefonen. En notifikation forbliver aktiv, så den kan køre i baggrunden.</string>
+    <string name="watch_map_orientation">Kortretning</string>
+    <string name="watch_map_north_up">Nord op</string>
+    <string name="watch_map_heading_up">Køreretning op</string>
+    <string name="watch_keep_on_navigation">Hold tændt under navigation</string>
+    <string name="watch_keep_on_navigation_desc">Holder urets skærm tændt under navigation. Bruger mere batteri.</string>
+    <string name="watch_map_telemetry">Korttelemetri</string>
+    <string name="watch_map_telemetry_desc">Viser PWM, hastighed og spænding langs den øverste kant.</string>
     <string name="watch_update_conservative">Konservativ</string>
     <string name="watch_update_normal">Normal</string>
     <string name="watch_update_fast">Hurtig</string>
@@ -2354,6 +2363,11 @@
     <string name="side_left">Venstre</string>
     <string name="side_right">Højre</string>
     <string name="adv_group_geometry">Variabler for skærmgeometri</string>
+    <string name="adv_group_map_cache">Mapcache</string>
+    <string name="adv_map_encoded_cache">Cache for kodede fliser</string>
+    <string name="adv_map_encoded_cache_desc">PNG-fliser gemt til uret. Højere værdier bruger mere telefonhukommelse.</string>
+    <string name="adv_map_http_cache">Cache for hentede fliser</string>
+    <string name="adv_map_http_cache_desc">Hentede kortfliser gemt på telefonen. Højere værdier bruger mere lagerplads.</string>
     <string name="adv_compact_max_screen">Grænse for kompakt skærm</string>
     <string name="adv_compact_max_screen_desc">Skærme med begge sider under dette skifter til det kompakte dashboard, når Kompakt dashboard er sat til Små skærme.</string>
     <string name="adv_cover_cutout_inset">Størrelse på kameraudskæring</string>

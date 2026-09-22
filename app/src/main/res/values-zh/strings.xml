@@ -628,6 +628,15 @@
     <string name="watch_keep_on_desc">应用开启期间让手表保持唤醒。</string>
     <string name="watch_update_rate">更新频率</string>
     <string name="watch_update_rate_desc">较慢的更新可节省手机和手表的电量。</string>
+    <string name="watch_map_enabled">手表地图</string>
+    <string name="watch_map_enabled_desc">显示手机上的位置和路线。后台运行时会保留通知。</string>
+    <string name="watch_map_orientation">地图方向</string>
+    <string name="watch_map_north_up">北向上</string>
+    <string name="watch_map_heading_up">航向向上</string>
+    <string name="watch_keep_on_navigation">导航时保持开启</string>
+    <string name="watch_keep_on_navigation_desc">导航时保持手表屏幕开启。会消耗更多电量。</string>
+    <string name="watch_map_telemetry">地图遥测</string>
+    <string name="watch_map_telemetry_desc">在顶部边缘显示 PWM、速度和电压。</string>
     <string name="watch_update_conservative">节能</string>
     <string name="watch_update_normal">正常</string>
     <string name="watch_update_fast">快速</string>
@@ -2206,6 +2215,11 @@
     <string name="side_left">左</string>
     <string name="side_right">右</string>
     <string name="adv_group_geometry">屏幕几何变量</string>
+    <string name="adv_group_map_cache">地图缓存</string>
+    <string name="adv_map_encoded_cache">已编码图块缓存</string>
+    <string name="adv_map_encoded_cache_desc">为手表保留的 PNG 图块。数值越高，使用的手机内存越多。</string>
+    <string name="adv_map_http_cache">已下载图块缓存</string>
+    <string name="adv_map_http_cache_desc">保留在手机上的已下载地图图块。数值越高，使用的存储空间越多。</string>
     <string name="adv_compact_max_screen">紧凑屏幕上限</string>
     <string name="adv_compact_max_screen_desc">当紧凑仪表盘设为“小屏幕”时，两边都小于此值的屏幕会切换到紧凑仪表盘。</string>
     <string name="adv_cover_cutout_inset">摄像头开孔尺寸</string>

@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">アプリが開いている間ウォッチをスリープさせない。</string>
     <string name="watch_update_rate">更新レート</string>
     <string name="watch_update_rate_desc">更新頻度を下げるとスマホとウォッチのバッテリーを節約できます。</string>
+    <string name="watch_map_enabled">ウォッチ地図</string>
+    <string name="watch_map_enabled_desc">スマートフォンの位置とルートを表示します。バックグラウンド動作のため通知が残ります。</string>
+    <string name="watch_map_orientation">地図の向き</string>
+    <string name="watch_map_north_up">北が上</string>
+    <string name="watch_map_heading_up">進行方向が上</string>
+    <string name="watch_keep_on_navigation">ナビ中も点灯</string>
+    <string name="watch_keep_on_navigation_desc">ナビ中はウォッチ画面を点灯したままにします。電池を多く消費します。</string>
+    <string name="watch_map_telemetry">地図のテレメトリ</string>
+    <string name="watch_map_telemetry_desc">上端にPWM、速度、電圧を表示します。</string>
     <string name="watch_update_conservative">低頻度</string>
     <string name="watch_update_normal">通常</string>
     <string name="watch_update_fast">高頻度</string>
@@ -2338,6 +2347,11 @@
     <string name="side_left">左</string>
     <string name="side_right">右</string>
     <string name="adv_group_geometry">画面ジオメトリの変数</string>
+    <string name="adv_group_map_cache">地図キャッシュ</string>
+    <string name="adv_map_encoded_cache">エンコード済みタイルキャッシュ</string>
+    <string name="adv_map_encoded_cache_desc">時計用に保持するPNGタイル。値が大きいほど携帯電話のメモリを多く使います。</string>
+    <string name="adv_map_http_cache">ダウンロード済みタイルキャッシュ</string>
+    <string name="adv_map_http_cache_desc">携帯電話に保持するダウンロード済み地図タイル。値が大きいほど保存容量を使います。</string>
     <string name="adv_compact_max_screen">コンパクト画面の上限</string>
     <string name="adv_compact_max_screen_desc">両辺がこの値未満の画面は、コンパクトダッシュボードが「小さい画面」のときにコンパクト表示に切り替わります。</string>
     <string name="adv_cover_cutout_inset">カメラの切り欠きサイズ</string>

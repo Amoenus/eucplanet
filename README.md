@@ -176,7 +176,8 @@ external BLE GPS (RaceBox or compatible, for centimetre-class speed and altitude
 without draining the phone radio; auto-falls back to phone GPS), and a Wear OS
 companion (speed dial, three batteries, horn/light remotes, navigation mirror,
 Touch / Physical buttons split; tested on Galaxy Watch Ultra, works on any
-Wear OS 5+ watch).
+Wear OS 5+ watch). For the developer architecture, see
+[docs/WEAR_OS_MAP.md](docs/WEAR_OS_MAP.md).
 
 **Advanced settings.** A dedicated Advanced panel exposes the knobs behind every
 feature: poll and refresh rates, chart history windows, HUD discovery timings,

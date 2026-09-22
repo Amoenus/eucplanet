@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">앱이 열려 있는 동안 워치 화면을 유지합니다.</string>
     <string name="watch_update_rate">업데이트 속도</string>
     <string name="watch_update_rate_desc">업데이트 속도를 낮추면 폰과 워치 배터리를 절약합니다.</string>
+    <string name="watch_map_enabled">워치 지도</string>
+    <string name="watch_map_enabled_desc">휴대전화의 위치와 경로를 표시합니다. 백그라운드에서 작동하도록 알림이 유지됩니다.</string>
+    <string name="watch_map_orientation">지도 방향</string>
+    <string name="watch_map_north_up">북쪽 위</string>
+    <string name="watch_map_heading_up">진행 방향 위</string>
+    <string name="watch_keep_on_navigation">내비게이션 중 켜기</string>
+    <string name="watch_keep_on_navigation_desc">내비게이션 중 워치 화면을 켜 둡니다. 배터리를 더 사용합니다.</string>
+    <string name="watch_map_telemetry">지도 텔레메트리</string>
+    <string name="watch_map_telemetry_desc">상단 가장자리에 PWM, 속도, 전압을 표시합니다.</string>
     <string name="watch_update_conservative">절약</string>
     <string name="watch_update_normal">보통</string>
     <string name="watch_update_fast">빠름</string>
@@ -2336,6 +2345,11 @@
     <string name="side_left">왼쪽</string>
     <string name="side_right">오른쪽</string>
     <string name="adv_group_geometry">화면 지오메트리 변수</string>
+    <string name="adv_group_map_cache">지도 캐시</string>
+    <string name="adv_map_encoded_cache">인코딩된 타일 캐시</string>
+    <string name="adv_map_encoded_cache_desc">시계에 보관하는 PNG 타일입니다. 값이 높을수록 휴대전화 메모리를 더 사용합니다.</string>
+    <string name="adv_map_http_cache">다운로드한 타일 캐시</string>
+    <string name="adv_map_http_cache_desc">휴대전화에 보관하는 다운로드한 지도 타일입니다. 값이 높을수록 저장 공간을 더 사용합니다.</string>
     <string name="adv_compact_max_screen">간결 화면 한계</string>
     <string name="adv_compact_max_screen_desc">양쪽 변이 모두 이보다 작은 화면은 간결한 대시보드가 작은 화면으로 설정된 경우 간결 모드로 전환됩니다.</string>
     <string name="adv_cover_cutout_inset">카메라 컷아웃 크기</string>

@@ -32,16 +32,12 @@ import kotlin.math.roundToInt
 import com.eried.eucplanet.hud.R
 import com.eried.eucplanet.hud.net.HudTileCache
 import com.eried.eucplanet.hud.protocol.HudState
+import com.eried.eucplanet.hud.protocol.WebMercator
 import com.eried.eucplanet.hud.ui.parseHexColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.math.PI
-import kotlin.math.atan
-import kotlin.math.cos
+
 import kotlin.math.floor
-import kotlin.math.ln
-import kotlin.math.sinh
-import kotlin.math.tan
 
 /**
  * Simple Web-Mercator XYZ tile stitcher.
@@ -109,7 +105,8 @@ fun MapScreen(hud: HudState, zoom: Float, peer: String?, cache: HudTileCache) {
         // boundary is crossed.
         val zScale = Math.pow(2.0, (animatedZoom - z).toDouble()).toFloat()
         val tilePx = 256f * zScale
-        val (cx, cy) = lonLatToTileFloat(hud.longitude, hud.latitude, z)
+        val cx = WebMercator.tileX(hud.longitude, z)
+        val cy = WebMercator.tileY(hud.latitude, z)
 
         // Kick off async fetches for the visible tile window whenever the
         // viewport center or zoom changes. The fetch coroutine bumps `tick`
@@ -147,8 +144,8 @@ fun MapScreen(hud: HudState, zoom: Float, peer: String?, cache: HudTileCache) {
                 val originY = floor(cy).toInt() - rows / 2
                 val centerPx = Offset(this.size.width / 2f, this.size.height / 2f)
                 val originTilePx = Offset(
-                    centerPx.x - ((cx - originX) * tilePx),
-                    centerPx.y - ((cy - originY) * tilePx)
+                    centerPx.x - ((cx - originX) * tilePx).toFloat(),
+                    centerPx.y - ((cy - originY) * tilePx).toFloat()
                 )
 
                 // Rotate the map so the rider's direction of travel always
@@ -284,12 +281,3 @@ internal fun buildTileFilter(contrastPct: Int, brightnessPct: Int): ColorFilter?
         )
     )
 }
-
-private fun lonLatToTileFloat(lon: Double, lat: Double, z: Int): Pair<Float, Float> {
-    val n = (1 shl z).toDouble()
-    val x = (lon + 180.0) / 360.0 * n
-    val latRad = lat * PI / 180.0
-    val y = (1.0 - ln(tan(latRad) + 1.0 / cos(latRad)) / PI) / 2.0 * n
-    return x.toFloat() to y.toFloat()
-}
-

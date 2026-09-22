@@ -542,6 +542,15 @@
     <string name="watch_keep_on_desc">Keep the watch awake while the app is open.</string>
     <string name="watch_update_rate">Update rate</string>
     <string name="watch_update_rate_desc">Slower updates save watch battery. This is separate from the wheel poll rate in the Advanced section.</string>
+    <string name="watch_map_enabled">Watch map</string>
+    <string name="watch_map_enabled_desc">Shows position and route from the phone. A notification remains for background operation.</string>
+    <string name="watch_map_orientation">Map orientation</string>
+    <string name="watch_map_north_up">North up</string>
+    <string name="watch_map_heading_up">Heading up</string>
+    <string name="watch_keep_on_navigation">Keep on during navigation</string>
+    <string name="watch_keep_on_navigation_desc">Keeps the watch screen on while navigating. Uses more battery.</string>
+    <string name="watch_map_telemetry">Map telemetry</string>
+    <string name="watch_map_telemetry_desc">Shows PWM, speed and voltage along the top edge.</string>
     <!-- Advanced timing: its own section at the bottom of Settings -->
     <string name="tab_advanced">Advanced</string>
     <string name="adv_restore_default">Restore default</string>
@@ -669,6 +678,11 @@
     <string name="adv_radar_min_frame_desc">Affects the smallest time between frames used for the closing-rate math. Danger: too low can over-react to jitter.</string>
     <string name="adv_group_charging">Charging ETA</string>
     <string name="adv_group_geometry">Screen geometry variables</string>
+    <string name="adv_group_map_cache">Map cache</string>
+    <string name="adv_map_encoded_cache">Encoded tile cache</string>
+    <string name="adv_map_encoded_cache_desc">PNG tiles kept for the watch. Higher values use more phone memory.</string>
+    <string name="adv_map_http_cache">Downloaded tile cache</string>
+    <string name="adv_map_http_cache_desc">Downloaded map tiles kept on the phone. Higher values use more storage.</string>
     <string name="adv_group_controls">Wheel controls</string>
     <string name="adv_group_weather">Weather score</string>
     <string name="adv_weather_cold_desc">Below this the hour reads too cold.</string>

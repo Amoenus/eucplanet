@@ -1,4 +1,4 @@
-package com.eried.eucplanet.wear.ui
+package com.eried.eucplanet.wear.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
@@ -14,6 +14,10 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
+import com.eried.eucplanet.wear.ui.utils.GaugeAccentGreen
+import com.eried.eucplanet.wear.ui.utils.GaugeAccentOrange
+import com.eried.eucplanet.wear.ui.utils.GaugeAccentRed
+import com.eried.eucplanet.wear.ui.utils.WatchUnits
 import kotlin.math.cos
 import kotlin.math.sin
 

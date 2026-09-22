@@ -472,6 +472,15 @@
     <string name="watch_keep_on_desc">Pitää kellon hereillä, kun sovellus on auki.</string>
     <string name="watch_update_rate">Päivitystiheys</string>
     <string name="watch_update_rate_desc">Hitaammat päivitykset säästävät kellon akkua. Tämä on eri asia kuin yksipyöräisen kyselytiheys Lisäasetuksissa.</string>
+    <string name="watch_map_enabled">Kellon kartta</string>
+    <string name="watch_map_enabled_desc">Näyttää puhelimen sijainnin ja reitin. Ilmoitus jää näkyviin taustakäyttöä varten.</string>
+    <string name="watch_map_orientation">Kartan suunta</string>
+    <string name="watch_map_north_up">Pohjoinen ylös</string>
+    <string name="watch_map_heading_up">Kulkusuunta ylös</string>
+    <string name="watch_keep_on_navigation">Pidä päällä navigoinnin aikana</string>
+    <string name="watch_keep_on_navigation_desc">Pitää kellon näytön päällä navigoinnin aikana. Kuluttaa enemmän akkua.</string>
+    <string name="watch_map_telemetry">Kartan telemetria</string>
+    <string name="watch_map_telemetry_desc">Näyttää PWM:n, nopeuden ja jännitteen yläreunassa.</string>
     <string name="tab_advanced">Lisäasetukset</string>
     <string name="adv_restore_default">Palauta oletus</string>
     <string name="adv_reset_all">Palauta kaikki oletuksiin</string>
@@ -598,6 +607,11 @@
     <string name="adv_radar_min_frame_desc">Vaikuttaa lyhimpään ruutujen väliseen aikaan, jota käytetään lähestymisnopeuden laskennassa. Vaara: liian pieni voi ylireagoida värinään.</string>
     <string name="adv_group_charging">Latauksen arvio</string>
     <string name="adv_group_geometry">Näytön geometrian muuttujat</string>
+    <string name="adv_group_map_cache">Karttavälimuisti</string>
+    <string name="adv_map_encoded_cache">Koodattujen ruutujen välimuisti</string>
+    <string name="adv_map_encoded_cache_desc">Kellolle säilytettävät PNG-ruudut. Suurempi arvo käyttää enemmän puhelimen muistia.</string>
+    <string name="adv_map_http_cache">Ladattujen ruutujen välimuisti</string>
+    <string name="adv_map_http_cache_desc">Puhelimeen ladatut karttaruudut. Suurempi arvo käyttää enemmän tallennustilaa.</string>
     <string name="adv_group_controls">Yksipyöräisen hallinta</string>
     <string name="adv_group_weather">Sääpisteet</string>
     <string name="adv_weather_cold_desc">Tämän alle tunti on liian kylmä.</string>

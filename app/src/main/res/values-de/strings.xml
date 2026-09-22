@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Hält die Uhr wach, solange die App geöffnet ist.</string>
     <string name="watch_update_rate">Aktualisierungsrate</string>
     <string name="watch_update_rate_desc">Langsamere Aktualisierungen sparen Akku auf Handy und Uhr.</string>
+    <string name="watch_map_enabled">Uhrkarte</string>
+    <string name="watch_map_enabled_desc">Zeigt Position und Route vom Handy. Für den Betrieb im Hintergrund bleibt eine Benachrichtigung bestehen.</string>
+    <string name="watch_map_orientation">Kartenausrichtung</string>
+    <string name="watch_map_north_up">Norden oben</string>
+    <string name="watch_map_heading_up">Fahrtrichtung oben</string>
+    <string name="watch_keep_on_navigation">Während Navigation eingeschaltet</string>
+    <string name="watch_keep_on_navigation_desc">Hält den Uhrbildschirm während der Navigation eingeschaltet. Verbraucht mehr Akku.</string>
+    <string name="watch_map_telemetry">Karten-Telemetrie</string>
+    <string name="watch_map_telemetry_desc">Zeigt PWM, Geschwindigkeit und Spannung am oberen Rand.</string>
     <string name="watch_update_conservative">Sparsam</string>
     <string name="watch_update_normal">Normal</string>
     <string name="watch_update_fast">Schnell</string>
@@ -2359,6 +2368,11 @@
     <string name="side_left">Links</string>
     <string name="side_right">Rechts</string>
     <string name="adv_group_geometry">Variablen der Bildschirmgeometrie</string>
+    <string name="adv_group_map_cache">Kartencache</string>
+    <string name="adv_map_encoded_cache">Cache für kodierte Kacheln</string>
+    <string name="adv_map_encoded_cache_desc">PNG-Kacheln für die Uhr. Höhere Werte nutzen mehr Telefonspeicher.</string>
+    <string name="adv_map_http_cache">Cache für heruntergeladene Kacheln</string>
+    <string name="adv_map_http_cache_desc">Heruntergeladene Kartenkacheln auf dem Telefon. Höhere Werte nutzen mehr Speicherplatz.</string>
     <string name="adv_compact_max_screen">Grenze für kompakten Bildschirm</string>
     <string name="adv_compact_max_screen_desc">Bildschirme, deren beide Seiten darunter liegen, wechseln zum kompakten Dashboard, wenn Kompaktes Dashboard auf Kleine Bildschirme steht.</string>
     <string name="adv_cover_cutout_inset">Größe der Kameraaussparung</string>

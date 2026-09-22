@@ -524,6 +524,15 @@
     <string name="watch_keep_on_desc">Håll klockan vaken medan appen är öppen.</string>
     <string name="watch_update_rate">Uppdateringsfrekvens</string>
     <string name="watch_update_rate_desc">Långsammare uppdateringar sparar batteri på telefon och klocka.</string>
+    <string name="watch_map_enabled">Karta på klockan</string>
+    <string name="watch_map_enabled_desc">Visar position och rutt från telefonen. En avisering finns kvar för bakgrundskörning.</string>
+    <string name="watch_map_orientation">Kartorientering</string>
+    <string name="watch_map_north_up">Norr upp</string>
+    <string name="watch_map_heading_up">Färdriktning upp</string>
+    <string name="watch_keep_on_navigation">Håll skärmen tänd under navigering</string>
+    <string name="watch_keep_on_navigation_desc">Håller klockans skärm tänd under navigering. Använder mer batteri.</string>
+    <string name="watch_map_telemetry">Karttelemetri</string>
+    <string name="watch_map_telemetry_desc">Visar PWM, hastighet och spänning längs överkanten.</string>
     <string name="watch_update_conservative">Sparsam</string>
     <string name="watch_update_normal">Normal</string>
     <string name="watch_update_fast">Snabb</string>
@@ -2339,6 +2348,11 @@
     <string name="side_left">Vänster</string>
     <string name="side_right">Höger</string>
     <string name="adv_group_geometry">Variabler för skärmgeometri</string>
+    <string name="adv_group_map_cache">Kartcache</string>
+    <string name="adv_map_encoded_cache">Cache för kodade plattor</string>
+    <string name="adv_map_encoded_cache_desc">PNG-plattor som sparas för klockan. Högre värden använder mer telefonminne.</string>
+    <string name="adv_map_http_cache">Cache för hämtade plattor</string>
+    <string name="adv_map_http_cache_desc">Hämtade kartplattor som sparas i telefonen. Högre värden använder mer lagring.</string>
     <string name="adv_compact_max_screen">Gräns för kompakt skärm</string>
     <string name="adv_compact_max_screen_desc">Skärmar med båda sidorna under detta växlar till den kompakta instrumentpanelen när Kompakt instrumentpanel är inställd på Små skärmar.</string>
     <string name="adv_cover_cutout_inset">Storlek på kamerurtag</string>

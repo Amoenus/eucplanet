@@ -83,6 +83,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":hud-protocol"))
+
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     implementation(libs.compose.ui)
@@ -106,4 +108,5 @@ dependencies {
     implementation(libs.coroutines.android)
 
     implementation(libs.play.services.wearable)
+    testImplementation(libs.junit)
 }

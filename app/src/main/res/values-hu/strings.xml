@@ -622,6 +622,8 @@
     <string name="adv_inmotion_v1_pin_desc">Hozzáférési PIN az InMotion V5/V8/V10 egykerekűekhez, csatlakozáskor küldi el, hogy az egykerekű adatot kezdjen küldeni. Hagyd 000000 értéken, hacsak nem állítottál be saját PIN-t az InMotion alkalmazásban.</string>
     <string name="adv_kingsong_unlock_code">KingSong nyitókód</string>
     <string name="adv_kingsong_unlock_code_desc">Hat számjegy, amelyet a nyitóparanccsal küld el. A tesztelt egykerekűek bármilyen számjegyet elfogadnak, ezért hagyd 123456 értéken, hacsak a tiéd el nem utasítja.</string>
+    <string name="adv_kingsong_password">KingSong app jelszó</string>
+    <string name="adv_kingsong_password_desc">A KingSong alkalmazásban beállított 4 számjegyű jelszó, csatlakozáskor, valamint zárás és nyitás előtt küldi el. Hagyd 0000 értéken, ha sosem állítottál be.</string>
     <string name="adv_charging_warning">Ezek a teljes töltésig hátralévő idő becslését hangolják. A rossz értékek félrevezető becslést adnak, de sosem befolyásolják magát a töltést.</string>
     <string name="adv_charging_target_pct">Céltöltöttség</string>
     <string name="adv_charging_target_pct_desc">Befolyásolja azt a töltöttségi szintet, ahol a becslés a lassabb záró szakaszra vált.</string>

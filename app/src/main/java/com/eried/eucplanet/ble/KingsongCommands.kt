@@ -31,6 +31,14 @@ object KingsongCommands {
         const val LOCK_SET: Byte = 0x5D
         const val LOCK_QUERY: Byte = 0x5E
         const val LOCK_STATE: Byte = 0x5F
+        // The KingSong app password (four digits). From the 2026-09-22 KS-18XL
+        // capture: 0x41 sends it (ASCII from byte 2), 0x42 clears it, and the
+        // wheel answers both with 0x43 carrying the stored password, FF FF FF
+        // FF once cleared. With a password set the wheel ignores 0x5D until
+        // 0x41 has been accepted in the session.
+        const val PASSWORD_SEND: Byte = 0x41
+        const val PASSWORD_CLEAR: Byte = 0x42
+        const val PASSWORD_STATE: Byte = 0x43
         const val POWER_OFF: Byte = 0x40
         const val STANDBY: Byte = 0x3F
         const val STROBE: Byte = 0x53.toByte()        // Side LED strobe pattern
@@ -125,6 +133,21 @@ object KingsongCommands {
 
     /** Ask for the lock state; the wheel answers 0x5F with 1 or 0 at offset 2. */
     fun queryLock(): ByteArray = frame(Type.LOCK_QUERY)
+
+    /**
+     * Send the KingSong app password so the wheel accepts lock and unlock
+     * (`AA 55 39 31 31 31 00.. 41 14 5A 5A` for "9111" in the capture). The
+     * wheel answers 0x43 echoing what it stores. Null unless [isPassword].
+     */
+    fun password(digits: String): ByteArray? {
+        if (!isPassword(digits)) return null
+        return frame(Type.PASSWORD_SEND) { f ->
+            for (i in digits.indices) f[2 + i] = digits[i].code.toByte()
+        }
+    }
+
+    /** The KingSong app allows four digits; the frame has room for six. */
+    fun isPassword(digits: String): Boolean = digits.length in 1..6 && digits.all { it.isDigit() }
 
     /** A KingSong lock code is six digits. */
     fun isLockCode(code: String): Boolean = code.length == 6 && code.all { it.isDigit() }

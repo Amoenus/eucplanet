@@ -26,13 +26,19 @@ import kotlin.math.sin
  */
 class KingsongVirtualWheel : VirtualWheel {
 
-    override val displayName = "Virtual KingSong 18XL"
+    override val displayName = "Virtual KingSong 18XL (password 9111)"
     override val id = "KS18XL"
     override val bleName = "KS-18XL"
 
     /** Nobody set a code on this wheel, so like the tester's KS-18XL it reports
      *  the default and unlocks on any six digits. */
     val lockCode = KingsongCommands.DEFAULT_LOCK_CODE
+
+    /** The four digits set in the KingSong app on the tester's wheel. Until
+     *  they arrive in a 0x41 frame the wheel ignores 0x5D, as the real one did. */
+    val password = "9111"
+    var passwordAccepted = false
+        private set
 
     var locked = false
         private set
@@ -41,6 +47,7 @@ class KingsongVirtualWheel : VirtualWheel {
 
     override fun reset() {
         locked = false
+        passwordAccepted = false
         lightMode = 1
         lastTripTickMs = -1_000L
     }
@@ -50,7 +57,18 @@ class KingsongVirtualWheel : VirtualWheel {
     override fun onWrite(data: ByteArray): List<ByteArray> {
         if (data.size < 20 || data[0] != 0xAA.toByte() || data[1] != 0x55.toByte()) return emptyList()
         return when (data[16].toInt() and 0xFF) {
+            0x41 -> {
+                val sent = String(data, 2, 6, Charsets.US_ASCII).trimEnd('\u0000')
+                if (sent == password) {
+                    passwordAccepted = true
+                    listOf(ks(0x43).also { for (i in password.indices) it[2 + i] = password[i].code.toByte() })
+                } else {
+                    // What a real wheel answers to a wrong password is not captured.
+                    emptyList()
+                }
+            }
             0x5D -> {
+                if (!passwordAccepted) return listOf(lockStateFrame())
                 if (data[2].toInt() == 1) {
                     locked = true
                 } else {

@@ -14,9 +14,19 @@ wheel nobody set a code on takes any six digits. The Lock Wheel tile now
 works on KingSong with no setup: the app sends 123456. If you did set a code
 in the KingSong app, put it in Settings, Advanced, KingSong unlock code.
 Confirmed by the tester on 2026-09-18: lock, unlock and horn work with
-nothing typed. Known gap: with a 4-digit password set in the KingSong app the
-wheel ignores lock and unlock; remove the password and they work. Supporting
-a password needs a capture of the official app locking with one set.
+nothing typed.
+
+**KingSong app password.** With a 4-digit password set in the KingSong app
+the wheel ignored lock and unlock. The tester's 2026-09-22 capture showed why:
+the official app sends the password to the wheel once per session, and the
+wheel ignores lock commands until then. New row in Settings, Advanced, Wheel
+controls: KingSong app password. Enter the four digits you set in the
+KingSong app; the app sends them on connect and before every lock and unlock.
+Leave 0000 if you never set one. To check: with the password set on the
+wheel, lock and unlock from the tile should now work; Service Mode shows
+"KingSong password: the wheel accepted the password" in the diagnostics.
+No wheel handy? The virtual KingSong 18XL now has password 9111 set: with
+0000 in Advanced the tile does nothing, with 9111 it locks.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

@@ -391,7 +391,7 @@ For our `WheelCapabilities` struct, KingSong (any current model) maps to:
 | --- | --- | --- |
 | `hasHorn` | true | Single beep via `0x88` |
 | `hasLight` | true | `0x73` + mode byte; off / on / auto |
-| `hasLock` | true | `0x5D` locks (byte 2 = `01`) and unlocks (six ASCII digits at bytes 10..15); `0x5E` asks; the wheel answers `0x5F` with `01` locked / `00` unlocked at byte 2. From two KS-18XL FW 2.00 captures of the official app, issue #19, 2026-09-16. The wheel pings when moved while locked. The two captures unlocked with different digits the wheel had never sent (`509540`, `763021`) while the wheel reported `123456` as its stored code, so with no rider-set code the digits are not checked. The app sends the code from Advanced settings, `123456` by default. Tester report (issue #19, 2026-09-18): with a 4-digit password set in the KingSong app the wheel ignores both `0x5D` lock and unlock; remove the password and they work. The official app presumably authenticates first (the `0x74` / `0x75` frames are the candidates); no capture with a password set yet. |
+| `hasLock` | true | `0x5D` locks (byte 2 = `01`) and unlocks (six ASCII digits at bytes 10..15); `0x5E` asks; the wheel answers `0x5F` with `01` locked / `00` unlocked at byte 2. From two KS-18XL FW 2.00 captures of the official app, issue #19, 2026-09-16. The wheel pings when moved while locked. The two captures unlocked with different digits the wheel had never sent (`509540`, `763021`) while the wheel reported `123456` as its stored code, so with no rider-set code the digits are not checked. The app sends the code from Advanced settings, `123456` by default. With a 4-digit password set in the KingSong app the wheel ignores `0x5D` until the password has been sent in the session: `0x41` carries it as ASCII from byte 2, the wheel answers `0x43` echoing the stored password (`FF FF FF FF` after `0x42` clears it). Captured 2026-09-22 with password 9111: `41 9111` then `43 9111`, lock and unlock as usual, `42 9111` then `43 ff ff ff ff`. The `0x74` / `0x75` pair is the fixed `654321` in every capture, with or without a password, so it is not the gate. The app sends `0x41` on connect and before every lock action from Advanced, KingSong app password. |
 | `hasMaxSpeed` | true | `0x85` byte 8 (km/h) |
 | `hasAlarmSpeed` | true | `0x85` bytes 2 / 4 / 6, three independent alarms |
 | `hasVolume` | false | Not exposed over BLE; horn volume is fixed in hardware |
@@ -433,10 +433,10 @@ capture from a known-good wheel before being relied on.
 6. **Lock / password feature**. Resolved for the lock itself (`0x5D` /
    `0x5E` / `0x5F` above, from the issue #19 captures). Still open: whether
    the `0x74` / `0x75` frames the official app sent (`654321`) actually
-   do. With a 4-digit password set in the KingSong app the wheel ignores
-   `0x5D` entirely (tester, 2026-09-18), so those frames are the likely
-   authentication step; a capture of the official app locking with a
-   password set would settle it.
+   do: they are identical with and without a password, so not the gate.
+   The password gate itself is `0x41` / `0x42` / `0x43` (see `hasLock`).
+   Unknown: what the wheel answers to a wrong `0x41`, and whether `0x41`
+   also sets the password on a wheel that has none.
 7. **Mode-valid sentinel `0xE0`**. Other adapters treat the same byte as
    a generic "ride state" with multiple values (0xE0 normal, others for
    tiltback / pedal cutoff). We currently only special-case `0xE0`.

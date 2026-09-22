@@ -38,6 +38,9 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
     /** The six-digit unlock code, handed over by the repository from Advanced
      *  settings before a lock command. Blank falls back to the wheel default. */
     @Volatile private var lockCode: String = ""
+    /** The KingSong app password from Advanced settings, "" when the rider
+     *  never set one. Sent on connect and before every lock action. */
+    @Volatile private var password: String = ""
     /** Latest temperature from the 0xA9 frame (board or generic sensor). */
     @Volatile private var lastTempA9: Float = 0f
     /** Latest temperature from the 0xB9 frame (second sensor, usually motor). */
@@ -95,9 +98,12 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
         return null
     }
 
-    override fun initSequence(): List<ByteArray> = listOf(
+    override fun initSequence(): List<ByteArray> = listOfNotNull(
         KingsongCommands.queryName(),
-        KingsongCommands.queryLimits()
+        KingsongCommands.queryLimits(),
+        // The official app sends the password once per session; a wheel with
+        // one set ignores lock and unlock until then (issue #19 capture).
+        lockPrelude(),
     )
 
     // Drives the KS-16X keep-alive/kick described above. Per poll tick, in
@@ -175,6 +181,8 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
     /** Read the state straight back so the icon settles on what the wheel says. */
     override fun setLockFollowup(locked: Boolean): ByteArray? = KingsongCommands.queryLock()
     override fun provideLockCode(code: String) { lockCode = code }
+    override fun provideLockPassword(password: String) { this.password = password }
+    override fun lockPrelude(): ByteArray? = KingsongCommands.password(password)
 
     override fun requestAuthKey(): ByteArray? = null
     override fun verifyAuth(encryptedKey: ByteArray): ByteArray? = null
@@ -241,6 +249,19 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
                     timestamp = trip.timestamp
                 )
                 listOf(DecodeResult.Telemetry(lastTelemetry))
+            }
+            0x43 -> {
+                // The wheel's answer to a password frame: the stored password as
+                // ASCII from byte 2, FF FF FF FF when none. Compared, never
+                // printed: the diagnostics file travels.
+                val stored = String(rawBytes, 2, 6, Charsets.US_ASCII).trimEnd('\u0000')
+                val outcome = when {
+                    rawBytes[2] == 0xFF.toByte() -> "the wheel has no password"
+                    password.isNotEmpty() && stored == password -> "the wheel accepted the password"
+                    else -> "the wheel answered with a different password"
+                }
+                DiagnosticsLogger.note("KingSong password: $outcome")
+                emptyList()
             }
             0x5F -> {
                 // Lock state, answering 0x5E or straight after a 0x5D set. Byte 2
@@ -353,6 +374,8 @@ class KingsongAdapter @Inject constructor() : WheelAdapter {
                 KingsongCommands.bmsQuery(KingsongCommands.Type.BMS1_SERIAL_REQ), QUERY),
             DiagnosticCommand("Q5E", "Read lock state (the wheel answers 0x5F)",
                 KingsongCommands.queryLock(), QUERY),
+            DiagnosticCommand("T41", "Send the app password from Advanced (the wheel answers 0x43)",
+                KingsongCommands.password(password) ?: ByteArray(0), QUERY),
 
             // --- Horn ---
             DiagnosticCommand("T88", "Beep the horn once",

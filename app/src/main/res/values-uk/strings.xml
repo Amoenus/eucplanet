@@ -2346,6 +2346,8 @@
     <string name="adv_inmotion_v1_pin_desc">PIN доступу для моноколіс InMotion V5/V8/V10, надсилається під час підключення, щоб колесо почало передавати дані. Залиште 000000, якщо ви не задали власний PIN у застосунку InMotion.</string>
     <string name="adv_kingsong_unlock_code">Код розблокування KingSong</string>
     <string name="adv_kingsong_unlock_code_desc">Шість цифр, що надсилаються з командою розблокування. Перевірені колеса приймають будь-які цифри, тож залиште 123456, якщо ваше їх не відхиляє.</string>
+    <string name="adv_kingsong_password">Пароль застосунку KingSong</string>
+    <string name="adv_kingsong_password_desc">4-значний пароль, заданий у застосунку KingSong, надсилається під час підключення та перед блокуванням і розблокуванням. Залиште 0000, якщо ви його не задавали.</string>
     <string name="adv_nav_sidebar_width">Ширина панелі зупинок</string>
     <string name="adv_nav_sidebar_width_desc">Ширина бічної панелі зупинок в альбомній орієнтації. Заширока лишає мало карти.</string>
     <string name="adv_simple_speedo_scale">Розмір простого спідометра</string>

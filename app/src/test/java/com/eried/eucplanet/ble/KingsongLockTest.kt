@@ -79,6 +79,23 @@ class KingsongLockTest {
         assertArrayEquals(KingsongCommands.unlock("509540"), a.setLock(false))
     }
 
+    @Test fun `the password frame is the capture, and it goes out before every lock action`() {
+        assertArrayEquals(
+            "aa 55 39 31 31 31 00 00 00 00 00 00 00 00 00 00 41 14 5a 5a".hex(),
+            KingsongCommands.password("9111"),
+        )
+        for (bad in listOf("", "91a1", "9111111", "9 11")) {
+            assertNull("\"$bad\" is not a password", KingsongCommands.password(bad))
+        }
+
+        val a = KingsongAdapter()
+        assertNull("no password, no prelude, the init sequence stays as it was", a.lockPrelude())
+        assertEquals(2, a.initSequence().size)
+        a.provideLockPassword("9111")
+        assertArrayEquals(KingsongCommands.password("9111"), a.lockPrelude())
+        assertArrayEquals("sent on connect too", KingsongCommands.password("9111"), a.initSequence().last())
+    }
+
     @Test fun `the 0x5F frame reports the lock state and later frames keep it`() {
         val a = KingsongAdapter()
         val locked = a.onRawNotification(ks(0x5F, byteArrayOf(0x01)))

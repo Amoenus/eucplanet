@@ -29,10 +29,34 @@ class KingsongVirtualWheelTest {
         assertEquals("KS-18XL", w!!.bleName)
     }
 
+    @Test fun `with the password set, lock is ignored until the password has been sent`() {
+        val w = KingsongVirtualWheel()
+        val a = KingsongAdapter()
+        a.notifyConnectingTo(w.bleName)
+
+        assertEquals("the tester's report: lock has no effect",
+            false, lockedReported(w.onWrite(KingsongCommands.lock()), a))
+        assertFalse(w.locked)
+
+        assertTrue(w.onWrite(KingsongCommands.password("0000")!!).isEmpty())
+        assertFalse(w.passwordAccepted)
+        val answer = w.onWrite(KingsongCommands.password(w.password)!!)
+        assertEquals(1, answer.size)
+        assertEquals(0x43, answer[0][16].toInt())
+        assertTrue(w.passwordAccepted)
+        // The adapter reads the answer as a note, never as telemetry.
+        a.provideLockPassword(w.password)
+        assertTrue(a.onRawNotification(answer[0]).isEmpty())
+
+        assertEquals(true, lockedReported(w.onWrite(KingsongCommands.lock()), a))
+        assertTrue(w.locked)
+    }
+
     @Test fun `lock, then any six digits unlock it, as the tester's wheel did`() {
         val w = KingsongVirtualWheel()
         val a = KingsongAdapter()
         a.notifyConnectingTo(w.bleName)
+        w.onWrite(KingsongCommands.password(w.password)!!)
 
         assertEquals(false, lockedReported(w.onWrite(KingsongCommands.queryLock()), a))
 
@@ -53,6 +77,7 @@ class KingsongVirtualWheelTest {
         val a = KingsongAdapter()
         a.notifyConnectingTo(w.bleName)
         w.onConnect().forEach { a.onRawNotification(it) }
+        w.onWrite(KingsongCommands.password(w.password)!!)
 
         w.onWrite(KingsongCommands.lock())
         val locked = w.onTick(3_000L).flatMap { a.onRawNotification(it) }

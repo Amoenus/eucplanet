@@ -169,6 +169,13 @@ class WatchBridgeService : WearableListenerService() {
                     event.data.copyOf(),
                 )
             }
+            WatchMapProtocol.TILE_MESSAGE_PATH -> {
+                WatchMapRepository.acceptTileMessage(
+                    applicationContext,
+                    event.sourceNodeId,
+                    event.data.copyOf(),
+                )
+            }
             WatchPaths.WAKE -> {
                 // Skip the relaunch when the user is already on the dial; the
                 // phone fires /euc/wake every time MainActivity.onResume runs,

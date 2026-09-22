@@ -32,12 +32,18 @@ internal class PendingTileStore<T> {
         key: WatchMapTileKey,
         deliveryGeneration: Long,
         value: T,
+        replaceSameGeneration: Boolean = false,
     ): Boolean {
         if (sourceNodeId != this.sourceNodeId || key !in visibleKeys || deliveryGeneration < 0L) {
             return false
         }
         val current = entries[key]
-        if (current != null && deliveryGeneration < current.deliveryGeneration) return false
+        if (current != null &&
+            (deliveryGeneration < current.deliveryGeneration ||
+                (deliveryGeneration == current.deliveryGeneration && !replaceSameGeneration))
+        ) {
+            return false
+        }
         entries[key] = Entry(sourceNodeId, key, deliveryGeneration, value)
         return true
     }
@@ -46,9 +52,17 @@ internal class PendingTileStore<T> {
 
     operator fun contains(key: WatchMapTileKey): Boolean = key in entries
 
-    fun removeIfCurrent(entry: Entry<T>): Boolean {
-        if (entries[entry.key] !== entry) return false
+    class Completion<T>(
+        val accepted: Boolean,
+        val replacement: Entry<T>?,
+    )
+
+    fun complete(entry: Entry<T>): Completion<T> {
+        val current = entries[entry.key]
+        if (current !== entry) {
+            return Completion(accepted = false, replacement = current)
+        }
         entries.remove(entry.key)
-        return true
+        return Completion(accepted = true, replacement = null)
     }
 }

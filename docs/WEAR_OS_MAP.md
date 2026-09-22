@@ -16,6 +16,7 @@ flowchart LR
     phone -->|"writes DataItem /euc/state"| layer
     phone -->|"writes Message /euc/map/frame"| layer
     phone -->|"writes DataItem /euc/map/route"| layer
+    phone -->|"writes Message /euc/map/tile-fast"| layer
     phone -->|"writes DataItem /euc/map/tile/..."| layer
     layer -->|"routes phone data to watch"| watch
     watch -->|"writes Message /euc/map/presence"| layer
@@ -24,10 +25,11 @@ flowchart LR
 ```
 
 `/euc/state` is the normal state stream. The map paths are separate transport:
-presence and frames use Messages, while route geometry and tile PNGs use DataItems
-with `Asset` payloads. `/euc/control` is the existing watch-to-phone action path
-for controls such as horn, light, and button bindings. Map zoom is local watch
-state, not a map control message.
+presence and frames use Messages, route geometry and persistent tile PNGs use
+DataItems with `Asset` payloads, and `/euc/map/tile-fast` carries bounded inline
+tile bytes over the connected-node Message path. `/euc/control` is the existing
+watch-to-phone action path for controls such as horn, light, and button bindings.
+Map zoom is local watch state, not a map control message.
 
 ## Setup and configuration
 
@@ -131,6 +133,14 @@ The protocol accepts zoom levels 3 through 19, with 16 as the default. Visible
 tiles are requested nearest-first, and the watch uses the selected layer and the
 current projection to decide which tiles it needs.
 
+While exact tiles are loading, the watch may render cached same-layer tiles one
+native zoom away. Exact tiles win first. If an exact key is explicitly failed,
+its fallback is suppressed. Otherwise all cached children at zoom plus one are
+drawn, then the cached parent at zoom minus one is cropped to the target
+quadrant, then any cached children are drawn. No fallback uses another layer or
+more than one zoom away. Each exact arrival replaces only its own fallback, and
+the loading indicator and missing-tile status remain based on exact keys.
+
 ## Transport and operational limits
 
 | Path | Channel and direction | Responsibility |
@@ -138,8 +148,8 @@ current projection to decide which tiles it needs.
 | `/euc/state` | DataItem, phone to watch | Normal telemetry state, map enabled flag, telemetry flag, and watch display options. |
 | `/euc/map/presence` | Message, watch to phone | Viewer identity, epoch, lease sequence, visibility, and missing route or tile keys. |
 | `/euc/map/frame` | Message, phone to watch | Current map scene, location status, heading, layer, navigation state, target, cue, and unavailable tiles. |
-| `/euc/map/route` | DataItem, phone to watch | Versioned route geometry Asset keyed by navigation session and revision. |
-| `/euc/map/tile/` | DataItem, phone to watch | Versioned raster tile Asset keyed by layer, zoom, x, and y. |
+| `/euc/map/tile-fast` | Message, phone to watch | Low-latency inline encoded tile payload for connected nodes, capped at 96 KiB. It carries the same tile key and delivery generation as the persistent path. |
+| `/euc/map/tile/` | DataItem, phone to watch | Persistent raster tile Asset keyed by layer, zoom, x, and y. It is the restart cache and fallback when the fast Message path is unavailable. |
 | `/euc/control` | Message, watch to phone | Existing watch actions. It is not the map scene or map zoom transport. |
 
 Operational limits are intentionally small and bounded:
@@ -149,22 +159,31 @@ Operational limits are intentionally small and bounded:
   `CONSERVATIVE`, 250 ms for the default `NORMAL`, and 150 ms for `FAST`.
 - A link is live only while an accepted frame is newer than the 3 second stale
   threshold. The watch can still display cached geometry after that threshold.
-- A presence carries at most 25 missing tile requests. The phone loads at most two
-  tiles concurrently for the visible watch sessions.
-- The phone retains at most 64 published tile DataItems and evicts the least
-  recently requested entries when needed. Its shared `MapTileCache` also supplies
-  the HTTP and decoded tile caches. The decoded in-memory cache is 64 entries;
+- A presence carries at most 25 missing tile requests. The phone loads at most
+  four tiles concurrently for the visible watch sessions. For layers without an
+  Esri reference overlay, the phone forwards validated encoded tile bytes without
+  a full bitmap decode and PNG re-encode. Esri light and dark layers still
+  compose their base and reference tiles into one PNG.
+- The phone publishes at most four tile DataItems concurrently. It retains at
+  most 64 published tile DataItems and evicts the least recently requested
+  entries when needed. Its shared `MapTileCache` also supplies the HTTP, encoded,
+  and decoded tile caches. The decoded in-memory cache is 64 entries;
   `mapEncodedCacheMiB` and `mapHttpCacheMiB` set the encoded and HTTP budgets.
-- The watch decodes at most two tile assets concurrently. A tile asset is limited
-  to 4 MiB, and its decoded bitmap cache is bounded at 8 MiB.
+- The watch decodes at most four tile assets concurrently. A tile asset is
+  limited to 4 MiB, and its decoded bitmap cache is bounded at 8 MiB.
+- Prepared tiles at or below 96 KiB are offered immediately through the connected
+  `/euc/map/tile-fast` Message path and also published through the persistent
+  `/euc/map/tile/` DataItem path. Larger tiles skip only the Message offer.
 
 Freshness is based on identity and monotonic revisions, not arrival order alone.
 A frame must echo a presence sequence sent by the current viewer identity and epoch.
 Frame sequences must advance within a phone process session. A new phone process
 session needs a newer presence echo, and a retired phone session cannot return.
 Route geometry is accepted only when its navigation session and revision match the
-current frame. Tile generations and the current visible viewport prevent late or
-foreign assets from replacing current content.
+current frame. Both tile paths carry the same key and delivery generation and
+converge through the same watch source, viewport, generation, and decode guards.
+Tile generations and the current visible viewport prevent late or foreign assets
+from replacing current content.
 
 ## Failure modes and limitations
 

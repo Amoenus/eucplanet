@@ -26,6 +26,7 @@ import com.eried.eucplanet.hud.protocol.WatchMapProtocol
 import com.eried.eucplanet.hud.protocol.WatchMapRoute
 import com.eried.eucplanet.hud.protocol.WatchMapRouteKey
 import com.eried.eucplanet.hud.protocol.WatchMapTileKey
+import com.eried.eucplanet.hud.protocol.WatchMapTileMessage
 import com.eried.eucplanet.map.MapTileCache
 import com.eried.eucplanet.nav.NavigationEngine
 import com.eried.eucplanet.service.WheelService
@@ -40,6 +41,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.ArrayDeque
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
+import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
@@ -52,7 +54,8 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import org.json.JSONObject
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 @Singleton
 class WearMapBridge @Inject constructor(
@@ -68,7 +71,9 @@ class WearMapBridge @Inject constructor(
         const val PREFS_TILE_INDEX = "published_tile_index"
         const val NANOS_PER_MILLISECOND = 1_000_000L
         const val MAX_PUBLISHED_TILES = 64
-        const val MAX_TILE_LOADS = 2
+        const val MAX_TILE_LOADS = 4
+        const val MAX_TILE_WRITES = 4
+        const val MAX_TILE_MESSAGES = 4
         const val TILE_FAILURE_COOLDOWN_MS = 30_000L
         const val TILE_RECONCILE_RETRY_MS = 30_000L
     }
@@ -120,6 +125,12 @@ class WearMapBridge @Inject constructor(
             val deliveryGeneration: Long,
             val lastRequestedWallMs: Long,
             val evictionPath: String?,
+        ) : DataWrite
+
+        data class TileMessage(
+            val targetNodeId: String,
+            val key: WatchMapTileKey,
+            val payload: ByteArray,
         ) : DataWrite
     }
 
@@ -603,7 +614,7 @@ class WearMapBridge @Inject constructor(
             val job = scope.launch(Dispatchers.IO, start = CoroutineStart.LAZY) {
                 val png = try {
                     val url = MapLayers.tileUrl(key.layerId, key.z, key.x, key.y)
-                    MapTileCache.png(context, url)
+                    MapTileCache.encodedTile(context, url)
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (e: Exception) {
@@ -640,6 +651,17 @@ class WearMapBridge @Inject constructor(
         }
         pumpTileLoads()
     }
+    private fun clearTileWork() {
+        allowedTileWriteKeys = emptySet()
+        desiredTileKeys = emptySet()
+        visibleViewerSessions = emptySet()
+        tileLoadQueue.clear()
+        activeTileLoads.values.forEach { it.job.cancel() }
+        activeTileLoads.clear()
+        preparedTiles.clear()
+        tileFailuresUntil.clear()
+        tileLastRequestedWallMs.clear()
+    }
 
     private fun handleMissingTiles(
         presence: WatchMapPresence,
@@ -673,6 +695,30 @@ class WearMapBridge @Inject constructor(
 
         prepared.deliveryGeneration += 1L
         prepared.lastOfferElapsedMs = nowMs
+        val fastPayload = WatchMapProtocol.encodeTileMessage(
+            WatchMapTileMessage(
+                key = key,
+                deliveryGeneration = prepared.deliveryGeneration,
+                encodedTile = prepared.bytes,
+            ),
+        )
+        if (fastPayload != null) {
+            leases.subscribers(nowMs)
+                .asSequence()
+                .filter { it.foreground && it.mapVisible && key in it.missingTiles }
+                .map { it.sourceNodeId }
+                .filter { it.isNotBlank() }
+                .distinct()
+                .forEach { targetNodeId ->
+                    dataWrites.trySend(
+                        DataWrite.TileMessage(
+                            targetNodeId = targetNodeId,
+                            key = key,
+                            payload = fastPayload,
+                        ),
+                    )
+                }
+        }
         val attemptId = ++nextTileWriteAttempt
         val lastRequested = tileLastRequestedWallMs[key] ?: System.currentTimeMillis()
         pendingTileWrites[key] = PendingTileWrite(attemptId, path, evictionPath)
@@ -743,21 +789,12 @@ class WearMapBridge @Inject constructor(
         if (changed) persistTileIndex(publishedTiles.values)
     }
 
-    private fun clearTileWork() {
-        allowedTileWriteKeys = emptySet()
-        desiredTileKeys = emptySet()
-        visibleViewerSessions = emptySet()
-        tileLoadQueue.clear()
-        activeTileLoads.values.forEach { it.job.cancel() }
-        activeTileLoads.clear()
-        preparedTiles.clear()
-        tileFailuresUntil.clear()
-        tileLastRequestedWallMs.clear()
-    }
-
     /** The only coroutine that waits for DataClient tasks. */
     private suspend fun runDataWriter() {
         val dataClient = Wearable.getDataClient(context)
+        val messageClient = Wearable.getMessageClient(context)
+        val tileWriteSlots = Semaphore(MAX_TILE_WRITES)
+        val tileMessageSlots = Semaphore(MAX_TILE_MESSAGES)
         var localNodeId: String? = null
 
         suspend fun reconcileTiles() {
@@ -780,7 +817,16 @@ class WearMapBridge @Inject constructor(
                 DataWrite.ReconcileTiles -> reconcileTiles()
                 DataWrite.RouteDelete -> writeRouteDelete(dataClient, localNodeId)
                 is DataWrite.RoutePut -> writeRoutePut(dataClient, write)
-                is DataWrite.TilePut -> writeTilePut(dataClient, write, localNodeId)
+                is DataWrite.TileMessage -> scope.launch(Dispatchers.IO) {
+                    tileMessageSlots.withPermit {
+                        writeTileMessage(messageClient, write)
+                    }
+                }
+                is DataWrite.TilePut -> scope.launch(Dispatchers.IO) {
+                    tileWriteSlots.withPermit {
+                        writeTilePut(dataClient, write, localNodeId)
+                    }
+                }
             }
         }
     }
@@ -789,6 +835,7 @@ class WearMapBridge @Inject constructor(
         try {
             Tasks.await(
                 dataClient.deleteDataItems(
+
                     dataUri(WatchMapProtocol.ROUTE_PATH, localNodeId),
                     DataClient.FILTER_LITERAL,
                 ),
@@ -824,6 +871,23 @@ class WearMapBridge @Inject constructor(
         }
     }
 
+    private suspend fun writeTileMessage(
+        messageClient: com.google.android.gms.wearable.MessageClient,
+        write: DataWrite.TileMessage,
+    ) {
+        if (write.targetNodeId.isBlank() || write.key !in allowedTileWriteKeys) return
+        try {
+            if (write.key !in allowedTileWriteKeys) return
+            Tasks.await(
+                messageClient.sendMessage(
+                    write.targetNodeId,
+                    WatchMapProtocol.TILE_MESSAGE_PATH,
+                    write.payload,
+                ),
+            )
+        } catch (_: Exception) {
+        }
+    }
     private suspend fun writeTilePut(
         dataClient: DataClient,
         write: DataWrite.TilePut,

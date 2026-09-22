@@ -4,14 +4,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.util.Log
 import android.util.LruCache
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.eried.eucplanet.data.model.ADVANCED_DEFAULTS
 import com.eried.eucplanet.data.repository.SettingsRepository
-import android.util.Log
+import com.eried.eucplanet.hud.protocol.WatchMapProtocol
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +45,7 @@ internal object MapTileCache {
         override fun sizeOf(key: String, value: ByteArray): Int = value.size
     }
     private val decodedInFlight = ConcurrentHashMap<String, Deferred<DecodedTile?>>()
-    private val pngInFlight = ConcurrentHashMap<String, Deferred<ByteArray?>>()
+    private val encodedInFlight = ConcurrentHashMap<String, Deferred<ByteArray?>>()
     private val clientLock = Any()
     private val settingsStarted = AtomicBoolean(false)
 
@@ -84,29 +86,52 @@ internal object MapTileCache {
     suspend fun load(context: Context, url: String): Boolean =
         decodedTile(context.applicationContext, url) != null
 
-    suspend fun png(context: Context, url: String): ByteArray? {
-        synchronized(encoded) { encoded.get(url) }?.let { return it }
-        val tile = decodedTile(context.applicationContext, url) ?: return null
+    suspend fun encodedTile(context: Context, url: String): ByteArray? {
+        synchronized(encoded) { encoded.get(url) }
+            ?.takeIf { it.size <= WatchMapProtocol.MAX_TILE_ASSET_BYTES }
+            ?.let { return it }
 
         val candidate = scope.async(start = CoroutineStart.LAZY) {
-            withContext(Dispatchers.Default) {
-                val bytes = ByteArrayOutputStream().use { output ->
-                    if (!tile.bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
-                        return@withContext null
-                    }
-                    output.toByteArray().takeIf { it.isNotEmpty() }
+            val referenceUrl = url.replace("_Gray_Base/", "_Gray_Reference/")
+            if (referenceUrl == url) {
+                httpOwner(context.applicationContext).fetch(url) { input ->
+                    input.readLimitedBytes(WatchMapProtocol.MAX_TILE_ASSET_BYTES)
+                        ?.takeIf(::isValidEncodedTile)
+                }?.also { bytes ->
+                    synchronized(encoded) { encoded.put(url, bytes) }
                 }
-                bytes?.also { png ->
-                    synchronized(encoded) { encoded.put(url, png) }
+            } else {
+                val tile = decodedTile(context.applicationContext, url) ?: return@async null
+                withContext(Dispatchers.Default) {
+                    ByteArrayOutputStream().use { output ->
+                        if (!tile.bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
+                            return@withContext null
+                        }
+                        output.toByteArray().takeIf {
+                            it.isNotEmpty() && it.size <= WatchMapProtocol.MAX_TILE_ASSET_BYTES
+                        }
+                    }
+                }?.also { bytes ->
+                    synchronized(encoded) { encoded.put(url, bytes) }
                 }
             }
         }
-        val shared = pngInFlight.putIfAbsent(url, candidate) ?: candidate.also { deferred ->
-            deferred.invokeOnCompletion { pngInFlight.remove(url, deferred) }
+        val shared = encodedInFlight.putIfAbsent(url, candidate) ?: candidate.also { deferred ->
+            deferred.invokeOnCompletion { encodedInFlight.remove(url, deferred) }
             deferred.start()
         }
         if (shared !== candidate) candidate.cancel()
         return shared.await()
+    }
+
+    private fun isValidEncodedTile(bytes: ByteArray): Boolean {
+        if (bytes.isEmpty() || bytes.size > WatchMapProtocol.MAX_TILE_ASSET_BYTES) return false
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, options)
+        return options.outWidth > 0 &&
+            options.outHeight > 0 &&
+            options.outWidth == options.outHeight &&
+            options.outWidth <= 16_384
     }
 
     private suspend fun decodedTile(context: Context, url: String): DecodedTile? {
@@ -158,5 +183,20 @@ internal object MapTileCache {
             File(context.cacheDir, "map_tiles_http"),
             requestedHttpBytes,
         ).also { httpCache = it }
+    }
+}
+
+internal fun InputStream.readLimitedBytes(limit: Int): ByteArray? {
+    require(limit > 0)
+    val output = ByteArrayOutputStream(minOf(32 * 1024, limit))
+    val chunk = ByteArray(minOf(16 * 1024, limit + 1))
+    var total = 0
+    while (true) {
+        val remaining = limit - total
+        val read = read(chunk, 0, minOf(chunk.size, remaining + 1))
+        if (read < 0) return output.toByteArray()
+        total += read
+        if (total > limit) return null
+        output.write(chunk, 0, read)
     }
 }

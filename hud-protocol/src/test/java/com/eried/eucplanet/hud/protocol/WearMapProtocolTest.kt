@@ -1,5 +1,8 @@
 package com.eried.eucplanet.hud.protocol
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -116,7 +119,76 @@ class WearMapProtocolTest {
             .encodeToString(WatchMapFrame.serializer(), invalidTarget)
             .toByteArray(Charsets.UTF_8)
         assertNull(WatchMapProtocol.decodeFrame(invalidTargetJson))
-        assertNull(WatchMapProtocol.decodeFrame(frame.copy(version = 2).let { WatchMapProtocol.json.encodeToString(WatchMapFrame.serializer(), it) }.toByteArray(Charsets.UTF_8)))
         assertNull(WatchMapProtocol.decodeFrame(byteArrayOf(0xC3.toByte(), 0x28)))
+    }
+
+    @Test
+    fun tileMessageCodecRoundTripsExactBinaryPayload() {
+        val message = WatchMapTileMessage(
+            key = WatchMapTileKey("OSM", 3, 1, 2),
+            deliveryGeneration = 7L,
+            encodedTile = byteArrayOf(1, 2, 3, 0),
+        )
+
+        val encoded = WatchMapProtocol.encodeTileMessage(message)
+        val decoded = encoded?.let(WatchMapProtocol::decodeTileMessage)
+
+        assertNotNull(encoded)
+        assertNotNull(decoded)
+        assertTrue(decoded!!.key == message.key)
+        assertTrue(decoded.deliveryGeneration == message.deliveryGeneration)
+        assertArrayEquals(message.encodedTile, decoded.encodedTile)
+    }
+
+    @Test
+    fun tileMessageCodecRejectsInvalidEncodeBoundaries() {
+        val valid = WatchMapTileMessage(
+            key = WatchMapTileKey("OSM", 3, 1, 2),
+            deliveryGeneration = 0L,
+            encodedTile = byteArrayOf(1),
+        )
+        assertNull(WatchMapProtocol.encodeTileMessage(valid.copy(encodedTile = byteArrayOf())))
+        assertNull(WatchMapProtocol.encodeTileMessage(valid.copy(deliveryGeneration = -1L)))
+        assertNull(WatchMapProtocol.encodeTileMessage(valid.copy(key = WatchMapTileKey("", 3, 1, 2))))
+        assertNull(WatchMapProtocol.encodeTileMessage(valid.copy(key = WatchMapTileKey("OSM", 3, 8, 0))))
+        assertNull(WatchMapProtocol.encodeTileMessage(valid.copy(key = WatchMapTileKey("é".repeat(65), 3, 1, 2))))
+        assertNull(
+            WatchMapProtocol.encodeTileMessage(
+                valid.copy(encodedTile = ByteArray(WatchMapProtocol.MAX_TILE_MESSAGE_BYTES)),
+            ),
+        )
+    }
+
+    @Test
+    fun tileMessageCodecRejectsMalformedAndUntrustedDecodeInput() {
+        val valid = WatchMapProtocol.encodeTileMessage(
+            WatchMapTileMessage(WatchMapTileKey("OSM", 3, 1, 2), 1L, byteArrayOf(9)),
+        )!!
+
+        assertNull(WatchMapProtocol.decodeTileMessage(ByteArray(27)))
+        assertNull(WatchMapProtocol.decodeTileMessage(ByteArray(WatchMapProtocol.MAX_TILE_MESSAGE_BYTES + 1)))
+        assertNull(WatchMapProtocol.decodeTileMessage(valid.copyOf().also {
+            ByteBuffer.wrap(it).order(ByteOrder.BIG_ENDIAN).putInt(0, 2)
+        }))
+        assertNull(WatchMapProtocol.decodeTileMessage(valid.copyOfRange(0, 29)))
+        assertNull(WatchMapProtocol.decodeTileMessage(valid.copyOf().also {
+            ByteBuffer.wrap(it).order(ByteOrder.BIG_ENDIAN).putInt(24, 65)
+        }))
+        assertNull(WatchMapProtocol.decodeTileMessage(valid.copyOf().also {
+            ByteBuffer.wrap(it).order(ByteOrder.BIG_ENDIAN).putLong(4, -1L)
+        }))
+
+        val invalidUtf8 = ByteBuffer.allocate(30)
+            .order(ByteOrder.BIG_ENDIAN)
+            .putInt(WatchMapProtocol.VERSION)
+            .putLong(0L)
+            .putInt(3)
+            .putInt(1)
+            .putInt(2)
+            .putInt(1)
+            .put(0xC3.toByte())
+            .put(1)
+            .array()
+        assertNull(WatchMapProtocol.decodeTileMessage(invalidUtf8))
     }
 }

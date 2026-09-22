@@ -33,14 +33,19 @@ class PendingTileStoreTest {
 
         store.retain("phone-a", emptyList())
         assertFalse(store.contains(key))
+        val hiddenCompletion = store.complete(old!!)
+        assertFalse(hiddenCompletion.accepted)
+        assertTrue(hiddenCompletion.replacement == null)
         assertFalse(store.offer("phone-a", key, 1L, "hidden"))
 
         store.retain("phone-a", listOf(key))
         assertTrue(store.offer("phone-a", key, 1L, "new"))
         val current = store[key]
-        assertFalse(store.removeIfCurrent(old!!))
+        assertFalse(store.complete(old!!).accepted)
         assertSame(current, store[key])
-        assertTrue(store.removeIfCurrent(current!!))
+        val currentCompletion = store.complete(current!!)
+        assertTrue(currentCompletion.accepted)
+        assertTrue(currentCompletion.replacement == null)
     }
 
     @Test
@@ -52,11 +57,23 @@ class PendingTileStoreTest {
         assertFalse(store.offer("phone-a", key, 0L, "late"))
         assertTrue(store.offer("phone-a", key, 2L, "new"))
         val current = store[key]
-        assertFalse(store.removeIfCurrent(old!!))
+        assertFalse(store.complete(old!!).accepted)
         assertSame(current, store[key])
-        assertTrue(store.removeIfCurrent(current!!))
+        val currentCompletion = store.complete(current!!)
+        assertTrue(currentCompletion.accepted)
+        assertTrue(currentCompletion.replacement == null)
     }
 
+    @Test
+    fun equalGenerationRequiresExplicitReplacement() {
+        val store = PendingTileStore<String>()
+        store.retain("phone-a", listOf(key))
+        assertTrue(store.offer("phone-a", key, 1L, "asset"))
+        assertFalse(store.offer("phone-a", key, 1L, "duplicate"))
+        assertTrue(store.offer("phone-a", key, 1L, "inline", replaceSameGeneration = true))
+        assertTrue(store[key]!!.value == "inline")
+        assertFalse(store.offer("phone-a", key, 1L, "late-asset"))
+    }
     @Test
     fun sourceChangeRejectsOldOffersAndCompletions() {
         val store = PendingTileStore<String>()
@@ -65,10 +82,30 @@ class PendingTileStoreTest {
         val old = store[key]
 
         store.retain("phone-b", listOf(key))
+        val sourceChangeCompletion = store.complete(old!!)
+        assertFalse(sourceChangeCompletion.accepted)
+        assertTrue(sourceChangeCompletion.replacement == null)
         assertFalse(store.offer("phone-a", key, 1L, "late"))
         assertTrue(store.offer("phone-b", key, 1L, "new"))
-        assertFalse(store.removeIfCurrent(old!!))
         assertTrue(store.contains(key))
+    }
+
+    @Test
+    fun completingReplacedEntryReturnsReplacementAndKeepsItPending() {
+        val store = PendingTileStore<String>()
+        store.retain("phone-a", listOf(key))
+        assertTrue(store.offer("phone-a", key, 1L, "asset"))
+        val inFlightAsset = store[key]!!
+
+        assertTrue(store.offer("phone-a", key, 1L, "inline", replaceSameGeneration = true))
+
+        val completion = store.complete(inFlightAsset)
+        assertFalse(completion.accepted)
+        assertSame(store[key], completion.replacement)
+        assertTrue(completion.replacement!!.value == "inline")
+        assertTrue(store.contains(key))
+        assertTrue(store.complete(completion.replacement!!).accepted)
+        assertFalse(store.contains(key))
     }
 
     @Test

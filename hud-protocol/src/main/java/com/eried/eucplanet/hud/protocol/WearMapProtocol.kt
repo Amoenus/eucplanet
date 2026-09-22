@@ -1,9 +1,9 @@
 package com.eried.eucplanet.hud.protocol
 
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.charset.CodingErrorAction
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -33,6 +33,12 @@ data class WatchMapTileKey(
     val z: Int,
     val x: Int,
     val y: Int,
+)
+
+data class WatchMapTileMessage(
+    val key: WatchMapTileKey,
+    val deliveryGeneration: Long,
+    val encodedTile: ByteArray,
 )
 
 @Serializable
@@ -272,6 +278,7 @@ object WatchMapProtocol {
     const val FRAME_PATH = "/euc/map/frame"
     const val ROUTE_PATH = "/euc/map/route"
     const val TILE_PREFIX = "/euc/map/tile/"
+    const val TILE_MESSAGE_PATH = "/euc/map/tile-fast"
 
     const val PRESENCE_INTERVAL_MS = 2_000L
     const val LEASE_MS = 6_000L
@@ -281,7 +288,10 @@ object WatchMapProtocol {
     const val MAX_ZOOM = 19
     const val DEFAULT_ZOOM = 16
     const val MAX_TILE_REQUESTS = 25
-
+    const val MAX_TILE_ASSET_BYTES = 4 * 1024 * 1024
+    const val MAX_TILE_MESSAGE_BYTES = 96 * 1024
+    private const val MAX_TILE_LAYER_ID_BYTES = 64
+    private const val TILE_MESSAGE_HEADER_BYTES = 28
     const val ROUTE_VERSION_KEY = "version"
     const val ROUTE_SESSION_KEY = "navigationSessionId"
     const val ROUTE_REVISION_KEY = "revision"
@@ -359,6 +369,67 @@ object WatchMapProtocol {
 
     fun decodeRoute(payload: ByteArray): WatchMapRoute? =
         decode<WatchMapRoute>(payload)?.takeIf(::isValidRoute)
+
+    fun encodeTileMessage(message: WatchMapTileMessage): ByteArray? {
+        if (!isValidTileKey(message.key) ||
+            message.deliveryGeneration < 0L ||
+            message.encodedTile.isEmpty()
+        ) {
+            return null
+        }
+        val layerBytes = message.key.layerId.toByteArray(Charsets.UTF_8)
+        if (layerBytes.isEmpty() || layerBytes.size > MAX_TILE_LAYER_ID_BYTES) return null
+        if (message.encodedTile.size > MAX_TILE_MESSAGE_BYTES - TILE_MESSAGE_HEADER_BYTES - layerBytes.size) {
+            return null
+        }
+        val totalBytes = TILE_MESSAGE_HEADER_BYTES + layerBytes.size + message.encodedTile.size
+        return ByteBuffer.allocate(totalBytes)
+            .order(ByteOrder.BIG_ENDIAN)
+            .putInt(VERSION)
+            .putLong(message.deliveryGeneration)
+            .putInt(message.key.z)
+            .putInt(message.key.x)
+            .putInt(message.key.y)
+            .putInt(layerBytes.size)
+            .put(layerBytes)
+            .put(message.encodedTile)
+            .array()
+    }
+
+    fun decodeTileMessage(payload: ByteArray): WatchMapTileMessage? {
+        if (payload.size < TILE_MESSAGE_HEADER_BYTES || payload.size > MAX_TILE_MESSAGE_BYTES) {
+            return null
+        }
+        return runCatching {
+            val buffer = ByteBuffer.wrap(payload).order(ByteOrder.BIG_ENDIAN)
+            if (buffer.int != VERSION) return@runCatching null
+            val generation = buffer.long
+            val z = buffer.int
+            val x = buffer.int
+            val y = buffer.int
+            val layerLength = buffer.int
+            if (generation < 0L ||
+                layerLength <= 0 ||
+                layerLength > MAX_TILE_LAYER_ID_BYTES ||
+                layerLength > buffer.remaining() - 1
+            ) {
+                return@runCatching null
+            }
+            val layerBytes = ByteArray(layerLength)
+            buffer.get(layerBytes)
+            val layerId = Charsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(layerBytes))
+                .toString()
+            val encodedTile = ByteArray(buffer.remaining())
+            buffer.get(encodedTile)
+            if (encodedTile.isEmpty()) return@runCatching null
+            val key = WatchMapTileKey(layerId, z, x, y)
+            if (!isValidTileKey(key)) return@runCatching null
+            WatchMapTileMessage(key, generation, encodedTile)
+        }.getOrNull()
+    }
 
     private fun isValidRouteKey(key: WatchMapRouteKey): Boolean =
         key.navigationSessionId.isNotBlank() && key.revision > 0L

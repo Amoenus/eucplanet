@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
 import com.eried.eucplanet.hud.protocol.WebMercator
 import com.eried.eucplanet.hud.protocol.WatchMapPoint
+import com.eried.eucplanet.hud.protocol.WatchMapProtocol
 import com.eried.eucplanet.hud.protocol.WatchMapRoute
 import com.eried.eucplanet.hud.protocol.WatchMapTileKey
 import kotlin.math.cos
@@ -17,6 +18,180 @@ internal data class RenderTile(
     val size: Double,
 )
 
+
+internal data class TileSourceRect(
+    val left: Int,
+    val top: Int,
+    val width: Int,
+    val height: Int,
+)
+
+internal data class TileDestinationRect(
+    val left: Double,
+    val top: Double,
+    val width: Double,
+    val height: Double,
+)
+
+internal data class TileDraw(
+    val sourceKey: WatchMapTileKey,
+    val source: TileSourceRect,
+    val destination: TileDestinationRect,
+)
+private fun RenderTile.destination(): TileDestinationRect =
+    TileDestinationRect(left, top, size, size)
+
+internal fun tileDrawPlan(
+    renderTiles: List<RenderTile>,
+    availableKeys: Set<WatchMapTileKey>,
+    failedKeys: Set<WatchMapTileKey>,
+): List<TileDraw> = buildList {
+    renderTiles.forEach { renderTile ->
+        val target = renderTile.key
+        if (target in availableKeys) {
+            add(
+                TileDraw(
+                    sourceKey = target,
+                    source = TileSourceRect(0, 0, 256, 256),
+                    destination = renderTile.destination(),
+                ),
+            )
+            return@forEach
+        }
+        if (target in failedKeys) return@forEach
+
+        var completeChildren: List<WatchMapTileKey>? = null
+        for (distance in 1..MAX_FALLBACK_ZOOM_DISTANCE) {
+            val children = descendantKeys(target, distance)
+            val cached = children.filter { it in availableKeys && it !in failedKeys }
+            if (cached.size == children.size && cached.isNotEmpty()) {
+                completeChildren = cached
+                break
+            }
+        }
+        if (completeChildren != null) {
+            completeChildren.forEach { child ->
+                add(descendantDraw(renderTile, target, child))
+            }
+            return@forEach
+        }
+
+        var parent: Pair<Int, WatchMapTileKey>? = null
+        for (distance in 1..MAX_FALLBACK_ZOOM_DISTANCE) {
+            val ancestor = ancestorKey(target, distance)
+            if (ancestor != null &&
+                ancestor in availableKeys &&
+                ancestor !in failedKeys
+            ) {
+                parent = distance to ancestor
+                break
+            }
+        }
+        if (parent != null) {
+            add(ancestorDraw(renderTile, target, parent.second, parent.first))
+            return@forEach
+        }
+
+        for (distance in 1..MAX_FALLBACK_ZOOM_DISTANCE) {
+            val partialChildren = descendantKeys(target, distance)
+                .filter { it in availableKeys && it !in failedKeys }
+            if (partialChildren.isNotEmpty()) {
+                partialChildren.forEach { child ->
+                    add(descendantDraw(renderTile, target, child))
+                }
+                return@forEach
+            }
+        }
+    }
+}
+
+private const val MAX_FALLBACK_ZOOM_DISTANCE = 2
+
+private fun descendantKeys(
+    target: WatchMapTileKey,
+    distance: Int,
+): List<WatchMapTileKey> {
+    val scale = 1 shl distance
+    val zoom = target.z + distance
+    if (zoom > WatchMapProtocol.MAX_ZOOM) return emptyList()
+    return buildList(scale * scale) {
+        for (yOffset in 0 until scale) {
+            for (xOffset in 0 until scale) {
+                add(
+                    WatchMapTileKey(
+                        target.layerId,
+                        zoom,
+                        target.x * scale + xOffset,
+                        target.y * scale + yOffset,
+                    ),
+                )
+            }
+        }
+    }.filter(::isValidFallbackKey)
+}
+
+private fun ancestorKey(
+    target: WatchMapTileKey,
+    distance: Int,
+): WatchMapTileKey? {
+    val zoom = target.z - distance
+    if (zoom < WatchMapProtocol.MIN_ZOOM) return null
+    val scale = 1 shl distance
+    return WatchMapTileKey(
+        target.layerId,
+        zoom,
+        target.x / scale,
+        target.y / scale,
+    ).takeIf(::isValidFallbackKey)
+}
+
+private fun ancestorDraw(
+    renderTile: RenderTile,
+    target: WatchMapTileKey,
+    ancestor: WatchMapTileKey,
+    distance: Int,
+): TileDraw {
+    val scale = 1 shl distance
+    val sourceSize = 256 / scale
+    return TileDraw(
+        sourceKey = ancestor,
+        source = TileSourceRect(
+            left = (target.x and (scale - 1)) * sourceSize,
+            top = (target.y and (scale - 1)) * sourceSize,
+            width = sourceSize,
+            height = sourceSize,
+        ),
+        destination = renderTile.destination(),
+    )
+}
+
+private fun descendantDraw(
+    renderTile: RenderTile,
+    target: WatchMapTileKey,
+    descendant: WatchMapTileKey,
+): TileDraw {
+    val distance = descendant.z - target.z
+    val scale = 1 shl distance
+    val tileSize = renderTile.size / scale
+    return TileDraw(
+        sourceKey = descendant,
+        source = TileSourceRect(0, 0, 256, 256),
+        destination = TileDestinationRect(
+            left = renderTile.left + (descendant.x - target.x * scale) * tileSize,
+            top = renderTile.top + (descendant.y - target.y * scale) * tileSize,
+            width = tileSize,
+            height = tileSize,
+        ),
+    )
+}
+
+private fun isValidFallbackKey(key: WatchMapTileKey): Boolean {
+    if (key.layerId.isBlank() || key.z !in WatchMapProtocol.MIN_ZOOM..WatchMapProtocol.MAX_ZOOM) {
+        return false
+    }
+    val side = 1 shl key.z
+    return key.x in 0 until side && key.y in 0 until side
+}
 internal data class WorldPoint(val x: Double, val y: Double)
 
 internal fun projectRoute(route: WatchMapRoute?, zoom: Int): List<WorldPoint> {

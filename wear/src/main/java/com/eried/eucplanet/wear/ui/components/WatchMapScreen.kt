@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
@@ -193,6 +194,12 @@ private fun WatchMapContent(
     val visibleKeys = remember(renderTiles) { renderTiles.mapTo(mutableSetOf()) { it.key } }
     val remoteFailures = frame?.unavailableTiles.orEmpty().toSet()
     val missingKeys = visibleKeys.filterNotTo(mutableSetOf()) { it in imageBitmaps }
+    val failedKeys = remember(remoteFailures, localFailures) {
+        remoteFailures + localFailures
+    }
+    val drawPlan = remember(renderTiles, imageBitmaps, failedKeys) {
+        tileDrawPlan(renderTiles, imageBitmaps.keys, failedKeys)
+    }
     val mapFailed = missingKeys.any { it in remoteFailures || it in localFailures }
     val mapLoading = missingKeys.isNotEmpty() && !mapFailed
     val status = mapStatus(snapshot, mapFailed, mapLoading)
@@ -207,12 +214,22 @@ private fun WatchMapContent(
         Canvas(Modifier.fillMaxSize()) {
             val pivot = Offset(size.width / 2f, size.height / 2f)
             rotate(cameraRotation, pivot) {
-                renderTiles.forEach { tile ->
-                    val bitmap = imageBitmaps[tile.key] ?: return@forEach
+                drawPlan.forEach { draw ->
+                    val bitmap = imageBitmaps[draw.sourceKey] ?: return@forEach
+                    val destination = draw.destination
                     drawImage(
                         image = bitmap,
-                        dstOffset = IntOffset(floor(tile.left).toInt(), floor(tile.top).toInt()),
-                        dstSize = IntSize(ceil(tile.size + 1.0).toInt(), ceil(tile.size + 1.0).toInt()),
+                        srcOffset = IntOffset(draw.source.left, draw.source.top),
+                        srcSize = IntSize(draw.source.width, draw.source.height),
+                        dstOffset = IntOffset(
+                            floor(destination.left).toInt(),
+                            floor(destination.top).toInt(),
+                        ),
+                        dstSize = IntSize(
+                            ceil(destination.width + 1.0).toInt(),
+                            ceil(destination.height + 1.0).toInt(),
+                        ),
+                        filterQuality = FilterQuality.Low,
                     )
                 }
             }

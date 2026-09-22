@@ -42,8 +42,12 @@ import kotlinx.coroutines.withContext
 object WatchMapRepository {
     private const val TAG = "WatchMap"
     private const val MAX_DECODED_BYTES = 8 * 1024 * 1024
-    private const val MAX_TILE_ASSET_BYTES = 4 * 1024 * 1024
     private const val MAX_TILE_SOURCE_DIMENSION = 16_384
+
+    private sealed interface TilePayload {
+        data class AssetBacked(val asset: Asset) : TilePayload
+        data class Inline(val bytes: ByteArray) : TilePayload
+    }
 
     private data class TileAssetCandidate(
         val sourceNodeId: String,
@@ -71,7 +75,7 @@ object WatchMapRepository {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val session = WatchMapSession()
-    private val decodeSlots = Semaphore(2)
+    private val decodeSlots = Semaphore(4)
 
     private val _snapshot = MutableStateFlow(WatchMapSnapshot(null, null, false, false))
     val snapshot: StateFlow<WatchMapSnapshot> = _snapshot.asStateFlow()
@@ -111,10 +115,10 @@ object WatchMapRepository {
 
     private val bitmapCache = object : LinkedHashMap<WatchMapTileKey, Bitmap>(32, 0.75f, true) {}
     private var bitmapCacheBytes = 0
-    private val pendingTiles = PendingTileStore<Asset>()
+    private val pendingTiles = PendingTileStore<TilePayload>()
     private val tileLoads = mutableMapOf<
         WatchMapTileKey,
-        PendingTileStore.Entry<Asset>,
+        PendingTileStore.Entry<TilePayload>,
     >()
     private var visibleTiles: List<WatchMapTileKey> = emptyList()
     private var tileDataReadExpectation: TileReadExpectation? = null
@@ -228,7 +232,45 @@ object WatchMapRepository {
             if (sourceNodeId != phoneNodeId || key in bitmapCache) return@launch
             val expectedPath = tilePath(key)
             if (!expectedPath.startsWith(WatchMapProtocol.TILE_PREFIX)) return@launch
-            if (pendingTiles.offer(sourceNodeId, key, deliveryGeneration, asset)) {
+            val offered = pendingTiles.offer(
+                sourceNodeId,
+                key,
+                deliveryGeneration,
+                TilePayload.AssetBacked(asset),
+            )
+            if (offered) {
+                processVisiblePendingTiles()
+            }
+        }
+    }
+
+    fun acceptTileMessage(
+        context: Context,
+        sourceNodeId: String,
+        payload: ByteArray,
+    ) {
+        ensureInitialized(context)
+        val copied = payload.copyOf()
+        scope.launch {
+            val message = withContext(Dispatchers.Default) {
+                WatchMapProtocol.decodeTileMessage(copied)
+            } ?: return@launch
+            val key = message.key
+            if (sourceNodeId != phoneNodeId ||
+                key !in visibleTiles ||
+                !tileDecodeVisible ||
+                key in bitmapCache
+            ) {
+                return@launch
+            }
+            val offered = pendingTiles.offer(
+                sourceNodeId,
+                key,
+                message.deliveryGeneration,
+                TilePayload.Inline(message.encodedTile.copyOf()),
+                replaceSameGeneration = true,
+            )
+            if (offered) {
                 processVisiblePendingTiles()
             }
         }
@@ -283,7 +325,6 @@ object WatchMapRepository {
             }
         }
     }
-
     fun setZoom(value: Int) {
         val clamped = value.coerceIn(WatchMapProtocol.MIN_ZOOM, WatchMapProtocol.MAX_ZOOM)
         if (_zoom.value == clamped) return
@@ -745,7 +786,7 @@ object WatchMapRepository {
                             pending.sourceNodeId,
                             pending.key,
                             pending.deliveryGeneration,
-                            pending.asset,
+                            TilePayload.AssetBacked(pending.asset),
                         )
                     }
                 }
@@ -774,34 +815,38 @@ object WatchMapRepository {
                     }
                     attemptedDecode = true
                     withContext(Dispatchers.IO) {
-                        val bytes = readAssetBytes(
-                            context,
-                            pending.value,
-                            maxBytes = MAX_TILE_ASSET_BYTES,
-                        ) ?: return@withContext null
+                        val bytes = when (val value = pending.value) {
+                            is TilePayload.Inline -> value.bytes
+                            is TilePayload.AssetBacked -> readAssetBytes(
+                                context,
+                                value.asset,
+                                maxBytes = WatchMapProtocol.MAX_TILE_ASSET_BYTES,
+                            )
+                        } ?: return@withContext null
                         runCatching { decodeTile(bytes) }.getOrNull()
                     }
                 }
-                val accepted = pendingTiles.removeIfCurrent(pending)
+                val completion = pendingTiles.complete(pending)
                 if (tileLoads[key] === pending) tileLoads.remove(key)
                 val current = tileDecodeVisible &&
                     pending.sourceNodeId == phoneNodeId &&
                     key in visibleTiles
-                if (bitmap != null && accepted && current) {
+                if (bitmap != null && completion.accepted && current) {
                     putBitmap(key, bitmap)
                     _tileFailures.value = _tileFailures.value - key
                 } else {
                     if (bitmap != null) bitmap.recycle()
-                    if (accepted && attemptedDecode && current) {
+                    if (completion.accepted && attemptedDecode && current) {
                         _tileFailures.value = _tileFailures.value + key
                     }
                 }
                 requestPresenceNow()
-                processVisiblePendingTiles()
+                if (completion.replacement != null && tileDecodeVisible) {
+                    processVisiblePendingTiles()
+                }
             }
         }
     }
-
     private fun putBitmap(key: WatchMapTileKey, bitmap: Bitmap) {
         bitmapCache.remove(key)?.let { bitmapCacheBytes -= it.allocationByteCount }
         bitmapCache[key] = bitmap

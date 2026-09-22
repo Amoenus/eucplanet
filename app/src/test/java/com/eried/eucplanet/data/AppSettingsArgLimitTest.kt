@@ -49,6 +49,22 @@ class AppSettingsArgLimitTest {
         )
     }
 
+    @Test fun theRemainingHeadroomIsStatedOutLoud() {
+        // Not a correctness check: a deliberate tripwire. AppSettings sits ONE
+        // slot under the JVM's 255, so anyone adding a field has to look at
+        // this number and decide consciously rather than discover it in a
+        // crash report. 253 was the voice cues nested as one group; 254 is the
+        // watch map (PR #25), nested as WatchMapSettings so four fields cost
+        // one slot. There is no room for another top-level field: the next
+        // one goes into an existing nested group, or moves a group out.
+        val expectedSlots = 254
+        assertEquals(
+            "AppSettings slot usage changed. Prefer nesting a group of fields over " +
+                "spending headroom, and update this number deliberately.",
+            expectedSlots, copyDefaultSlots()
+        )
+    }
+
     @Test fun voiceExtras_defaultsAreAllOff() {
         val v = VoiceReportSettings()
         assertEquals(false, v.periodicCurrent)

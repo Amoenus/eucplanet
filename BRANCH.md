@@ -10,6 +10,16 @@ Store build.
 
 ## What to check in this build
 
+**Watch map (Wear OS).** Contributed by ZiraiMode (PR #25). Settings, Watch,
+Watch map on: the watch gets a third page with your position, the route while
+navigating, and minus and plus zoom buttons on the dial. Map orientation
+(north up or heading up) and the telemetry strip along the top are settings on
+the phone. Tiles come from the phone over the Data Layer, so it works with no
+watch data plan; the first tiles take a few seconds. Advanced, Map cache, sets
+how much the phone keeps. Report if the map lags the wheel, if the route is
+missing while the phone shows one, or if the watch drains noticeably faster
+with the page open.
+
 **Begode PWM sign.** On a T4 (or any Begode whose speed used to read negative
 before the app fixed that) the PWM tile now reads a positive number under
 load, and a PWM alarm set at, say, 60 % fires when you push past it. Same

@@ -52,6 +52,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -204,6 +207,24 @@ private fun WatchMapContent(
     val mapLoading = missingKeys.isNotEmpty() && !mapFailed
     val status = mapStatus(snapshot, mapFailed, mapLoading)
     val showCue = snapshot.linkLive && snapshot.fixLive && frame?.cue != null
+
+    // The zoom buttons sit ON the dial, not in the corners. A 40 dp button
+    // anchored 22 dp from the corner of a 227 dp round screen has its centre
+    // 102 dp out and its rim at 122 dp, past the 113 dp bezel: the pointed,
+    // cut-off shapes of the first build. Placing each centre on a circle of
+    // radius (screen radius, button radius, a 4 dp margin), 35 degrees below
+    // horizontal, keeps the whole button inside on every round size and clear
+    // of the status pill at the bottom. The size follows the dashboard's
+    // action buttons so the two pages match.
+    val density = LocalDensity.current
+    val screenDp = with(density) { minOf(viewport.width, viewport.height).toDp() }
+    val zoomButtonSize = (screenDp * 0.127f).coerceIn(40.dp, 56.dp)
+    val zoomIconSize = (screenDp * 0.060f).coerceIn(20.dp, 26.dp)
+    val zoomButtonOffset = remember(screenDp, zoomButtonSize) {
+        val radius = screenDp / 2 - zoomButtonSize / 2 - 4.dp
+        val angle = Math.toRadians(35.0)
+        DpOffset(radius * kotlin.math.cos(angle).toFloat(), radius * kotlin.math.sin(angle).toFloat())
+    }
 
     Box(
         modifier = Modifier
@@ -362,11 +383,11 @@ private fun WatchMapContent(
                 disabledContentColor = colors.textDisabled,
             ),
             modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 22.dp, bottom = 20.dp)
-                .size(40.dp),
+                .align(Alignment.Center)
+                .offset(x = -zoomButtonOffset.x, y = zoomButtonOffset.y)
+                .size(zoomButtonSize),
         ) {
-            Icon(Icons.Filled.Remove, stringResource(R.string.watch_map_zoom_out), Modifier.size(22.dp))
+            Icon(Icons.Filled.Remove, stringResource(R.string.watch_map_zoom_out), Modifier.size(zoomIconSize))
         }
         Button(
             onClick = { onZoomChange(cameraZoom + 1) },
@@ -378,11 +399,11 @@ private fun WatchMapContent(
                 disabledContentColor = colors.textDisabled,
             ),
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 22.dp, bottom = 20.dp)
-                .size(40.dp),
+                .align(Alignment.Center)
+                .offset(x = zoomButtonOffset.x, y = zoomButtonOffset.y)
+                .size(zoomButtonSize),
         ) {
-            Icon(Icons.Filled.Add, stringResource(R.string.watch_map_zoom_in), Modifier.size(22.dp))
+            Icon(Icons.Filled.Add, stringResource(R.string.watch_map_zoom_in), Modifier.size(zoomIconSize))
         }
         Text(
             text = layer.attributionShort,

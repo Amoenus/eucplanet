@@ -15,7 +15,8 @@ import java.io.File
 class AppStartupTest {
 
     @Test fun `every process-wide start is still called from onCreate`() {
-        val src = File("src/main/java/com/eried/eucplanet/EucPlanetApp.kt").readText()
+        // Comments stripped first: a commented-out start is a missing start.
+        val src = stripComments(File("src/main/java/com/eried/eucplanet/EucPlanetApp.kt").readText())
         val onCreate = src.substringAfter("override fun onCreate()")
         for (call in listOf(
             "CrashHandler.install(this)",

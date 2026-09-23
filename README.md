@@ -26,7 +26,7 @@ riders who have the wheel.
 |---|---|
 | **Verified** | InMotion V14 (50GB / 50S) |
 | **Verified** | InMotion P6 |
-| **Rider-tested** | InMotion V8S · LeaperKim Lynx S, Oryx · Begode/Gotway Mten3, EX30, E20 · KingSong KS-16X, KS-18XL |
+| **Rider-tested** | InMotion V8S · LeaperKim Lynx S, Oryx · NOSFET Aeon · Begode/Gotway Mten3, EX30, E20 · KingSong KS-16X, KS-18XL |
 | **In test** | Begode/Gotway Master, Master Pro, T3, T4, RS, RS-HT, EX, EX.N, EX2, MSP, MSX, Hero, XWay, Mten4, Mten5, MCM5 |
 | **In test** | LeaperKim Sherman, Sherman S, Sherman Max, Patton, Lynx, Abrams |
 | **In test** | KingSong S22, S20, S19, S18, S16, KS-14/16/18, F18P, F22P |

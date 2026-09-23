@@ -60,6 +60,9 @@ class CompositeWheelAdapterDelegationTest {
         val c = composite().apply { notifyConnectingTo("KS-18XL") }
         c.provideLockCode("509540")
         assertArrayEquals(KingsongCommands.unlock("509540"), c.setLock(false))
+        assertNull("no password, nothing before the lock frame", c.lockPrelude())
+        c.provideLockPassword("9111")
+        assertArrayEquals(KingsongCommands.password("9111"), c.lockPrelude())
         assertArrayEquals(KingsongCommands.lock(), c.setLock(true))
     }
 

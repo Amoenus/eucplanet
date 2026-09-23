@@ -873,6 +873,13 @@ class WheelRepository @Inject constructor(
         scope.launch {
             settingsRepository.settings.collect { s ->
                 lockCodeCache = String.format(java.util.Locale.US, "%06d", s.advanced.kingsongUnlockCode)
+                lockPasswordCache = s.advanced.kingsongPassword.let { p ->
+                    if (p == 0) "" else String.format(java.util.Locale.US, "%04d", p)
+                }
+                // Handed over here as well as at lock time, so the adapter's
+                // init sequence already carries the password on connect.
+                wheelAdapter.provideLockCode(lockCodeCache)
+                wheelAdapter.provideLockPassword(lockPasswordCache)
                 val clamped = s.speedCalibrationOffsetPct.coerceIn(-15f, 15f)
                 speedCalibrationMultiplier = 1f + clamped / 100f
                 // Wheel poll + chart sampling are independent rider settings now,
@@ -1621,6 +1628,8 @@ class WheelRepository @Inject constructor(
     /** The KingSong unlock code from Advanced settings as six digits, mirrored
      *  so [toggleLock] can hand it to the adapter without suspending. */
     @Volatile private var lockCodeCache: String = ""
+    /** The KingSong app password from Advanced settings, "" for none. */
+    @Volatile private var lockPasswordCache: String = ""
 
     fun toggleLock() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
@@ -1640,6 +1649,7 @@ class WheelRepository @Inject constructor(
         // rider-set code takes any digits, so the Advanced default unlocks it,
         // and a rider who set a code in the KingSong app enters it there.
         wheelAdapter.provideLockCode(lockCodeCache)
+        wheelAdapter.provideLockPassword(lockPasswordCache)
         // Hard block the lock direction when the wheel is moving, any entry
         // path (Flic, watch, volume keys, dashboard) lands here. Unlock is
         // always allowed; if the wheel is already locked, speed is 0 anyway.
@@ -1689,6 +1699,9 @@ class WheelRepository @Inject constructor(
         val lockTail = wheelAdapter.setLockFollowup(locked)
 
         if (!wheelAdapter.capabilities.needsAuthForLock) {
+            // KingSong: the app password first, or a wheel with one set
+            // ignores what follows (issue #19 capture, 2026-09-22).
+            wheelAdapter.lockPrelude()?.let { bleManager.writeCommand(it) }
             bleManager.writeCommand(lockPacket)
             lockTail?.let { bleManager.writeCommand(it) }
             return@withLock true

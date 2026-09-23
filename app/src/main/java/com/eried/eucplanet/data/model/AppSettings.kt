@@ -1048,6 +1048,7 @@ data class AppSettings(
     val chargingMedianFilterSize: Int get() = advanced.chargingMedianFilterSize
     val inmotionV1Pin: Int get() = advanced.inmotionV1Pin
     val kingsongUnlockCode: Int get() = advanced.kingsongUnlockCode
+    val kingsongPassword: Int get() = advanced.kingsongPassword
 }
 /** Watch map display settings, grouped to preserve AppSettings copy() headroom. */
 data class WatchMapSettings(
@@ -1645,6 +1646,11 @@ data class AdvancedSettings(
     // and such a wheel accepts any six digits (two KS-18XL captures, issue
     // #19). Only a rider who set their own code needs to change it.
     val kingsongUnlockCode: Int = 123456,
+    // The KingSong app password, four digits stored as a number, 0 for none.
+    // A wheel with one set ignores lock and unlock until the app has sent it
+    // (0x41) in the session, so it goes out on connect and before every lock
+    // action (issue #19 capture, 2026-09-22).
+    val kingsongPassword: Int = 0,
 )
 
 // FlicAction enum removed (2026-05). Replaced by

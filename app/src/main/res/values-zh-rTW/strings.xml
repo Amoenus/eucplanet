@@ -2362,6 +2362,8 @@
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 車輪的存取 PIN，連線時傳送，讓車輪開始傳送資料。除非你在 InMotion 應用程式中設定了自己的 PIN，否則請保持 000000。</string>
     <string name="adv_kingsong_unlock_code">KingSong 解鎖碼</string>
     <string name="adv_kingsong_unlock_code_desc">隨解鎖指令傳送的六位數字。已測試的車輪接受任何數字，因此除非你的車輪拒絕，否則請保持 123456。</string>
+    <string name="adv_kingsong_password">KingSong 應用程式密碼</string>
+    <string name="adv_kingsong_password_desc">在 KingSong 應用程式中設定的 4 位數密碼，連線時以及鎖定與解鎖前傳送。若從未設定，請保持 0000。</string>
     <string name="adv_nav_sidebar_width">停靠點面板寬度</string>
     <string name="adv_nav_sidebar_width_desc">橫向停靠點側欄的寬度。太寬會讓地圖變小。</string>
     <string name="adv_simple_speedo_scale">簡易速度表尺寸</string>

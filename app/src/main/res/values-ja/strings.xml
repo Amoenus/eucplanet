@@ -2362,6 +2362,8 @@
     <string name="adv_inmotion_v1_pin_desc">InMotion V5/V8/V10 ホイールのアクセスPIN。接続時に送信され、ホイールがデータ送信を開始します。InMotionアプリで独自のPINを設定していない限り、000000のままにしてください。</string>
     <string name="adv_kingsong_unlock_code">KingSong 解除コード</string>
     <string name="adv_kingsong_unlock_code_desc">解除コマンドと一緒に送信する6桁の数字。テスト済みのホイールはどの数字でも受け付けるため、拒否されない限り123456のままにしてください。</string>
+    <string name="adv_kingsong_password">KingSong アプリのパスワード</string>
+    <string name="adv_kingsong_password_desc">KingSong アプリで設定した4桁のパスワード。接続時とロック・解除の前に送信します。設定していなければ0000のままにしてください。</string>
     <string name="adv_nav_sidebar_width">経由地パネルの幅</string>
     <string name="adv_nav_sidebar_width_desc">横向きの経由地サイドバーの幅。広すぎると地図が狭くなります。</string>
     <string name="adv_simple_speedo_scale">シンプル速度計のサイズ</string>

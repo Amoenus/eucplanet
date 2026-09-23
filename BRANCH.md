@@ -27,17 +27,12 @@ source on the wheel, just without the minus (issue #24).
 
 **KingSong lock.** The Lock Wheel tile and the horn now work on KingSong,
 from a tester's captures of the official app on a KS-18XL and confirmed by
-him on 2026-09-18: nothing to type, the wheel takes the default six digits.
-Known gap: with a 4-digit password set in the KingSong app the wheel ignores
-lock and unlock; remove the password and they work. If yours refuses, say
-which model and firmware, and whether a password is set.
-
-**HUD hotspot notice.** Settings, Integration, HUD no longer claims your
-hotspot is off. A normal app cannot actually read that on a modern phone, so
-the card now says so only when it can confirm the hotspot is on, and otherwise
-just reminds you both ends need the same network. Nothing to set up: if you saw
-it insist your hotspot was off while it was plainly on, that is the one to tell
-us about if it comes back.
+him: nothing to type, the wheel takes the default six digits. If you set a
+password in the KingSong app, the wheel ignores lock and unlock until the app
+has sent it, so enter the same four digits in Settings, Advanced, Wheel
+controls, KingSong app password; leave 0000 if you never set one. Confirmed
+working with a password on 2026-09-23. If yours refuses, say which model and
+firmware, and whether a password is set.
 
 **Tyre sensors.** Settings, Integration, TPMS sensors, Scan for sensors. A
 screw-on valve cap should be found within a minute and stay in the list after

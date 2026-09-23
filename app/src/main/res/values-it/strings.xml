@@ -2268,6 +2268,8 @@
     <string name="adv_inmotion_v1_pin_desc">PIN di accesso per le ruote InMotion V5/V8/V10, inviato alla connessione così la ruota inizia a inviare dati. Lascia 000000 a meno che tu non abbia impostato un PIN nell\'app InMotion.</string>
     <string name="adv_kingsong_unlock_code">Codice di sblocco KingSong</string>
     <string name="adv_kingsong_unlock_code_desc">Sei cifre inviate con il comando di sblocco. Le ruote testate accettano qualsiasi cifra, quindi lascia 123456 a meno che la tua lo rifiuti.</string>
+    <string name="adv_kingsong_password">Password dell\'app KingSong</string>
+    <string name="adv_kingsong_password_desc">La password a 4 cifre impostata nell\'app KingSong, inviata alla connessione e prima di bloccare e sbloccare. Lascia 0000 se non ne hai mai impostata una.</string>
     <string name="adv_nav_sidebar_width">Larghezza pannello fermate</string>
     <string name="adv_nav_sidebar_width_desc">Larghezza della barra laterale delle fermate in orizzontale. Troppo larga lascia poca mappa.</string>
     <string name="adv_simple_speedo_scale">Dimensione tachimetro semplice</string>

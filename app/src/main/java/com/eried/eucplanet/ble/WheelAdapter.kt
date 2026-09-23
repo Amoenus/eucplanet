@@ -228,6 +228,16 @@ interface WheelAdapter {
      *  uses one (six digits, from Advanced settings; the unlock frame carries it). */
     fun provideLockCode(code: String) {}
 
+    /** Hand the adapter the wheel's app password, "" for none. Only KingSong
+     *  uses one: with a password set the wheel ignores lock and unlock until
+     *  it has been sent in the session. */
+    fun provideLockPassword(password: String) {}
+
+    /** A frame to write right before a lock or unlock command, or null. The
+     *  repository writes it on every lock action and the adapter may also put
+     *  it in its init sequence; cheap to repeat, fatal to forget. */
+    fun lockPrelude(): ByteArray? = null
+
     /**
      * Resets the wheel's onboard trip meter (the field reported as
      * [com.eried.eucplanet.data.model.WheelData.tripDistance]) by sending the

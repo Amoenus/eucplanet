@@ -2383,6 +2383,8 @@
     <string name="adv_inmotion_v1_pin_desc">Zugriffs-PIN für InMotion V5/V8/V10 Wheels, wird beim Verbinden gesendet, damit das Wheel Daten sendet. Lass 000000 stehen, außer du hast in der InMotion App eine eigene PIN gesetzt.</string>
     <string name="adv_kingsong_unlock_code">KingSong-Entsperrcode</string>
     <string name="adv_kingsong_unlock_code_desc">Sechs Ziffern, die mit dem Entsperrbefehl gesendet werden. Getestete Wheels nehmen beliebige Ziffern an, also lass 123456 stehen, außer deins lehnt es ab.</string>
+    <string name="adv_kingsong_password">KingSong-App-Passwort</string>
+    <string name="adv_kingsong_password_desc">Das 4-stellige Passwort aus der KingSong-App, gesendet beim Verbinden und vor Sperren und Entsperren. Lass 0000 stehen, wenn du keines gesetzt hast.</string>
     <string name="adv_nav_sidebar_width">Breite des Halte-Panels</string>
     <string name="adv_nav_sidebar_width_desc">Breite der Halte-Seitenleiste im Querformat. Zu breit lässt wenig Karte.</string>
     <string name="adv_simple_speedo_scale">Größe des einfachen Tachos</string>

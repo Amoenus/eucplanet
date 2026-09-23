@@ -254,6 +254,9 @@ val ADVANCED_SPECS: List<AdvancedSpec> = listOf(
     AdvancedSpec("kingsongUnlockCode", AdvGroup.CONTROLS, R.string.adv_kingsong_unlock_code, R.string.adv_kingsong_unlock_code_desc,
         0..999999, 1, unit = "", get = { it.kingsongUnlockCode }, set = { s, v -> s.copy(kingsongUnlockCode = v) },
         format = pinFormat, parse = pinParse),
+    AdvancedSpec("kingsongPassword", AdvGroup.CONTROLS, R.string.adv_kingsong_password, R.string.adv_kingsong_password_desc,
+        0..9999, 1, unit = "", get = { it.kingsongPassword }, set = { s, v -> s.copy(kingsongPassword = v) },
+        format = { String.format(java.util.Locale.US, "%04d", it) }, parse = pinParse),
 
     // --- Weather score thresholds ---
     // The comfort numbers behind the ridability score; the riding

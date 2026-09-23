@@ -2363,6 +2363,8 @@
     <string name="adv_inmotion_v1_pin_desc">PIN доступа для моноколёс InMotion V5/V8/V10, отправляется при подключении, чтобы моноколесо начало передавать данные. Оставьте 000000, если вы не задали свой PIN в приложении InMotion.</string>
     <string name="adv_kingsong_unlock_code">Код разблокировки KingSong</string>
     <string name="adv_kingsong_unlock_code_desc">Шесть цифр, отправляемых с командой разблокировки. Проверенные моноколёса принимают любые цифры, поэтому оставьте 123456, если ваше их не отклоняет.</string>
+    <string name="adv_kingsong_password">Пароль приложения KingSong</string>
+    <string name="adv_kingsong_password_desc">4-значный пароль, заданный в приложении KingSong, отправляется при подключении и перед блокировкой и разблокировкой. Оставьте 0000, если вы его не задавали.</string>
     <string name="adv_nav_sidebar_width">Ширина панели остановок</string>
     <string name="adv_nav_sidebar_width_desc">Ширина боковой панели остановок в альбомной ориентации. Слишком широкая оставляет мало карты.</string>
     <string name="adv_simple_speedo_scale">Размер простого спидометра</string>

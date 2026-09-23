@@ -98,8 +98,16 @@ fun MapScreen(hud: HudState, zoom: Float, peer: String?, cache: HudTileCache) {
             animationSpec = androidx.compose.animation.core.tween(durationMillis = 200),
             label = "hud-map-zoom"
         )
-        val z = animatedZoom.toInt().coerceIn(3, 19)
-        // 1.0 at integer zoom, up to 2.0 just below the next integer.
+        // Tiles are fetched no deeper than the provider renders: Esri's
+        // Canvas charts stop at 16 and answer a z17 request with a "Map
+        // data not yet available" tile, which is what the whole screen
+        // showed at the default zoom. Past that depth the z16 tiles are
+        // drawn scaled up instead. Read styleVersion first so a layer
+        // swap on the phone recomputes the cap.
+        cache.styleVersion
+        val z = animatedZoom.toInt().coerceIn(3, 19).coerceAtMost(cache.maxNativeZoom)
+        // 1.0 at integer zoom, up to 2.0 just below the next integer, and
+        // a further doubling per zoom level beyond the provider's cap.
         // Tile pixel size scales by this factor so the visual is
         // continuous; new-zoom tiles are fetched once the integer
         // boundary is crossed.
@@ -215,7 +223,9 @@ fun MapScreen(hud: HudState, zoom: Float, peer: String?, cache: HudTileCache) {
                 .background(Color(0xAA000000))
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         ) {
-            Text("Z $z", color = Color.White, fontSize = 14.sp)
+            // The rider's zoom, not the capped tile zoom: UP still reads as
+            // one step even where the provider has no deeper tiles.
+            Text("Z ${zoom.toInt()}", color = Color.White, fontSize = 14.sp)
         }
 
         // Speed overlay (bottom-right). Uses the rider's preferred unit

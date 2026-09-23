@@ -212,6 +212,13 @@ class WearMapBridge @Inject constructor(
     private var tileIndexReady = false
     private var tileWorkEnabled = false
     private var tileReconcileRetryJob: Job? = null
+    /** Play Services has no Wearable module on this phone (GrapheneOS with
+     *  a sandboxed Play, phones with no Wear support, bare emulators). The
+     *  first reconcile learns it; nothing is retried after that, since a
+     *  retry every 30 s for the life of the process cannot succeed and only
+     *  costs a Play Services bind and a stack trace each time. */
+    @Volatile
+    private var wearableUnavailable = false
     private var nextTileLoadToken = 0L
     private var nextTileWriteAttempt = 0L
     private var desiredTileKeys: Set<WatchMapTileKey> = emptySet()
@@ -519,6 +526,7 @@ class WearMapBridge @Inject constructor(
     }
 
     private fun scheduleTileReconciliationRetry() {
+        if (wearableUnavailable) return
         if (tileReconcileRetryJob?.isActive == true) return
         tileReconcileRetryJob = scope.launch {
             delay(TILE_RECONCILE_RETRY_MS)
@@ -806,7 +814,16 @@ class WearMapBridge @Inject constructor(
                 localNodeId = nodeId
                 reconcilePublishedTiles(dataClient, nodeId)
             }
-                .onFailure { Log.w(TAG, "Tile DataItem reconciliation failed", it) }
+                .onFailure { e ->
+                    if (isWearableUnavailable(e)) {
+                        if (!wearableUnavailable) {
+                            Log.i(TAG, "No Wearable API on this phone, watch map stays idle: ${e.message}")
+                        }
+                        wearableUnavailable = true
+                    } else {
+                        Log.w(TAG, "Tile DataItem reconciliation failed", e)
+                    }
+                }
                 .getOrNull()
             events.send(Event.TileIndexReady(reconciled))
         }
@@ -1244,4 +1261,22 @@ class WearMapBridge @Inject constructor(
         }.toString()
         preferences.edit().putString(PREFS_TILE_INDEX, raw).apply()
     }
+}
+
+/**
+ * True when a Play Services failure means the Wearable API does not exist on
+ * this phone at all (status 17, API_NOT_CONNECTED with an API_UNAVAILABLE
+ * result), as opposed to a watch that is merely out of reach. The first is
+ * permanent for the process; the second is worth retrying.
+ */
+internal fun isWearableUnavailable(e: Throwable): Boolean {
+    var t: Throwable? = e
+    while (t != null) {
+        if (t is com.google.android.gms.common.api.AvailabilityException) return true
+        if (t is com.google.android.gms.common.api.ApiException &&
+            t.statusCode == com.google.android.gms.common.api.CommonStatusCodes.API_NOT_CONNECTED
+        ) return true
+        t = t.cause
+    }
+    return false
 }

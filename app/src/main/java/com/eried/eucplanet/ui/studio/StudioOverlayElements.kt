@@ -1953,7 +1953,14 @@ private fun mapTileUrl(style: String, z: Int, x: Int, y: Int): String =
 
 @Composable
 private fun MapElement(element: OverlayElement, data: StudioElementData) {
-    val zoom = element.mapZoom.coerceIn(10, 19)
+    val wantedZoom = element.mapZoom.coerceIn(10, 19)
+    // Tiles come no deeper than the provider renders (Esri Canvas stops at
+    // 16 and answers deeper requests with a "Map data not yet available"
+    // tile); past that depth the last real tiles are drawn scaled up.
+    val zoom = wantedZoom.coerceAtMost(
+        com.eried.eucplanet.hud.protocol.MapLayers.byId(element.mapStyle).maxNativeZoom
+    )
+    val tilePx = MAP_TILE_SIZE shl (wantedZoom - zoom)
     val context = LocalContext.current
 
     // GPS drops constantly on a real ride: a tunnel, a built-up street, a
@@ -2113,8 +2120,8 @@ private fun MapElement(element: OverlayElement, data: StudioElementData) {
             // Project a (lat, lon) to canvas pixels: pixel offset from centre
             // tile coords, scaled by the tile size.
             fun project(lat: Double, lon: Double): Offset {
-                val px = (WebMercator.tileX(lon, zoom) - centerTx) * MAP_TILE_SIZE
-                val py = (WebMercator.tileY(lat, zoom) - centerTy) * MAP_TILE_SIZE
+                val px = (WebMercator.tileX(lon, zoom) - centerTx) * tilePx
+                val py = (WebMercator.tileY(lat, zoom) - centerTy) * tilePx
                 return Offset(cx + px.toFloat(), cy + py.toFloat())
             }
 
@@ -2124,16 +2131,14 @@ private fun MapElement(element: OverlayElement, data: StudioElementData) {
                 // Tiles: top-left of each tile is its (tileX - centerTx) offset.
                 tileKeys.forEach { (tx, ty, url) ->
                     val bmp = MapTileCache.get(url) ?: return@forEach
-                    val left = cx + ((tx - centerTx) * MAP_TILE_SIZE).toFloat()
-                    val top = cy + ((ty - centerTy) * MAP_TILE_SIZE).toFloat()
+                    val left = cx + ((tx - centerTx) * tilePx).toFloat()
+                    val top = cy + ((ty - centerTy) * tilePx).toFloat()
                     drawImage(
                         image = bmp,
                         dstOffset = androidx.compose.ui.unit.IntOffset(
                             left.roundToInt(), top.roundToInt()
                         ),
-                        dstSize = androidx.compose.ui.unit.IntSize(
-                            MAP_TILE_SIZE, MAP_TILE_SIZE
-                        )
+                        dstSize = androidx.compose.ui.unit.IntSize(tilePx, tilePx)
                     )
                 }
 

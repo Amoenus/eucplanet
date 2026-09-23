@@ -67,6 +67,11 @@ class EucPlanetApp : Application(), Configuration.Provider {
             override fun onActivitySaveInstanceState(a: android.app.Activity, o: android.os.Bundle) {}
             override fun onActivityDestroyed(activity: android.app.Activity) {}
         })
+        // Every start below is one line, and one line is easy to lose: the
+        // watch-map merge replaced flicManager.initialize() with the tile
+        // cache start and Flic went dead (no scan, no delete, no presses)
+        // with nothing in the log. AppStartupTest pins the whole list.
+        flicManager.initialize()
         MapTileCache.start(settingsRepository)
         wearBridge.start()
         garminBridge.start()

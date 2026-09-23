@@ -465,6 +465,16 @@ class WheelService : LifecycleService() {
                             // keeps the last live numbers, which a rider
                             // glancing at the launcher reads as current.
                             renderWidget(null)
+                            // Same for the ongoing notification. The repository
+                            // zeroes the speed on disconnect, but that final
+                            // emission can land inside updateNotification's
+                            // 1 Hz throttle and be dropped, leaving the last
+                            // "1.4 mph | 84%" line up for hours. Post the state
+                            // once, unthrottled, so it reads "Disconnected".
+                            if (!shuttingDown) {
+                                getSystemService(NotificationManager::class.java)
+                                    .notify(NOTIFICATION_ID, buildNotification(null))
+                            }
                             // Only announce if we were actually connected (not just reconnect cycling)
                             if (lastConnectionState == ConnectionState.CONNECTED && settings.announceConnection) {
                                 voiceService.announceEvent(getString(R.string.voice_wheel_disconnected))

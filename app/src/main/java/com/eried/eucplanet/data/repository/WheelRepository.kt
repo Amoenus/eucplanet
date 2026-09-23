@@ -991,10 +991,16 @@ class WheelRepository @Inject constructor(
                         _wheelSerial.value = null
                         _firmwareVersion.value = null
                         _maxSpeedCap.value = DEFAULT_MAX_SPEED_KMH
+                        // Motion goes to zero too: a wheel we cannot hear is
+                        // not doing 3 mph. Left alone, this emission carried
+                        // the last speed into the ongoing notification and
+                        // the gauge, where it sat until the next connection.
                         _wheelData.value =
                             _wheelData.value.copy(
                                 totalDistance = 0f, gForce = 0f,
-                                accelX = 0f, accelY = 0f
+                                accelX = 0f, accelY = 0f,
+                                speed = 0f, pwm = 0f, current = 0f,
+                                phaseCurrent = 0f, torque = 0f, motorPower = 0,
                             )
                         // History is preserved across disconnects (cleared only on new wheel)
                         // Keep the audio route warm a few seconds longer so the

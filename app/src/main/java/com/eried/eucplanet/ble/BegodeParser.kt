@@ -48,8 +48,10 @@ class BegodeParser {
      *  cluster lights up while moving. 3 = idle (stopped), 1 = drive. */
     @Volatile private var lastPcMode: Int = 3
 
-    /** True once we have ever seen a 0x07 extras frame; from then on, we trust 0x07 PWM/current over 0x00 derivations. */
+    /** True once a 0x07 extras frame carried a non-zero PWM; from then on, we trust 0x07 PWM over 0x00 derivations. */
     @Volatile private var hasExtras: Boolean = false
+    /** True once a 0x07 extras frame carried a non-zero battery current; from then on, we trust it over Live A phase current. */
+    @Volatile private var hasExtrasCurrent: Boolean = false
 
     /**
      * True once a Freestyl3r (CF) or SmirnoV (BF) firmware banner identifies
@@ -87,6 +89,7 @@ class BegodeParser {
         lastLightOn = false
         lastPcMode = 3
         hasExtras = false
+        hasExtrasCurrent = false
         hwPwmFirmware = false
         wheelInMiles = false
     }
@@ -341,7 +344,7 @@ class BegodeParser {
         // negative means regen; the convention used everywhere else in
         // the app. Without the flip the dashboard reads backwards during
         // acceleration vs braking.
-        val battCurrent = -(ByteUtils.getInt16BE(frame, 2) / 100f)
+        val battCurrentRaw = -(ByteUtils.getInt16BE(frame, 2) / 100f)
         val motorTempC = ByteUtils.getInt16BE(frame, 6).toFloat()
         // 0x07 offset 8 carries true PWM as a signed short already in PERCENT
         // (raw 50 = 50 % PWM); no further scaling needed. An earlier `/ 100f`
@@ -353,15 +356,20 @@ class BegodeParser {
         val truePwm = kotlin.math.abs(truePwmRaw).toFloat()
 
         // Only latch onto the 0x07 PWM path when the field is actually
-        // populated (`abs(hwPWMb) > 0` arming check). Some Begode firmwares
-        // emit 0x07 frames with offset 8 = 0 at idle, and the old
-        // unconditional latch silently locked us out of the 0x00 /
-        // derived PWM fallbacks forever after.
-        if (truePwmRaw != 0) {
-            hasExtras = true
-            lastPwmPct = truePwm
-        }
-        lastPhaseCurrent = battCurrent
+        // populated (`abs(hwPWMb) > 0` arming check). Stock Begode firmware
+        // sends 0x07 about once a second with offset 8 always 0, and the old
+        // unconditional latch silently locked us out of the 0x00 / derived
+        // PWM fallbacks forever after. Once armed, a zero is a real zero:
+        // the wheel stands, and the tile must follow it down.
+        if (truePwmRaw != 0) hasExtras = true
+        if (hasExtras) lastPwmPct = truePwm
+        // Same arming for battery current, on its own flag: a Master v3 on
+        // stock firmware leaves it at 0 too, and emitting that 0 put a blank
+        // AMPS reading and a 0 % PWM on the dashboard every second, between
+        // the 5 Hz Live A frames that carried the real values (issue #26).
+        if (battCurrentRaw != 0f) hasExtrasCurrent = true
+        if (hasExtrasCurrent) lastPhaseCurrent = battCurrentRaw
+        val battCurrent = lastPhaseCurrent
 
         // Pick the hottest of (motor, IMU) so the dashboard's max-temp ring
         // shows whichever is more concerning at this moment.
@@ -374,7 +382,7 @@ class BegodeParser {
             current = battCurrent,
             phaseCurrent = battCurrent,
             batteryPercent = lastBatteryPct,
-            pwm = truePwm,
+            pwm = lastPwmPct,
             temperatures = temps,
             maxTemperature = temps.max(),
             tripDistance = lastTripKm,

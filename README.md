@@ -177,7 +177,7 @@ InMotion P6 relays its bound sensor and the app shows it live, graphs it, puts
 it on the HUD and in the overlay, and will warn you about it - a slow puncture
 is exactly the thing you notice too late. For wheels with no sensor of their
 own, a screw-on [valve-cap
-sensor](https://s.click.aliexpress.com/e/_c2xLwuvt) broadcasts pressure,
+sensor](https://s.click.aliexpress.com/e/_c3577GmH) broadcasts pressure,
 temperature and battery, and the app listens for it: the Wicarlink family, sold
 as LY TPMS, ITPMS and unbranded, whose format is written up in
 [docs/protocols/wicarlink-tpms.md](docs/protocols/wicarlink-tpms.md). Add one

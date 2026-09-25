@@ -53,7 +53,7 @@ object WatchKeys {
     const val UNIT_TEMP = "ut"
     const val ACCENT = "ac"
     /** Packed custom-theme colors ("#"-less AARRGGBB, pipe-separated, fixed
-     *  field order — see WatchColors / ThemeAccent.packForWatch). Lets the watch
+     *  field order, see WatchColors / ThemeAccent.packForWatch). Lets the watch
      *  mirror the phone theme's background, gauge, battery and text colors.
      *  Absent on older phone builds → watch keeps its built-in palette. */
     const val THEME = "thm"

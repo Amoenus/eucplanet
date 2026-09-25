@@ -110,8 +110,7 @@ internal fun AppSettings.sanitized(): AppSettings = copy(
     // Clamp every Advanced knob to its spec range so a 0 / negative / absurd
     // value (from an imported or Dropbox-synced settings file, not just the
     // steppers) can never busy-loop a delay(), divide by zero, or starve the
-    // BLE/IO loops. Every settings read — get() and the settings Flow —
-    // passes through here, so consumers never see an unsafe value.
+    // BLE/IO loops. Every settings read, get() and the settings Flow, // passes through here, so consumers never see an unsafe value.
     advanced = ADVANCED_SPECS.fold(advanced) { a, s -> s.set(a, s.get(a).coerceIn(s.range)) },
     // A hand-edited or synced file could carry a floor above full charge, or
     // a cell count that makes every pack read 100%. Clamped here so the

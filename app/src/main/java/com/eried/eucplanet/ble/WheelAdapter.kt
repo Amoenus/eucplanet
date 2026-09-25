@@ -507,14 +507,17 @@ data class WheelCapabilities(
         /**
          * Begode/Gotway: no software lock (dismount only), no native
          * volume control. Light is a 3-state (off/dim/full); the adapter
-         * collapses dim to off for the on/off toggle.
+         * collapses dim to off for the on/off toggle. No speed limits from
+         * the app yet: the W/Y/HL/b sequence exists (BegodeCommands) but is
+         * not sent outside Service Mode, so the rider sets them on the wheel
+         * and the app does not offer controls that would do nothing.
          */
         val BEGODE = WheelCapabilities(
             hasHorn = true,
             hasLight = true,
             hasLock = false,
-            hasMaxSpeed = true,
-            hasAlarmSpeed = true,
+            hasMaxSpeed = false,
+            hasAlarmSpeed = false,
             hasVolume = false,
             hasDRL = false,
             needsAuthForLock = false

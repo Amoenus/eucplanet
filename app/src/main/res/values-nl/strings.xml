@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">Snelheid voor Legal Mode</string>
     <string name="legal_mode_caption">Gebruikt in Legal Mode; moet lager zijn dan de normale tiltback.</string>
     <string name="speed_limits_disconnected">Verbind je wiel om kalibratie en limieten te bewerken</string>
+    <string name="speed_limits_unsupported">De limieten van dit wiel stel je op het wiel zelf in</string>
     <string name="speed_tiltback">Tiltback-snelheid</string>
     <string name="speed_alarm">Alarmsnelheid</string>
     <string name="speed_legal_tiltback">Legal Tiltback</string>

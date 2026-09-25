@@ -889,6 +889,7 @@
     <string name="section_legal_mode_speed">Rychlost legálního režimu</string>
     <string name="legal_mode_caption">Použije se při zapnutém legálním režimu; musí být nižší než běžný tiltback.</string>
     <string name="speed_limits_disconnected">Připojte monokolo pro úpravu kalibrace a limitů</string>
+    <string name="speed_limits_unsupported">Limity tohoto monokola se nastavují přímo na monokole</string>
     <string name="speed_tiltback">Rychlost tiltbacku</string>
     <string name="speed_alarm">Rychlost alarmu</string>
     <string name="speed_legal_tiltback">Legální tiltback</string>

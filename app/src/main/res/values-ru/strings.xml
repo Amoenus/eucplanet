@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">Скорости в лег. режиме</string>
     <string name="legal_mode_caption">Применяется в Legal-режиме; должно быть ниже обычного tiltback.</string>
     <string name="speed_limits_disconnected">Подключите колесо, чтобы изменить калибровку и ограничения</string>
+    <string name="speed_limits_unsupported">Ограничения этого колеса задаются на самом колесе</string>
     <string name="speed_tiltback">Tiltback</string>
     <string name="speed_alarm">Предупреждение</string>
     <string name="speed_legal_tiltback">Tiltback (лег.)</string>

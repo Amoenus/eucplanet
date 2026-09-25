@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">限速模式速度</string>
     <string name="legal_mode_caption">限速模式開啟時使用，必須低於正常傾斜保護速度。</string>
     <string name="speed_limits_disconnected">請連接您的車輪以編輯校準和限制</string>
+    <string name="speed_limits_unsupported">此車輪的限制需在車輪本身設定</string>
     <string name="speed_tiltback">傾斜保護速度</string>
     <string name="speed_alarm">警報速度</string>
     <string name="speed_legal_tiltback">限速傾斜保護</string>

@@ -33,8 +33,8 @@ import javax.inject.Singleton
 /**
  * Phone-side companion to the Connect IQ watch app in `garmin-watch-app/`.
  *
- * Mirrors `wear/.../WearBridge.kt` line-for-line where it makes sense: same
- * 5 Hz publish cadence, same key vocabulary (see [GarminKeys]), same
+ * Mirrors `wear/.../WearBridge.kt` line-for-line where it makes sense (the
+ * publish cadence is the exception: 1 Hz here, see PUBLISH_INTERVAL_MS), same key vocabulary (see [GarminKeys]), same
  * watch-side concerns (auto-wake on phone open, farewell on session tear-down,
  * remote vibrate hint, snapshot fields). The transport is different: Connect
  * IQ messages route through the Garmin Connect Mobile app rather than a

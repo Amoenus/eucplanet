@@ -358,6 +358,11 @@ class WheelRepository @Inject constructor(
     private val _wheelHasLock = MutableStateFlow(false)
     val wheelHasLock: StateFlow<Boolean> = _wheelHasLock.asStateFlow()
 
+    /** The connected wheel takes speed limits from the app (tiltback, alarm,
+     *  and so Legal Mode). False while disconnected. */
+    private val _wheelHasSpeedLimit = MutableStateFlow(false)
+    val wheelHasSpeedLimit: StateFlow<Boolean> = _wheelHasSpeedLimit.asStateFlow()
+
     // Charging state, explicit firmware flag (V14/V12/KingSong) when available,
     // otherwise inferred from sustained negative current. Drives the dashboard
     // spark icon and the Charging Monitor screen.
@@ -967,11 +972,10 @@ class WheelRepository @Inject constructor(
                         scope.launch { loadOrSeedWheelProfile() }
                         // Publish per-adapter capabilities now that the BLE
                         // name has resolved which sub-adapter the Composite
-                        // is routing through. Today only `hasLock` drives a
-                        // UI gate (lock button on the dashboard), but the
-                        // pattern is generic enough to grow other gates
-                        // without touching the connection observer.
+                        // is routing through. `hasLock` gates the lock tile,
+                        // `hasMaxSpeed` the speed-limit rows and Legal Mode.
                         _wheelHasLock.value = wheelAdapter.capabilities.hasLock
+                        _wheelHasSpeedLimit.value = wheelAdapter.capabilities.hasMaxSpeed
                     }
                     ConnectionState.DISCONNECTED -> {
                         pollingActive = false
@@ -999,6 +1003,7 @@ class WheelRepository @Inject constructor(
                         // announced even if it matches what we last said.
                         lastAnnouncedLocked = null
                         _wheelHasLock.value = false
+                        _wheelHasSpeedLimit.value = false
                         _wheelSeriesCells.value = null
                         _chargeStatus.value = ChargeStatus.Disconnected
                         chargeInferred = false
@@ -1804,6 +1809,14 @@ class WheelRepository @Inject constructor(
 
     suspend fun toggleSafetySpeed() {
         if (!wheelConnected()) return  // no wheel -> ignore (HUD/Garmin/Flic/UI all land here)
+        // Legal Mode works by writing lower limits. On a wheel that takes none
+        // the flag would say "limited" while the wheel is not, and legal
+        // lockdown would latch on a promise nobody keeps. Every entry (tile,
+        // Flic, watch, the connect-time enable) lands here, like the lock gate.
+        if (!wheelAdapter.capabilities.hasMaxSpeed) {
+            Log.d(TAG, "toggleSafetySpeed: ${wheelAdapter.familyId} takes no speed limits from the app")
+            return
+        }
         if (_safetyBusy.value) return  // cooldown active, ignore the spam tap (lock parity)
         // Legal Mode Lockdown backstop, for any caller that does not go through
         // FlicManager.executeAction. Turning the limits ON is always allowed,

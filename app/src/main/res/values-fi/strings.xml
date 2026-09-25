@@ -889,6 +889,7 @@
     <string name="section_legal_mode_speed">Laillisen tilan nopeus</string>
     <string name="legal_mode_caption">Käytetään kun laillinen tila on päällä; oltava normaalia tiltbackia matalampi.</string>
     <string name="speed_limits_disconnected">Yhdistä yksipyöräisesi muokataksesi kalibrointia ja rajoituksia</string>
+    <string name="speed_limits_unsupported">Tämän yksipyöräisen rajoitukset asetetaan itse laitteessa</string>
     <string name="speed_tiltback">Tiltback-nopeus</string>
     <string name="speed_alarm">Hälytysnopeus</string>
     <string name="speed_legal_tiltback">Laillinen tiltback</string>

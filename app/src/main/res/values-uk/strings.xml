@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">Швидкість у легальному режимі</string>
     <string name="legal_mode_caption">Застосовується в режимі Legal; має бути нижчим за звичайний tiltback.</string>
     <string name="speed_limits_disconnected">Підключи моноколесо, щоб змінити калібрування та обмеження</string>
+    <string name="speed_limits_unsupported">Обмеження цього моноколеса задаються на самому моноколесі</string>
     <string name="speed_tiltback">Швидкість tiltback</string>
     <string name="speed_alarm">Швидкість тривоги</string>
     <string name="speed_legal_tiltback">Tiltback (лег.)</string>

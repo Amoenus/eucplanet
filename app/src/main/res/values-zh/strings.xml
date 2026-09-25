@@ -244,6 +244,7 @@
     <string name="section_legal_mode_speed">合规模式速度</string>
     <string name="legal_mode_caption">合规模式开启时生效；必须低于普通回倾速度。</string>
     <string name="speed_limits_disconnected">连接独轮车后才能编辑校准和限制</string>
+    <string name="speed_limits_unsupported">此独轮车的限制需在独轮车本身设置</string>
     <string name="speed_tiltback">回倾速度</string>
     <string name="speed_alarm">报警速度</string>
     <string name="speed_legal_tiltback">合规回倾</string>

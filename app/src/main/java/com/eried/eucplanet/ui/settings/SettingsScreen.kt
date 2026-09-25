@@ -6801,8 +6801,14 @@ private fun SpeedTab(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Speed limits (and so Legal Mode) need a wheel that takes them from
+        // the app; Begode and Ninebot set theirs on the wheel itself.
+        val hasSpeedLimit by viewModel.wheelHasSpeedLimit.collectAsState()
+        val limitsEditable = isConnected && hasSpeedLimit
         if (!isConnected) {
             InfoHint(stringResource(R.string.speed_limits_disconnected))
+        } else if (!hasSpeedLimit) {
+            InfoHint(stringResource(R.string.speed_limits_unsupported))
         }
 
         val speedUnit = Units.effectiveSpeedUnit(settings)
@@ -7053,7 +7059,7 @@ private fun SpeedTab(
                 defaultKmh = SETTINGS_DEFAULTS.tiltbackSpeedKmh,
                 rangeKmh = 0f..maxSpeedCap,
                 speedUnit = speedUnit,
-                enabled = isConnected,
+                enabled = limitsEditable,
                 modifier = Modifier.weight(1f),
                 onValueChangeKmh = { viewModel.updateTiltbackSpeed(it) }
             )
@@ -7063,7 +7069,7 @@ private fun SpeedTab(
                 defaultKmh = SETTINGS_DEFAULTS.alarmSpeedKmh,
                 rangeKmh = 0f..settings.tiltbackSpeedKmh,
                 speedUnit = speedUnit,
-                enabled = isConnected,
+                enabled = limitsEditable,
                 modifier = Modifier.weight(1f),
                 onValueChangeKmh = { viewModel.updateAlarmSpeed(it) }
             )
@@ -7082,7 +7088,7 @@ private fun SpeedTab(
                 defaultKmh = SETTINGS_DEFAULTS.safetyTiltbackKmh,
                 rangeKmh = 0f..(settings.tiltbackSpeedKmh - 1f).coerceAtLeast(0f),
                 speedUnit = speedUnit,
-                enabled = isConnected,
+                enabled = limitsEditable,
                 modifier = Modifier.weight(1f),
                 onValueChangeKmh = { viewModel.updateSafetyTiltback(it) }
             )
@@ -7092,7 +7098,7 @@ private fun SpeedTab(
                 defaultKmh = SETTINGS_DEFAULTS.safetyAlarmKmh,
                 rangeKmh = 0f..settings.safetyTiltbackKmh,
                 speedUnit = speedUnit,
-                enabled = isConnected,
+                enabled = limitsEditable,
                 modifier = Modifier.weight(1f),
                 onValueChangeKmh = { viewModel.updateSafetyAlarm(it) }
             )

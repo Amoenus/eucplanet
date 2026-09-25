@@ -9,7 +9,7 @@ import com.eried.eucplanet.R
  * Each tunable is declared once as an [AdvancedSpec]; the UI, the clamping in
  * SettingsRepository.sanitized(), JSON (de)serialization, the per-setting update,
  * and the restore-default affordance all iterate this list instead of repeating
- * 46 hand-written rows / functions / clamp lines. Adding a knob = one field on
+ * a hand-written row / function / clamp line per knob. Adding a knob = one field on
  * [AdvancedSettings] + one spec entry + two strings.
  *
  * Mirrors the project's existing `ThemeTokens.specs` registry pattern.

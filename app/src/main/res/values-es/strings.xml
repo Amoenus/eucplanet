@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">Velocidad en Modo Legal</string>
     <string name="legal_mode_caption">Se aplica con el Modo Legal activo; debe ser menor que el tiltback normal.</string>
     <string name="speed_limits_disconnected">Conecta tu rueda para editar la calibración y los límites</string>
+    <string name="speed_limits_unsupported">Los límites de esta rueda se ajustan en la propia rueda</string>
     <string name="speed_tiltback">Velocidad de tiltback</string>
     <string name="speed_alarm">Velocidad de alarma</string>
     <string name="speed_legal_tiltback">Tiltback legal</string>

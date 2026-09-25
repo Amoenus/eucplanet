@@ -526,7 +526,7 @@ data class AppSettings(
     /**
      * Hardware-button bindings on the watch (Galaxy Watch Ultra exposes the
      * orange Action button as STEM_1 and the bottom side button as STEM_2;
-     * Pixel Watch only has one). Stored as the [FlicAction] enum name so the
+     * Pixel Watch only has one). Stored as an [ActionCatalog] key so the
      * picker can reuse the same UI/string set as Flic and Volume keys. The
      * Wear OS side reads these via the Data Layer publish, intercepts
      * KEYCODE_STEM_* in MainActivity, and either fires a local control
@@ -543,8 +543,8 @@ data class AppSettings(
 
     /**
      * On-screen watch button bindings. Two configurable buttons; tap fires the
-     * "click" action, long-press fires the "hold" action. Same FlicAction
-     * vocabulary as Flic / Volume / Stem buttons. Defaults match the wheel's
+     * "click" action, long-press fires the "hold" action. Same [ActionCatalog]
+     * key vocabulary as Flic / Volume / Stem buttons. Defaults match the wheel's
      * most-used controls (Horn, Light) so out-of-the-box behavior matches
      * the previous hardcoded buttons.
      */

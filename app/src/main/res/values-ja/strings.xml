@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">リーガルモード速度</string>
     <string name="legal_mode_caption">リーガルモードがオンのときに使用されます。通常のチルトバックより低い値にする必要があります。</string>
     <string name="speed_limits_disconnected">補正と制限を編集するにはホイールを接続してください</string>
+    <string name="speed_limits_unsupported">このホイールの制限はホイール本体で設定します</string>
     <string name="speed_tiltback">チルトバック速度</string>
     <string name="speed_alarm">アラーム速度</string>
     <string name="speed_legal_tiltback">リーガルチルトバック</string>

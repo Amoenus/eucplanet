@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">Legal-Modus, Geschwindigkeit</string>
     <string name="legal_mode_caption">Aktiv im Legal-Modus; muss unter dem normalen Tiltback liegen.</string>
     <string name="speed_limits_disconnected">Rad verbinden, um Kalibrierung und Grenzen zu bearbeiten</string>
+    <string name="speed_limits_unsupported">Die Grenzen dieses Rads stellst du am Rad selbst ein</string>
     <string name="speed_tiltback">Tiltback-Geschwindigkeit</string>
     <string name="speed_alarm">Alarm-Geschwindigkeit</string>
     <string name="speed_legal_tiltback">Legal-Tiltback</string>
@@ -1330,7 +1331,7 @@
     <string name="online_upload_site_url">https://eucstats.ried.no/</string>
     <string name="online_upload_unlink">Verknüpfung aufheben</string>
     <string name="online_unlink_title">Von der Bestenliste trennen?</string>
-    <string name="online_unlink_body">Dieses Handy lädt keine Fahrten mehr hoch. Deine Fahrer-ID bleibt gespeichert, damit du als derselbe Rider wieder beitreten kannst. Deine Statistiken bleiben auf EUC Stats; über Konto löschen kannst du sie entfernen.</string>
+    <string name="online_unlink_body">Dieses Handy lädt keine Fahrten mehr hoch. Deine Rider-ID bleibt gespeichert, damit du als derselbe Rider wieder beitreten kannst. Deine Statistiken bleiben auf EUC Stats; über Konto löschen kannst du sie entfernen.</string>
     <string name="online_unlink_confirm">Trennen</string>
 
     <!-- Online profile (edit/GDPR) -->

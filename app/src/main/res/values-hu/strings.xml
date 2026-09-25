@@ -889,6 +889,7 @@
     <string name="section_legal_mode_speed">Legális mód sebessége</string>
     <string name="legal_mode_caption">Akkor használatos, ha a Legális mód be van kapcsolva; alacsonyabbnak kell lennie a normál tiltbacknél.</string>
     <string name="speed_limits_disconnected">Csatlakoztasd az egykerekűt a kalibráció és a korlátok szerkesztéséhez</string>
+    <string name="speed_limits_unsupported">Ennek az egykerekűnek a korlátait magán az egykerekűn kell beállítani</string>
     <string name="speed_tiltback">Tiltback sebesség</string>
     <string name="speed_alarm">Riasztási sebesség</string>
     <string name="speed_legal_tiltback">Legális tiltback</string>

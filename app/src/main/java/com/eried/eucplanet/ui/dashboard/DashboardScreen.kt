@@ -2365,6 +2365,7 @@ fun DashboardScreen(
             val lockAtAnySpeed by viewModel.cheatState.lockAtAnySpeed.collectAsState()
             val lockBlockedBySpeed = !locked && kotlin.math.abs(wheelData.speed) >= 5f && !lockAtAnySpeed
             val wheelHasLock by viewModel.wheelHasLock.collectAsState()
+            val wheelHasSpeedLimit by viewModel.wheelHasSpeedLimit.collectAsState()
 
             // Portrait: two rows of 3 (today's layout). Landscape: a single row
             // so the buttons sit in one line under the one-row metrics.
@@ -2550,7 +2551,7 @@ fun DashboardScreen(
                                     else stringResource(R.string.action_legal_mode),
                                 active = safetyActive,
                                 activeColor = if (useAccent) primary else MaterialTheme.appColors.statusWarn,
-                                enabled = connectionState == ConnectionState.CONNECTED,
+                                enabled = connectionState == ConnectionState.CONNECTED && wheelHasSpeedLimit,
                                 onClick = { viewModel.onSafetySpeedToggle() },
                                 aspectRatio = actionAspect, heightDp = actionHeight,
                                 menu = { dismiss ->

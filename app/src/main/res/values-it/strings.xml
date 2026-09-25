@@ -317,6 +317,7 @@
     <string name="section_legal_mode_speed">Velocità modalità legale</string>
     <string name="legal_mode_caption">Usato in Modalità Legale; deve essere inferiore al tiltback normale.</string>
     <string name="speed_limits_disconnected">Connetti la ruota per modificare calibrazione e limiti</string>
+    <string name="speed_limits_unsupported">I limiti di questa ruota si impostano sulla ruota stessa</string>
     <string name="speed_tiltback">Velocità di tiltback</string>
     <string name="speed_alarm">Velocità d\'allarme</string>
     <string name="speed_legal_tiltback">Tiltback legale</string>

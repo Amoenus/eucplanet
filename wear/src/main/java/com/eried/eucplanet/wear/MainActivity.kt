@@ -250,7 +250,7 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * Dispatches a [com.eried.eucplanet.data.model.FlicAction] name. HORN and
+     * Dispatches an ActionCatalog key (com.eried.eucplanet.data.model.ActionCatalog). HORN and
      * LIGHT_TOGGLE use the existing dedicated control intents so older watch
      * builds without the action: prefix handler still work; everything else
      * goes through the prefixed passthrough that PhoneWearListenerService

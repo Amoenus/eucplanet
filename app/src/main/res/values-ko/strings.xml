@@ -730,6 +730,7 @@
     <string name="section_legal_mode_speed">리걸 모드 속도</string>
     <string name="legal_mode_caption">리걸 모드 켜짐 시 사용. 일반 틸트백보다 낮아야 합니다.</string>
     <string name="speed_limits_disconnected">보정과 제한을 편집하려면 휠을 연결하세요</string>
+    <string name="speed_limits_unsupported">이 휠의 제한은 휠 자체에서 설정합니다</string>
     <string name="speed_tiltback">틸트백 속도</string>
     <string name="speed_alarm">알람 속도</string>
     <string name="speed_legal_tiltback">리걸 틸트백</string>

@@ -6802,7 +6802,7 @@ private fun SpeedTab(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Speed limits (and so Legal Mode) need a wheel that takes them from
-        // the app; Begode and Ninebot set theirs on the wheel itself.
+        // the app; Begode and the legacy Ninebots set theirs on the wheel itself.
         val hasSpeedLimit by viewModel.wheelHasSpeedLimit.collectAsState()
         val limitsEditable = isConnected && hasSpeedLimit
         if (!isConnected) {

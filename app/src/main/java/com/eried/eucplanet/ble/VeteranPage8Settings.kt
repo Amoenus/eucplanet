@@ -12,8 +12,8 @@ package com.eried.eucplanet.ble
  * wire. These are mapped to null rather than zero-filled so callers can distinguish an explicit
  * zero setting from an unsupported feature.
  *
- * All multi-byte or signed ranges follow firmware scalar-bank definitions confirmed via APK and
- * EUC World disassembly, firmware analysis, and live BLE captures.
+ * Offsets and ranges come from live BLE captures and firmware analysis, cross-checked against
+ * other apps as reference only; no code from them is reused.
  */
 data class VeteranPage8Settings(
     /** Headlight mode: 0 = off, 1 = low, 2 = medium, 3 = high. Null if unsupported (0x80). */

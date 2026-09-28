@@ -169,7 +169,11 @@ object VeteranCommands {
      * matching wire byte 0x14 to the Alarm-speed slider reading 20 km/h.
      */
     fun setAlarmSpeed(kmh: Int, model: VeteranModel? = null): ByteArray =
-        if (model?.brandOverride == "NOSFET") setNosfetAlarmSpeed(kmh)
+        // Only where the bank 1 / slot 2 frame is verified as the alarm (Aeon
+        // capture, Aero firmware). On LkAp that slot is tiltback, so an
+        // unverified NOSFET could take an alarm write as a tiltback; the Apex
+        // keeps the generic frame until a capture confirms it.
+        if (model == VeteranModel.NOSFET_AEON || model == VeteranModel.NOSFET_AERO) setNosfetAlarmSpeed(kmh)
         else buildLeaperKimSpeedFrame(magic = LKAP, subOp = SUBOP_ALARM, kmh = kmh)
 
     /** NOSFET capture-verified setting readback (35 -> 34 -> 35), also

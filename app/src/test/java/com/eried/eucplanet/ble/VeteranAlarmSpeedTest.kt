@@ -23,13 +23,17 @@ class VeteranAlarmSpeedTest {
     }
 
     @Test fun `other models and unknown model retain the generic alarm mapping`() {
-        for (model in VeteranModel.entries.filter { it.brandOverride != "NOSFET" } + null) {
+        for (model in VeteranModel.entries.filter { it !in verifiedNosfetAlarm } + null) {
             assertArrayEquals(VeteranCommands.setAlarmSpeed(35), VeteranCommands.setAlarmSpeed(35, model))
         }
     }
 
-    @Test fun `all nosfet models use the vendor bank 2 alarm mapping`() {
-        for (model in VeteranModel.entries.filter { it.brandOverride == "NOSFET" }) {
+    // Apex (and any NOSFET without a capture) keeps the generic frame: on LkAp
+    // the vendor slot is tiltback, so an unverified wheel must not get it.
+    private val verifiedNosfetAlarm = setOf(VeteranModel.NOSFET_AEON, VeteranModel.NOSFET_AERO)
+
+    @Test fun `verified nosfet models use the vendor bank 2 alarm mapping`() {
+        for (model in verifiedNosfetAlarm) {
             val frame = VeteranCommands.setAlarmSpeed(35, model)
             assertArrayEquals("4c64417013010280808080808080239e2e7604".bytes(), frame)
         }
